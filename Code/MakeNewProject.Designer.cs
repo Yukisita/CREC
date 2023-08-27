@@ -427,11 +427,11 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label6.Location = new System.Drawing.Point(846, 174);
+            this.label6.Location = new System.Drawing.Point(806, 174);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(76, 41);
+            this.label6.Size = new System.Drawing.Size(116, 41);
             this.label6.TabIndex = 5;
-            this.label6.Text = "ID⇒";
+            this.label6.Text = "UUID⇒";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // EditShowObjectNameLabelTextBox
@@ -452,7 +452,7 @@
             this.EditShowIDLabelTextBox.Name = "EditShowIDLabelTextBox";
             this.EditShowIDLabelTextBox.Size = new System.Drawing.Size(222, 36);
             this.EditShowIDLabelTextBox.TabIndex = 9;
-            this.EditShowIDLabelTextBox.Text = "ID";
+            this.EditShowIDLabelTextBox.Text = "UUID";
             // 
             // EditShowMCLabelTextBox
             // 
@@ -581,7 +581,8 @@
             // 
             // CenterLine
             // 
-            this.CenterLine.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CenterLine.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.CenterLine.BackColor = System.Drawing.Color.Black;
             this.CenterLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.CenterLine.Location = new System.Drawing.Point(655, 9);

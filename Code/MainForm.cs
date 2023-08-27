@@ -47,7 +47,7 @@ namespace CoRectSys
         string TargetAccessedDate = "";// 最終アクセス日時
         string ShowObjectNameLabel = "名称";// 名称ラベルの表示名
         bool ShowObjectNameLabelVisible = true;
-        string ShowIDLabel = "ID";// IDラベルの表示名
+        string ShowIDLabel = "UUID";// IDラベルの表示名
         bool ShowIDLabelVisible = true;
         string ShowMCLabel = "管理コード";// 管理コードラベルの表示名
         bool ShowMCLabelVisible = true;
@@ -88,6 +88,9 @@ namespace CoRectSys
         string ThisTag2 = "";
         string ThisTag3 = "";
         string ThisRealLocation = "";
+
+        // Data非同期読み込みのステータス
+        string DataLoadingStatus = "false";
 
         public MainForm()
         {
@@ -813,8 +816,6 @@ namespace CoRectSys
             Tag1ListVisibleToolStripMenuItem.Text = Tag1Name;
             Tag2ListVisibleToolStripMenuItem.Text = Tag2Name;
             Tag3ListVisibleToolStripMenuItem.Text = Tag3Name;
-            // DataGridViewにデータ読み込み
-            LoadGrid();
             // ToolTipsの設定
             SetTagNameToolTips();
             // CSVOutputPathの設定
@@ -826,8 +827,18 @@ namespace CoRectSys
                 TargetCSVOutputPath = TargetFolderPath;
             }
             // ComboBoxの初期選択項目を設定
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = SearchOptionNumber;
             SearchMethodComboBox.SelectedIndex = SearchMethodNumber;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
+            // DataGridViewにデータ読み込み
+            if (DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
+            LoadGrid();
         }
         private void BackupToolStripMenuItem_Click(object sender, EventArgs e)// 手動バックアップ作成
         {
@@ -1540,10 +1551,16 @@ namespace CoRectSys
                 EditRealLocationTextBox.Text = ThisRealLocation;
             }
         }
-
+        
         // データ一覧・詳細表示関係
-        private void LoadGrid()// データを読み込んでリストに表示
+        private async void LoadGrid()// データを読み込んでリストに表示LoadGrid()
         {
+            while (DataLoadingStatus != "false")
+            {
+                await Task.Delay(1);
+            }
+            DataLoadingStatus = "true";
+            DataLoadingLabel.Visible = true;
             // 現時点で選択されている情報を取得
             string CurrentSelectedContentsID;// 現時点で表示されているデータのID
             int CurrentSelectedContentsRows = 1;// 表示されていたデータのリスト更新後の列番号
@@ -1575,6 +1592,11 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
+                        if (DataLoadingStatus == "stop")
+                        {
+                            break;
+                        }
+                        // await Task.Delay(1); //これ、必要？
                         // 変数初期化「List読み込み内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
@@ -1792,13 +1814,18 @@ namespace CoRectSys
                 MessageBox.Show(ex.Message, "CREC");
                 return;
             }
-            dataGridView1.ClearSelection();
-            try
+            if (DataLoadingStatus == "true")
             {
-                dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
-                dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                dataGridView1.ClearSelection();
+                try
+                {
+                    dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
+                    dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                }
+                catch (Exception ex) { }
+                DataLoadingLabel.Visible = false;
             }
-            catch (Exception ex) { }
+            DataLoadingStatus = "false";
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) // 詳細表示
         {
@@ -1915,6 +1942,10 @@ namespace CoRectSys
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();
                 return true;
             }
@@ -1966,6 +1997,10 @@ namespace CoRectSys
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();
                 return true;
             }
@@ -2163,7 +2198,7 @@ namespace CoRectSys
         {
             if (dataGridView1.CurrentRow == null)
             {
-                MessageBox.Show("プロジェクトを開いてください。", "CREC");
+                //MessageBox.Show("プロジェクトを開いてください。１", "CREC");
                 return;
             }
             try
@@ -2603,8 +2638,12 @@ namespace CoRectSys
             SaveAndCloseEditButton.Visible = false;
             SelectThumbnailButton.Visible = false;
             //　再表示時に編集したデータを表示するための処理
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchFormTextBox.Text = EditIDTextBox.Text;
             SearchOptionComboBox.SelectedIndex = 0;
+            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             // 入力フォームをリセット
             ClearDetailsWindowMethod();
             // 通常画面で必要なものを表示
@@ -2617,6 +2656,10 @@ namespace CoRectSys
             AllowEditID = false;
             AllowEditIDButton.Text = "編集不可";
             // 再度詳細情報を表示
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();
             ShowDetails();
         }
@@ -2635,6 +2678,10 @@ namespace CoRectSys
             {
                 MessageBox.Show("データの削除に失敗しました。\n" + ex.Message, "CREC");
                 return;
+            }
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
             }
             LoadGrid();
             ShowDetails();
@@ -2675,6 +2722,10 @@ namespace CoRectSys
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
                 // 再度詳細情報を表示
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();
                 ShowDetails();
             }
@@ -2751,10 +2802,14 @@ namespace CoRectSys
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            // 現在時刻からIDを設定
+            /*
+            */
+            // ID(UUID)を設定
+            ThisID = Convert.ToString(Guid.NewGuid());
+            EditIDTextBox.Text = ThisID;// MCを自動入力
+            // 現在時刻からMCを設定
             DateTime DT = DateTime.Now;
-            EditIDTextBox.Text = DT.ToString("yyMMddHHmmssf");// IDを自動入力
-            ThisID = DT.ToString("yyMMddHHmmssf");
+            EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd");// 日時を自動入力
             TargetContentsPath = TargetFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
@@ -2912,7 +2967,7 @@ namespace CoRectSys
             if (EditedBackUp == true)
             {
                 BackUpMethod();
-                MakeBackUpZip();// ZIP圧縮を非同期で開始)
+                MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -2921,6 +2976,10 @@ namespace CoRectSys
         }
         private void ListUpdateButton_Click(object sender, EventArgs e)// 一覧更新ボタン
         {
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();// 一覧を再度読み込み
         }
 
@@ -3037,6 +3096,10 @@ namespace CoRectSys
                     SearchFormTextBoxClearButton.Visible = true;
                     AddContentsButton.Visible = true;
                     ListUpdateButton.Visible = true;
+                    if(DataLoadingStatus == "true")
+                    {
+                        DataLoadingStatus = "stop";
+                    }
                     LoadGrid();
                 }
                 else if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時は写真を表示
@@ -3328,6 +3391,10 @@ namespace CoRectSys
             if (TargetFolderPath.Length != 0)
             {
                 dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
@@ -3353,11 +3420,19 @@ namespace CoRectSys
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
                 dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
             else if (TargetFolderPath.Length != 0)
             {
                 dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
@@ -3366,6 +3441,10 @@ namespace CoRectSys
             if (TargetFolderPath.Length != 0)
             {
                 dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
@@ -3883,7 +3962,7 @@ namespace CoRectSys
             ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10*DpiScale), ShowObjectName.Location.Y);
             EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditNameTextBox.Location.Y);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
-            ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width - 10 * DpiScale), ShowID.Location.Y);
+            ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
             EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditIDTextBox.Location.Y);
             MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowMC.Location.Y);
             ShowMC.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + MCLabel.Width - 10 * DpiScale), ShowMC.Location.Y);
@@ -3952,7 +4031,7 @@ namespace CoRectSys
                 EditTag3TextBox.Width = Convert.ToInt32(FormSize.Width - 1120 * DpiScale) / 2;
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
-            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 85 * DpiScale), AllowEditIDButton.Location.Y);
+            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), AllowEditIDButton.Location.Y);
             CheckSameMCButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 95 * DpiScale), CheckSameMCButton.Location.Y);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
             ShowPicturesButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), ShowPicturesButton.Location.Y);
@@ -4112,6 +4191,10 @@ namespace CoRectSys
                         DetailsTextBox.ReadOnly = true;
                         ConfidentialDataTextBox.ReadOnly = true;
                         // 再度詳細情報を表示
+                        if(DataLoadingStatus == "true")
+                        {
+                            DataLoadingStatus = "stop";
+                        }
                         LoadGrid();
                         ShowDetails();
                         break;
@@ -4212,7 +4295,7 @@ namespace CoRectSys
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
         }
-
+      
         // ユーザーアシストのToolTip設定
         private void SetUserAssistToolTips()
         {
@@ -4238,6 +4321,10 @@ namespace CoRectSys
         }
         private void ListUpdateContextStripMenuItem_Click(object sender, EventArgs e)// 一覧を更新
         {
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();// 再度一覧を読み込み
         }
         private void OpenProjectContextStripMenuItem_Click(object sender, EventArgs e)// プロジェクトを開く、OpenMenu_Clickと同じ

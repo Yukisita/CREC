@@ -61,7 +61,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2023/08/09";
+            this.ReleaseDate.Text = "Release: 2023/08/21";
             // 
             // VersionName
             // 
@@ -69,9 +69,9 @@
             this.VersionName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.VersionName.Location = new System.Drawing.Point(233, 87);
             this.VersionName.Name = "VersionName";
-            this.VersionName.Size = new System.Drawing.Size(88, 20);
+            this.VersionName.Size = new System.Drawing.Size(96, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 6.03";
+            this.VersionName.Text = "Version 6.04β";
             // 
             // label5
             // 

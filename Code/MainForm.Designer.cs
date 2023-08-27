@@ -186,6 +186,7 @@
             this.IDLabel = new System.Windows.Forms.Label();
             this.MCLabel = new System.Windows.Forms.Label();
             this.RealLocationLabel = new System.Windows.Forms.Label();
+            this.DataLoadingLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -700,7 +701,6 @@
             // 
             // IDList
             // 
-            this.IDList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
             this.IDList.HeaderText = "ID";
@@ -711,7 +711,6 @@
             // 
             // MCList
             // 
-            this.MCList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
             this.MCList.HeaderText = "管理コード";
@@ -722,7 +721,6 @@
             // 
             // ObjectNameList
             // 
-            this.ObjectNameList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
             this.ObjectNameList.HeaderText = "名称";
@@ -740,7 +738,6 @@
             // 
             // CategoryList
             // 
-            this.CategoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
             this.CategoryList.HeaderText = "カテゴリ";
@@ -752,7 +749,6 @@
             // 
             // Tag1List
             // 
-            this.Tag1List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
             this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
             this.Tag1List.HeaderText = "Tag1";
@@ -762,7 +758,6 @@
             // 
             // Tag2List
             // 
-            this.Tag2List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
             this.Tag2List.HeaderText = "Tag2";
@@ -772,7 +767,6 @@
             // 
             // Tag3List
             // 
-            this.Tag3List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
             this.Tag3List.HeaderText = "Tag3";
@@ -782,7 +776,6 @@
             // 
             // InventoryList
             // 
-            this.InventoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
             this.InventoryList.HeaderText = "在庫数";
@@ -792,7 +785,6 @@
             // 
             // InventoryStatusList
             // 
-            this.InventoryStatusList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
             this.InventoryStatusList.HeaderText = "在庫状況";
@@ -845,10 +837,10 @@
             // 
             this.ShowID.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowID.AutoSize = true;
-            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowID.Location = new System.Drawing.Point(1071, 89);
             this.ShowID.Name = "ShowID";
-            this.ShowID.Size = new System.Drawing.Size(0, 30);
+            this.ShowID.Size = new System.Drawing.Size(0, 20);
             this.ShowID.TabIndex = 4;
             // 
             // CenterLine
@@ -1376,11 +1368,11 @@
             // 
             this.EditIDTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditIDTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.EditIDTextBox.Location = new System.Drawing.Point(1058, 86);
             this.EditIDTextBox.Name = "EditIDTextBox";
             this.EditIDTextBox.ReadOnly = true;
-            this.EditIDTextBox.Size = new System.Drawing.Size(260, 36);
+            this.EditIDTextBox.Size = new System.Drawing.Size(260, 31);
             this.EditIDTextBox.TabIndex = 80;
             this.EditIDTextBox.Visible = false;
             // 
@@ -1478,9 +1470,9 @@
             // AllowEditIDButton
             // 
             this.AllowEditIDButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditIDButton.Location = new System.Drawing.Point(1233, 92);
+            this.AllowEditIDButton.Location = new System.Drawing.Point(1249, 89);
             this.AllowEditIDButton.Name = "AllowEditIDButton";
-            this.AllowEditIDButton.Size = new System.Drawing.Size(80, 25);
+            this.AllowEditIDButton.Size = new System.Drawing.Size(65, 25);
             this.AllowEditIDButton.TabIndex = 73;
             this.AllowEditIDButton.Text = "編集不可";
             this.AllowEditIDButton.UseVisualStyleBackColor = true;
@@ -1674,10 +1666,10 @@
             // IDLabel
             // 
             this.IDLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.IDLabel.Location = new System.Drawing.Point(920, 89);
             this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(145, 30);
+            this.IDLabel.Size = new System.Drawing.Size(139, 20);
             this.IDLabel.TabIndex = 89;
             this.IDLabel.Text = "ID：";
             this.IDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1705,12 +1697,25 @@
             this.RealLocationLabel.Text = "現物保管場所：";
             this.RealLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // DataLoadingLabel
+            // 
+            this.DataLoadingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.DataLoadingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.DataLoadingLabel.Location = new System.Drawing.Point(765, 98);
+            this.DataLoadingLabel.Name = "DataLoadingLabel";
+            this.DataLoadingLabel.Size = new System.Drawing.Size(145, 30);
+            this.DataLoadingLabel.TabIndex = 94;
+            this.DataLoadingLabel.Text = "読み込み中";
+            this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.DataLoadingLabel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1824, 1041);
+            this.Controls.Add(this.DataLoadingLabel);
             this.Controls.Add(this.AllowEditIDButton);
             this.Controls.Add(this.EditIDTextBox);
             this.Controls.Add(this.dataGridView1);
@@ -1770,18 +1775,18 @@
             this.Controls.Add(this.EditButton);
             this.Controls.Add(this.SaveAndCloseEditButton);
             this.Controls.Add(this.CopyDataLocationPath);
-            this.Controls.Add(this.ShowDataLocation);
             this.Controls.Add(this.ShowRealLocation);
+            this.Controls.Add(this.ObjectNameLabel);
+            this.Controls.Add(this.ShowID);
+            this.Controls.Add(this.ShowMC);
+            this.Controls.Add(this.ShowRegistrationDate);
+            this.Controls.Add(this.ShowDataLocation);
             this.Controls.Add(this.Tag1NameLabel);
             this.Controls.Add(this.Tag2NameLabel);
             this.Controls.Add(this.Tag3NameLabel);
-            this.Controls.Add(this.ObjectNameLabel);
             this.Controls.Add(this.CategoryLabel);
             this.Controls.Add(this.RealLocationLabel);
-            this.Controls.Add(this.ShowID);
-            this.Controls.Add(this.ShowMC);
             this.Controls.Add(this.MCLabel);
-            this.Controls.Add(this.ShowRegistrationDate);
             this.Controls.Add(this.RegistrationDateLabel);
             this.Controls.Add(this.IDLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1929,17 +1934,6 @@
         private System.Windows.Forms.ToolStripTextBox ShowListButton;
         private System.Windows.Forms.Label NoPicturesLabel;
         private System.Windows.Forms.ToolStripMenuItem RegistrationDateListVisibleToolStripMenuItem;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TargetPath;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IDList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MCList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ObjectNameList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RegistrationDateList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CategoryList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag1List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag2List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
         private System.Windows.Forms.Button AddContentsButton;
         private System.Windows.Forms.Button ListUpdateButton;
         private System.Windows.Forms.ToolStripMenuItem DarkToolStripMenuItem;
@@ -1954,6 +1948,18 @@
         private System.Windows.Forms.Label IDLabel;
         private System.Windows.Forms.Label MCLabel;
         private System.Windows.Forms.Label RealLocationLabel;
+        private System.Windows.Forms.Label DataLoadingLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TargetPath;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IDList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MCList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ObjectNameList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RegistrationDateList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CategoryList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag1List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag2List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
     }
 }
 
