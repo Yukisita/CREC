@@ -50,15 +50,15 @@
             this.StartUpBackUpCheckBox = new System.Windows.Forms.CheckBox();
             this.CloseBackUpCheckBox = new System.Windows.Forms.CheckBox();
             this.EditedBackUpCheckBox = new System.Windows.Forms.CheckBox();
-            this.EditedCSVOutputCheckBox = new System.Windows.Forms.CheckBox();
-            this.CloseCSVOutputCheckBox = new System.Windows.Forms.CheckBox();
-            this.StartUpCSVOutputCheckBox = new System.Windows.Forms.CheckBox();
-            this.AutoCSVOutput = new System.Windows.Forms.Label();
+            this.EditedListOutputCheckBox = new System.Windows.Forms.CheckBox();
+            this.CloseListOutputCheckBox = new System.Windows.Forms.CheckBox();
+            this.StartUpListOutputCheckBox = new System.Windows.Forms.CheckBox();
+            this.AutoListOutput = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.CSVOutputLocationReferenceButton = new System.Windows.Forms.Button();
-            this.EditCSVOutputLocationTextBox = new System.Windows.Forms.TextBox();
-            this.CSVOutputLocation = new System.Windows.Forms.Label();
-            this.OpenCSVAfterOutputCheckBox = new System.Windows.Forms.CheckBox();
+            this.ListOutputLocationReferenceButton = new System.Windows.Forms.Button();
+            this.EditListOutputLocationTextBox = new System.Windows.Forms.TextBox();
+            this.ListOutputLocation = new System.Windows.Forms.Label();
+            this.OpenListAfterOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -88,6 +88,10 @@
             this.Tag3NameVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowRealLocationLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowDataLocationLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.TSVOutputRadioButton = new System.Windows.Forms.RadioButton();
+            this.CSVOutputRadioButton = new System.Windows.Forms.RadioButton();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ProjectName
@@ -307,48 +311,48 @@
             this.EditedBackUpCheckBox.Text = "データ追加時";
             this.EditedBackUpCheckBox.UseVisualStyleBackColor = true;
             // 
-            // EditedCSVOutputCheckBox
+            // EditedListOutputCheckBox
             // 
-            this.EditedCSVOutputCheckBox.AutoSize = true;
-            this.EditedCSVOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedCSVOutputCheckBox.Location = new System.Drawing.Point(200, 587);
-            this.EditedCSVOutputCheckBox.Name = "EditedCSVOutputCheckBox";
-            this.EditedCSVOutputCheckBox.Size = new System.Drawing.Size(145, 32);
-            this.EditedCSVOutputCheckBox.TabIndex = 54;
-            this.EditedCSVOutputCheckBox.Text = "データ追加時";
-            this.EditedCSVOutputCheckBox.UseVisualStyleBackColor = true;
+            this.EditedListOutputCheckBox.AutoSize = true;
+            this.EditedListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(200, 587);
+            this.EditedListOutputCheckBox.Name = "EditedListOutputCheckBox";
+            this.EditedListOutputCheckBox.Size = new System.Drawing.Size(145, 32);
+            this.EditedListOutputCheckBox.TabIndex = 54;
+            this.EditedListOutputCheckBox.Text = "データ追加時";
+            this.EditedListOutputCheckBox.UseVisualStyleBackColor = true;
             // 
-            // CloseCSVOutputCheckBox
+            // CloseListOutputCheckBox
             // 
-            this.CloseCSVOutputCheckBox.AutoSize = true;
-            this.CloseCSVOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseCSVOutputCheckBox.Location = new System.Drawing.Point(106, 587);
-            this.CloseCSVOutputCheckBox.Name = "CloseCSVOutputCheckBox";
-            this.CloseCSVOutputCheckBox.Size = new System.Drawing.Size(88, 32);
-            this.CloseCSVOutputCheckBox.TabIndex = 53;
-            this.CloseCSVOutputCheckBox.Text = "終了時";
-            this.CloseCSVOutputCheckBox.UseVisualStyleBackColor = true;
+            this.CloseListOutputCheckBox.AutoSize = true;
+            this.CloseListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(106, 587);
+            this.CloseListOutputCheckBox.Name = "CloseListOutputCheckBox";
+            this.CloseListOutputCheckBox.Size = new System.Drawing.Size(88, 32);
+            this.CloseListOutputCheckBox.TabIndex = 53;
+            this.CloseListOutputCheckBox.Text = "終了時";
+            this.CloseListOutputCheckBox.UseVisualStyleBackColor = true;
             // 
-            // StartUpCSVOutputCheckBox
+            // StartUpListOutputCheckBox
             // 
-            this.StartUpCSVOutputCheckBox.AutoSize = true;
-            this.StartUpCSVOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.StartUpCSVOutputCheckBox.Location = new System.Drawing.Point(12, 587);
-            this.StartUpCSVOutputCheckBox.Name = "StartUpCSVOutputCheckBox";
-            this.StartUpCSVOutputCheckBox.Size = new System.Drawing.Size(88, 32);
-            this.StartUpCSVOutputCheckBox.TabIndex = 52;
-            this.StartUpCSVOutputCheckBox.Text = "起動時";
-            this.StartUpCSVOutputCheckBox.UseVisualStyleBackColor = true;
+            this.StartUpListOutputCheckBox.AutoSize = true;
+            this.StartUpListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.StartUpListOutputCheckBox.Location = new System.Drawing.Point(12, 587);
+            this.StartUpListOutputCheckBox.Name = "StartUpListOutputCheckBox";
+            this.StartUpListOutputCheckBox.Size = new System.Drawing.Size(88, 32);
+            this.StartUpListOutputCheckBox.TabIndex = 52;
+            this.StartUpListOutputCheckBox.Text = "起動時";
+            this.StartUpListOutputCheckBox.UseVisualStyleBackColor = true;
             // 
-            // AutoCSVOutput
+            // AutoListOutput
             // 
-            this.AutoCSVOutput.AutoSize = true;
-            this.AutoCSVOutput.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoCSVOutput.Location = new System.Drawing.Point(5, 543);
-            this.AutoCSVOutput.Name = "AutoCSVOutput";
-            this.AutoCSVOutput.Size = new System.Drawing.Size(450, 41);
-            this.AutoCSVOutput.TabIndex = 51;
-            this.AutoCSVOutput.Text = "自動データ一覧作成のスケジュール";
+            this.AutoListOutput.AutoSize = true;
+            this.AutoListOutput.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.AutoListOutput.Location = new System.Drawing.Point(5, 543);
+            this.AutoListOutput.Name = "AutoListOutput";
+            this.AutoListOutput.Size = new System.Drawing.Size(450, 41);
+            this.AutoListOutput.TabIndex = 51;
+            this.AutoListOutput.Text = "自動データ一覧作成のスケジュール";
             // 
             // label4
             // 
@@ -356,50 +360,50 @@
             this.label4.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.label4.Location = new System.Drawing.Point(8, 480);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(426, 24);
+            this.label4.Size = new System.Drawing.Size(464, 24);
             this.label4.TabIndex = 50;
-            this.label4.Text = "選択したフォルダ内にCSVでデータ一覧が作成されます。";
+            this.label4.Text = "選択したフォルダ内にCSV/TSVでデータ一覧が作成されます。";
             // 
-            // CSVOutputLocationReferenceButton
+            // ListOutputLocationReferenceButton
             // 
-            this.CSVOutputLocationReferenceButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CSVOutputLocationReferenceButton.Location = new System.Drawing.Point(284, 437);
-            this.CSVOutputLocationReferenceButton.Name = "CSVOutputLocationReferenceButton";
-            this.CSVOutputLocationReferenceButton.Size = new System.Drawing.Size(74, 40);
-            this.CSVOutputLocationReferenceButton.TabIndex = 6;
-            this.CSVOutputLocationReferenceButton.Text = "参照";
-            this.CSVOutputLocationReferenceButton.UseVisualStyleBackColor = true;
-            this.CSVOutputLocationReferenceButton.Click += new System.EventHandler(this.CSVOutputLocationReferenceButton_Click);
+            this.ListOutputLocationReferenceButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ListOutputLocationReferenceButton.Location = new System.Drawing.Point(284, 437);
+            this.ListOutputLocationReferenceButton.Name = "ListOutputLocationReferenceButton";
+            this.ListOutputLocationReferenceButton.Size = new System.Drawing.Size(74, 40);
+            this.ListOutputLocationReferenceButton.TabIndex = 6;
+            this.ListOutputLocationReferenceButton.Text = "参照";
+            this.ListOutputLocationReferenceButton.UseVisualStyleBackColor = true;
+            this.ListOutputLocationReferenceButton.Click += new System.EventHandler(this.ListOutputLocationReferenceButton_Click);
             // 
-            // EditCSVOutputLocationTextBox
+            // EditListOutputLocationTextBox
             // 
-            this.EditCSVOutputLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditCSVOutputLocationTextBox.Location = new System.Drawing.Point(5, 504);
-            this.EditCSVOutputLocationTextBox.MaximumSize = new System.Drawing.Size(3480, 35);
-            this.EditCSVOutputLocationTextBox.Name = "EditCSVOutputLocationTextBox";
-            this.EditCSVOutputLocationTextBox.Size = new System.Drawing.Size(631, 36);
-            this.EditCSVOutputLocationTextBox.TabIndex = 7;
+            this.EditListOutputLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditListOutputLocationTextBox.Location = new System.Drawing.Point(5, 504);
+            this.EditListOutputLocationTextBox.MaximumSize = new System.Drawing.Size(3480, 35);
+            this.EditListOutputLocationTextBox.Name = "EditListOutputLocationTextBox";
+            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(631, 36);
+            this.EditListOutputLocationTextBox.TabIndex = 7;
             // 
-            // CSVOutputLocation
+            // ListOutputLocation
             // 
-            this.CSVOutputLocation.AutoSize = true;
-            this.CSVOutputLocation.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CSVOutputLocation.Location = new System.Drawing.Point(7, 437);
-            this.CSVOutputLocation.Name = "CSVOutputLocation";
-            this.CSVOutputLocation.Size = new System.Drawing.Size(288, 41);
-            this.CSVOutputLocation.TabIndex = 47;
-            this.CSVOutputLocation.Text = "データ一覧作成場所：";
+            this.ListOutputLocation.AutoSize = true;
+            this.ListOutputLocation.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ListOutputLocation.Location = new System.Drawing.Point(7, 437);
+            this.ListOutputLocation.Name = "ListOutputLocation";
+            this.ListOutputLocation.Size = new System.Drawing.Size(288, 41);
+            this.ListOutputLocation.TabIndex = 47;
+            this.ListOutputLocation.Text = "データ一覧作成場所：";
             // 
-            // OpenCSVAfterOutputCheckBox
+            // OpenListAfterOutputCheckBox
             // 
-            this.OpenCSVAfterOutputCheckBox.AutoSize = true;
-            this.OpenCSVAfterOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenCSVAfterOutputCheckBox.Location = new System.Drawing.Point(461, 545);
-            this.OpenCSVAfterOutputCheckBox.Name = "OpenCSVAfterOutputCheckBox";
-            this.OpenCSVAfterOutputCheckBox.Size = new System.Drawing.Size(145, 32);
-            this.OpenCSVAfterOutputCheckBox.TabIndex = 55;
-            this.OpenCSVAfterOutputCheckBox.Text = "出力後に開く";
-            this.OpenCSVAfterOutputCheckBox.UseVisualStyleBackColor = true;
+            this.OpenListAfterOutputCheckBox.AutoSize = true;
+            this.OpenListAfterOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.OpenListAfterOutputCheckBox.Location = new System.Drawing.Point(461, 545);
+            this.OpenListAfterOutputCheckBox.Name = "OpenListAfterOutputCheckBox";
+            this.OpenListAfterOutputCheckBox.Size = new System.Drawing.Size(145, 32);
+            this.OpenListAfterOutputCheckBox.TabIndex = 55;
+            this.OpenListAfterOutputCheckBox.Text = "出力後に開く";
+            this.OpenListAfterOutputCheckBox.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -722,12 +726,47 @@
             this.ShowDataLocationLabelVisibleCheckBox.TabIndex = 79;
             this.ShowDataLocationLabelVisibleCheckBox.UseVisualStyleBackColor = true;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.TSVOutputRadioButton);
+            this.groupBox1.Controls.Add(this.CSVOutputRadioButton);
+            this.groupBox1.Location = new System.Drawing.Point(537, 439);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(99, 65);
+            this.groupBox1.TabIndex = 80;
+            this.groupBox1.TabStop = false;
+            // 
+            // TSVOutputRadioButton
+            // 
+            this.TSVOutputRadioButton.AutoSize = true;
+            this.TSVOutputRadioButton.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.TSVOutputRadioButton.Location = new System.Drawing.Point(5, 34);
+            this.TSVOutputRadioButton.Name = "TSVOutputRadioButton";
+            this.TSVOutputRadioButton.Size = new System.Drawing.Size(91, 28);
+            this.TSVOutputRadioButton.TabIndex = 0;
+            this.TSVOutputRadioButton.Text = "TSV形式";
+            this.TSVOutputRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // CSVOutputRadioButton
+            // 
+            this.CSVOutputRadioButton.AutoSize = true;
+            this.CSVOutputRadioButton.Checked = true;
+            this.CSVOutputRadioButton.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CSVOutputRadioButton.Location = new System.Drawing.Point(5, 9);
+            this.CSVOutputRadioButton.Name = "CSVOutputRadioButton";
+            this.CSVOutputRadioButton.Size = new System.Drawing.Size(92, 28);
+            this.CSVOutputRadioButton.TabIndex = 0;
+            this.CSVOutputRadioButton.TabStop = true;
+            this.CSVOutputRadioButton.Text = "CSV形式";
+            this.CSVOutputRadioButton.UseVisualStyleBackColor = true;
+            // 
             // MakeNewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1264, 632);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ShowDataLocationLabelVisibleCheckBox);
             this.Controls.Add(this.ShowRealLocationLabelVisibleCheckBox);
             this.Controls.Add(this.Tag3NameVisibleCheckBox);
@@ -751,15 +790,15 @@
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.OpenCSVAfterOutputCheckBox);
-            this.Controls.Add(this.EditedCSVOutputCheckBox);
-            this.Controls.Add(this.CloseCSVOutputCheckBox);
-            this.Controls.Add(this.StartUpCSVOutputCheckBox);
-            this.Controls.Add(this.AutoCSVOutput);
+            this.Controls.Add(this.OpenListAfterOutputCheckBox);
+            this.Controls.Add(this.EditedListOutputCheckBox);
+            this.Controls.Add(this.CloseListOutputCheckBox);
+            this.Controls.Add(this.StartUpListOutputCheckBox);
+            this.Controls.Add(this.AutoListOutput);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.CSVOutputLocationReferenceButton);
-            this.Controls.Add(this.EditCSVOutputLocationTextBox);
-            this.Controls.Add(this.CSVOutputLocation);
+            this.Controls.Add(this.ListOutputLocationReferenceButton);
+            this.Controls.Add(this.EditListOutputLocationTextBox);
+            this.Controls.Add(this.ListOutputLocation);
             this.Controls.Add(this.EditedBackUpCheckBox);
             this.Controls.Add(this.CloseBackUpCheckBox);
             this.Controls.Add(this.StartUpBackUpCheckBox);
@@ -792,6 +831,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MakeNewProject";
             this.Load += new System.EventHandler(this.MakeNewProject_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -820,15 +861,15 @@
         private System.Windows.Forms.CheckBox StartUpBackUpCheckBox;
         private System.Windows.Forms.CheckBox CloseBackUpCheckBox;
         private System.Windows.Forms.CheckBox EditedBackUpCheckBox;
-        private System.Windows.Forms.CheckBox EditedCSVOutputCheckBox;
-        private System.Windows.Forms.CheckBox CloseCSVOutputCheckBox;
-        private System.Windows.Forms.CheckBox StartUpCSVOutputCheckBox;
-        private System.Windows.Forms.Label AutoCSVOutput;
+        private System.Windows.Forms.CheckBox EditedListOutputCheckBox;
+        private System.Windows.Forms.CheckBox CloseListOutputCheckBox;
+        private System.Windows.Forms.CheckBox StartUpListOutputCheckBox;
+        private System.Windows.Forms.Label AutoListOutput;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button CSVOutputLocationReferenceButton;
-        private System.Windows.Forms.TextBox EditCSVOutputLocationTextBox;
-        private System.Windows.Forms.Label CSVOutputLocation;
-        private System.Windows.Forms.CheckBox OpenCSVAfterOutputCheckBox;
+        private System.Windows.Forms.Button ListOutputLocationReferenceButton;
+        private System.Windows.Forms.TextBox EditListOutputLocationTextBox;
+        private System.Windows.Forms.Label ListOutputLocation;
+        private System.Windows.Forms.CheckBox OpenListAfterOutputCheckBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
@@ -858,5 +899,8 @@
         private System.Windows.Forms.CheckBox Tag3NameVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowRealLocationLabelVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowDataLocationLabelVisibleCheckBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton TSVOutputRadioButton;
+        private System.Windows.Forms.RadioButton CSVOutputRadioButton;
     }
 }

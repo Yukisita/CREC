@@ -34,14 +34,15 @@ namespace CoRectSys
         string TargetIndexPath = ""; // Indexの場所
         string TargetDetailsPath = ""; // 説明txtのパス
         string TargetBackupPath = ""; // バックアップ場所のフォルダパス
-        string TargetCSVOutputPath = ""; // 一覧CSV出力場所のフォルダパス
+        string TargetListOutputPath = ""; // 一覧List出力場所のフォルダパス
         bool StartUpBackUp=false;// S、起動時にバックアップ
         bool EditedBackUp=false;// E、編集後にバックアップ
         bool CloseBackUp = false;// C、終了時にバックアップ
-        bool StartUpCSVOutput = false;// S、起動時に一覧作成
-        bool EditedCSVOutput = false;// E、編集後に一覧作成
-        bool CloseCSVOutput = false;// C、終了時に一覧作成
-        bool OpenCSVAfterOutput = false;// O、一覧作成後に自動で開く
+        bool StartUpListOutput = false;// S、起動時に一覧作成
+        bool EditedListOutput = false;// E、編集後に一覧作成
+        bool CloseListOutput = false;// C、終了時に一覧作成
+        bool OpenListAfterOutput = false;// O、一覧作成後に自動で開く
+        string ListOutputFormat = "CSV";// List作成時のフォーマット、デフォルトでCSV
         string TargetCreatedDate = "";// 作成日時
         string TargetModifiedDate = "";// 更新日時
         string TargetAccessedDate = "";// 最終アクセス日時
@@ -71,7 +72,7 @@ namespace CoRectSys
         bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
 
         string ColorSetting = "";// 色設定
-        string[] cols;// csv等読み込み用
+        string[] cols;// List等読み込み用
         bool AllowEdit;// 編集可否を設定
         bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
         bool ShowConfidentialData;// 機密情報表示の可否を設定
@@ -116,9 +117,20 @@ namespace CoRectSys
             if(TargetCRECPath.Length > 0) 
             {
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                if (StartUpCSVOutput == true)
+                if (StartUpListOutput == true)
                 {
-                    CSVOutputMethod();
+                    if(ListOutputFormat == "CSV")
+                    {
+                        CSVListOutputMethod();
+                    }
+                    else if(ListOutputFormat == "TSV")
+                    {
+                        TSVListOutputMethod();
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
                 if (StartUpBackUp == true)// 自動バックアップ
                 {
@@ -162,9 +174,20 @@ namespace CoRectSys
         private void OpenMenu_Click(object sender, EventArgs e) // 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpCSVOutput == true)
+            if (StartUpListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (StartUpBackUp == true)// 自動バックアップ
             {
@@ -184,6 +207,7 @@ namespace CoRectSys
                     openFolderDialog.Filter = "管理ファイル|*.crec";
                     if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
                     {
+                        DataLoadingStatus = "false";
                         TargetCRECPath = openFolderDialog.FileName;
                         openFolderDialog.Dispose();
                         LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
@@ -205,6 +229,7 @@ namespace CoRectSys
                 openFolderDialog.Filter = "管理ファイル|*.crec";
                 if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
                 {
+                    DataLoadingStatus = "false";
                     TargetCRECPath = openFolderDialog.FileName;
                     openFolderDialog.Dispose();
                     LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
@@ -270,43 +295,53 @@ namespace CoRectSys
                             EditedBackUp = false;
                         }
                         break;
-                    case "CSVoutputlocation":
-                        TargetCSVOutputPath = cols[1];
+                    case "Listoutputlocation":
+                        TargetListOutputPath = cols[1];
                         break;
-                    case "autoCSVoutput":
+                    case "autoListoutput":
                         if (cols[1].Contains("S"))
                         {
-                            StartUpCSVOutput = true;
+                            StartUpListOutput = true;
                         }
                         else
                         {
-                            StartUpCSVOutput = false;
+                            StartUpListOutput = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            CloseCSVOutput = true;
+                            CloseListOutput = true;
                         }
                         else
                         {
-                            CloseCSVOutput = false;
+                            CloseListOutput = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            EditedCSVOutput = true;
+                            EditedListOutput = true;
                         }
                         else
                         {
-                            EditedCSVOutput = false;
+                            EditedListOutput = false;
                         }
                         break;
-                    case "openCSVafteroutput":
+                    case "openListafteroutput":
                         if (cols[1].Contains("O"))
                         {
-                             OpenCSVAfterOutput= true;
+                             OpenListAfterOutput= true;
                         }
                         else
                         {
-                            OpenCSVAfterOutput = false;
+                            OpenListAfterOutput = false;
+                        }
+                        break;
+                    case "ListOutputFormat":
+                        if (cols[1] == "CSV")
+                        {
+                            ListOutputFormat = "CSV";
+                        }
+                        else if (cols[1] =="TSV")
+                        {
+                            ListOutputFormat = "TSV";
                         }
                         break;
                     case "created":
@@ -818,13 +853,13 @@ namespace CoRectSys
             Tag3ListVisibleToolStripMenuItem.Text = Tag3Name;
             // ToolTipsの設定
             SetTagNameToolTips();
-            // CSVOutputPathの設定
-            if (Directory.Exists(TargetCSVOutputPath))
+            // ListOutputPathの設定
+            if (Directory.Exists(TargetListOutputPath))
             {
             }
             else
             {
-                TargetCSVOutputPath = TargetFolderPath;
+                TargetListOutputPath = TargetFolderPath;
             }
             // ComboBoxの初期選択項目を設定
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
@@ -866,168 +901,335 @@ namespace CoRectSys
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
             }
         }
-        private void OutputCSVAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をCSVに出力
+        private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
         {
-            CSVOutputMethod();
+            if (ListOutputFormat == "CSV")
+            {
+                CSVListOutputMethod();
+            }
+            else if (ListOutputFormat == "TSV")
+            {
+                TSVListOutputMethod();
+            }
+            else
+            {
+                MessageBox.Show("値が不正です。", "CREC");
+            }
         }
-        private void OutputCSVShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をCSVに出力
+        private void OutputListShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をListに出力
         {
             try
             {
-                string tempTargetCSVOutputPath = "";
-                if (Directory.Exists(TargetCSVOutputPath))
+                string tempTargetListOutputPath = "";
+                if (Directory.Exists(TargetListOutputPath))
                 {
-                    tempTargetCSVOutputPath = TargetCSVOutputPath;
+                    tempTargetListOutputPath = TargetListOutputPath;
                 }
                 else
                 {
-                    tempTargetCSVOutputPath = TargetFolderPath;
+                    tempTargetListOutputPath = TargetFolderPath;
                 }
-                StreamWriter streamWriter = new StreamWriter(tempTargetCSVOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
-                streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
-                try
+                if (ListOutputFormat == "CSV") // CSV出力用
                 {
-                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                    for (int i = 0; i < dataGridView1.RowCount; i++)
+                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
+                    streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
+                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                    try
                     {
-                        // 変数初期化「CSVSA作成処理ないでのみ使用すること」
-                        string ListThisName = "";
-                        string ListThisID = "";
-                        string ListThisMC = "";
-                        string ListThisCategory = "";
-                        string ListThisTag1 = "";
-                        string ListThisTag2 = "";
-                        string ListThisTag3 = "";
-                        string ListRegistrationDate = "";
-                        string ListInventory = "";
-                        string ListInventoryStatus = "";
-                        int? ListSafetyStock = null;
-                        int? ListReorderPoint = null;
-                        int? ListMaximumLevel = null;
-                        // index読み込み
-                        IEnumerable<string> tmp = null;
-                        string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
-                        try
+                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        for (int i = 0; i < dataGridView1.RowCount; i++)
                         {
-                            tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                            foreach (string line in tmp)
-                            {
-                                cols = line.Split(',');
-                                switch (cols[0])
-                                {
-                                    case "名称":
-                                        ListThisName = cols[1];
-                                        break;
-                                    case "ID":
-                                        ListThisID = cols[1];
-                                        break;
-                                    case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
-                                        break;
-                                    case "登録日":
-                                        ListRegistrationDate = cols[1];
-                                        break;
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                            ListThisID = "Status：Indexファイル破損";
-                            ListThisName = "Status：Indexファイル破損";
-                            ListThisCategory = "　ー　";
-                        }
-                        // 在庫状態を取得
-                        //invからデータを読み込んで表示
-                        if (File.Exists(ListContentsPath + "\\inventory.inv"))
-                        {
+                            // 変数初期化「List作成処理ないでのみ使用すること」
+                            string ListThisName = "";
+                            string ListThisID = "";
+                            string ListThisMC = "";
+                            string ListThisCategory = "";
+                            string ListThisTag1 = "";
+                            string ListThisTag2 = "";
+                            string ListThisTag3 = "";
+                            string ListRegistrationDate = "";
+                            string ListInventory = "";
+                            string ListInventoryStatus = "";
+                            int? ListSafetyStock = null;
+                            int? ListReorderPoint = null;
+                            int? ListMaximumLevel = null;
+                            // index読み込み
+                            IEnumerable<string> tmp = null;
+                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
                             try
                             {
-                                tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                                bool firstline = true;
-                                int count = 0;
+                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
                                 foreach (string line in tmp)
                                 {
                                     cols = line.Split(',');
-                                    if (firstline == true)
+                                    switch (cols[0])
                                     {
-                                        if (cols[1].Length != 0)
-                                        {
-                                            ListSafetyStock = Convert.ToInt32(cols[1]);
-                                        }
-                                        if (cols[2].Length != 0)
-                                        {
-                                            ListReorderPoint = Convert.ToInt32(cols[2]);
-                                        }
-                                        if (cols[3].Length != 0)
-                                        {
-                                            ListMaximumLevel = Convert.ToInt32(cols[3]);
-                                        }
-                                        firstline = false;
+                                        case "名称":
+                                            ListThisName = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "ID":
+                                            ListThisID = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "MC":
+                                            ListThisMC = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "登録日":
+                                            ListRegistrationDate = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "カテゴリ":
+                                            ListThisCategory = line.Substring(5).Replace(",", "");
+                                            break;
+                                        case "タグ1":
+                                            ListThisTag1 = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "タグ2":
+                                            ListThisTag2 = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "タグ3":
+                                            ListThisTag3 = line.Substring(4).Replace(",", "");
+                                            break;
                                     }
-                                    else
-                                    {
-                                        count = count + Convert.ToInt32(cols[2]);
-                                    }
-                                }
-                                ListInventory = Convert.ToString(count);
-                                ListInventoryStatus = "-";
-                                if (0 == count)
-                                {
-                                    ListInventoryStatus = "欠品";
-                                }
-                                else if (0 < count && count < ListSafetyStock)
-                                {
-                                    ListInventoryStatus = "不足";
-                                }
-                                else if (ListSafetyStock <= count && count <= ListReorderPoint)
-                                {
-                                    ListInventoryStatus = "不足";
-                                }
-                                else if (ListReorderPoint <= count && count <= ListMaximumLevel)
-                                {
-                                    ListInventoryStatus = "適正";
-                                }
-                                else if (ListMaximumLevel < count)
-                                {
-                                    ListInventoryStatus = "過剰";
                                 }
                             }
                             catch (Exception ex)
                             {
-                                ListInventory = "ERROR";
-                                ListInventoryStatus = ex.Message;
+                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                                ListThisID = "Status：Indexファイル破損";
+                                ListThisName = "Status：Indexファイル破損";
+                                ListThisCategory = "　ー　";
                             }
+                            // 在庫状態を取得
+                            //invからデータを読み込んで表示
+                            if (File.Exists(ListContentsPath + "\\inventory.inv"))
+                            {
+                                try
+                                {
+                                    tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                    bool firstline = true;
+                                    int count = 0;
+                                    foreach (string line in tmp)
+                                    {
+                                        cols = line.Split(',');
+                                        if (firstline == true)
+                                        {
+                                            if (cols[1].Length != 0)
+                                            {
+                                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                                            }
+                                            if (cols[2].Length != 0)
+                                            {
+                                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                                            }
+                                            if (cols[3].Length != 0)
+                                            {
+                                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                            }
+                                            firstline = false;
+                                        }
+                                        else
+                                        {
+                                            count = count + Convert.ToInt32(cols[2]);
+                                        }
+                                    }
+                                    ListInventory = Convert.ToString(count);
+                                    ListInventoryStatus = "-";
+                                    if (0 == count)
+                                    {
+                                        ListInventoryStatus = "欠品";
+                                    }
+                                    else if (0 < count && count < ListSafetyStock)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                    {
+                                        ListInventoryStatus = "適正";
+                                    }
+                                    else if (ListMaximumLevel < count)
+                                    {
+                                        ListInventoryStatus = "過剰";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    ListInventory = "ERROR";
+                                    ListInventoryStatus = ex.Message;
+                                }
+                            }
+                            else
+                            {
+                                ListInventory = "-";
+                                ListInventoryStatus = "-";
+                            }
+                            streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
-                        else
-                        {
-                            ListInventory = "-";
-                            ListInventoryStatus = "-";
-                        }
-                        streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    streamWriter.Close();
+                    if (OpenListAfterOutput == true)
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
                     }
                 }
-                catch (Exception ex)
+                else if (ListOutputFormat == "TSV")
                 {
+                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+                    streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                    try
+                    {
+                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        for (int i = 0; i < dataGridView1.RowCount; i++)
+                        {
+                            // 変数初期化「List作成処理ないでのみ使用すること」
+                            string ListThisName = "";
+                            string ListThisID = "";
+                            string ListThisMC = "";
+                            string ListThisCategory = "";
+                            string ListThisTag1 = "";
+                            string ListThisTag2 = "";
+                            string ListThisTag3 = "";
+                            string ListRegistrationDate = "";
+                            string ListInventory = "";
+                            string ListInventoryStatus = "";
+                            int? ListSafetyStock = null;
+                            int? ListReorderPoint = null;
+                            int? ListMaximumLevel = null;
+                            // index読み込み
+                            IEnumerable<string> tmp = null;
+                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
+                            try
+                            {
+                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
+                                foreach (string line in tmp)
+                                {
+                                    cols = line.Split(',');
+                                    switch (cols[0])
+                                    {
+                                        case "名称":
+                                            ListThisName = line.Substring(3);
+                                            break;
+                                        case "ID":
+                                            ListThisID = line.Substring(3);
+                                            break;
+                                        case "MC":
+                                            ListThisMC = line.Substring(3);
+                                            break;
+                                        case "登録日":
+                                            ListRegistrationDate = line.Substring(4);
+                                            break;
+                                        case "カテゴリ":
+                                            ListThisCategory = line.Substring(5);
+                                            break;
+                                        case "タグ1":
+                                            ListThisTag1 = line.Substring(4);
+                                            break;
+                                        case "タグ2":
+                                            ListThisTag2 = line.Substring(4);
+                                            break;
+                                        case "タグ3":
+                                            ListThisTag3 = line.Substring(4);
+                                            break;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                                ListThisID = "Status：Indexファイル破損";
+                                ListThisName = "Status：Indexファイル破損";
+                                ListThisCategory = "　ー　";
+                            }
+                            // 在庫状態を取得
+                            //invからデータを読み込んで表示
+                            if (File.Exists(ListContentsPath + "\\inventory.inv"))
+                            {
+                                try
+                                {
+                                    tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                    bool firstline = true;
+                                    int count = 0;
+                                    foreach (string line in tmp)
+                                    {
+                                        cols = line.Split(',');
+                                        if (firstline == true)
+                                        {
+                                            if (cols[1].Length != 0)
+                                            {
+                                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                                            }
+                                            if (cols[2].Length != 0)
+                                            {
+                                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                                            }
+                                            if (cols[3].Length != 0)
+                                            {
+                                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                            }
+                                            firstline = false;
+                                        }
+                                        else
+                                        {
+                                            count = count + Convert.ToInt32(cols[2]);
+                                        }
+                                    }
+                                    ListInventory = Convert.ToString(count);
+                                    ListInventoryStatus = "-";
+                                    if (0 == count)
+                                    {
+                                        ListInventoryStatus = "欠品";
+                                    }
+                                    else if (0 < count && count < ListSafetyStock)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                    {
+                                        ListInventoryStatus = "適正";
+                                    }
+                                    else if (ListMaximumLevel < count)
+                                    {
+                                        ListInventoryStatus = "過剰";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    ListInventory = "ERROR";
+                                    ListInventoryStatus = ex.Message;
+                                }
+                            }
+                            else
+                            {
+                                ListInventory = "-";
+                                ListInventoryStatus = "-";
+                            }
+                            streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
+                    }
+                    streamWriter.Close();
+                    if (OpenListAfterOutput == true)
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
                 }
-                streamWriter.Close();
-                if (OpenCSVAfterOutput == true)
+                else
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetCSVOutputPath + "\\InventoryOutput.csv");
+                    MessageBox.Show("値が不正です。", "CREC");
                 }
             }
             catch (Exception ex) { }
@@ -1387,9 +1589,20 @@ namespace CoRectSys
                     }
                     // データ保存メソッドを呼び出し
                     SaveContentsMethod();
-                    if(CloseCSVOutput == true)
+                    if(CloseListOutput == true)
                     {
-                        CSVOutputMethod();
+                        if (ListOutputFormat == "CSV")
+                        {
+                            CSVListOutputMethod();
+                        }
+                        else if (ListOutputFormat == "TSV")
+                        {
+                            TSVListOutputMethod();
+                        }
+                        else
+                        {
+                            MessageBox.Show("値が不正です。", "CREC");
+                        }
                     }
                     if (CloseBackUp == true)// 自動バックアップ
                     {
@@ -1431,9 +1644,20 @@ namespace CoRectSys
                     {
                         File.Delete(TargetContentsPath + "\\ADD");
                     }
-                    if (CloseCSVOutput == true)
+                    if (CloseListOutput == true)
                     {
-                        CSVOutputMethod();
+                        if (ListOutputFormat == "CSV")
+                        {
+                            CSVListOutputMethod();
+                        }
+                        else if (ListOutputFormat == "TSV")
+                        {
+                            TSVListOutputMethod();
+                        }
+                        else
+                        {
+                            MessageBox.Show("値が不正です。", "CREC");
+                        }
                     }
                     if (CloseBackUp == true)// 自動バックアップ
                     {
@@ -1466,9 +1690,20 @@ namespace CoRectSys
             }
             else
             {
-                if (CloseCSVOutput == true)
+                if (CloseListOutput == true)
                 {
-                    CSVOutputMethod();
+                    if (ListOutputFormat == "CSV")
+                    {
+                        CSVListOutputMethod();
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        TSVListOutputMethod();
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
                 if (CloseBackUp == true)// 自動バックアップ
                 {
@@ -1553,7 +1788,7 @@ namespace CoRectSys
         }
         
         // データ一覧・詳細表示関係
-        private async void LoadGrid()// データを読み込んでリストに表示LoadGrid()
+        private async void LoadGrid()// データを読み込んでリストに表示
         {
             while (DataLoadingStatus != "false")
             {
@@ -1596,7 +1831,7 @@ namespace CoRectSys
                         {
                             break;
                         }
-                        // await Task.Delay(1); //これ、必要？
+                        await Task.Delay(1); //これ、必要？
                         // 変数初期化「List読み込み内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
@@ -1622,28 +1857,28 @@ namespace CoRectSys
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = cols[1];
+                                        ListThisName = line.Substring(3);
                                         break;
                                     case "ID":
-                                        ListThisID = cols[1];
+                                        ListThisID = line.Substring(3);
                                         break;
                                     case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
+                                        ListThisMC = line.Substring(3);
                                         break;
                                     case "登録日":
-                                        ListRegistrationDate = cols[1];
+                                        ListRegistrationDate = line.Substring(4);
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5);
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4);
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4);
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4);
                                         break;
                                 }
                             }
@@ -2233,28 +2468,28 @@ namespace CoRectSys
                     switch (cols[0])
                     {
                         case "名称":
-                            ThisName = cols[1];
+                            ThisName = line.Substring(3);
                             break;
                         case "ID":
-                            ThisID = cols[1];
+                            ThisID = line.Substring(3);
                             break;
                         case "MC":
-                            ThisMC = cols[1];
+                            ThisMC = line.Substring(3);
                             break;
                         case "登録日":
-                            ThisRegistrationDate = cols[1];
+                            ThisRegistrationDate = line.Substring(4);
                             break;
                         case "カテゴリ":
-                            ThisCategory = cols[1];
+                            ThisCategory = line.Substring(5);
                             break;
                         case "タグ1":
-                            ThisTag1 = cols[1];
+                            ThisTag1 = line.Substring(4);
                             break;
                         case "タグ2":
-                            ThisTag2 = cols[1];
+                            ThisTag2 = line.Substring(4);
                             break;
                         case "タグ3":
-                            ThisTag3 = cols[1];
+                            ThisTag3 = line.Substring(4);
                             break;
                         case "場所1(Real)":
                             ThisRealLocation = cols[1];
@@ -2960,9 +3195,20 @@ namespace CoRectSys
             {
                 Directory.Move(@TargetContentsPath, @TargetFolderPath + "\\" + EditIDTextBox.Text);
             }
-            if(EditedCSVOutput == true)
+            if(EditedListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (EditedBackUp == true)
             {
@@ -3577,27 +3823,28 @@ namespace CoRectSys
                         sw.Write("E");
                     }
                     sw.Write('\n');
-                    sw.WriteLine("{0},{1}", "CSVoutputlocation", TargetCSVOutputPath);
-                    sw.Write("autoCSVoutput,");
-                    if (StartUpCSVOutput == true)
+                    sw.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
+                    sw.Write("autoListoutput,");
+                    if (StartUpListOutput == true)
                     {
                         sw.Write("S");
                     }
-                    if (CloseCSVOutput == true)
+                    if (CloseListOutput == true)
                     {
                         sw.Write("C");
                     }
-                    if (EditedCSVOutput == true)
+                    if (EditedListOutput == true)
                     {
                         sw.Write("E");
                     }
                     sw.Write('\n');
-                    sw.Write("openCSVafteroutput,");
-                    if(OpenCSVAfterOutput == true)
+                    sw.Write("openListafteroutput,");
+                    if(OpenListAfterOutput == true)
                     {
                         sw.Write("O");
                     }
                     sw.Write('\n');
+                    sw.WriteLine("ListOutputFormat,{0}",ListOutputFormat);
                     sw.WriteLine("{0},{1}", "created", TargetCreatedDate);
                     sw.WriteLine("{0},{1}", "modified", TargetModifiedDate);
                     sw.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
@@ -4330,9 +4577,20 @@ namespace CoRectSys
         private void OpenProjectContextStripMenuItem_Click(object sender, EventArgs e)// プロジェクトを開く、OpenMenu_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpCSVOutput == true)
+            if (StartUpListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (StartUpBackUp == true)// 自動バックアップ
             {
@@ -4372,8 +4630,8 @@ namespace CoRectSys
             //MakeBackUpZip();// ZIP圧縮を非同期で開始
         }
 
-        // CSV一覧出力関係
-        private void CSVOutputMethod()// CSV形式で一覧を出力
+        // List一覧出力関係
+        private void CSVListOutputMethod()// CSV形式で一覧を出力
         {
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
@@ -4383,16 +4641,16 @@ namespace CoRectSys
             }
             try
             {
-                string tempTargetCSVOutputPath = "";
-                if(Directory.Exists(TargetCSVOutputPath))
+                string tempTargetListOutputPath = "";
+                if(Directory.Exists(TargetListOutputPath))
                 {
-                    tempTargetCSVOutputPath = TargetCSVOutputPath;
+                    tempTargetListOutputPath = TargetListOutputPath;
                 }
                 else
                 {
-                    tempTargetCSVOutputPath = TargetFolderPath;
+                    tempTargetListOutputPath = TargetFolderPath;
                 }
-                StreamWriter streamWriter = new StreamWriter(tempTargetCSVOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
+                StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
                 streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                 try
@@ -4400,7 +4658,7 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
-                        // 変数初期化「CSVSA作成処理内でのみ使用すること」
+                        // 変数初期化「ListSA作成処理内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
                         string ListThisMC = "";
@@ -4425,28 +4683,28 @@ namespace CoRectSys
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = cols[1];
+                                        ListThisName = line.Substring(3).Replace(",","");
                                         break;
                                     case "ID":
-                                        ListThisID = cols[1];
+                                        ListThisID = line.Substring(3).Replace(",","");
                                         break;
                                     case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
+                                        ListThisMC = line.Substring(3).Replace(",","");
                                         break;
                                     case "登録日":
-                                        ListRegistrationDate = cols[1];
+                                        ListRegistrationDate = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5).Replace(",", "");
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4).Replace(",", "");
                                         break;
                                 }
                             }
@@ -4533,9 +4791,201 @@ namespace CoRectSys
 
                 }
                 streamWriter.Close();
-                if (OpenCSVAfterOutput == true)
+                if (OpenListAfterOutput == true)
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetCSVOutputPath + "\\InventoryOutput.csv");
+                    if (ListOutputFormat == "CSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        private void TSVListOutputMethod()// TSV形式で一覧を出力
+        {
+            // ファイルが開いているか確認
+            if (TargetCRECPath.Length == 0)
+            {
+                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                return;
+            }
+            try
+            {
+                string tempTargetListOutputPath = "";
+                if (Directory.Exists(TargetListOutputPath))
+                {
+                    tempTargetListOutputPath = TargetListOutputPath;
+                }
+                else
+                {
+                    tempTargetListOutputPath = TargetFolderPath;
+                }
+                StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+                streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                try
+                {
+                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                    {
+                        // 変数初期化「ListSA作成処理内でのみ使用すること」
+                        string ListThisName = "";
+                        string ListThisID = "";
+                        string ListThisMC = "";
+                        string ListThisCategory = "";
+                        string ListThisTag1 = "";
+                        string ListThisTag2 = "";
+                        string ListThisTag3 = "";
+                        string ListRegistrationDate = "";
+                        string ListInventory = "";
+                        string ListInventoryStatus = "";
+                        int? ListSafetyStock = null;
+                        int? ListReorderPoint = null;
+                        int? ListMaximumLevel = null;
+                        // index読み込み
+                        IEnumerable<string> tmp = null;
+                        try
+                        {
+                            tmp = File.ReadLines(subFolder.FullName + "\\index.txt", Encoding.GetEncoding("UTF-8"));
+                            foreach (string line in tmp)
+                            {
+                                cols = line.Split(',');
+                                switch (cols[0])
+                                {
+                                    case "名称":
+                                        ListThisName = line.Substring(3);
+                                        break;
+                                    case "ID":
+                                        ListThisID = line.Substring(3);
+                                        break;
+                                    case "MC":
+                                        ListThisMC = line.Substring(3);
+                                        break;
+                                    case "登録日":
+                                        ListRegistrationDate = line.Substring(4);
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5);
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4);
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4);
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4);
+                                        break;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                            ListThisID = subFolder.Name;
+                            ListThisName = "Status：Indexファイル破損";
+                            ListThisCategory = "　ー　";
+                        }
+                        // 在庫状態を取得
+                        //invからデータを読み込んで表示
+                        if (File.Exists(subFolder.FullName + "\\inventory.inv"))
+                        {
+                            try
+                            {
+                                tmp = File.ReadLines(subFolder.FullName + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                bool firstline = true;
+                                int count = 0;
+                                foreach (string line in tmp)
+                                {
+                                    cols = line.Split(',');
+                                    if (firstline == true)
+                                    {
+                                        if (cols[1].Length != 0)
+                                        {
+                                            ListSafetyStock = Convert.ToInt32(cols[1]);
+                                        }
+                                        if (cols[2].Length != 0)
+                                        {
+                                            ListReorderPoint = Convert.ToInt32(cols[2]);
+                                        }
+                                        if (cols[3].Length != 0)
+                                        {
+                                            ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                        }
+                                        firstline = false;
+                                    }
+                                    else
+                                    {
+                                        count = count + Convert.ToInt32(cols[2]);
+                                    }
+                                }
+                                ListInventory = Convert.ToString(count);
+                                ListInventoryStatus = "-";
+                                if (0 == count)
+                                {
+                                    ListInventoryStatus = "欠品";
+                                }
+                                else if (0 < count && count < ListSafetyStock)
+                                {
+                                    ListInventoryStatus = "不足";
+                                }
+                                else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                {
+                                    ListInventoryStatus = "不足";
+                                }
+                                else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                {
+                                    ListInventoryStatus = "適正";
+                                }
+                                else if (ListMaximumLevel < count)
+                                {
+                                    ListInventoryStatus = "過剰";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ListInventory = "ERROR";
+                                ListInventoryStatus = ex.Message;
+                            }
+                        }
+                        else
+                        {
+                            ListInventory = "-";
+                            ListInventoryStatus = "-";
+                        }
+                        streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+                streamWriter.Close();
+                if (OpenListAfterOutput == true)
+                {
+                    if (ListOutputFormat == "CSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
             }
             catch (Exception ex)

@@ -61,7 +61,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2023/08/21";
+            this.ReleaseDate.Text = "Release: 2023/08/28";
             // 
             // VersionName
             // 

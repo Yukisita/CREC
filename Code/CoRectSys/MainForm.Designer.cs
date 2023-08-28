@@ -50,8 +50,8 @@
             this.OpenBackUpFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.OutputListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OutputCSVAllContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OutputCSVShownContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OutputListAllContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OutputListShownContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.EditConfigSysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -236,92 +236,92 @@
             // NewProjectToolStripMenuItem
             // 
             this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
-            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.NewProjectToolStripMenuItem.Text = "新規プロジェクト作成";
             this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
             // 
             // OpenMenu
             // 
             this.OpenMenu.Name = "OpenMenu";
-            this.OpenMenu.Size = new System.Drawing.Size(240, 28);
+            this.OpenMenu.Size = new System.Drawing.Size(254, 28);
             this.OpenMenu.Text = "プロジェクトを開く";
             this.OpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(251, 6);
             // 
             // BackupToolStripMenuItem
             // 
             this.BackupToolStripMenuItem.Name = "BackupToolStripMenuItem";
-            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.BackupToolStripMenuItem.Text = "バックアップ作成";
             this.BackupToolStripMenuItem.Click += new System.EventHandler(this.BackupToolStripMenuItem_Click);
             // 
             // OpenBackUpFolderToolStripMenuItem
             // 
             this.OpenBackUpFolderToolStripMenuItem.Name = "OpenBackUpFolderToolStripMenuItem";
-            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く";
             this.OpenBackUpFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenBackUpFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(251, 6);
             // 
             // OutputListToolStripMenuItem
             // 
             this.OutputListToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OutputCSVAllContentsToolStripMenuItem,
-            this.OutputCSVShownContentsToolStripMenuItem});
+            this.OutputListAllContentsToolStripMenuItem,
+            this.OutputListShownContentsToolStripMenuItem});
             this.OutputListToolStripMenuItem.Name = "OutputListToolStripMenuItem";
-            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
-            this.OutputListToolStripMenuItem.Text = "一覧をCSV出力";
+            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
+            this.OutputListToolStripMenuItem.Text = "一覧をCSV/TSV出力";
             // 
-            // OutputCSVAllContentsToolStripMenuItem
+            // OutputListAllContentsToolStripMenuItem
             // 
-            this.OutputCSVAllContentsToolStripMenuItem.Name = "OutputCSVAllContentsToolStripMenuItem";
-            this.OutputCSVAllContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
-            this.OutputCSVAllContentsToolStripMenuItem.Text = "全データ出力";
-            this.OutputCSVAllContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputCSVAllContentsToolStripMenuItem_Click);
+            this.OutputListAllContentsToolStripMenuItem.Name = "OutputListAllContentsToolStripMenuItem";
+            this.OutputListAllContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
+            this.OutputListAllContentsToolStripMenuItem.Text = "全データ出力";
+            this.OutputListAllContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListAllContentsToolStripMenuItem_Click);
             // 
-            // OutputCSVShownContentsToolStripMenuItem
+            // OutputListShownContentsToolStripMenuItem
             // 
-            this.OutputCSVShownContentsToolStripMenuItem.Name = "OutputCSVShownContentsToolStripMenuItem";
-            this.OutputCSVShownContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
-            this.OutputCSVShownContentsToolStripMenuItem.Text = "一覧表示中のみ出力";
-            this.OutputCSVShownContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputCSVShownContentsToolStripMenuItem_Click);
+            this.OutputListShownContentsToolStripMenuItem.Name = "OutputListShownContentsToolStripMenuItem";
+            this.OutputListShownContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
+            this.OutputListShownContentsToolStripMenuItem.Text = "一覧表示中のみ出力";
+            this.OutputListShownContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListShownContentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(251, 6);
             // 
             // EditConfigSysToolStripMenuItem
             // 
             this.EditConfigSysToolStripMenuItem.Name = "EditConfigSysToolStripMenuItem";
-            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.EditConfigSysToolStripMenuItem.Text = "環境設定";
             this.EditConfigSysToolStripMenuItem.Click += new System.EventHandler(this.EditConfigSysToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(251, 6);
             // 
             // CloseToolStripMenuItem
             // 
             this.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem";
-            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.CloseToolStripMenuItem.Text = "終了";
             this.CloseToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // RestartToolStripMenuItem
             // 
             this.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem";
-            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.RestartToolStripMenuItem.Text = "再起動";
             this.RestartToolStripMenuItem.Click += new System.EventHandler(this.RestartToolStripMenuItem_Click);
             // 
@@ -1939,8 +1939,8 @@
         private System.Windows.Forms.ToolStripMenuItem DarkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OutputListToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem OutputCSVAllContentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OutputCSVShownContentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OutputListAllContentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OutputListShownContentsToolStripMenuItem;
         private System.Windows.Forms.Button CopyDataLocationPath;
         private System.Windows.Forms.Label ObjectNameLabel;
         private System.Windows.Forms.Label CategoryLabel;

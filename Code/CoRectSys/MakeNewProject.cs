@@ -20,7 +20,7 @@ namespace CoRectSys
     public partial class MakeNewProject : Form
     {
         string TargetCRECPath = ""; //管理ファイル（.crec）のファイルパス
-        string[] cols;// csv等読み込み用
+        string[] cols;// List等読み込み用
         string ColorSetting = "Blue";
         public string ReturnTargetProject { get; private set; } = "";
         public MakeNewProject(string tmp, string colorSetting)
@@ -145,33 +145,43 @@ namespace CoRectSys
                 }
                 sw.Write('\n');
                 // 一覧出力先の設定
-                if(EditCSVOutputLocationTextBox.Text.Length==0)
+                if(EditListOutputLocationTextBox.Text.Length==0)
                 {
-                    sw.WriteLine("{0},{1}", "CSVoutputlocation","null");
+                    sw.WriteLine("{0},{1}", "Listoutputlocation","null");
                 }
                 else
                 {
-                    sw.WriteLine("{0},{1}", "CSVoutputlocation",EditCSVOutputLocationTextBox.Text);
+                    sw.WriteLine("{0},{1}", "Listoutputlocation",EditListOutputLocationTextBox.Text);
                 }
                 // 自動一覧出力の設定
-                sw.Write("autoCSVoutput,");
-                if(StartUpCSVOutputCheckBox.Checked == true)
+                sw.Write("autoListoutput,");
+                if(StartUpListOutputCheckBox.Checked == true)
                 {
                     sw.Write("S");
                 }
-                if(CloseCSVOutputCheckBox.Checked == true)
+                if(CloseListOutputCheckBox.Checked == true)
                 {
                     sw.Write("C");
                 }
-                if(EditedCSVOutputCheckBox.Checked ==true)
+                if(EditedListOutputCheckBox.Checked ==true)
                 {
                     sw.Write("E");
                 }
                 sw.Write('\n');
-                sw.Write("openCSVafteroutput,");
-                if (OpenCSVAfterOutputCheckBox.Checked == true)
+                sw.Write("openListafteroutput,");
+                if (OpenListAfterOutputCheckBox.Checked == true)
                 {
                     sw.Write("O");
+                }
+                sw.Write('\n');
+                sw.Write("ListOutputFormat,");
+                if(CSVOutputRadioButton.Checked)
+                {
+                    sw.Write("CSV");
+                }
+                else if(TSVOutputRadioButton.Checked)
+                {
+                    sw.Write("TSV");
                 }
                 sw.Write('\n');
                 // 現在時刻を取得 
@@ -398,24 +408,9 @@ namespace CoRectSys
                 EditBackupLocationTextBox.ResetText();
             }
         }
-        private void CSVOutputLocationReferenceButton_Click(object sender, EventArgs e)// CSV出力先を参照
-        {
-            OpenFileDialog openFolderDialog = new OpenFileDialog();
-            openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            openFolderDialog.Title = "フォルダを選択してください";
-            openFolderDialog.Filter = "Folder|.";
-            openFolderDialog.FileName = "SelectFolder";
-            openFolderDialog.CheckFileExists = false;
-            if (openFolderDialog.ShowDialog() == DialogResult.OK)// フォルダ読み込み成功
-            {
-                EditCSVOutputLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName);
-                openFolderDialog.Dispose();
-            }
-
-        }
         private void MakeNewProject_Load(object sender, EventArgs e)// 既存の.crecを読み込み
         {
-            if(TargetCRECPath.Length> 0) // 編集の場合は既存の.crecを読み込み
+            if (TargetCRECPath.Length > 0) // 編集の場合は既存の.crecを読み込み
             {
                 MakeNewProjectButton.Text = "保存";
                 label1.Text = "入力されたパスをプロジェクトフォルダとして設定します。";
@@ -468,50 +463,60 @@ namespace CoRectSys
                                 EditedBackUpCheckBox.Checked = false;
                             }
                             break;
-                        case "CSVoutputlocation":
+                        case "Listoutputlocation":
                             if (cols[1] == "null")
                             {
-                                EditCSVOutputLocationTextBox.Text = "";
+                                EditListOutputLocationTextBox.Text = "";
                             }
                             else
                             {
-                                EditCSVOutputLocationTextBox.Text = cols[1];
+                                EditListOutputLocationTextBox.Text = cols[1];
                             }
                             break;
-                        case "autoCSVoutput":
+                        case "autoListoutput":
                             if (cols[1].Contains("S"))
                             {
-                                StartUpCSVOutputCheckBox.Checked = true;
+                                StartUpListOutputCheckBox.Checked = true;
                             }
                             else
                             {
-                                StartUpCSVOutputCheckBox.Checked = false;
+                                StartUpListOutputCheckBox.Checked = false;
                             }
                             if (cols[1].Contains("C"))
                             {
-                                CloseCSVOutputCheckBox.Checked = true;
+                                CloseListOutputCheckBox.Checked = true;
                             }
                             else
                             {
-                                CloseCSVOutputCheckBox.Checked = false;
+                                CloseListOutputCheckBox.Checked = false;
                             }
                             if (cols[1].Contains("E"))
                             {
-                                EditedCSVOutputCheckBox.Checked = true;
+                                EditedListOutputCheckBox.Checked = true;
                             }
                             else
                             {
-                                EditedCSVOutputCheckBox.Checked = false;
+                                EditedListOutputCheckBox.Checked = false;
                             }
                             break;
-                        case "openCSVafteroutput":
+                        case "openListafteroutput":
                             if (cols[1].Contains("O"))
                             {
-                                OpenCSVAfterOutputCheckBox.Checked = true;
+                                OpenListAfterOutputCheckBox.Checked = true;
                             }
                             else
                             {
-                                OpenCSVAfterOutputCheckBox.Checked= false;
+                                OpenListAfterOutputCheckBox.Checked = false;
+                            }
+                            break;
+                        case "ListOutputFormat":
+                            if (cols[1] == "CSV")
+                            {
+                                CSVOutputRadioButton.Checked = true;
+                            }
+                            else if (cols[1] == "TSV")
+                            {
+                                TSVOutputRadioButton.Checked = true;
                             }
                             break;
                         case "created":
@@ -523,7 +528,7 @@ namespace CoRectSys
                         case "ShowObjectNameLabel":
                             try
                             {
-                                if (cols[1].Length > 0) 
+                                if (cols[1].Length > 0)
                                 {
                                     EditShowObjectNameLabelTextBox.Text = cols[1];
                                 }
@@ -540,7 +545,7 @@ namespace CoRectSys
                                     ShowObjectNameLabelVisibleCheckBox.Checked = true;
                                 }
                             }
-                            catch 
+                            catch
                             {
                                 ShowObjectNameLabelVisibleCheckBox.Checked = true;
                             }
@@ -640,7 +645,7 @@ namespace CoRectSys
                                     ShowCategoryLabelVisibleCheckBox.Checked = true;
                                 }
                             }
-                            catch 
+                            catch
                             {
                                 ShowCategoryLabelVisibleCheckBox.Checked = true;
                             }
@@ -665,7 +670,7 @@ namespace CoRectSys
                                     Tag1NameVisibleCheckBox.Checked = true;
                                 }
                             }
-                            catch 
+                            catch
                             {
                                 Tag1NameVisibleCheckBox.Checked = true;
                             }
@@ -772,8 +777,9 @@ namespace CoRectSys
                             break;
                     }
                 }
+
             }
-        }
+        }        
         private void SetColorMethod()// 色設定のメソッド
         {
             switch (ColorSetting)
@@ -790,6 +796,20 @@ namespace CoRectSys
                 case "Green":
                     this.BackColor = Color.Honeydew;
                     break;
+            }
+        }
+        private void ListOutputLocationReferenceButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFolderDialog = new OpenFileDialog();
+            openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            openFolderDialog.Title = "フォルダを選択してください";
+            openFolderDialog.Filter = "Folder|.";
+            openFolderDialog.FileName = "SelectFolder";
+            openFolderDialog.CheckFileExists = false;
+            if (openFolderDialog.ShowDialog() == DialogResult.OK)// フォルダ読み込み成功
+            {
+                EditListOutputLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName);
+                openFolderDialog.Dispose();
             }
         }
     }
