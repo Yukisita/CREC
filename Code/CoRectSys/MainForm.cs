@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,7 +27,7 @@ namespace CoRectSys
 {
     public partial class MainForm : Form
     {
-        // 諸々変数の宣言
+        # region 変数の宣言
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = ""; // プロジェクト名
         string TargetFolderPath = ""; // データ保管場所のフォルダパス
@@ -90,14 +91,32 @@ namespace CoRectSys
         string ThisTag3 = "";
         string ThisRealLocation = "";
 
-        // Data非同期読み込みのステータス
-        string DataLoadingStatus = "false";
+        // データ一覧表示関係
+        DataTable ContentsDataTable = new DataTable();
+        string DataLoadingStatus = "false";// Data非同期読み込みのステータス
+        #endregion
 
         public MainForm()
         {
             InitializeComponent();
+            // データ一覧のDGVにダブルバッファリングを設定
+            Type dgvType = typeof(DataGridView);
+            PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered",BindingFlags.Instance | BindingFlags.NonPublic);
+            dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
-            dataGridView1.Rows.Clear();
+            ContentsDataTable.Rows.Clear();
+            // 
+            ContentsDataTable.Columns.Add("TargetPath");
+            ContentsDataTable.Columns.Add("IDList");
+            ContentsDataTable.Columns.Add("MCList");
+            ContentsDataTable.Columns.Add("ObjectNameList");
+            ContentsDataTable.Columns.Add("RegistrationDateList");
+            ContentsDataTable.Columns.Add("CategoryList");
+            ContentsDataTable.Columns.Add("Tag1List");
+            ContentsDataTable.Columns.Add("Tag2List");
+            ContentsDataTable.Columns.Add("Tag3List");
+            ContentsDataTable.Columns.Add("InventoryList");
+            ContentsDataTable.Columns.Add("InventoryStatusList");
             // モニタ情報を取得
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
@@ -140,7 +159,7 @@ namespace CoRectSys
             }
         }
 
-        // メニューバー関係
+        #region メニューバー関係
         private void NewProjectToolStripMenuItem_Click(object sender, EventArgs e)// 新規プロジェクト作成
         {            
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
@@ -1348,7 +1367,7 @@ namespace CoRectSys
                 }
             }
         }
-        // データ一覧の表示項目設定
+        #region データ一覧の表示項目設定
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
 
@@ -1478,8 +1497,8 @@ namespace CoRectSys
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
-        // データ一覧の表示項目設定ここまでv
-        // 色設定
+        #endregion
+        #region 色設定
         private void AliceBlueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorSetting = "Blue";
@@ -1557,7 +1576,7 @@ namespace CoRectSys
             WhiteSmokeToolStripMenuItem.Checked = false;
             DarkToolStripMenuItem.Checked = true;
         }
-        // 色設定ここまで
+        #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e) // バージョン情報表示
         {
             VersionInformation VerInfo = new VersionInformation(ColorSetting);
@@ -1786,8 +1805,9 @@ namespace CoRectSys
                 EditRealLocationTextBox.Text = ThisRealLocation;
             }
         }
-        
-        // データ一覧・詳細表示関係
+        #endregion
+
+        #region データ一覧・詳細表示関係
         private async void LoadGrid()// データを読み込んでリストに表示
         {
             while (DataLoadingStatus != "false")
@@ -1816,7 +1836,7 @@ namespace CoRectSys
                 }
             }
             // DataGridView関係
-            dataGridView1.Rows.Clear();
+            ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             try
@@ -1827,11 +1847,11 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
+
                         if (DataLoadingStatus == "stop")
                         {
                             break;
                         }
-                        await Task.Delay(1); //これ、必要？
                         // 変数初期化「List読み込み内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
@@ -1964,12 +1984,13 @@ namespace CoRectSys
                             {
                                 if (SearchMethod(ListInventoryStatus) == true)
                                 {
-                                    dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                    //dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);旧バージョン・新バージョンで動作確認後削除
+                                    ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                 }
                             }
                             else
                             {
-                                dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                             }
                         }
                         else if (SearchFormTextBox.TextLength >= 1)
@@ -1980,49 +2001,49 @@ namespace CoRectSys
                                 case 0:
                                     if (SearchMethod(ListThisID) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 1:
                                     if (SearchMethod(ListThisMC) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 2:
                                     if (SearchMethod(ListThisName) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 3:
                                     if (SearchMethod(ListThisCategory) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 4:
                                     if (SearchMethod(ListThisTag1) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 5:
                                     if (SearchMethod(ListThisTag2) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 6:
                                     if (SearchMethod(ListThisTag3) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 7:
                                     if (SearchMethod(ListInventoryStatus) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                             }
@@ -2036,7 +2057,10 @@ namespace CoRectSys
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
+
                     }
+                    // ここでバインド
+                    dataGridView1.DataSource = ContentsDataTable;
                 }
                 catch (Exception ex)
                 {
@@ -2057,7 +2081,9 @@ namespace CoRectSys
                     dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
                     dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) 
+                {                
+                }
                 DataLoadingLabel.Visible = false;
             }
             DataLoadingStatus = "false";
@@ -2553,8 +2579,9 @@ namespace CoRectSys
             DetailsTextBox.ResetText();
             ConfidentialDataTextBox.ResetText();
         }
+        #endregion
 
-        // 詳細画像表示関係
+        #region 詳細画像表示関係
         List<string> PicturesList = new List<string>();
         int PictureNumber;
         int PictureCount;
@@ -2668,8 +2695,9 @@ namespace CoRectSys
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
         }
+        #endregion
 
-        // 編集・データ追加・データ削除関係
+        #region 編集・データ追加・データ削除関係
         private void EditButton_Click(object sender, EventArgs e) // 編集画面表示
         {
             if (AllowEdit == false)
@@ -2918,10 +2946,7 @@ namespace CoRectSys
             {
                 DataLoadingStatus = "stop";
             }
-            LoadGrid();
-            ShowDetails();
-            MessageBox.Show("削除成功", "CREC");
-            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
+            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
@@ -2937,9 +2962,6 @@ namespace CoRectSys
                 EditRealLocationTextBox.Visible = false;
                 SaveAndCloseEditButton.Visible = false;
                 SelectThumbnailButton.Visible = false;
-                //　再表示時に編集したデータを表示するための処理
-                SearchFormTextBox.Text = EditIDTextBox.Text;
-                SearchOptionComboBox.SelectedIndex = 0;
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -2961,9 +2983,12 @@ namespace CoRectSys
                 {
                     DataLoadingStatus = "stop";
                 }
-                LoadGrid();
-                ShowDetails();
             }
+            SearchFormTextBox.Text = "";
+            SearchOptionComboBox.SelectedIndex = 0;
+            MessageBox.Show("削除成功", "CREC");
+            LoadGrid();
+            ShowDetails();
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
@@ -3029,6 +3054,7 @@ namespace CoRectSys
             {
                 if (CheckEditingContents() == true)
                 {
+
                 }
                 else
                 {
@@ -3037,8 +3063,6 @@ namespace CoRectSys
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            /*
-            */
             // ID(UUID)を設定
             ThisID = Convert.ToString(Guid.NewGuid());
             EditIDTextBox.Text = ThisID;// MCを自動入力
@@ -3228,8 +3252,9 @@ namespace CoRectSys
             }
             LoadGrid();// 一覧を再度読み込み
         }
+        #endregion
 
-        // 在庫数・適正在庫数管理関係
+        #region 在庫数・適正在庫数管理関係
         string[] rowsIM;// .invを1行ごとに読み込んだ内容（在庫管理用）
         int? SafetyStock;// 安全在庫数、未定義時はnullを使用
         int? ReorderPoint;// 発注点、未定義時はnullを使用
@@ -3624,8 +3649,9 @@ namespace CoRectSys
             MaximumLevel = null;
             InventoryManagementModeButton.Text = "在庫数管理画面";
         }
+        #endregion
 
-        // 検索関係
+        #region 検索関係
         private void SetTagNameToolTips()// タグのToolTip(説明)
         {
             TagNameToolTip.SetToolTip(Tag1NameLabel, Tag1NameLabel.Text);
@@ -3636,8 +3662,8 @@ namespace CoRectSys
         {
             if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
-                if(DataLoadingStatus == "true")
+                //ContentsDataTable.Rows.Clear();
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -3646,6 +3672,7 @@ namespace CoRectSys
         }
         private void SearchOptionComboBox_SelectedIndexChanged(object sender, EventArgs e)// 検索対象が変更された場合に一覧を読み込んで更新
         {
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchMethodComboBox.Items.Clear();
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
@@ -3663,9 +3690,10 @@ namespace CoRectSys
                 SearchMethodComboBox.Items.Add("完全一致");
             }
             SearchMethodComboBox.SelectedIndex = 0;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if(DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -3674,7 +3702,7 @@ namespace CoRectSys
             }
             else if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if(DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -3686,7 +3714,7 @@ namespace CoRectSys
         {
             if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if(DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -3696,7 +3724,10 @@ namespace CoRectSys
         }
         private void SearchFormTextBoxClearButton_Click(object sender, EventArgs e)// 検索窓の入力内容をクリア
         {
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Clear();
+            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            LoadGrid();// 再度読み込み
         }
         private bool SearchMethod(string Keywords)// 検索窓の入力内容とキーワードが指定の検索方法で一致するか判定
         {
@@ -4010,8 +4041,9 @@ namespace CoRectSys
                 MessageBox.Show("プロジェクトファイルの更新に失敗しました。", "CREC");
             }
         }
+        #endregion
 
-        // Config読み込み・保存
+        #region Config読み込み・保存
         private string ConfigFile = "config.sys";
         private void ImportConfig()// config.sysの読み込み
         {
@@ -4153,8 +4185,9 @@ namespace CoRectSys
             }
             configfile.Close();
         }
-        
-        // 画面サイズ変更時のコントロールサイズ更新処理
+        #endregion
+
+        #region 画面サイズ変更時のコントロールサイズ更新処理
         private void Form1_SizeChanged(object sender, EventArgs e)// 画面サイズ変更時にコントロールサイズ更新処理を実行
         {
             SetFormLayout();
@@ -4285,8 +4318,9 @@ namespace CoRectSys
             SelectThumbnailButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), SelectThumbnailButton.Location.Y);
             ShowListButton.Width = Convert.ToInt32(130 * DpiScale);
         }
+        #endregion
 
-        // 非同期処理置き場
+        #region 非同期処理置き場
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)
@@ -4542,8 +4576,9 @@ namespace CoRectSys
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
         }
-      
-        // ユーザーアシストのToolTip設定
+        #endregion
+
+        #region ユーザーアシストのToolTip設定
         private void SetUserAssistToolTips()
         {
             if (ShowUserAssistToolTips == true)
@@ -4560,8 +4595,9 @@ namespace CoRectSys
                 UserAssistToolTip.RemoveAll();
             }
         }
+        #endregion
 
-        // DataGridView内のContextStripMenuの設定
+        #region DataGridView内のContextStripMenuの設定
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
@@ -4598,8 +4634,9 @@ namespace CoRectSys
                 MakeBackUpZip();// ZIP圧縮を非同期で開始)
             }
         }
+        #endregion
 
-        // バックアップ関連
+        #region バックアップ関連
         private void BackUpMethod()// バックアップ作成のメソッド、対象データをバックアップ
         {
             // ファイルが開いているか確認
@@ -4629,8 +4666,9 @@ namespace CoRectSys
             File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
             //MakeBackUpZip();// ZIP圧縮を非同期で開始
         }
+        #endregion
 
-        // List一覧出力関係
+        #region List一覧出力関係
         private void CSVListOutputMethod()// CSV形式で一覧を出力
         {
             // ファイルが開いているか確認
@@ -4993,8 +5031,9 @@ namespace CoRectSys
 
             }
         }
+        #endregion
 
-        // 表示モード設定
+        #region 表示モード設定
         private void StandardDisplayModeToolStripMenuItem_Click(object sender, EventArgs e)// 標準モード
         {
             StandardDisplayModeToolStripMenuItem.Checked = true;
@@ -5122,5 +5161,6 @@ namespace CoRectSys
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
             }
         }
+        #endregion
     }
 }
