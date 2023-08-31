@@ -274,12 +274,15 @@ MITライセンスを明記し、これに基づいてソースコード公開�
 ver6.03(2023/08/09)
 編集画面でID変更ボタン、同一コード検索ボタンが表示されないバグを修正
 
-ver6.04β(2023/08/29)
-データ読込の非同期化
+ver6.04β(2023/09/01)
+データ読み込み及び検索速度の向上
 ID生成にUUIDを導入
 データ一覧をTSV形式で出力する機能を追加
 コンマ「，」入りの入力に対応
-MITライセンスと矛盾していたReadMeを修正</value>
+データ一覧スクロール時のレスポンス改善
+ソースコードのメンテナンス性見直し
+MITライセンスと矛盾していたReadMeを修正
+その他軽微（では）な（い）バグを修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

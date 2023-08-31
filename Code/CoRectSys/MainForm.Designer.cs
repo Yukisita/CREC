@@ -94,17 +94,6 @@
             this.ShowListButton = new System.Windows.Forms.ToolStripTextBox();
             this.ShowProjcetNameTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.TargetPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.IDList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MCList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ObjectNameList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RegistrationDateList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CategoryList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tag1List = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tag2List = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Tag3List = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InventoryList = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.InventoryStatusList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.AddContentsContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListUpdateContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -187,6 +176,17 @@
             this.MCLabel = new System.Windows.Forms.Label();
             this.RealLocationLabel = new System.Windows.Forms.Label();
             this.DataLoadingLabel = new System.Windows.Forms.Label();
+            this.TargetPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.IDList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MCList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ObjectNameList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RegistrationDateList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CategoryList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tag1List = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tag2List = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tag3List = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InventoryList = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.InventoryStatusList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -688,109 +688,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(898, 880);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            // 
-            // TargetPath
-            // 
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle2;
-            this.TargetPath.HeaderText = "TargetPath";
-            this.TargetPath.MinimumWidth = 100;
-            this.TargetPath.Name = "TargetPath";
-            this.TargetPath.ReadOnly = true;
-            this.TargetPath.Visible = false;
-            // 
-            // IDList
-            // 
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
-            this.IDList.HeaderText = "ID";
-            this.IDList.MinimumWidth = 100;
-            this.IDList.Name = "IDList";
-            this.IDList.ReadOnly = true;
-            this.IDList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // MCList
-            // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
-            this.MCList.HeaderText = "管理コード";
-            this.MCList.MinimumWidth = 200;
-            this.MCList.Name = "MCList";
-            this.MCList.ReadOnly = true;
-            this.MCList.Width = 200;
-            // 
-            // ObjectNameList
-            // 
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
-            this.ObjectNameList.HeaderText = "名称";
-            this.ObjectNameList.MinimumWidth = 100;
-            this.ObjectNameList.Name = "ObjectNameList";
-            this.ObjectNameList.ReadOnly = true;
-            this.ObjectNameList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // RegistrationDateList
-            // 
-            this.RegistrationDateList.HeaderText = "登録日";
-            this.RegistrationDateList.Name = "RegistrationDateList";
-            this.RegistrationDateList.ReadOnly = true;
-            this.RegistrationDateList.Visible = false;
-            // 
-            // CategoryList
-            // 
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
-            this.CategoryList.HeaderText = "カテゴリ";
-            this.CategoryList.MinimumWidth = 100;
-            this.CategoryList.Name = "CategoryList";
-            this.CategoryList.ReadOnly = true;
-            this.CategoryList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CategoryList.Width = 128;
-            // 
-            // Tag1List
-            // 
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
-            this.Tag1List.HeaderText = "Tag1";
-            this.Tag1List.Name = "Tag1List";
-            this.Tag1List.ReadOnly = true;
-            this.Tag1List.Visible = false;
-            // 
-            // Tag2List
-            // 
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
-            this.Tag2List.HeaderText = "Tag2";
-            this.Tag2List.Name = "Tag2List";
-            this.Tag2List.ReadOnly = true;
-            this.Tag2List.Visible = false;
-            // 
-            // Tag3List
-            // 
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
-            this.Tag3List.HeaderText = "Tag3";
-            this.Tag3List.Name = "Tag3List";
-            this.Tag3List.ReadOnly = true;
-            this.Tag3List.Visible = false;
-            // 
-            // InventoryList
-            // 
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
-            this.InventoryList.HeaderText = "在庫数";
-            this.InventoryList.Name = "InventoryList";
-            this.InventoryList.ReadOnly = true;
-            this.InventoryList.Visible = false;
-            // 
-            // InventoryStatusList
-            // 
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
-            this.InventoryStatusList.HeaderText = "在庫状況";
-            this.InventoryStatusList.Name = "InventoryStatusList";
-            this.InventoryStatusList.ReadOnly = true;
-            this.InventoryStatusList.Visible = false;
             // 
             // dataGridViewContextMenuStrip
             // 
@@ -1708,6 +1605,120 @@
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.DataLoadingLabel.Visible = false;
+            // 
+            // TargetPath
+            // 
+            this.TargetPath.DataPropertyName = "TargetPath";
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle2;
+            this.TargetPath.HeaderText = "TargetPath";
+            this.TargetPath.MinimumWidth = 100;
+            this.TargetPath.Name = "TargetPath";
+            this.TargetPath.ReadOnly = true;
+            this.TargetPath.Visible = false;
+            // 
+            // IDList
+            // 
+            this.IDList.DataPropertyName = "IDList";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
+            this.IDList.HeaderText = "ID";
+            this.IDList.MinimumWidth = 100;
+            this.IDList.Name = "IDList";
+            this.IDList.ReadOnly = true;
+            this.IDList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // MCList
+            // 
+            this.MCList.DataPropertyName = "MCList";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
+            this.MCList.HeaderText = "管理コード";
+            this.MCList.MinimumWidth = 200;
+            this.MCList.Name = "MCList";
+            this.MCList.ReadOnly = true;
+            this.MCList.Width = 200;
+            // 
+            // ObjectNameList
+            // 
+            this.ObjectNameList.DataPropertyName = "ObjectNameList";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
+            this.ObjectNameList.HeaderText = "名称";
+            this.ObjectNameList.MinimumWidth = 100;
+            this.ObjectNameList.Name = "ObjectNameList";
+            this.ObjectNameList.ReadOnly = true;
+            this.ObjectNameList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // RegistrationDateList
+            // 
+            this.RegistrationDateList.DataPropertyName = "RegistrationDateList";
+            this.RegistrationDateList.HeaderText = "登録日";
+            this.RegistrationDateList.Name = "RegistrationDateList";
+            this.RegistrationDateList.ReadOnly = true;
+            this.RegistrationDateList.Visible = false;
+            // 
+            // CategoryList
+            // 
+            this.CategoryList.DataPropertyName = "CategoryList";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
+            this.CategoryList.HeaderText = "カテゴリ";
+            this.CategoryList.MinimumWidth = 100;
+            this.CategoryList.Name = "CategoryList";
+            this.CategoryList.ReadOnly = true;
+            this.CategoryList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.CategoryList.Width = 128;
+            // 
+            // Tag1List
+            // 
+            this.Tag1List.DataPropertyName = "Tag1List";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
+            this.Tag1List.HeaderText = "Tag1";
+            this.Tag1List.Name = "Tag1List";
+            this.Tag1List.ReadOnly = true;
+            this.Tag1List.Visible = false;
+            // 
+            // Tag2List
+            // 
+            this.Tag2List.DataPropertyName = "Tag2List";
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
+            this.Tag2List.HeaderText = "Tag2";
+            this.Tag2List.Name = "Tag2List";
+            this.Tag2List.ReadOnly = true;
+            this.Tag2List.Visible = false;
+            // 
+            // Tag3List
+            // 
+            this.Tag3List.DataPropertyName = "Tag3List";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
+            this.Tag3List.HeaderText = "Tag3";
+            this.Tag3List.Name = "Tag3List";
+            this.Tag3List.ReadOnly = true;
+            this.Tag3List.Visible = false;
+            // 
+            // InventoryList
+            // 
+            this.InventoryList.DataPropertyName = "InventoryList";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
+            this.InventoryList.HeaderText = "在庫数";
+            this.InventoryList.Name = "InventoryList";
+            this.InventoryList.ReadOnly = true;
+            this.InventoryList.Visible = false;
+            // 
+            // InventoryStatusList
+            // 
+            this.InventoryStatusList.DataPropertyName = "InventoryStatusList";
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
+            this.InventoryStatusList.HeaderText = "在庫状況";
+            this.InventoryStatusList.Name = "InventoryStatusList";
+            this.InventoryStatusList.ReadOnly = true;
+            this.InventoryStatusList.Visible = false;
             // 
             // MainForm
             // 
