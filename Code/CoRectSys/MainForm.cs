@@ -133,7 +133,7 @@ namespace CoRectSys
             CheckContentsList();
             CheckEditing();
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
-            if(TargetCRECPath.Length > 0) 
+            if (TargetCRECPath.Length > 0) 
             {
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                 if (StartUpListOutput == true)
@@ -1374,10 +1374,12 @@ namespace CoRectSys
             if (IDListVisibleToolStripMenuItem.Checked == true)
             {
                 IDList.Visible = true;
+                dataGridView1.Columns["IDList"].Visible = true;
             }
             else if (IDListVisibleToolStripMenuItem.Checked == false)
             {
                 IDList.Visible = false;
+                dataGridView1.Columns["IDList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1388,10 +1390,12 @@ namespace CoRectSys
             if (MCListVisibleToolStripMenuItem.Checked == true)
             {
                 MCList.Visible = true;
+                dataGridView1.Columns["MCList"].Visible=true;
             }
             else if (MCListVisibleToolStripMenuItem.Checked == false)
             {
                 MCList.Visible = false;
+                dataGridView1.Columns["MCList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1402,10 +1406,12 @@ namespace CoRectSys
             if (NameListVisibleToolStripMenuItem.Checked == true)
             {
                 ObjectNameList.Visible = true;
+                dataGridView1.Columns["ObjectNameList"].Visible = true;
             }
             else if (NameListVisibleToolStripMenuItem.Checked == false)
             {
                 ObjectNameList.Visible = false;
+                dataGridView1.Columns["ObjectNameList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1416,10 +1422,12 @@ namespace CoRectSys
             if (RegistrationDateListVisibleToolStripMenuItem.Checked == true)
             {
                 RegistrationDateList.Visible = true;
+                dataGridView1.Columns["RegistrationDateList"].Visible = true;
             }
             else if (RegistrationDateListVisibleToolStripMenuItem.Checked == false)
             {
                 RegistrationDateList.Visible = false;
+                dataGridView1.Columns["RegistrationDateList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1430,10 +1438,12 @@ namespace CoRectSys
             if (CategoryListVisibleToolStripMenuItem.Checked == true)
             {
                 CategoryList.Visible = true;
+                dataGridView1.Columns["CategoryList"].Visible= true;
             }
             else if (CategoryListVisibleToolStripMenuItem.Checked == false)
             {
                 CategoryList.Visible = false;
+                dataGridView1.Columns["CategoryList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1444,10 +1454,12 @@ namespace CoRectSys
             if (Tag1ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag1List.Visible = true;
+                dataGridView1.Columns["Tag1List"].Visible = true;
             }
             else if (Tag1ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag1List.Visible = false;
+                dataGridView1.Columns["Tag1List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1458,10 +1470,12 @@ namespace CoRectSys
             if (Tag2ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag2List.Visible = true;
+                dataGridView1.Columns["Tag2List"].Visible = true;
             }
             else if (Tag2ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag2List.Visible = false;
+                dataGridView1.Columns["Tag2List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1472,10 +1486,12 @@ namespace CoRectSys
             if (Tag3ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag3List.Visible = true;
+                dataGridView1.Columns["Tag3List"].Visible = true;
             }
             else if (Tag3ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag3List.Visible = false;
+                dataGridView1.Columns["Tag3List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1486,12 +1502,16 @@ namespace CoRectSys
             if (InventoryInformationListToolStripMenuItem.Checked == true)
             {
                 InventoryList.Visible = true;
+                dataGridView1.Columns["InventoryList"].Visible=true;
                 InventoryStatusList.Visible = true;
+                dataGridView1.Columns["InventoryStatusList"].Visible = true;
             }
             else if (InventoryInformationListToolStripMenuItem.Checked == false)
             {
                 InventoryList.Visible = false;
+                dataGridView1.Columns["InventoryList"].Visible = false;
                 InventoryStatusList.Visible = false;
+                dataGridView1.Columns["InventoryStatusList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1816,6 +1836,7 @@ namespace CoRectSys
             }
             DataLoadingStatus = "true";
             DataLoadingLabel.Visible = true;
+            Application.DoEvents();
             // 現時点で選択されている情報を取得
             string CurrentSelectedContentsID;// 現時点で表示されているデータのID
             int CurrentSelectedContentsRows = 1;// 表示されていたデータのリスト更新後の列番号
