@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -26,7 +27,7 @@ namespace CoRectSys
 {
     public partial class MainForm : Form
     {
-        // 諸々変数の宣言
+        # region 変数の宣言
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = ""; // プロジェクト名
         string TargetFolderPath = ""; // データ保管場所のフォルダパス
@@ -34,20 +35,21 @@ namespace CoRectSys
         string TargetIndexPath = ""; // Indexの場所
         string TargetDetailsPath = ""; // 説明txtのパス
         string TargetBackupPath = ""; // バックアップ場所のフォルダパス
-        string TargetCSVOutputPath = ""; // 一覧CSV出力場所のフォルダパス
+        string TargetListOutputPath = ""; // 一覧List出力場所のフォルダパス
         bool StartUpBackUp=false;// S、起動時にバックアップ
         bool EditedBackUp=false;// E、編集後にバックアップ
         bool CloseBackUp = false;// C、終了時にバックアップ
-        bool StartUpCSVOutput = false;// S、起動時に一覧作成
-        bool EditedCSVOutput = false;// E、編集後に一覧作成
-        bool CloseCSVOutput = false;// C、終了時に一覧作成
-        bool OpenCSVAfterOutput = false;// O、一覧作成後に自動で開く
+        bool StartUpListOutput = false;// S、起動時に一覧作成
+        bool EditedListOutput = false;// E、編集後に一覧作成
+        bool CloseListOutput = false;// C、終了時に一覧作成
+        bool OpenListAfterOutput = false;// O、一覧作成後に自動で開く
+        string ListOutputFormat = "CSV";// List作成時のフォーマット、デフォルトでCSV
         string TargetCreatedDate = "";// 作成日時
         string TargetModifiedDate = "";// 更新日時
         string TargetAccessedDate = "";// 最終アクセス日時
         string ShowObjectNameLabel = "名称";// 名称ラベルの表示名
         bool ShowObjectNameLabelVisible = true;
-        string ShowIDLabel = "ID";// IDラベルの表示名
+        string ShowIDLabel = "UUID";// IDラベルの表示名
         bool ShowIDLabelVisible = true;
         string ShowMCLabel = "管理コード";// 管理コードラベルの表示名
         bool ShowMCLabelVisible = true;
@@ -71,7 +73,7 @@ namespace CoRectSys
         bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
 
         string ColorSetting = "";// 色設定
-        string[] cols;// csv等読み込み用
+        string[] cols;// List等読み込み用
         bool AllowEdit;// 編集可否を設定
         bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
         bool ShowConfidentialData;// 機密情報表示の可否を設定
@@ -89,11 +91,34 @@ namespace CoRectSys
         string ThisTag3 = "";
         string ThisRealLocation = "";
 
+        // データ一覧表示関係
+        DataTable ContentsDataTable = new DataTable();
+        string DataLoadingStatus = "false";// Data非同期読み込みのステータス
+
+        // 表示関係
+        float CurrentDPI = 1;// 現在のDPI値
+        #endregion
+
         public MainForm()
         {
             InitializeComponent();
+            // データ一覧のDGVにダブルバッファリングを設定
+            Type dgvType = typeof(DataGridView);
+            PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered",BindingFlags.Instance | BindingFlags.NonPublic);
+            dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
-            dataGridView1.Rows.Clear();
+            ContentsDataTable.Rows.Clear();
+            ContentsDataTable.Columns.Add("TargetPath");
+            ContentsDataTable.Columns.Add("IDList");
+            ContentsDataTable.Columns.Add("MCList");
+            ContentsDataTable.Columns.Add("ObjectNameList");
+            ContentsDataTable.Columns.Add("RegistrationDateList");
+            ContentsDataTable.Columns.Add("CategoryList");
+            ContentsDataTable.Columns.Add("Tag1List");
+            ContentsDataTable.Columns.Add("Tag2List");
+            ContentsDataTable.Columns.Add("Tag3List");
+            ContentsDataTable.Columns.Add("InventoryList");
+            ContentsDataTable.Columns.Add("InventoryStatusList");
             // モニタ情報を取得
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
@@ -110,12 +135,23 @@ namespace CoRectSys
             CheckContentsList();
             CheckEditing();
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
-            if(TargetCRECPath.Length > 0) 
+            if (TargetCRECPath.Length > 0) 
             {
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                if (StartUpCSVOutput == true)
+                if (StartUpListOutput == true)
                 {
-                    CSVOutputMethod();
+                    if(ListOutputFormat == "CSV")
+                    {
+                        CSVListOutputMethod();
+                    }
+                    else if(ListOutputFormat == "TSV")
+                    {
+                        TSVListOutputMethod();
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
                 if (StartUpBackUp == true)// 自動バックアップ
                 {
@@ -125,7 +161,7 @@ namespace CoRectSys
             }
         }
 
-        // メニューバー関係
+        #region メニューバー関係
         private void NewProjectToolStripMenuItem_Click(object sender, EventArgs e)// 新規プロジェクト作成
         {            
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
@@ -159,9 +195,20 @@ namespace CoRectSys
         private void OpenMenu_Click(object sender, EventArgs e) // 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpCSVOutput == true)
+            if (StartUpListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (StartUpBackUp == true)// 自動バックアップ
             {
@@ -181,6 +228,7 @@ namespace CoRectSys
                     openFolderDialog.Filter = "管理ファイル|*.crec";
                     if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
                     {
+                        DataLoadingStatus = "false";
                         TargetCRECPath = openFolderDialog.FileName;
                         openFolderDialog.Dispose();
                         LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
@@ -202,6 +250,7 @@ namespace CoRectSys
                 openFolderDialog.Filter = "管理ファイル|*.crec";
                 if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
                 {
+                    DataLoadingStatus = "false";
                     TargetCRECPath = openFolderDialog.FileName;
                     openFolderDialog.Dispose();
                     LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
@@ -267,43 +316,53 @@ namespace CoRectSys
                             EditedBackUp = false;
                         }
                         break;
-                    case "CSVoutputlocation":
-                        TargetCSVOutputPath = cols[1];
+                    case "Listoutputlocation":
+                        TargetListOutputPath = cols[1];
                         break;
-                    case "autoCSVoutput":
+                    case "autoListoutput":
                         if (cols[1].Contains("S"))
                         {
-                            StartUpCSVOutput = true;
+                            StartUpListOutput = true;
                         }
                         else
                         {
-                            StartUpCSVOutput = false;
+                            StartUpListOutput = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            CloseCSVOutput = true;
+                            CloseListOutput = true;
                         }
                         else
                         {
-                            CloseCSVOutput = false;
+                            CloseListOutput = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            EditedCSVOutput = true;
+                            EditedListOutput = true;
                         }
                         else
                         {
-                            EditedCSVOutput = false;
+                            EditedListOutput = false;
                         }
                         break;
-                    case "openCSVafteroutput":
+                    case "openListafteroutput":
                         if (cols[1].Contains("O"))
                         {
-                             OpenCSVAfterOutput= true;
+                             OpenListAfterOutput= true;
                         }
                         else
                         {
-                            OpenCSVAfterOutput = false;
+                            OpenListAfterOutput = false;
+                        }
+                        break;
+                    case "ListOutputFormat":
+                        if (cols[1] == "CSV")
+                        {
+                            ListOutputFormat = "CSV";
+                        }
+                        else if (cols[1] =="TSV")
+                        {
+                            ListOutputFormat = "TSV";
                         }
                         break;
                     case "created":
@@ -813,21 +872,29 @@ namespace CoRectSys
             Tag1ListVisibleToolStripMenuItem.Text = Tag1Name;
             Tag2ListVisibleToolStripMenuItem.Text = Tag2Name;
             Tag3ListVisibleToolStripMenuItem.Text = Tag3Name;
-            // DataGridViewにデータ読み込み
-            LoadGrid();
             // ToolTipsの設定
             SetTagNameToolTips();
-            // CSVOutputPathの設定
-            if (Directory.Exists(TargetCSVOutputPath))
+            // ListOutputPathの設定
+            if (Directory.Exists(TargetListOutputPath))
             {
             }
             else
             {
-                TargetCSVOutputPath = TargetFolderPath;
+                TargetListOutputPath = TargetFolderPath;
             }
             // ComboBoxの初期選択項目を設定
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = SearchOptionNumber;
             SearchMethodComboBox.SelectedIndex = SearchMethodNumber;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
+            // DataGridViewにデータ読み込み
+            if (DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
+            LoadGrid();
         }
         private void BackupToolStripMenuItem_Click(object sender, EventArgs e)// 手動バックアップ作成
         {
@@ -855,168 +922,335 @@ namespace CoRectSys
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
             }
         }
-        private void OutputCSVAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をCSVに出力
+        private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
         {
-            CSVOutputMethod();
+            if (ListOutputFormat == "CSV")
+            {
+                CSVListOutputMethod();
+            }
+            else if (ListOutputFormat == "TSV")
+            {
+                TSVListOutputMethod();
+            }
+            else
+            {
+                MessageBox.Show("値が不正です。", "CREC");
+            }
         }
-        private void OutputCSVShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をCSVに出力
+        private void OutputListShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をListに出力
         {
             try
             {
-                string tempTargetCSVOutputPath = "";
-                if (Directory.Exists(TargetCSVOutputPath))
+                string tempTargetListOutputPath = "";
+                if (Directory.Exists(TargetListOutputPath))
                 {
-                    tempTargetCSVOutputPath = TargetCSVOutputPath;
+                    tempTargetListOutputPath = TargetListOutputPath;
                 }
                 else
                 {
-                    tempTargetCSVOutputPath = TargetFolderPath;
+                    tempTargetListOutputPath = TargetFolderPath;
                 }
-                StreamWriter streamWriter = new StreamWriter(tempTargetCSVOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
-                streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
-                try
+                if (ListOutputFormat == "CSV") // CSV出力用
                 {
-                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                    for (int i = 0; i < dataGridView1.RowCount; i++)
+                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
+                    streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
+                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                    try
                     {
-                        // 変数初期化「CSVSA作成処理ないでのみ使用すること」
-                        string ListThisName = "";
-                        string ListThisID = "";
-                        string ListThisMC = "";
-                        string ListThisCategory = "";
-                        string ListThisTag1 = "";
-                        string ListThisTag2 = "";
-                        string ListThisTag3 = "";
-                        string ListRegistrationDate = "";
-                        string ListInventory = "";
-                        string ListInventoryStatus = "";
-                        int? ListSafetyStock = null;
-                        int? ListReorderPoint = null;
-                        int? ListMaximumLevel = null;
-                        // index読み込み
-                        IEnumerable<string> tmp = null;
-                        string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
-                        try
+                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        for (int i = 0; i < dataGridView1.RowCount; i++)
                         {
-                            tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                            foreach (string line in tmp)
-                            {
-                                cols = line.Split(',');
-                                switch (cols[0])
-                                {
-                                    case "名称":
-                                        ListThisName = cols[1];
-                                        break;
-                                    case "ID":
-                                        ListThisID = cols[1];
-                                        break;
-                                    case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
-                                        break;
-                                    case "登録日":
-                                        ListRegistrationDate = cols[1];
-                                        break;
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                            ListThisID = "Status：Indexファイル破損";
-                            ListThisName = "Status：Indexファイル破損";
-                            ListThisCategory = "　ー　";
-                        }
-                        // 在庫状態を取得
-                        //invからデータを読み込んで表示
-                        if (File.Exists(ListContentsPath + "\\inventory.inv"))
-                        {
+                            // 変数初期化「List作成処理ないでのみ使用すること」
+                            string ListThisName = "";
+                            string ListThisID = "";
+                            string ListThisMC = "";
+                            string ListThisCategory = "";
+                            string ListThisTag1 = "";
+                            string ListThisTag2 = "";
+                            string ListThisTag3 = "";
+                            string ListRegistrationDate = "";
+                            string ListInventory = "";
+                            string ListInventoryStatus = "";
+                            int? ListSafetyStock = null;
+                            int? ListReorderPoint = null;
+                            int? ListMaximumLevel = null;
+                            // index読み込み
+                            IEnumerable<string> tmp = null;
+                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
                             try
                             {
-                                tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                                bool firstline = true;
-                                int count = 0;
+                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
                                 foreach (string line in tmp)
                                 {
                                     cols = line.Split(',');
-                                    if (firstline == true)
+                                    switch (cols[0])
                                     {
-                                        if (cols[1].Length != 0)
-                                        {
-                                            ListSafetyStock = Convert.ToInt32(cols[1]);
-                                        }
-                                        if (cols[2].Length != 0)
-                                        {
-                                            ListReorderPoint = Convert.ToInt32(cols[2]);
-                                        }
-                                        if (cols[3].Length != 0)
-                                        {
-                                            ListMaximumLevel = Convert.ToInt32(cols[3]);
-                                        }
-                                        firstline = false;
+                                        case "名称":
+                                            ListThisName = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "ID":
+                                            ListThisID = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "MC":
+                                            ListThisMC = line.Substring(3).Replace(",","");
+                                            break;
+                                        case "登録日":
+                                            ListRegistrationDate = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "カテゴリ":
+                                            ListThisCategory = line.Substring(5).Replace(",", "");
+                                            break;
+                                        case "タグ1":
+                                            ListThisTag1 = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "タグ2":
+                                            ListThisTag2 = line.Substring(4).Replace(",", "");
+                                            break;
+                                        case "タグ3":
+                                            ListThisTag3 = line.Substring(4).Replace(",", "");
+                                            break;
                                     }
-                                    else
-                                    {
-                                        count = count + Convert.ToInt32(cols[2]);
-                                    }
-                                }
-                                ListInventory = Convert.ToString(count);
-                                ListInventoryStatus = "-";
-                                if (0 == count)
-                                {
-                                    ListInventoryStatus = "欠品";
-                                }
-                                else if (0 < count && count < ListSafetyStock)
-                                {
-                                    ListInventoryStatus = "不足";
-                                }
-                                else if (ListSafetyStock <= count && count <= ListReorderPoint)
-                                {
-                                    ListInventoryStatus = "不足";
-                                }
-                                else if (ListReorderPoint <= count && count <= ListMaximumLevel)
-                                {
-                                    ListInventoryStatus = "適正";
-                                }
-                                else if (ListMaximumLevel < count)
-                                {
-                                    ListInventoryStatus = "過剰";
                                 }
                             }
                             catch (Exception ex)
                             {
-                                ListInventory = "ERROR";
-                                ListInventoryStatus = ex.Message;
+                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                                ListThisID = "Status：Indexファイル破損";
+                                ListThisName = "Status：Indexファイル破損";
+                                ListThisCategory = "　ー　";
                             }
+                            // 在庫状態を取得
+                            //invからデータを読み込んで表示
+                            if (File.Exists(ListContentsPath + "\\inventory.inv"))
+                            {
+                                try
+                                {
+                                    tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                    bool firstline = true;
+                                    int count = 0;
+                                    foreach (string line in tmp)
+                                    {
+                                        cols = line.Split(',');
+                                        if (firstline == true)
+                                        {
+                                            if (cols[1].Length != 0)
+                                            {
+                                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                                            }
+                                            if (cols[2].Length != 0)
+                                            {
+                                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                                            }
+                                            if (cols[3].Length != 0)
+                                            {
+                                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                            }
+                                            firstline = false;
+                                        }
+                                        else
+                                        {
+                                            count = count + Convert.ToInt32(cols[2]);
+                                        }
+                                    }
+                                    ListInventory = Convert.ToString(count);
+                                    ListInventoryStatus = "-";
+                                    if (0 == count)
+                                    {
+                                        ListInventoryStatus = "欠品";
+                                    }
+                                    else if (0 < count && count < ListSafetyStock)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                    {
+                                        ListInventoryStatus = "適正";
+                                    }
+                                    else if (ListMaximumLevel < count)
+                                    {
+                                        ListInventoryStatus = "過剰";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    ListInventory = "ERROR";
+                                    ListInventoryStatus = ex.Message;
+                                }
+                            }
+                            else
+                            {
+                                ListInventory = "-";
+                                ListInventoryStatus = "-";
+                            }
+                            streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
-                        else
-                        {
-                            ListInventory = "-";
-                            ListInventoryStatus = "-";
-                        }
-                        streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                    streamWriter.Close();
+                    if (OpenListAfterOutput == true)
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
                     }
                 }
-                catch (Exception ex)
+                else if (ListOutputFormat == "TSV")
                 {
+                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+                    streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                    try
+                    {
+                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        for (int i = 0; i < dataGridView1.RowCount; i++)
+                        {
+                            // 変数初期化「List作成処理ないでのみ使用すること」
+                            string ListThisName = "";
+                            string ListThisID = "";
+                            string ListThisMC = "";
+                            string ListThisCategory = "";
+                            string ListThisTag1 = "";
+                            string ListThisTag2 = "";
+                            string ListThisTag3 = "";
+                            string ListRegistrationDate = "";
+                            string ListInventory = "";
+                            string ListInventoryStatus = "";
+                            int? ListSafetyStock = null;
+                            int? ListReorderPoint = null;
+                            int? ListMaximumLevel = null;
+                            // index読み込み
+                            IEnumerable<string> tmp = null;
+                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
+                            try
+                            {
+                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
+                                foreach (string line in tmp)
+                                {
+                                    cols = line.Split(',');
+                                    switch (cols[0])
+                                    {
+                                        case "名称":
+                                            ListThisName = line.Substring(3);
+                                            break;
+                                        case "ID":
+                                            ListThisID = line.Substring(3);
+                                            break;
+                                        case "MC":
+                                            ListThisMC = line.Substring(3);
+                                            break;
+                                        case "登録日":
+                                            ListRegistrationDate = line.Substring(4);
+                                            break;
+                                        case "カテゴリ":
+                                            ListThisCategory = line.Substring(5);
+                                            break;
+                                        case "タグ1":
+                                            ListThisTag1 = line.Substring(4);
+                                            break;
+                                        case "タグ2":
+                                            ListThisTag2 = line.Substring(4);
+                                            break;
+                                        case "タグ3":
+                                            ListThisTag3 = line.Substring(4);
+                                            break;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                                ListThisID = "Status：Indexファイル破損";
+                                ListThisName = "Status：Indexファイル破損";
+                                ListThisCategory = "　ー　";
+                            }
+                            // 在庫状態を取得
+                            //invからデータを読み込んで表示
+                            if (File.Exists(ListContentsPath + "\\inventory.inv"))
+                            {
+                                try
+                                {
+                                    tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                    bool firstline = true;
+                                    int count = 0;
+                                    foreach (string line in tmp)
+                                    {
+                                        cols = line.Split(',');
+                                        if (firstline == true)
+                                        {
+                                            if (cols[1].Length != 0)
+                                            {
+                                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                                            }
+                                            if (cols[2].Length != 0)
+                                            {
+                                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                                            }
+                                            if (cols[3].Length != 0)
+                                            {
+                                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                            }
+                                            firstline = false;
+                                        }
+                                        else
+                                        {
+                                            count = count + Convert.ToInt32(cols[2]);
+                                        }
+                                    }
+                                    ListInventory = Convert.ToString(count);
+                                    ListInventoryStatus = "-";
+                                    if (0 == count)
+                                    {
+                                        ListInventoryStatus = "欠品";
+                                    }
+                                    else if (0 < count && count < ListSafetyStock)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                    {
+                                        ListInventoryStatus = "不足";
+                                    }
+                                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                    {
+                                        ListInventoryStatus = "適正";
+                                    }
+                                    else if (ListMaximumLevel < count)
+                                    {
+                                        ListInventoryStatus = "過剰";
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    ListInventory = "ERROR";
+                                    ListInventoryStatus = ex.Message;
+                                }
+                            }
+                            else
+                            {
+                                ListInventory = "-";
+                                ListInventoryStatus = "-";
+                            }
+                            streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
+                    }
+                    streamWriter.Close();
+                    if (OpenListAfterOutput == true)
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
                 }
-                streamWriter.Close();
-                if (OpenCSVAfterOutput == true)
+                else
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetCSVOutputPath + "\\InventoryOutput.csv");
+                    MessageBox.Show("値が不正です。", "CREC");
                 }
             }
             catch (Exception ex) { }
@@ -1135,17 +1369,19 @@ namespace CoRectSys
                 }
             }
         }
-        // データ一覧の表示項目設定
+        #region データ一覧の表示項目設定
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
 
             if (IDListVisibleToolStripMenuItem.Checked == true)
             {
                 IDList.Visible = true;
+                dataGridView1.Columns["IDList"].Visible = true;
             }
             else if (IDListVisibleToolStripMenuItem.Checked == false)
             {
                 IDList.Visible = false;
+                dataGridView1.Columns["IDList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1156,10 +1392,12 @@ namespace CoRectSys
             if (MCListVisibleToolStripMenuItem.Checked == true)
             {
                 MCList.Visible = true;
+                dataGridView1.Columns["MCList"].Visible=true;
             }
             else if (MCListVisibleToolStripMenuItem.Checked == false)
             {
                 MCList.Visible = false;
+                dataGridView1.Columns["MCList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1170,10 +1408,12 @@ namespace CoRectSys
             if (NameListVisibleToolStripMenuItem.Checked == true)
             {
                 ObjectNameList.Visible = true;
+                dataGridView1.Columns["ObjectNameList"].Visible = true;
             }
             else if (NameListVisibleToolStripMenuItem.Checked == false)
             {
                 ObjectNameList.Visible = false;
+                dataGridView1.Columns["ObjectNameList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1184,10 +1424,12 @@ namespace CoRectSys
             if (RegistrationDateListVisibleToolStripMenuItem.Checked == true)
             {
                 RegistrationDateList.Visible = true;
+                dataGridView1.Columns["RegistrationDateList"].Visible = true;
             }
             else if (RegistrationDateListVisibleToolStripMenuItem.Checked == false)
             {
                 RegistrationDateList.Visible = false;
+                dataGridView1.Columns["RegistrationDateList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1198,10 +1440,12 @@ namespace CoRectSys
             if (CategoryListVisibleToolStripMenuItem.Checked == true)
             {
                 CategoryList.Visible = true;
+                dataGridView1.Columns["CategoryList"].Visible= true;
             }
             else if (CategoryListVisibleToolStripMenuItem.Checked == false)
             {
                 CategoryList.Visible = false;
+                dataGridView1.Columns["CategoryList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1212,10 +1456,12 @@ namespace CoRectSys
             if (Tag1ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag1List.Visible = true;
+                dataGridView1.Columns["Tag1List"].Visible = true;
             }
             else if (Tag1ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag1List.Visible = false;
+                dataGridView1.Columns["Tag1List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1226,10 +1472,12 @@ namespace CoRectSys
             if (Tag2ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag2List.Visible = true;
+                dataGridView1.Columns["Tag2List"].Visible = true;
             }
             else if (Tag2ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag2List.Visible = false;
+                dataGridView1.Columns["Tag2List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1240,10 +1488,12 @@ namespace CoRectSys
             if (Tag3ListVisibleToolStripMenuItem.Checked == true)
             {
                 Tag3List.Visible = true;
+                dataGridView1.Columns["Tag3List"].Visible = true;
             }
             else if (Tag3ListVisibleToolStripMenuItem.Checked == false)
             {
                 Tag3List.Visible = false;
+                dataGridView1.Columns["Tag3List"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
@@ -1254,19 +1504,23 @@ namespace CoRectSys
             if (InventoryInformationListToolStripMenuItem.Checked == true)
             {
                 InventoryList.Visible = true;
+                dataGridView1.Columns["InventoryList"].Visible=true;
                 InventoryStatusList.Visible = true;
+                dataGridView1.Columns["InventoryStatusList"].Visible = true;
             }
             else if (InventoryInformationListToolStripMenuItem.Checked == false)
             {
                 InventoryList.Visible = false;
+                dataGridView1.Columns["InventoryList"].Visible = false;
                 InventoryStatusList.Visible = false;
+                dataGridView1.Columns["InventoryStatusList"].Visible = false;
             }
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
-        // データ一覧の表示項目設定ここまでv
-        // 色設定
+        #endregion
+        #region 色設定
         private void AliceBlueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ColorSetting = "Blue";
@@ -1344,7 +1598,7 @@ namespace CoRectSys
             WhiteSmokeToolStripMenuItem.Checked = false;
             DarkToolStripMenuItem.Checked = true;
         }
-        // 色設定ここまで
+        #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e) // バージョン情報表示
         {
             VersionInformation VerInfo = new VersionInformation(ColorSetting);
@@ -1376,9 +1630,20 @@ namespace CoRectSys
                     }
                     // データ保存メソッドを呼び出し
                     SaveContentsMethod();
-                    if(CloseCSVOutput == true)
+                    if(CloseListOutput == true)
                     {
-                        CSVOutputMethod();
+                        if (ListOutputFormat == "CSV")
+                        {
+                            CSVListOutputMethod();
+                        }
+                        else if (ListOutputFormat == "TSV")
+                        {
+                            TSVListOutputMethod();
+                        }
+                        else
+                        {
+                            MessageBox.Show("値が不正です。", "CREC");
+                        }
                     }
                     if (CloseBackUp == true)// 自動バックアップ
                     {
@@ -1420,9 +1685,20 @@ namespace CoRectSys
                     {
                         File.Delete(TargetContentsPath + "\\ADD");
                     }
-                    if (CloseCSVOutput == true)
+                    if (CloseListOutput == true)
                     {
-                        CSVOutputMethod();
+                        if (ListOutputFormat == "CSV")
+                        {
+                            CSVListOutputMethod();
+                        }
+                        else if (ListOutputFormat == "TSV")
+                        {
+                            TSVListOutputMethod();
+                        }
+                        else
+                        {
+                            MessageBox.Show("値が不正です。", "CREC");
+                        }
                     }
                     if (CloseBackUp == true)// 自動バックアップ
                     {
@@ -1455,9 +1731,20 @@ namespace CoRectSys
             }
             else
             {
-                if (CloseCSVOutput == true)
+                if (CloseListOutput == true)
                 {
-                    CSVOutputMethod();
+                    if (ListOutputFormat == "CSV")
+                    {
+                        CSVListOutputMethod();
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        TSVListOutputMethod();
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
                 if (CloseBackUp == true)// 自動バックアップ
                 {
@@ -1495,6 +1782,10 @@ namespace CoRectSys
             {
                 DeleteContent();
             }
+        }
+        private void ReissueUUIDToolStripMenuItem_Click(object sender, EventArgs e)// UUID再割当て
+        {
+            EditIDTextBox.Text = Convert.ToString(Guid.NewGuid());// UUIDを入力
         }
         private void ForceEditRequestToolStripMenuItem_Click(object sender, EventArgs e)// 編集権限強制取得
         {
@@ -1540,10 +1831,19 @@ namespace CoRectSys
                 EditRealLocationTextBox.Text = ThisRealLocation;
             }
         }
+        #endregion
 
-        // データ一覧・詳細表示関係
-        private void LoadGrid()// データを読み込んでリストに表示
+        #region データ一覧・詳細表示関係
+        private async void LoadGrid()// データを読み込んでリストに表示
         {
+            while (DataLoadingStatus != "false")
+            {
+                await Task.Delay(1);
+            }
+            DataLoadingStatus = "true";
+            DataLoadingLabel.Visible = true;
+            this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
             // 現時点で選択されている情報を取得
             string CurrentSelectedContentsID;// 現時点で表示されているデータのID
             int CurrentSelectedContentsRows = 1;// 表示されていたデータのリスト更新後の列番号
@@ -1564,7 +1864,7 @@ namespace CoRectSys
                 }
             }
             // DataGridView関係
-            dataGridView1.Rows.Clear();
+            ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             try
@@ -1575,6 +1875,11 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
+
+                        if (DataLoadingStatus == "stop")
+                        {
+                            break;
+                        }
                         // 変数初期化「List読み込み内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
@@ -1600,28 +1905,28 @@ namespace CoRectSys
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = cols[1];
+                                        ListThisName = line.Substring(3);
                                         break;
                                     case "ID":
-                                        ListThisID = cols[1];
+                                        ListThisID = line.Substring(3);
                                         break;
                                     case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
+                                        ListThisMC = line.Substring(3);
                                         break;
                                     case "登録日":
-                                        ListRegistrationDate = cols[1];
+                                        ListRegistrationDate = line.Substring(4);
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5);
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4);
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4);
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4);
                                         break;
                                 }
                             }
@@ -1707,12 +2012,13 @@ namespace CoRectSys
                             {
                                 if (SearchMethod(ListInventoryStatus) == true)
                                 {
-                                    dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                    //dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);旧バージョン・新バージョンで動作確認後削除
+                                    ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                 }
                             }
                             else
                             {
-                                dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                             }
                         }
                         else if (SearchFormTextBox.TextLength >= 1)
@@ -1723,49 +2029,49 @@ namespace CoRectSys
                                 case 0:
                                     if (SearchMethod(ListThisID) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 1:
                                     if (SearchMethod(ListThisMC) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 2:
                                     if (SearchMethod(ListThisName) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 3:
                                     if (SearchMethod(ListThisCategory) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 4:
                                     if (SearchMethod(ListThisTag1) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 5:
                                     if (SearchMethod(ListThisTag2) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 6:
                                     if (SearchMethod(ListThisTag3) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 7:
                                     if (SearchMethod(ListInventoryStatus) == true)
                                     {
-                                        dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                             }
@@ -1779,7 +2085,10 @@ namespace CoRectSys
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
+
                     }
+                    // ここでバインド
+                    dataGridView1.DataSource = ContentsDataTable;
                 }
                 catch (Exception ex)
                 {
@@ -1792,13 +2101,21 @@ namespace CoRectSys
                 MessageBox.Show(ex.Message, "CREC");
                 return;
             }
-            dataGridView1.ClearSelection();
-            try
+            if (DataLoadingStatus == "true")
             {
-                dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
-                dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                dataGridView1.ClearSelection();
+                try
+                {
+                    dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
+                    dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                }
+                catch (Exception ex) 
+                {                
+                }
+                DataLoadingLabel.Visible = false;
+                this.Cursor = Cursors.Default;
             }
-            catch (Exception ex) { }
+            DataLoadingStatus = "false";
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) // 詳細表示
         {
@@ -1915,6 +2232,11 @@ namespace CoRectSys
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
+                ReissueUUIDToolStripMenuItem.Enabled = false;
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();
                 return true;
             }
@@ -1966,6 +2288,11 @@ namespace CoRectSys
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
+                ReissueUUIDToolStripMenuItem.Enabled = false;
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();
                 return true;
             }
@@ -2163,7 +2490,7 @@ namespace CoRectSys
         {
             if (dataGridView1.CurrentRow == null)
             {
-                MessageBox.Show("プロジェクトを開いてください。", "CREC");
+                //MessageBox.Show("プロジェクトを開いてください。１", "CREC");
                 return;
             }
             try
@@ -2198,28 +2525,28 @@ namespace CoRectSys
                     switch (cols[0])
                     {
                         case "名称":
-                            ThisName = cols[1];
+                            ThisName = line.Substring(3);
                             break;
                         case "ID":
-                            ThisID = cols[1];
+                            ThisID = line.Substring(3);
                             break;
                         case "MC":
-                            ThisMC = cols[1];
+                            ThisMC = line.Substring(3);
                             break;
                         case "登録日":
-                            ThisRegistrationDate = cols[1];
+                            ThisRegistrationDate = line.Substring(4);
                             break;
                         case "カテゴリ":
-                            ThisCategory = cols[1];
+                            ThisCategory = line.Substring(5);
                             break;
                         case "タグ1":
-                            ThisTag1 = cols[1];
+                            ThisTag1 = line.Substring(4);
                             break;
                         case "タグ2":
-                            ThisTag2 = cols[1];
+                            ThisTag2 = line.Substring(4);
                             break;
                         case "タグ3":
-                            ThisTag3 = cols[1];
+                            ThisTag3 = line.Substring(4);
                             break;
                         case "場所1(Real)":
                             ThisRealLocation = cols[1];
@@ -2283,8 +2610,9 @@ namespace CoRectSys
             DetailsTextBox.ResetText();
             ConfidentialDataTextBox.ResetText();
         }
+        #endregion
 
-        // 詳細画像表示関係
+        #region 詳細画像表示関係
         List<string> PicturesList = new List<string>();
         int PictureNumber;
         int PictureCount;
@@ -2398,8 +2726,9 @@ namespace CoRectSys
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
         }
+        #endregion
 
-        // 編集・データ追加・データ削除関係
+        #region 編集・データ追加・データ削除関係
         private void EditButton_Click(object sender, EventArgs e) // 編集画面表示
         {
             if (AllowEdit == false)
@@ -2471,6 +2800,7 @@ namespace CoRectSys
                 EditIDTextBox.Text = ThisID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
                 AllowEditIDButton.Text = "編集不可";
+                ReissueUUIDToolStripMenuItem.Enabled = false;
                 EditMCTextBox.Text = ThisMC;
                 EditRegistrationDateTextBox.Text = ThisRegistrationDate;
                 EditCategoryTextBox.Text = ThisCategory;
@@ -2551,6 +2881,7 @@ namespace CoRectSys
             // 各ラベルの表示内容を編集用に変更
             ShowPicturesButton.Text = "画像を追加";
             AllowEditIDButton.Text = "編集不可";
+            ReissueUUIDToolStripMenuItem.Enabled = false;
             // 詳細データおよび機密データを編集可能に変更
             DetailsTextBox.ReadOnly = false;
             ConfidentialDataTextBox.ReadOnly = false;
@@ -2603,8 +2934,12 @@ namespace CoRectSys
             SaveAndCloseEditButton.Visible = false;
             SelectThumbnailButton.Visible = false;
             //　再表示時に編集したデータを表示するための処理
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchFormTextBox.Text = EditIDTextBox.Text;
             SearchOptionComboBox.SelectedIndex = 0;
+            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             // 入力フォームをリセット
             ClearDetailsWindowMethod();
             // 通常画面で必要なものを表示
@@ -2616,7 +2951,12 @@ namespace CoRectSys
             EditIDTextBox.ReadOnly = true;
             AllowEditID = false;
             AllowEditIDButton.Text = "編集不可";
+            ReissueUUIDToolStripMenuItem.Enabled = false;
             // 再度詳細情報を表示
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();
             ShowDetails();
         }
@@ -2636,10 +2976,11 @@ namespace CoRectSys
                 MessageBox.Show("データの削除に失敗しました。\n" + ex.Message, "CREC");
                 return;
             }
-            LoadGrid();
-            ShowDetails();
-            MessageBox.Show("削除成功", "CREC");
-            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
+            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
@@ -2655,9 +2996,6 @@ namespace CoRectSys
                 EditRealLocationTextBox.Visible = false;
                 SaveAndCloseEditButton.Visible = false;
                 SelectThumbnailButton.Visible = false;
-                //　再表示時に編集したデータを表示するための処理
-                SearchFormTextBox.Text = EditIDTextBox.Text;
-                SearchOptionComboBox.SelectedIndex = 0;
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -2674,10 +3012,18 @@ namespace CoRectSys
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
+                ReissueUUIDToolStripMenuItem.Enabled = false;
                 // 再度詳細情報を表示
-                LoadGrid();
-                ShowDetails();
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
             }
+            SearchFormTextBox.Text = "";
+            SearchOptionComboBox.SelectedIndex = 0;
+            MessageBox.Show("削除成功", "CREC");
+            LoadGrid();
+            ShowDetails();
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
@@ -2686,6 +3032,7 @@ namespace CoRectSys
                 if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
                 {
                     AllowEditIDButton.Text = "設定不可";
+                    ReissueUUIDToolStripMenuItem.Enabled= false;
                     AllowEditIDButton.ForeColor = Color.Red;
                     MessageBox.Show("入力されたIDは使用済みです。", "CREC");
                     return false;
@@ -2700,12 +3047,14 @@ namespace CoRectSys
                 AllowEditID = true;
                 AllowEditIDButton.Text = "編集可";
                 EditIDTextBox.ReadOnly = false;
+                ReissueUUIDToolStripMenuItem.Enabled = true;
             }
             else if (AllowEditID == true)
             {
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
                 EditIDTextBox.ReadOnly = true;
+                ReissueUUIDToolStripMenuItem.Enabled = false;
             }
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
@@ -2743,6 +3092,7 @@ namespace CoRectSys
             {
                 if (CheckEditingContents() == true)
                 {
+
                 }
                 else
                 {
@@ -2751,11 +3101,13 @@ namespace CoRectSys
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            // 現在時刻からIDを設定
+            // ID(UUID)を設定
+            ThisID = Convert.ToString(Guid.NewGuid());
+            EditIDTextBox.Text = ThisID;// UUIDを入力
+            // 現在時刻からMCを設定
             DateTime DT = DateTime.Now;
-            EditIDTextBox.Text = DT.ToString("yyMMddHHmmssf");// IDを自動入力
-            ThisID = DT.ToString("yyMMddHHmmssf");
-            EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd");// 日時を自動入力
+            EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
+            EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
             TargetContentsPath = TargetFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
             Directory.CreateDirectory(TargetContentsPath);
@@ -2905,14 +3257,25 @@ namespace CoRectSys
             {
                 Directory.Move(@TargetContentsPath, @TargetFolderPath + "\\" + EditIDTextBox.Text);
             }
-            if(EditedCSVOutput == true)
+            if(EditedListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (EditedBackUp == true)
             {
                 BackUpMethod();
-                MakeBackUpZip();// ZIP圧縮を非同期で開始)
+                MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -2921,10 +3284,15 @@ namespace CoRectSys
         }
         private void ListUpdateButton_Click(object sender, EventArgs e)// 一覧更新ボタン
         {
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();// 一覧を再度読み込み
         }
+        #endregion
 
-        // 在庫数・適正在庫数管理関係
+        #region 在庫数・適正在庫数管理関係
         string[] rowsIM;// .invを1行ごとに読み込んだ内容（在庫管理用）
         int? SafetyStock;// 安全在庫数、未定義時はnullを使用
         int? ReorderPoint;// 発注点、未定義時はnullを使用
@@ -3037,6 +3405,10 @@ namespace CoRectSys
                     SearchFormTextBoxClearButton.Visible = true;
                     AddContentsButton.Visible = true;
                     ListUpdateButton.Visible = true;
+                    if(DataLoadingStatus == "true")
+                    {
+                        DataLoadingStatus = "stop";
+                    }
                     LoadGrid();
                 }
                 else if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時は写真を表示
@@ -3315,8 +3687,9 @@ namespace CoRectSys
             MaximumLevel = null;
             InventoryManagementModeButton.Text = "在庫数管理画面";
         }
+        #endregion
 
-        // 検索関係
+        #region 検索関係
         private void SetTagNameToolTips()// タグのToolTip(説明)
         {
             TagNameToolTip.SetToolTip(Tag1NameLabel, Tag1NameLabel.Text);
@@ -3327,12 +3700,17 @@ namespace CoRectSys
         {
             if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();
+                if (DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
         private void SearchOptionComboBox_SelectedIndexChanged(object sender, EventArgs e)// 検索対象が変更された場合に一覧を読み込んで更新
         {
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchMethodComboBox.Items.Clear();
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
@@ -3350,14 +3728,23 @@ namespace CoRectSys
                 SearchMethodComboBox.Items.Add("完全一致");
             }
             SearchMethodComboBox.SelectedIndex = 0;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
             else if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
@@ -3365,13 +3752,20 @@ namespace CoRectSys
         {
             if (TargetFolderPath.Length != 0)
             {
-                dataGridView1.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
+                if(DataLoadingStatus == "true")
+                {
+                    DataLoadingStatus = "stop";
+                }
                 LoadGrid();// 再度読み込み
             }
         }
         private void SearchFormTextBoxClearButton_Click(object sender, EventArgs e)// 検索窓の入力内容をクリア
         {
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Clear();
+            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            LoadGrid();// 再度読み込み
         }
         private bool SearchMethod(string Keywords)// 検索窓の入力内容とキーワードが指定の検索方法で一致するか判定
         {
@@ -3498,27 +3892,28 @@ namespace CoRectSys
                         sw.Write("E");
                     }
                     sw.Write('\n');
-                    sw.WriteLine("{0},{1}", "CSVoutputlocation", TargetCSVOutputPath);
-                    sw.Write("autoCSVoutput,");
-                    if (StartUpCSVOutput == true)
+                    sw.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
+                    sw.Write("autoListoutput,");
+                    if (StartUpListOutput == true)
                     {
                         sw.Write("S");
                     }
-                    if (CloseCSVOutput == true)
+                    if (CloseListOutput == true)
                     {
                         sw.Write("C");
                     }
-                    if (EditedCSVOutput == true)
+                    if (EditedListOutput == true)
                     {
                         sw.Write("E");
                     }
                     sw.Write('\n');
-                    sw.Write("openCSVafteroutput,");
-                    if(OpenCSVAfterOutput == true)
+                    sw.Write("openListafteroutput,");
+                    if(OpenListAfterOutput == true)
                     {
                         sw.Write("O");
                     }
                     sw.Write('\n');
+                    sw.WriteLine("ListOutputFormat,{0}",ListOutputFormat);
                     sw.WriteLine("{0},{1}", "created", TargetCreatedDate);
                     sw.WriteLine("{0},{1}", "modified", TargetModifiedDate);
                     sw.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
@@ -3684,8 +4079,9 @@ namespace CoRectSys
                 MessageBox.Show("プロジェクトファイルの更新に失敗しました。", "CREC");
             }
         }
+        #endregion
 
-        // Config読み込み・保存
+        #region Config読み込み・保存
         private string ConfigFile = "config.sys";
         private void ImportConfig()// config.sysの読み込み
         {
@@ -3827,15 +4223,17 @@ namespace CoRectSys
             }
             configfile.Close();
         }
-        
-        // 画面サイズ変更時のコントロールサイズ更新処理
+        #endregion
+
+        #region 画面サイズ変更時のコントロールサイズ更新処理
         private void Form1_SizeChanged(object sender, EventArgs e)// 画面サイズ変更時にコントロールサイズ更新処理を実行
         {
             SetFormLayout();
         }
         private void SetFormLayout()// コントロールサイズ更新処理
         {
-            float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
+            //float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
+            float DpiScale = CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
@@ -3883,7 +4281,7 @@ namespace CoRectSys
             ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10*DpiScale), ShowObjectName.Location.Y);
             EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditNameTextBox.Location.Y);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
-            ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width - 10 * DpiScale), ShowID.Location.Y);
+            ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
             EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditIDTextBox.Location.Y);
             MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowMC.Location.Y);
             ShowMC.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + MCLabel.Width - 10 * DpiScale), ShowMC.Location.Y);
@@ -3909,7 +4307,7 @@ namespace CoRectSys
             ShowDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowDataLocation.Location.Y);
             OpenDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 190 * DpiScale), OpenDataLocation.Location.Y);
             CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 310 * DpiScale), CopyDataLocationPath.Location.Y);
-            DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 30 * DpiScale), DetailsLabel.Location.Y);
+            DetailsLabel.Location = new Point(DetailsTextBox.Location.X, DetailsTextBox.Location.Y - DetailsLabel.Height);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditRequestingButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             SaveAndCloseEditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
@@ -3952,15 +4350,25 @@ namespace CoRectSys
                 EditTag3TextBox.Width = Convert.ToInt32(FormSize.Width - 1120 * DpiScale) / 2;
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
-            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 85 * DpiScale), AllowEditIDButton.Location.Y);
-            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 95 * DpiScale), CheckSameMCButton.Location.Y);
+            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height)/2);
+            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y+ (EditMCTextBox.Height - CheckSameMCButton.Height)/2);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
             ShowPicturesButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), ShowPicturesButton.Location.Y);
             SelectThumbnailButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), SelectThumbnailButton.Location.Y);
             ShowListButton.Width = Convert.ToInt32(130 * DpiScale);
         }
+        private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得
+        {
+            CurrentDPI = e.DeviceDpiNew/96;
+        }
 
-        // 非同期処理置き場
+        private void MainForm_ResizeEnd(object sender, EventArgs e)// ウインドウサイズの変更・移動を取得
+        {
+            SetFormLayout();
+        }
+        #endregion
+
+        #region 非同期処理置き場
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)
@@ -4026,6 +4434,7 @@ namespace CoRectSys
                         EditIDTextBox.Text = ThisID;
                         EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
                         AllowEditIDButton.Text = "編集不可";
+                        ReissueUUIDToolStripMenuItem.Enabled = false;
                         EditMCTextBox.Text = ThisMC;
                         EditRegistrationDateTextBox.Text = ThisRegistrationDate;
                         EditCategoryTextBox.Text = ThisCategory;
@@ -4112,6 +4521,10 @@ namespace CoRectSys
                         DetailsTextBox.ReadOnly = true;
                         ConfidentialDataTextBox.ReadOnly = true;
                         // 再度詳細情報を表示
+                        if(DataLoadingStatus == "true")
+                        {
+                            DataLoadingStatus = "stop";
+                        }
                         LoadGrid();
                         ShowDetails();
                         break;
@@ -4212,8 +4625,9 @@ namespace CoRectSys
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
         }
+        #endregion
 
-        // ユーザーアシストのToolTip設定
+        #region ユーザーアシストのToolTip設定
         private void SetUserAssistToolTips()
         {
             if (ShowUserAssistToolTips == true)
@@ -4230,22 +4644,38 @@ namespace CoRectSys
                 UserAssistToolTip.RemoveAll();
             }
         }
+        #endregion
 
-        // DataGridView内のContextStripMenuの設定
+        #region DataGridView内のContextStripMenuの設定
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
         }
         private void ListUpdateContextStripMenuItem_Click(object sender, EventArgs e)// 一覧を更新
         {
+            if(DataLoadingStatus == "true")
+            {
+                DataLoadingStatus = "stop";
+            }
             LoadGrid();// 再度一覧を読み込み
         }
         private void OpenProjectContextStripMenuItem_Click(object sender, EventArgs e)// プロジェクトを開く、OpenMenu_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpCSVOutput == true)
+            if (StartUpListOutput == true)
             {
-                CSVOutputMethod();
+                if (ListOutputFormat == "CSV")
+                {
+                    CSVListOutputMethod();
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    TSVListOutputMethod();
+                }
+                else
+                {
+                    MessageBox.Show("値が不正です。", "CREC");
+                }
             }
             if (StartUpBackUp == true)// 自動バックアップ
             {
@@ -4253,8 +4683,9 @@ namespace CoRectSys
                 MakeBackUpZip();// ZIP圧縮を非同期で開始)
             }
         }
+        #endregion
 
-        // バックアップ関連
+        #region バックアップ関連
         private void BackUpMethod()// バックアップ作成のメソッド、対象データをバックアップ
         {
             // ファイルが開いているか確認
@@ -4284,9 +4715,10 @@ namespace CoRectSys
             File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
             //MakeBackUpZip();// ZIP圧縮を非同期で開始
         }
+        #endregion
 
-        // CSV一覧出力関係
-        private void CSVOutputMethod()// CSV形式で一覧を出力
+        #region List一覧出力関係
+        private void CSVListOutputMethod()// CSV形式で一覧を出力
         {
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
@@ -4296,16 +4728,16 @@ namespace CoRectSys
             }
             try
             {
-                string tempTargetCSVOutputPath = "";
-                if(Directory.Exists(TargetCSVOutputPath))
+                string tempTargetListOutputPath = "";
+                if(Directory.Exists(TargetListOutputPath))
                 {
-                    tempTargetCSVOutputPath = TargetCSVOutputPath;
+                    tempTargetListOutputPath = TargetListOutputPath;
                 }
                 else
                 {
-                    tempTargetCSVOutputPath = TargetFolderPath;
+                    tempTargetListOutputPath = TargetFolderPath;
                 }
-                StreamWriter streamWriter = new StreamWriter(tempTargetCSVOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
+                StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
                 streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                 try
@@ -4313,7 +4745,7 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
-                        // 変数初期化「CSVSA作成処理内でのみ使用すること」
+                        // 変数初期化「ListSA作成処理内でのみ使用すること」
                         string ListThisName = "";
                         string ListThisID = "";
                         string ListThisMC = "";
@@ -4338,28 +4770,28 @@ namespace CoRectSys
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = cols[1];
+                                        ListThisName = line.Substring(3).Replace(",","");
                                         break;
                                     case "ID":
-                                        ListThisID = cols[1];
+                                        ListThisID = line.Substring(3).Replace(",","");
                                         break;
                                     case "MC":
-                                        ListThisMC = cols[1];
-                                        break;
-                                    case "カテゴリ":
-                                        ListThisCategory = cols[1];
-                                        break;
-                                    case "タグ1":
-                                        ListThisTag1 = cols[1];
-                                        break;
-                                    case "タグ2":
-                                        ListThisTag2 = cols[1];
-                                        break;
-                                    case "タグ3":
-                                        ListThisTag3 = cols[1];
+                                        ListThisMC = line.Substring(3).Replace(",","");
                                         break;
                                     case "登録日":
-                                        ListRegistrationDate = cols[1];
+                                        ListRegistrationDate = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5).Replace(",", "");
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4).Replace(",", "");
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4).Replace(",", "");
                                         break;
                                 }
                             }
@@ -4446,9 +4878,20 @@ namespace CoRectSys
 
                 }
                 streamWriter.Close();
-                if (OpenCSVAfterOutput == true)
+                if (OpenListAfterOutput == true)
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetCSVOutputPath + "\\InventoryOutput.csv");
+                    if (ListOutputFormat == "CSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
                 }
             }
             catch (Exception ex)
@@ -4456,8 +4899,190 @@ namespace CoRectSys
 
             }
         }
+        private void TSVListOutputMethod()// TSV形式で一覧を出力
+        {
+            // ファイルが開いているか確認
+            if (TargetCRECPath.Length == 0)
+            {
+                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                return;
+            }
+            try
+            {
+                string tempTargetListOutputPath = "";
+                if (Directory.Exists(TargetListOutputPath))
+                {
+                    tempTargetListOutputPath = TargetListOutputPath;
+                }
+                else
+                {
+                    tempTargetListOutputPath = TargetFolderPath;
+                }
+                StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+                streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                try
+                {
+                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                    {
+                        // 変数初期化「ListSA作成処理内でのみ使用すること」
+                        string ListThisName = "";
+                        string ListThisID = "";
+                        string ListThisMC = "";
+                        string ListThisCategory = "";
+                        string ListThisTag1 = "";
+                        string ListThisTag2 = "";
+                        string ListThisTag3 = "";
+                        string ListRegistrationDate = "";
+                        string ListInventory = "";
+                        string ListInventoryStatus = "";
+                        int? ListSafetyStock = null;
+                        int? ListReorderPoint = null;
+                        int? ListMaximumLevel = null;
+                        // index読み込み
+                        IEnumerable<string> tmp = null;
+                        try
+                        {
+                            tmp = File.ReadLines(subFolder.FullName + "\\index.txt", Encoding.GetEncoding("UTF-8"));
+                            foreach (string line in tmp)
+                            {
+                                cols = line.Split(',');
+                                switch (cols[0])
+                                {
+                                    case "名称":
+                                        ListThisName = line.Substring(3);
+                                        break;
+                                    case "ID":
+                                        ListThisID = line.Substring(3);
+                                        break;
+                                    case "MC":
+                                        ListThisMC = line.Substring(3);
+                                        break;
+                                    case "登録日":
+                                        ListRegistrationDate = line.Substring(4);
+                                        break;
+                                    case "カテゴリ":
+                                        ListThisCategory = line.Substring(5);
+                                        break;
+                                    case "タグ1":
+                                        ListThisTag1 = line.Substring(4);
+                                        break;
+                                    case "タグ2":
+                                        ListThisTag2 = line.Substring(4);
+                                        break;
+                                    case "タグ3":
+                                        ListThisTag3 = line.Substring(4);
+                                        break;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
+                            ListThisID = subFolder.Name;
+                            ListThisName = "Status：Indexファイル破損";
+                            ListThisCategory = "　ー　";
+                        }
+                        // 在庫状態を取得
+                        //invからデータを読み込んで表示
+                        if (File.Exists(subFolder.FullName + "\\inventory.inv"))
+                        {
+                            try
+                            {
+                                tmp = File.ReadLines(subFolder.FullName + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                                bool firstline = true;
+                                int count = 0;
+                                foreach (string line in tmp)
+                                {
+                                    cols = line.Split(',');
+                                    if (firstline == true)
+                                    {
+                                        if (cols[1].Length != 0)
+                                        {
+                                            ListSafetyStock = Convert.ToInt32(cols[1]);
+                                        }
+                                        if (cols[2].Length != 0)
+                                        {
+                                            ListReorderPoint = Convert.ToInt32(cols[2]);
+                                        }
+                                        if (cols[3].Length != 0)
+                                        {
+                                            ListMaximumLevel = Convert.ToInt32(cols[3]);
+                                        }
+                                        firstline = false;
+                                    }
+                                    else
+                                    {
+                                        count = count + Convert.ToInt32(cols[2]);
+                                    }
+                                }
+                                ListInventory = Convert.ToString(count);
+                                ListInventoryStatus = "-";
+                                if (0 == count)
+                                {
+                                    ListInventoryStatus = "欠品";
+                                }
+                                else if (0 < count && count < ListSafetyStock)
+                                {
+                                    ListInventoryStatus = "不足";
+                                }
+                                else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                                {
+                                    ListInventoryStatus = "不足";
+                                }
+                                else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                                {
+                                    ListInventoryStatus = "適正";
+                                }
+                                else if (ListMaximumLevel < count)
+                                {
+                                    ListInventoryStatus = "過剰";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                ListInventory = "ERROR";
+                                ListInventoryStatus = ex.Message;
+                            }
+                        }
+                        else
+                        {
+                            ListInventory = "-";
+                            ListInventoryStatus = "-";
+                        }
+                        streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                    }
+                }
+                catch (Exception ex)
+                {
 
-        // 表示モード設定
+                }
+                streamWriter.Close();
+                if (OpenListAfterOutput == true)
+                {
+                    if (ListOutputFormat == "CSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
+                    }
+                    else if (ListOutputFormat == "TSV")
+                    {
+                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                    }
+                    else
+                    {
+                        MessageBox.Show("値が不正です。", "CREC");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+        #endregion
+
+        #region 表示モード設定
         private void StandardDisplayModeToolStripMenuItem_Click(object sender, EventArgs e)// 標準モード
         {
             StandardDisplayModeToolStripMenuItem.Checked = true;
@@ -4585,5 +5210,7 @@ namespace CoRectSys
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
             }
         }
+        #endregion
+                
     }
 }

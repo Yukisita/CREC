@@ -61,7 +61,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2023/08/09";
+            this.ReleaseDate.Text = "Release: 2023/09/28";
             // 
             // VersionName
             // 
@@ -71,7 +71,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(88, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 6.03";
+            this.VersionName.Text = "Version 6.04";
             // 
             // label5
             // 
@@ -147,7 +147,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(335, 311);
+            this.ClientSize = new System.Drawing.Size(348, 311);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);

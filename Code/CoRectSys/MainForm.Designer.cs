@@ -50,8 +50,8 @@
             this.OpenBackUpFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.OutputListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OutputCSVAllContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.OutputCSVShownContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OutputListAllContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OutputListShownContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.EditConfigSysToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -62,6 +62,7 @@
             this.AddInventoryModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.高度な機能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReissueUUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ForceEditRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.データ非表示仮削除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -186,6 +187,7 @@
             this.IDLabel = new System.Windows.Forms.Label();
             this.MCLabel = new System.Windows.Forms.Label();
             this.RealLocationLabel = new System.Windows.Forms.Label();
+            this.DataLoadingLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -235,92 +237,92 @@
             // NewProjectToolStripMenuItem
             // 
             this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
-            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.NewProjectToolStripMenuItem.Text = "新規プロジェクト作成";
             this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
             // 
             // OpenMenu
             // 
             this.OpenMenu.Name = "OpenMenu";
-            this.OpenMenu.Size = new System.Drawing.Size(240, 28);
+            this.OpenMenu.Size = new System.Drawing.Size(254, 28);
             this.OpenMenu.Text = "プロジェクトを開く";
             this.OpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(251, 6);
             // 
             // BackupToolStripMenuItem
             // 
             this.BackupToolStripMenuItem.Name = "BackupToolStripMenuItem";
-            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.BackupToolStripMenuItem.Text = "バックアップ作成";
             this.BackupToolStripMenuItem.Click += new System.EventHandler(this.BackupToolStripMenuItem_Click);
             // 
             // OpenBackUpFolderToolStripMenuItem
             // 
             this.OpenBackUpFolderToolStripMenuItem.Name = "OpenBackUpFolderToolStripMenuItem";
-            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く";
             this.OpenBackUpFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenBackUpFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(251, 6);
             // 
             // OutputListToolStripMenuItem
             // 
             this.OutputListToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.OutputCSVAllContentsToolStripMenuItem,
-            this.OutputCSVShownContentsToolStripMenuItem});
+            this.OutputListAllContentsToolStripMenuItem,
+            this.OutputListShownContentsToolStripMenuItem});
             this.OutputListToolStripMenuItem.Name = "OutputListToolStripMenuItem";
-            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
-            this.OutputListToolStripMenuItem.Text = "一覧をCSV出力";
+            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
+            this.OutputListToolStripMenuItem.Text = "一覧をCSV/TSV出力";
             // 
-            // OutputCSVAllContentsToolStripMenuItem
+            // OutputListAllContentsToolStripMenuItem
             // 
-            this.OutputCSVAllContentsToolStripMenuItem.Name = "OutputCSVAllContentsToolStripMenuItem";
-            this.OutputCSVAllContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
-            this.OutputCSVAllContentsToolStripMenuItem.Text = "全データ出力";
-            this.OutputCSVAllContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputCSVAllContentsToolStripMenuItem_Click);
+            this.OutputListAllContentsToolStripMenuItem.Name = "OutputListAllContentsToolStripMenuItem";
+            this.OutputListAllContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
+            this.OutputListAllContentsToolStripMenuItem.Text = "全データ出力";
+            this.OutputListAllContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListAllContentsToolStripMenuItem_Click);
             // 
-            // OutputCSVShownContentsToolStripMenuItem
+            // OutputListShownContentsToolStripMenuItem
             // 
-            this.OutputCSVShownContentsToolStripMenuItem.Name = "OutputCSVShownContentsToolStripMenuItem";
-            this.OutputCSVShownContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
-            this.OutputCSVShownContentsToolStripMenuItem.Text = "一覧表示中のみ出力";
-            this.OutputCSVShownContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputCSVShownContentsToolStripMenuItem_Click);
+            this.OutputListShownContentsToolStripMenuItem.Name = "OutputListShownContentsToolStripMenuItem";
+            this.OutputListShownContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
+            this.OutputListShownContentsToolStripMenuItem.Text = "一覧表示中のみ出力";
+            this.OutputListShownContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListShownContentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(251, 6);
             // 
             // EditConfigSysToolStripMenuItem
             // 
             this.EditConfigSysToolStripMenuItem.Name = "EditConfigSysToolStripMenuItem";
-            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.EditConfigSysToolStripMenuItem.Text = "環境設定";
             this.EditConfigSysToolStripMenuItem.Click += new System.EventHandler(this.EditConfigSysToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(237, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(251, 6);
             // 
             // CloseToolStripMenuItem
             // 
             this.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem";
-            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.CloseToolStripMenuItem.Text = "終了";
             this.CloseToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // RestartToolStripMenuItem
             // 
             this.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem";
-            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
+            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
             this.RestartToolStripMenuItem.Text = "再起動";
             this.RestartToolStripMenuItem.Click += new System.EventHandler(this.RestartToolStripMenuItem_Click);
             // 
@@ -354,6 +356,7 @@
             // 
             this.高度な機能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DeleteContentToolStripMenuItem,
+            this.ReissueUUIDToolStripMenuItem,
             this.ForceEditRequestToolStripMenuItem,
             this.データ非表示仮削除ToolStripMenuItem});
             this.高度な機能ToolStripMenuItem.Name = "高度な機能ToolStripMenuItem";
@@ -366,6 +369,14 @@
             this.DeleteContentToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.DeleteContentToolStripMenuItem.Text = "データ削除";
             this.DeleteContentToolStripMenuItem.Click += new System.EventHandler(this.DeleteContentToolStripMenuItem_Click);
+            // 
+            // ReissueUUIDToolStripMenuItem
+            // 
+            this.ReissueUUIDToolStripMenuItem.Enabled = false;
+            this.ReissueUUIDToolStripMenuItem.Name = "ReissueUUIDToolStripMenuItem";
+            this.ReissueUUIDToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
+            this.ReissueUUIDToolStripMenuItem.Text = "UUID再割当て";
+            this.ReissueUUIDToolStripMenuItem.Click += new System.EventHandler(this.ReissueUUIDToolStripMenuItem_Click);
             // 
             // ForceEditRequestToolStripMenuItem
             // 
@@ -690,6 +701,7 @@
             // 
             // TargetPath
             // 
+            this.TargetPath.DataPropertyName = "TargetPath";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.TargetPath.DefaultCellStyle = dataGridViewCellStyle2;
             this.TargetPath.HeaderText = "TargetPath";
@@ -700,7 +712,7 @@
             // 
             // IDList
             // 
-            this.IDList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.IDList.DataPropertyName = "IDList";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
             this.IDList.HeaderText = "ID";
@@ -711,7 +723,7 @@
             // 
             // MCList
             // 
-            this.MCList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.MCList.DataPropertyName = "MCList";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
             this.MCList.HeaderText = "管理コード";
@@ -722,7 +734,7 @@
             // 
             // ObjectNameList
             // 
-            this.ObjectNameList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.ObjectNameList.DataPropertyName = "ObjectNameList";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
             this.ObjectNameList.HeaderText = "名称";
@@ -733,6 +745,7 @@
             // 
             // RegistrationDateList
             // 
+            this.RegistrationDateList.DataPropertyName = "RegistrationDateList";
             this.RegistrationDateList.HeaderText = "登録日";
             this.RegistrationDateList.Name = "RegistrationDateList";
             this.RegistrationDateList.ReadOnly = true;
@@ -740,7 +753,7 @@
             // 
             // CategoryList
             // 
-            this.CategoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.CategoryList.DataPropertyName = "CategoryList";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
             this.CategoryList.HeaderText = "カテゴリ";
@@ -752,7 +765,7 @@
             // 
             // Tag1List
             // 
-            this.Tag1List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.Tag1List.DataPropertyName = "Tag1List";
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
             this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
             this.Tag1List.HeaderText = "Tag1";
@@ -762,7 +775,7 @@
             // 
             // Tag2List
             // 
-            this.Tag2List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.Tag2List.DataPropertyName = "Tag2List";
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
             this.Tag2List.HeaderText = "Tag2";
@@ -772,7 +785,7 @@
             // 
             // Tag3List
             // 
-            this.Tag3List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.Tag3List.DataPropertyName = "Tag3List";
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
             this.Tag3List.HeaderText = "Tag3";
@@ -782,7 +795,7 @@
             // 
             // InventoryList
             // 
-            this.InventoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.InventoryList.DataPropertyName = "InventoryList";
             dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
             this.InventoryList.HeaderText = "在庫数";
@@ -792,7 +805,7 @@
             // 
             // InventoryStatusList
             // 
-            this.InventoryStatusList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
+            this.InventoryStatusList.DataPropertyName = "InventoryStatusList";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
             this.InventoryStatusList.HeaderText = "在庫状況";
@@ -845,10 +858,10 @@
             // 
             this.ShowID.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowID.AutoSize = true;
-            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowID.Location = new System.Drawing.Point(1071, 89);
             this.ShowID.Name = "ShowID";
-            this.ShowID.Size = new System.Drawing.Size(0, 30);
+            this.ShowID.Size = new System.Drawing.Size(0, 20);
             this.ShowID.TabIndex = 4;
             // 
             // CenterLine
@@ -1376,11 +1389,11 @@
             // 
             this.EditIDTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditIDTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.EditIDTextBox.Location = new System.Drawing.Point(1058, 86);
             this.EditIDTextBox.Name = "EditIDTextBox";
             this.EditIDTextBox.ReadOnly = true;
-            this.EditIDTextBox.Size = new System.Drawing.Size(260, 36);
+            this.EditIDTextBox.Size = new System.Drawing.Size(260, 31);
             this.EditIDTextBox.TabIndex = 80;
             this.EditIDTextBox.Visible = false;
             // 
@@ -1478,9 +1491,9 @@
             // AllowEditIDButton
             // 
             this.AllowEditIDButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditIDButton.Location = new System.Drawing.Point(1233, 92);
+            this.AllowEditIDButton.Location = new System.Drawing.Point(1249, 89);
             this.AllowEditIDButton.Name = "AllowEditIDButton";
-            this.AllowEditIDButton.Size = new System.Drawing.Size(80, 25);
+            this.AllowEditIDButton.Size = new System.Drawing.Size(65, 25);
             this.AllowEditIDButton.TabIndex = 73;
             this.AllowEditIDButton.Text = "編集不可";
             this.AllowEditIDButton.UseVisualStyleBackColor = true;
@@ -1674,10 +1687,10 @@
             // IDLabel
             // 
             this.IDLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.IDLabel.Location = new System.Drawing.Point(920, 89);
             this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(145, 30);
+            this.IDLabel.Size = new System.Drawing.Size(139, 20);
             this.IDLabel.TabIndex = 89;
             this.IDLabel.Text = "ID：";
             this.IDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1705,12 +1718,25 @@
             this.RealLocationLabel.Text = "現物保管場所：";
             this.RealLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // DataLoadingLabel
+            // 
+            this.DataLoadingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.DataLoadingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.DataLoadingLabel.Location = new System.Drawing.Point(765, 98);
+            this.DataLoadingLabel.Name = "DataLoadingLabel";
+            this.DataLoadingLabel.Size = new System.Drawing.Size(145, 30);
+            this.DataLoadingLabel.TabIndex = 94;
+            this.DataLoadingLabel.Text = "読み込み中";
+            this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.DataLoadingLabel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1824, 1041);
+            this.Controls.Add(this.DataLoadingLabel);
             this.Controls.Add(this.AllowEditIDButton);
             this.Controls.Add(this.EditIDTextBox);
             this.Controls.Add(this.dataGridView1);
@@ -1770,18 +1796,18 @@
             this.Controls.Add(this.EditButton);
             this.Controls.Add(this.SaveAndCloseEditButton);
             this.Controls.Add(this.CopyDataLocationPath);
-            this.Controls.Add(this.ShowDataLocation);
             this.Controls.Add(this.ShowRealLocation);
+            this.Controls.Add(this.ObjectNameLabel);
+            this.Controls.Add(this.ShowID);
+            this.Controls.Add(this.ShowMC);
+            this.Controls.Add(this.ShowRegistrationDate);
+            this.Controls.Add(this.ShowDataLocation);
             this.Controls.Add(this.Tag1NameLabel);
             this.Controls.Add(this.Tag2NameLabel);
             this.Controls.Add(this.Tag3NameLabel);
-            this.Controls.Add(this.ObjectNameLabel);
             this.Controls.Add(this.CategoryLabel);
             this.Controls.Add(this.RealLocationLabel);
-            this.Controls.Add(this.ShowID);
-            this.Controls.Add(this.ShowMC);
             this.Controls.Add(this.MCLabel);
-            this.Controls.Add(this.ShowRegistrationDate);
             this.Controls.Add(this.RegistrationDateLabel);
             this.Controls.Add(this.IDLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1793,6 +1819,8 @@
             this.Text = "CREC";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Closing += new System.ComponentModel.CancelEventHandler(this.Form1_Closing);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.MainForm_DpiChanged);
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1929,6 +1957,21 @@
         private System.Windows.Forms.ToolStripTextBox ShowListButton;
         private System.Windows.Forms.Label NoPicturesLabel;
         private System.Windows.Forms.ToolStripMenuItem RegistrationDateListVisibleToolStripMenuItem;
+        private System.Windows.Forms.Button AddContentsButton;
+        private System.Windows.Forms.Button ListUpdateButton;
+        private System.Windows.Forms.ToolStripMenuItem DarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OutputListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripMenuItem OutputListAllContentsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OutputListShownContentsToolStripMenuItem;
+        private System.Windows.Forms.Button CopyDataLocationPath;
+        private System.Windows.Forms.Label ObjectNameLabel;
+        private System.Windows.Forms.Label CategoryLabel;
+        private System.Windows.Forms.Label RegistrationDateLabel;
+        private System.Windows.Forms.Label IDLabel;
+        private System.Windows.Forms.Label MCLabel;
+        private System.Windows.Forms.Label RealLocationLabel;
+        private System.Windows.Forms.Label DataLoadingLabel;
         private System.Windows.Forms.DataGridViewTextBoxColumn TargetPath;
         private System.Windows.Forms.DataGridViewTextBoxColumn IDList;
         private System.Windows.Forms.DataGridViewTextBoxColumn MCList;
@@ -1940,20 +1983,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
-        private System.Windows.Forms.Button AddContentsButton;
-        private System.Windows.Forms.Button ListUpdateButton;
-        private System.Windows.Forms.ToolStripMenuItem DarkToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OutputListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripMenuItem OutputCSVAllContentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem OutputCSVShownContentsToolStripMenuItem;
-        private System.Windows.Forms.Button CopyDataLocationPath;
-        private System.Windows.Forms.Label ObjectNameLabel;
-        private System.Windows.Forms.Label CategoryLabel;
-        private System.Windows.Forms.Label RegistrationDateLabel;
-        private System.Windows.Forms.Label IDLabel;
-        private System.Windows.Forms.Label MCLabel;
-        private System.Windows.Forms.Label RealLocationLabel;
+        private System.Windows.Forms.ToolStripMenuItem ReissueUUIDToolStripMenuItem;
     }
 }
 
