@@ -40,6 +40,7 @@ namespace CoRectSys
             {
                 string temp = "";
                 float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX / 96 * 100);// DPI取得
+                //float DpiScale = (DeviceDpi / 96 * 100);// DPI取得
                 ManagementClass mcOS = new ManagementClass("Win32_OperatingSystem");
                 ManagementObjectCollection mocOS = mcOS.GetInstances();
                 foreach (ManagementObject m in mocOS)

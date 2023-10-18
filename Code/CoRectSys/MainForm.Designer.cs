@@ -62,10 +62,9 @@
             this.AddInventoryModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.高度な機能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReissueUUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ForceEditRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.データ非表示仮削除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DisplayModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StandardDisplayModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,6 +86,10 @@
             this.Tag2ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Tag3ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InventoryInformationListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.プロジェクトToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ProjectInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ヘルプToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -177,9 +180,6 @@
             this.AddContentsButton = new System.Windows.Forms.Button();
             this.ListUpdateButton = new System.Windows.Forms.Button();
             this.CopyDataLocationPath = new System.Windows.Forms.Button();
-            this.dataGridView1BackgroundPictureBox = new System.Windows.Forms.PictureBox();
-            this.Thumbnail = new System.Windows.Forms.PictureBox();
-            this.PictureBox1 = new System.Windows.Forms.PictureBox();
             this.ObjectNameLabel = new System.Windows.Forms.Label();
             this.CategoryLabel = new System.Windows.Forms.Label();
             this.RegistrationDateLabel = new System.Windows.Forms.Label();
@@ -187,6 +187,9 @@
             this.MCLabel = new System.Windows.Forms.Label();
             this.RealLocationLabel = new System.Windows.Forms.Label();
             this.DataLoadingLabel = new System.Windows.Forms.Label();
+            this.dataGridView1BackgroundPictureBox = new System.Windows.Forms.PictureBox();
+            this.Thumbnail = new System.Windows.Forms.PictureBox();
+            this.PictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -204,6 +207,7 @@
             this.FileMenuStrip,
             this.EditToolStripMenuItem,
             this.ViewToolStripMenuItem,
+            this.プロジェクトToolStripMenuItem,
             this.ヘルプToolStripMenuItem,
             this.ShowListButton,
             this.ShowProjcetNameTextBox});
@@ -330,9 +334,7 @@
             this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddContentsToolStripMenuItem,
             this.AddInventoryModeToolStripMenuItem,
-            this.高度な機能ToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.EditProjectToolStripMenuItem});
+            this.高度な機能ToolStripMenuItem});
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
             this.EditToolStripMenuItem.Size = new System.Drawing.Size(60, 31);
             this.EditToolStripMenuItem.Text = "編集";
@@ -355,6 +357,7 @@
             // 
             this.高度な機能ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DeleteContentToolStripMenuItem,
+            this.ReissueUUIDToolStripMenuItem,
             this.ForceEditRequestToolStripMenuItem,
             this.データ非表示仮削除ToolStripMenuItem});
             this.高度な機能ToolStripMenuItem.Name = "高度な機能ToolStripMenuItem";
@@ -368,6 +371,14 @@
             this.DeleteContentToolStripMenuItem.Text = "データ削除";
             this.DeleteContentToolStripMenuItem.Click += new System.EventHandler(this.DeleteContentToolStripMenuItem_Click);
             // 
+            // ReissueUUIDToolStripMenuItem
+            // 
+            this.ReissueUUIDToolStripMenuItem.Enabled = false;
+            this.ReissueUUIDToolStripMenuItem.Name = "ReissueUUIDToolStripMenuItem";
+            this.ReissueUUIDToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
+            this.ReissueUUIDToolStripMenuItem.Text = "UUID再割当て";
+            this.ReissueUUIDToolStripMenuItem.Click += new System.EventHandler(this.ReissueUUIDToolStripMenuItem_Click);
+            // 
             // ForceEditRequestToolStripMenuItem
             // 
             this.ForceEditRequestToolStripMenuItem.Name = "ForceEditRequestToolStripMenuItem";
@@ -380,18 +391,6 @@
             this.データ非表示仮削除ToolStripMenuItem.Name = "データ非表示仮削除ToolStripMenuItem";
             this.データ非表示仮削除ToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.データ非表示仮削除ToolStripMenuItem.Text = "データ非表示（未実装）";
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(264, 6);
-            // 
-            // EditProjectToolStripMenuItem
-            // 
-            this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
-            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
-            this.EditProjectToolStripMenuItem.Text = "プロジェクトファイル編集";
-            this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
             // 
             // ViewToolStripMenuItem
             // 
@@ -589,6 +588,35 @@
             this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.InventoryInformationListToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationToolStripMenuItem_CheckedChanged);
+            // 
+            // プロジェクトToolStripMenuItem
+            // 
+            this.プロジェクトToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditProjectToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.ProjectInformationToolStripMenuItem});
+            this.プロジェクトToolStripMenuItem.Name = "プロジェクトToolStripMenuItem";
+            this.プロジェクトToolStripMenuItem.Size = new System.Drawing.Size(103, 31);
+            this.プロジェクトToolStripMenuItem.Text = "プロジェクト";
+            // 
+            // EditProjectToolStripMenuItem
+            // 
+            this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
+            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(253, 28);
+            this.EditProjectToolStripMenuItem.Text = "プロジェクトファイル編集";
+            this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(250, 6);
+            // 
+            // ProjectInformationToolStripMenuItem
+            // 
+            this.ProjectInformationToolStripMenuItem.Name = "ProjectInformationToolStripMenuItem";
+            this.ProjectInformationToolStripMenuItem.Size = new System.Drawing.Size(253, 28);
+            this.ProjectInformationToolStripMenuItem.Text = "プロジェクトの情報";
+            this.ProjectInformationToolStripMenuItem.Click += new System.EventHandler(this.ProjectInformationToolStripMenuItem_Click);
             // 
             // ヘルプToolStripMenuItem
             // 
@@ -1608,38 +1636,6 @@
             this.CopyDataLocationPath.UseVisualStyleBackColor = true;
             this.CopyDataLocationPath.Click += new System.EventHandler(this.CopyDataLocationPath_Click);
             // 
-            // dataGridView1BackgroundPictureBox
-            // 
-            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(844, 89);
-            this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
-            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(73, 50);
-            this.dataGridView1BackgroundPictureBox.TabIndex = 82;
-            this.dataGridView1BackgroundPictureBox.TabStop = false;
-            // 
-            // Thumbnail
-            // 
-            this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Thumbnail.Location = new System.Drawing.Point(1480, 50);
-            this.Thumbnail.Name = "Thumbnail";
-            this.Thumbnail.Size = new System.Drawing.Size(328, 328);
-            this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.Thumbnail.TabIndex = 12;
-            this.Thumbnail.TabStop = false;
-            // 
-            // PictureBox1
-            // 
-            this.PictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PictureBox1.Location = new System.Drawing.Point(10, 70);
-            this.PictureBox1.Name = "PictureBox1";
-            this.PictureBox1.Size = new System.Drawing.Size(834, 880);
-            this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureBox1.TabIndex = 21;
-            this.PictureBox1.TabStop = false;
-            this.PictureBox1.Visible = false;
-            // 
             // ObjectNameLabel
             // 
             this.ObjectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -1719,6 +1715,38 @@
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.DataLoadingLabel.Visible = false;
+            // 
+            // dataGridView1BackgroundPictureBox
+            // 
+            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(844, 89);
+            this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
+            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(73, 50);
+            this.dataGridView1BackgroundPictureBox.TabIndex = 82;
+            this.dataGridView1BackgroundPictureBox.TabStop = false;
+            // 
+            // Thumbnail
+            // 
+            this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Thumbnail.Location = new System.Drawing.Point(1480, 50);
+            this.Thumbnail.Name = "Thumbnail";
+            this.Thumbnail.Size = new System.Drawing.Size(328, 328);
+            this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Thumbnail.TabIndex = 12;
+            this.Thumbnail.TabStop = false;
+            // 
+            // PictureBox1
+            // 
+            this.PictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PictureBox1.Location = new System.Drawing.Point(10, 70);
+            this.PictureBox1.Name = "PictureBox1";
+            this.PictureBox1.Size = new System.Drawing.Size(834, 880);
+            this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBox1.TabIndex = 21;
+            this.PictureBox1.TabStop = false;
+            this.PictureBox1.Visible = false;
             // 
             // MainForm
             // 
@@ -1809,6 +1837,9 @@
             this.Text = "CREC";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Closing += new System.ComponentModel.CancelEventHandler(this.Form1_Closing);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.MainForm_DpiChanged);
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1971,6 +2002,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
+        private System.Windows.Forms.ToolStripMenuItem ReissueUUIDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem プロジェクトToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ProjectInformationToolStripMenuItem;
     }
 }
 
