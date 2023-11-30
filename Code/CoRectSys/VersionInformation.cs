@@ -82,6 +82,10 @@ namespace CoRectSys
                 case "Green":
                     this.BackColor = Color.Honeydew;
                     break;
+                default:
+                    this.BackColor = Color.AliceBlue;
+                    ColorSetting = "Blue";
+                    break;
             }
         }
     }

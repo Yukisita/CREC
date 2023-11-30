@@ -18,9 +18,33 @@ namespace ColRECt
 {
     public partial class CloseBackUpForm : Form
     {
-        public CloseBackUpForm()
+        string ColorSetting = "Blue";
+        public CloseBackUpForm(string colorSetting)
         {
-            InitializeComponent();
+            InitializeComponent(); ColorSetting = colorSetting;
+            SetColorMethod();
+        }
+        private void SetColorMethod()// 色設定のメソッド
+        {
+            switch (ColorSetting)
+            {
+                case "Blue":
+                    this.BackColor = Color.AliceBlue;
+                    break;
+                case "White":
+                    this.BackColor = Color.WhiteSmoke;
+                    break;
+                case "Sakura":
+                    this.BackColor = Color.LavenderBlush;
+                    break;
+                case "Green":
+                    this.BackColor = Color.Honeydew;
+                    break;
+                default:
+                    this.BackColor = Color.AliceBlue;
+                    ColorSetting = "Blue";
+                    break;
+            }
         }
     }
 }

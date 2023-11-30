@@ -35,6 +35,9 @@
             // 
             // UpdateHistoryTextBox
             // 
+            this.UpdateHistoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.UpdateHistoryTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.UpdateHistoryTextBox.HideSelection = false;
             this.UpdateHistoryTextBox.Location = new System.Drawing.Point(12, 12);

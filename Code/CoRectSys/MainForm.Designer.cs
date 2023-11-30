@@ -59,14 +59,14 @@
             this.RestartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.ResetEditingContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddInventoryModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.高度な機能ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ReissueUUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ForceEditRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.データ非表示仮削除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DisplayModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StandardDisplayModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,6 +88,10 @@
             this.Tag2ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Tag3ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InventoryInformationListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.プロジェクトToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.ProjectInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ヘルプToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -178,9 +182,6 @@
             this.AddContentsButton = new System.Windows.Forms.Button();
             this.ListUpdateButton = new System.Windows.Forms.Button();
             this.CopyDataLocationPath = new System.Windows.Forms.Button();
-            this.dataGridView1BackgroundPictureBox = new System.Windows.Forms.PictureBox();
-            this.Thumbnail = new System.Windows.Forms.PictureBox();
-            this.PictureBox1 = new System.Windows.Forms.PictureBox();
             this.ObjectNameLabel = new System.Windows.Forms.Label();
             this.CategoryLabel = new System.Windows.Forms.Label();
             this.RegistrationDateLabel = new System.Windows.Forms.Label();
@@ -188,6 +189,9 @@
             this.MCLabel = new System.Windows.Forms.Label();
             this.RealLocationLabel = new System.Windows.Forms.Label();
             this.DataLoadingLabel = new System.Windows.Forms.Label();
+            this.dataGridView1BackgroundPictureBox = new System.Windows.Forms.PictureBox();
+            this.Thumbnail = new System.Windows.Forms.PictureBox();
+            this.PictureBox1 = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -205,6 +209,7 @@
             this.FileMenuStrip,
             this.EditToolStripMenuItem,
             this.ViewToolStripMenuItem,
+            this.プロジェクトToolStripMenuItem,
             this.ヘルプToolStripMenuItem,
             this.ShowListButton,
             this.ShowProjcetNameTextBox});
@@ -231,46 +236,48 @@
             this.CloseToolStripMenuItem,
             this.RestartToolStripMenuItem});
             this.FileMenuStrip.Name = "FileMenuStrip";
-            this.FileMenuStrip.Size = new System.Drawing.Size(76, 31);
-            this.FileMenuStrip.Text = "ファイル";
+            this.FileMenuStrip.ShortcutKeyDisplayString = "";
+            this.FileMenuStrip.ShowShortcutKeys = false;
+            this.FileMenuStrip.Size = new System.Drawing.Size(103, 31);
+            this.FileMenuStrip.Text = "ファイル(&F)";
             // 
             // NewProjectToolStripMenuItem
             // 
             this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
-            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
-            this.NewProjectToolStripMenuItem.Text = "新規プロジェクト作成";
+            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
+            this.NewProjectToolStripMenuItem.Text = "新規プロジェクト作成(&N)...";
             this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
             // 
             // OpenMenu
             // 
             this.OpenMenu.Name = "OpenMenu";
-            this.OpenMenu.Size = new System.Drawing.Size(254, 28);
-            this.OpenMenu.Text = "プロジェクトを開く";
+            this.OpenMenu.Size = new System.Drawing.Size(288, 28);
+            this.OpenMenu.Text = "プロジェクトを開く(&O)...";
             this.OpenMenu.Click += new System.EventHandler(this.OpenMenu_Click);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(251, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(285, 6);
             // 
             // BackupToolStripMenuItem
             // 
             this.BackupToolStripMenuItem.Name = "BackupToolStripMenuItem";
-            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
+            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.BackupToolStripMenuItem.Text = "バックアップ作成";
             this.BackupToolStripMenuItem.Click += new System.EventHandler(this.BackupToolStripMenuItem_Click);
             // 
             // OpenBackUpFolderToolStripMenuItem
             // 
             this.OpenBackUpFolderToolStripMenuItem.Name = "OpenBackUpFolderToolStripMenuItem";
-            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
-            this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く";
+            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
+            this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く...";
             this.OpenBackUpFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenBackUpFolderToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(251, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(285, 6);
             // 
             // OutputListToolStripMenuItem
             // 
@@ -278,7 +285,7 @@
             this.OutputListAllContentsToolStripMenuItem,
             this.OutputListShownContentsToolStripMenuItem});
             this.OutputListToolStripMenuItem.Name = "OutputListToolStripMenuItem";
-            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
+            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.OutputListToolStripMenuItem.Text = "一覧をCSV/TSV出力";
             // 
             // OutputListAllContentsToolStripMenuItem
@@ -298,31 +305,31 @@
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(251, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(285, 6);
             // 
             // EditConfigSysToolStripMenuItem
             // 
             this.EditConfigSysToolStripMenuItem.Name = "EditConfigSysToolStripMenuItem";
-            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
-            this.EditConfigSysToolStripMenuItem.Text = "環境設定";
+            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
+            this.EditConfigSysToolStripMenuItem.Text = "環境設定...";
             this.EditConfigSysToolStripMenuItem.Click += new System.EventHandler(this.EditConfigSysToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(251, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(285, 6);
             // 
             // CloseToolStripMenuItem
             // 
             this.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem";
-            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
-            this.CloseToolStripMenuItem.Text = "終了";
+            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
+            this.CloseToolStripMenuItem.Text = "終了(&X)";
             this.CloseToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // RestartToolStripMenuItem
             // 
             this.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem";
-            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(254, 28);
+            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.RestartToolStripMenuItem.Text = "再起動";
             this.RestartToolStripMenuItem.Click += new System.EventHandler(this.RestartToolStripMenuItem_Click);
             // 
@@ -330,13 +337,14 @@
             // 
             this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AddContentsToolStripMenuItem,
+            this.toolStripSeparator7,
+            this.ResetEditingContentsToolStripMenuItem,
             this.AddInventoryModeToolStripMenuItem,
-            this.高度な機能ToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.EditProjectToolStripMenuItem});
+            this.高度な機能ToolStripMenuItem});
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
-            this.EditToolStripMenuItem.Size = new System.Drawing.Size(60, 31);
-            this.EditToolStripMenuItem.Text = "編集";
+            this.EditToolStripMenuItem.ShowShortcutKeys = false;
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(88, 31);
+            this.EditToolStripMenuItem.Text = "編集(&E)";
             // 
             // AddContentsToolStripMenuItem
             // 
@@ -344,6 +352,18 @@
             this.AddContentsToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
             this.AddContentsToolStripMenuItem.Text = "新規追加";
             this.AddContentsToolStripMenuItem.Click += new System.EventHandler(this.AddContentsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(264, 6);
+            // 
+            // ResetEditingContentsToolStripMenuItem
+            // 
+            this.ResetEditingContentsToolStripMenuItem.Name = "ResetEditingContentsToolStripMenuItem";
+            this.ResetEditingContentsToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
+            this.ResetEditingContentsToolStripMenuItem.Text = "編集内容をリセット";
+            this.ResetEditingContentsToolStripMenuItem.Click += new System.EventHandler(this.ResetEditingContentsToolStripMenuItem_Click);
             // 
             // AddInventoryModeToolStripMenuItem
             // 
@@ -391,18 +411,6 @@
             this.データ非表示仮削除ToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.データ非表示仮削除ToolStripMenuItem.Text = "データ非表示（未実装）";
             // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(264, 6);
-            // 
-            // EditProjectToolStripMenuItem
-            // 
-            this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
-            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
-            this.EditProjectToolStripMenuItem.Text = "プロジェクトファイル編集";
-            this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
-            // 
             // ViewToolStripMenuItem
             // 
             this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -411,8 +419,8 @@
             this.toolStripSeparator5,
             this.VisibleListElementsToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
-            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(60, 31);
-            this.ViewToolStripMenuItem.Text = "表示";
+            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(89, 31);
+            this.ViewToolStripMenuItem.Text = "表示(&V)";
             // 
             // DisplayModeToolStripMenuItem
             // 
@@ -600,6 +608,35 @@
             this.InventoryInformationListToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationToolStripMenuItem_CheckedChanged);
             // 
+            // プロジェクトToolStripMenuItem
+            // 
+            this.プロジェクトToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditProjectToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.ProjectInformationToolStripMenuItem});
+            this.プロジェクトToolStripMenuItem.Name = "プロジェクトToolStripMenuItem";
+            this.プロジェクトToolStripMenuItem.Size = new System.Drawing.Size(130, 31);
+            this.プロジェクトToolStripMenuItem.Text = "プロジェクト(&P)";
+            // 
+            // EditProjectToolStripMenuItem
+            // 
+            this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
+            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(274, 28);
+            this.EditProjectToolStripMenuItem.Text = "プロジェクトファイル編集...";
+            this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(271, 6);
+            // 
+            // ProjectInformationToolStripMenuItem
+            // 
+            this.ProjectInformationToolStripMenuItem.Name = "ProjectInformationToolStripMenuItem";
+            this.ProjectInformationToolStripMenuItem.Size = new System.Drawing.Size(274, 28);
+            this.ProjectInformationToolStripMenuItem.Text = "プロジェクトの情報...";
+            this.ProjectInformationToolStripMenuItem.Click += new System.EventHandler(this.ProjectInformationToolStripMenuItem_Click);
+            // 
             // ヘルプToolStripMenuItem
             // 
             this.ヘルプToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -607,28 +644,28 @@
             this.readmeToolStripMenuItem,
             this.UpdateHistoryToolStripMenuItem});
             this.ヘルプToolStripMenuItem.Name = "ヘルプToolStripMenuItem";
-            this.ヘルプToolStripMenuItem.Size = new System.Drawing.Size(68, 31);
-            this.ヘルプToolStripMenuItem.Text = "ヘルプ";
+            this.ヘルプToolStripMenuItem.Size = new System.Drawing.Size(98, 31);
+            this.ヘルプToolStripMenuItem.Text = "ヘルプ(&H)";
             // 
             // AboutToolStripMenuItem
             // 
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(192, 28);
-            this.AboutToolStripMenuItem.Text = "CRECについて";
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
+            this.AboutToolStripMenuItem.Text = "CRECのバージョン情報(&A)...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // readmeToolStripMenuItem
             // 
             this.readmeToolStripMenuItem.Name = "readmeToolStripMenuItem";
-            this.readmeToolStripMenuItem.Size = new System.Drawing.Size(192, 28);
-            this.readmeToolStripMenuItem.Text = "ReadMe";
+            this.readmeToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
+            this.readmeToolStripMenuItem.Text = "ReadMe...";
             this.readmeToolStripMenuItem.Click += new System.EventHandler(this.readmeToolStripMenuItem_Click);
             // 
             // UpdateHistoryToolStripMenuItem
             // 
             this.UpdateHistoryToolStripMenuItem.Name = "UpdateHistoryToolStripMenuItem";
-            this.UpdateHistoryToolStripMenuItem.Size = new System.Drawing.Size(192, 28);
-            this.UpdateHistoryToolStripMenuItem.Text = "更新履歴";
+            this.UpdateHistoryToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
+            this.UpdateHistoryToolStripMenuItem.Text = "更新履歴...";
             this.UpdateHistoryToolStripMenuItem.Click += new System.EventHandler(this.UpdateHistoryToolStripMenuItem_Click);
             // 
             // ShowListButton
@@ -821,27 +858,27 @@
             this.ListUpdateContextStripMenuItem,
             this.OpenProjectContextStripMenuItem});
             this.dataGridViewContextMenuStrip.Name = "dataGridViewContextMenuStrip";
-            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(294, 100);
+            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(315, 100);
             // 
             // AddContentsContextStripMenuItem
             // 
             this.AddContentsContextStripMenuItem.Name = "AddContentsContextStripMenuItem";
-            this.AddContentsContextStripMenuItem.Size = new System.Drawing.Size(293, 32);
-            this.AddContentsContextStripMenuItem.Text = "新規追加";
+            this.AddContentsContextStripMenuItem.Size = new System.Drawing.Size(314, 32);
+            this.AddContentsContextStripMenuItem.Text = "新規追加...";
             this.AddContentsContextStripMenuItem.Click += new System.EventHandler(this.AddContentsContextStripMenuItem_Click);
             // 
             // ListUpdateContextStripMenuItem
             // 
             this.ListUpdateContextStripMenuItem.Name = "ListUpdateContextStripMenuItem";
-            this.ListUpdateContextStripMenuItem.Size = new System.Drawing.Size(293, 32);
+            this.ListUpdateContextStripMenuItem.Size = new System.Drawing.Size(314, 32);
             this.ListUpdateContextStripMenuItem.Text = "一覧更新";
             this.ListUpdateContextStripMenuItem.Click += new System.EventHandler(this.ListUpdateContextStripMenuItem_Click);
             // 
             // OpenProjectContextStripMenuItem
             // 
             this.OpenProjectContextStripMenuItem.Name = "OpenProjectContextStripMenuItem";
-            this.OpenProjectContextStripMenuItem.Size = new System.Drawing.Size(293, 32);
-            this.OpenProjectContextStripMenuItem.Text = "別のプロジェクトを開く";
+            this.OpenProjectContextStripMenuItem.Size = new System.Drawing.Size(314, 32);
+            this.OpenProjectContextStripMenuItem.Text = "別のプロジェクトを開く...";
             this.OpenProjectContextStripMenuItem.Click += new System.EventHandler(this.OpenProjectContextStripMenuItem_Click);
             // 
             // ShowObjectName
@@ -1618,38 +1655,6 @@
             this.CopyDataLocationPath.UseVisualStyleBackColor = true;
             this.CopyDataLocationPath.Click += new System.EventHandler(this.CopyDataLocationPath_Click);
             // 
-            // dataGridView1BackgroundPictureBox
-            // 
-            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(844, 89);
-            this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
-            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(73, 50);
-            this.dataGridView1BackgroundPictureBox.TabIndex = 82;
-            this.dataGridView1BackgroundPictureBox.TabStop = false;
-            // 
-            // Thumbnail
-            // 
-            this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Thumbnail.Location = new System.Drawing.Point(1480, 50);
-            this.Thumbnail.Name = "Thumbnail";
-            this.Thumbnail.Size = new System.Drawing.Size(328, 328);
-            this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.Thumbnail.TabIndex = 12;
-            this.Thumbnail.TabStop = false;
-            // 
-            // PictureBox1
-            // 
-            this.PictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.PictureBox1.Location = new System.Drawing.Point(10, 70);
-            this.PictureBox1.Name = "PictureBox1";
-            this.PictureBox1.Size = new System.Drawing.Size(834, 880);
-            this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureBox1.TabIndex = 21;
-            this.PictureBox1.TabStop = false;
-            this.PictureBox1.Visible = false;
-            // 
             // ObjectNameLabel
             // 
             this.ObjectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -1729,6 +1734,38 @@
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.DataLoadingLabel.Visible = false;
+            // 
+            // dataGridView1BackgroundPictureBox
+            // 
+            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(844, 89);
+            this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
+            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(73, 50);
+            this.dataGridView1BackgroundPictureBox.TabIndex = 82;
+            this.dataGridView1BackgroundPictureBox.TabStop = false;
+            // 
+            // Thumbnail
+            // 
+            this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.Thumbnail.Location = new System.Drawing.Point(1480, 50);
+            this.Thumbnail.Name = "Thumbnail";
+            this.Thumbnail.Size = new System.Drawing.Size(328, 328);
+            this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.Thumbnail.TabIndex = 12;
+            this.Thumbnail.TabStop = false;
+            // 
+            // PictureBox1
+            // 
+            this.PictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.PictureBox1.Location = new System.Drawing.Point(10, 70);
+            this.PictureBox1.Name = "PictureBox1";
+            this.PictureBox1.Size = new System.Drawing.Size(834, 880);
+            this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureBox1.TabIndex = 21;
+            this.PictureBox1.TabStop = false;
+            this.PictureBox1.Visible = false;
             // 
             // MainForm
             // 
@@ -1819,6 +1856,7 @@
             this.Text = "CREC";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Closing += new System.ComponentModel.CancelEventHandler(this.Form1_Closing);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.MainForm_DpiChanged);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.SizeChanged += new System.EventHandler(this.Form1_SizeChanged);
@@ -1984,6 +2022,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
         private System.Windows.Forms.ToolStripMenuItem ReissueUUIDToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem プロジェクトToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ProjectInformationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem ResetEditingContentsToolStripMenuItem;
     }
 }
 

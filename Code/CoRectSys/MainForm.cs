@@ -72,7 +72,7 @@ namespace CoRectSys
         string AutoLoadProjectPath = "";// 自動読み込みプロジェクトのパス
         bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
 
-        string ColorSetting = "";// 色設定
+        string ColorSetting = "Blue";// 色設定
         string[] cols;// List等読み込み用
         bool AllowEdit;// 編集可否を設定
         bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
@@ -96,7 +96,7 @@ namespace CoRectSys
         string DataLoadingStatus = "false";// Data非同期読み込みのステータス
 
         // 表示関係
-        float CurrentDPI = 1;// 現在のDPI値
+        double CurrentDPI = 1.0;// 現在のDPI値
         #endregion
 
         public MainForm()
@@ -123,12 +123,14 @@ namespace CoRectSys
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
             float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
+            CurrentDPI = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
             if (ScreenWidth < 1280 * DpiScale || ScreenHeight < 620 * DpiScale)// 非対応モニタが検出された場合は警告を表示
             {
                 MessageBox.Show("このスクリーンでは正常に表示されない場合があります。\n" + "モニタ解像度=" + ScreenWidth + "X" + ScreenHeight + "\n表示スケール=" + DpiScale * 100 + "%");
             }
             SetFormLayout();
             ImportConfig();// configファイルの読み込み・自動生成
+            SetColorMethod(); // 色設定を反映
             // ToolTipsの設定
             SetTagNameToolTips();
             // バックグラウンド処理の開始
@@ -159,6 +161,12 @@ namespace CoRectSys
                     MakeBackUpZip();// ZIP圧縮を非同期で開始
                 }
             }
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
+        {
+            SetFormLayout();// レイアウト初期化、DPI反映
+            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
         }
 
         #region メニューバー関係
@@ -855,14 +863,15 @@ namespace CoRectSys
             SearchOptionComboBox.Items.Add(Tag3Name);
             SearchOptionComboBox.Items.Add("在庫状況");
             // ラベルの名称を読み込んでDGVに設定
-            IDList.HeaderText = ShowIDLabel;
-            MCList.HeaderText = ShowMCLabel;
-            ObjectNameList.HeaderText= ShowObjectNameLabel;
-            RegistrationDateList.HeaderText= ShowRegistrationDateLabel;
-            CategoryList.HeaderText= ShowCategoryLabel;
-            Tag1List.HeaderText = Tag1Name;
-            Tag2List.HeaderText = Tag2Name;
-            Tag3List.HeaderText = Tag3Name;
+            dataGridView1.Refresh();
+            dataGridView1.Columns["IDList"].HeaderText = ShowIDLabel;
+            dataGridView1.Columns["MCList"].HeaderText = ShowMCLabel;
+            dataGridView1.Columns["ObjectNameList"].HeaderText = ShowObjectNameLabel;
+            dataGridView1.Columns["RegistrationDateList"].HeaderText = ShowRegistrationDateLabel;
+            dataGridView1.Columns["CategoryList"].HeaderText= ShowCategoryLabel;
+            dataGridView1.Columns["Tag1List"].HeaderText = Tag1Name;
+            dataGridView1.Columns["Tag2List"].HeaderText = Tag2Name;
+            dataGridView1.Columns["Tag3List"].HeaderText = Tag3Name;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
             IDListVisibleToolStripMenuItem.Text = ShowIDLabel;
             MCListVisibleToolStripMenuItem.Text = ShowMCLabel;
@@ -1310,6 +1319,68 @@ namespace CoRectSys
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
         }
+        private void ResetEditingContentsToolStripMenuItem_Click(object sender, EventArgs e)// 編集内容をリセット
+        {
+            if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+            {
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータを破棄し、編集前の状態に戻しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    // 再度データを読み込み
+
+                    // 詳細情報読み込み＆表示
+                    StreamReader sr1 = null;
+                    try
+                    {
+                        sr1 = new StreamReader(TargetDetailsPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        DetailsTextBox.Text = "No Data.";
+                    }
+                    finally
+                    {
+                        if (sr1 != null)
+                        {
+                            DetailsTextBox.Text = sr1.ReadToEnd();
+                            sr1.Close();
+                        }
+                    }
+                    // 機密情報を読み込み
+                    try
+                    {
+                        StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                        ConfidentialDataTextBox.Text = sr2.ReadToEnd();
+                        sr2.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                    }
+                    EditNameTextBox.Text = ThisName;
+                    EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                    EditIDTextBox.Text = ThisID;
+                    EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
+                    AllowEditIDButton.Text = "編集不可";
+                    ReissueUUIDToolStripMenuItem.Enabled = false;
+                    EditMCTextBox.Text = ThisMC;
+                    EditRegistrationDateTextBox.Text = ThisRegistrationDate;
+                    EditCategoryTextBox.Text = ThisCategory;
+                    EditTag1TextBox.Text = ThisTag1;
+                    EditTag2TextBox.Text = ThisTag2;
+                    EditTag3TextBox.Text = ThisTag3;
+                    EditRealLocationTextBox.Text = ThisRealLocation;
+                }
+                else if (result == System.Windows.MessageBoxResult.No)
+                {               
+                    // 何もしない
+                }
+            }
+            else
+            {
+                // 何もしない
+            }
+        }
         private void AddInventoryModeToolStripMenuItem_Click(object sender, EventArgs e)// 在庫数管理モードを追加
         {
             if (TargetContentsPath.Length == 0)
@@ -1329,44 +1400,6 @@ namespace CoRectSys
                 InventoryManagementFile.WriteLine("{0},,,", ThisID);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
-            }
-        }
-        private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト管理ファイルの編集
-        {
-            if (TargetCRECPath.Length == 0)
-            {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
-                return;
-            }
-            else
-            {
-                if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
-                {
-                    if (CheckEditingContents() == true)
-                    {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
-                        makenewproject.ShowDialog();
-                        if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
-                        {
-                            TargetCRECPath = makenewproject.ReturnTargetProject;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
-                    makenewproject.ShowDialog();
-                    if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
-                    {
-                        TargetCRECPath = makenewproject.ReturnTargetProject;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    }
-                }
             }
         }
         #region データ一覧の表示項目設定
@@ -1649,7 +1682,7 @@ namespace CoRectSys
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm();
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         DateTime DT = DateTime.Now;
                         try
@@ -1704,7 +1737,7 @@ namespace CoRectSys
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm();
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                                                                           // バックアップ作成
                         DateTime DT = DateTime.Now;
@@ -1750,7 +1783,7 @@ namespace CoRectSys
                 {
                     BackUpMethod();
                     this.Hide();// メインフォームを消す
-                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm();
+                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                     // バックアップ作成
                     DateTime DT = DateTime.Now;
@@ -1831,6 +1864,57 @@ namespace CoRectSys
                 EditRealLocationTextBox.Text = ThisRealLocation;
             }
         }
+        private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト管理ファイルの編集
+        {
+            if (TargetCRECPath.Length == 0)
+            {
+                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                return;
+            }
+            else
+            {
+                if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+                {
+                    if (CheckEditingContents() == true)
+                    {
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
+                        makenewproject.ShowDialog();
+                        if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
+                        {
+                            TargetCRECPath = makenewproject.ReturnTargetProject;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
+                    makenewproject.ShowDialog();
+                    if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
+                    {
+                        TargetCRECPath = makenewproject.ReturnTargetProject;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    }
+                }
+            }
+        }
+        private void ProjectInformationToolStripMenuItem_Click(object sender, EventArgs e) // プロジェクト情報の表示
+        {
+            if (TargetCRECPath.Length == 0)
+            {
+                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                return;
+            }
+            else
+            {
+                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, ColorSetting);
+                projectInfoForm.ShowDialog();
+            }
+        }
         #endregion
 
         #region データ一覧・詳細表示関係
@@ -1864,6 +1948,7 @@ namespace CoRectSys
                 }
             }
             // DataGridView関係
+            bool NoData = true; // データが1つも存在しない場合はtrue
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
@@ -1875,7 +1960,7 @@ namespace CoRectSys
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
-
+                        NoData = false;
                         if (DataLoadingStatus == "stop")
                         {
                             break;
@@ -1938,8 +2023,7 @@ namespace CoRectSys
                             ListThisName = "Status：Indexファイル破損";
                             ListThisCategory = "　ー　";
                         }
-                        // 在庫状態を取得
-                        //invからデータを読み込んで表示
+                        // 在庫状態を取得、invからデータを読み込み
                         if (File.Exists(subFolder.FullName + "\\inventory.inv"))
                         {
                             try
@@ -2005,7 +2089,7 @@ namespace CoRectSys
                             ListInventory = "　ー　";
                             ListInventoryStatus = "　ー　";
                         }
-                        //dataGridViewに追加
+                        //dataGridViewに追加、検索欄に文字が入力されている場合は絞り込み
                         if (SearchFormTextBox.TextLength == 0)
                         {
                             if (SearchOptionComboBox.SelectedIndex == 7)
@@ -2076,7 +2160,7 @@ namespace CoRectSys
                                     break;
                             }
                         }
-                        // 更新前に選択されていたデータを復元
+                        // 更新前に選択されていたデータの行番号を取得
                         if (CurrentSelectedContentsID.Length != 0)
                         {
                             if (CurrentSelectedContentsID == ListThisID)
@@ -2085,37 +2169,69 @@ namespace CoRectSys
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
-
-                    }
-                    // ここでバインド
-                    dataGridView1.DataSource = ContentsDataTable;
+                    }                    
+                    dataGridView1.DataSource = ContentsDataTable;// ここでバインド
+                    dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("プロジェクトフォルダが見つかりませんでした。\n" + ex.Message, "CREC");
+                    this.Cursor = Cursors.Default;
+                    DataLoadingLabel.Visible = false;
+                    DataLoadingStatus = "false";
                     return;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "CREC");
+                DataLoadingLabel.Visible = false;
+                this.Cursor = Cursors.Default;
+                DataLoadingStatus = "false";
                 return;
             }
-            if (DataLoadingStatus == "true")
-            {
-                dataGridView1.ClearSelection();
-                try
+
+            // データが存在する/しないで場合分け
+            if (NoData == false) // データが存在する場合は更新前に選択されていたデータを復元
+            {               
+                if (DataLoadingStatus == "true")  // 更新前に選択されていたデータを選択
                 {
-                    dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
-                    dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                    dataGridView1.ClearSelection();
+                    try
+                    {
+                        dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
+                        dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "CREC");
+                        DataLoadingLabel.Visible = false;
+                        this.Cursor = Cursors.Default;
+                        DataLoadingStatus = "false";
+                        return;
+                    }
+                    DataLoadingLabel.Visible = false;
+                    this.Cursor = Cursors.Default;
+                    DataLoadingStatus = "false";
                 }
-                catch (Exception ex) 
-                {                
+            }
+            else if(NoData == true) // データが１つも存在しない場合は新規データ作成するか確認
+            {
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("このプロジェクトにはデータがありません。\nデータを作成しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                if (result == System.Windows.MessageBoxResult.Yes)// データ作成
+                {
+                    AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
+                }
+                else if(result == System.Windows.MessageBoxResult.No)// データ作成しない
+                {
                 }
                 DataLoadingLabel.Visible = false;
                 this.Cursor = Cursors.Default;
+                DataLoadingStatus = "false";
             }
-            DataLoadingStatus = "false";
+            // アクセス日時を更新
+            TargetAccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            SaveSearchSettings();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) // 詳細表示
         {
@@ -2622,9 +2738,8 @@ namespace CoRectSys
             {
                 ShowPicturesMethod();
             }
-            else if (ShowPicturesButton.Text == "画像を追加")
+            else if (ShowPicturesButton.Text == "画像保存場所")
             {
-
                 try
                 {
                     System.Diagnostics.Process.Start("EXPLORER.EXE", TargetContentsPath + "\\pictures");
@@ -2879,7 +2994,7 @@ namespace CoRectSys
             ShowRealLocation.Visible = false;            
 
             // 各ラベルの表示内容を編集用に変更
-            ShowPicturesButton.Text = "画像を追加";
+            ShowPicturesButton.Text = "画像保存場所";
             AllowEditIDButton.Text = "編集不可";
             ReissueUUIDToolStripMenuItem.Enabled = false;
             // 詳細データおよび機密データを編集可能に変更
@@ -2957,6 +3072,7 @@ namespace CoRectSys
             {
                 DataLoadingStatus = "stop";
             }
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             LoadGrid();
             ShowDetails();
         }
@@ -3022,6 +3138,7 @@ namespace CoRectSys
             SearchFormTextBox.Text = "";
             SearchOptionComboBox.SelectedIndex = 0;
             MessageBox.Show("削除成功", "CREC");
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             LoadGrid();
             ShowDetails();
         }
@@ -3496,6 +3613,7 @@ namespace CoRectSys
                 {
                     MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
                 }
+                TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                 ProperInventoryNotification();// 適正在庫設定と比較
             }
         }
@@ -3557,6 +3675,7 @@ namespace CoRectSys
                     break;
             }
             ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
         private void SaveProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更および保存
         {
@@ -3594,6 +3713,7 @@ namespace CoRectSys
                 sw.Close();
                 ProperInventoryNotification();
             }
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
         private void ProperInventorySettingsTextBox_TextChanged(object sender, EventArgs e)// 入力された内容をリアルタイムで反映
         {
@@ -4156,6 +4276,16 @@ namespace CoRectSys
                                 OpenLastTimeProject = false;
                             }
                             break;
+                        case "ColorSetting":
+                            if (cols[1] .Length == 0)
+                            {
+                                ColorSetting = "Blue";
+                            }
+                            else
+                            {
+                                ColorSetting = cols[1];
+                            }
+                            break;
                     }
                 }
             }
@@ -4172,6 +4302,7 @@ namespace CoRectSys
                     sw.WriteLine("ShowUserAssistToolTips,true");
                     sw.WriteLine("AutoLoadProject,");
                     sw.WriteLine("OpenLastTimeProject,false");
+                    sw.WriteLine("ColorSetting,Blue");
                     sw.Close();
                     AllowEdit = true;
                     ShowConfidentialData = false;
@@ -4221,6 +4352,7 @@ namespace CoRectSys
                 configfile.WriteLine("AutoLoadProject,{0}", AutoLoadProjectPath);
                 configfile.WriteLine("OpenLastTimeProject,false");
             }
+            configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.Close();
         }
         #endregion
@@ -4233,7 +4365,7 @@ namespace CoRectSys
         private void SetFormLayout()// コントロールサイズ更新処理
         {
             //float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
-            float DpiScale = CurrentDPI;// DPI取得
+            float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
@@ -4359,9 +4491,8 @@ namespace CoRectSys
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得
         {
-            CurrentDPI = e.DeviceDpiNew/96;
+            CurrentDPI = e.DeviceDpiNew/96.0;
         }
-
         private void MainForm_ResizeEnd(object sender, EventArgs e)// ウインドウサイズの変更・移動を取得
         {
             SetFormLayout();
@@ -5210,7 +5341,92 @@ namespace CoRectSys
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
             }
         }
+        private void SetColorMethod()// 色設定のメソッド
+        {
+            switch (ColorSetting)
+            {
+                case "Blue":
+                    ColorSetting = "Blue";
+                    this.BackColor = Color.AliceBlue;
+                    ShowListButton.BackColor = Color.AliceBlue;
+                    menuStrip1.BackColor = SystemColors.InactiveCaption;
+                    ShowProjcetNameTextBox.BackColor = SystemColors.InactiveCaption;
+                    dataGridView1.BackgroundColor = SystemColors.InactiveCaption;
+                    InventoryModeDataGridView.BackgroundColor = SystemColors.InactiveCaption;
+                    Thumbnail.BackColor = SystemColors.InactiveCaption;
+                    NoImageLabel.BackColor = SystemColors.InactiveCaption;
+                    AliceBlueToolStripMenuItem.Checked = true;
+                    HoneydewToolStripMenuItem.Checked = false;
+                    LavenderBlushToolStripMenuItem.Checked = false;
+                    WhiteSmokeToolStripMenuItem.Checked = false;
+                    DarkToolStripMenuItem.Checked = false;
+                    break;
+                case "White":
+                    ColorSetting = "White";
+                    this.BackColor = Color.WhiteSmoke;
+                    ShowListButton.BackColor = Color.WhiteSmoke;
+                    menuStrip1.BackColor = Color.Gainsboro;
+                    ShowProjcetNameTextBox.BackColor = Color.Gainsboro;
+                    dataGridView1.BackgroundColor = SystemColors.ControlDark;
+                    InventoryModeDataGridView.BackgroundColor = SystemColors.ControlDark;
+                    Thumbnail.BackColor = Color.Gainsboro;
+                    NoImageLabel.BackColor = Color.Gainsboro;
+                    WhiteSmokeToolStripMenuItem.Checked = true;
+                    LavenderBlushToolStripMenuItem.Checked = false;
+                    AliceBlueToolStripMenuItem.Checked = false;
+                    HoneydewToolStripMenuItem.Checked = false;
+                    DarkToolStripMenuItem.Checked = false;
+                    break;
+                case "Sakura":
+                    ColorSetting = "Sakura";
+                    this.BackColor = Color.LavenderBlush;
+                    ShowListButton.BackColor = Color.LavenderBlush;
+                    menuStrip1.BackColor = Color.LightPink;
+                    ShowProjcetNameTextBox.BackColor = Color.LightPink;
+                    dataGridView1.BackgroundColor = Color.LightPink;
+                    InventoryModeDataGridView.BackgroundColor = Color.LightPink;
+                    Thumbnail.BackColor = Color.LightPink;
+                    NoImageLabel.BackColor = Color.LightPink;
+                    LavenderBlushToolStripMenuItem.Checked = true;
+                    AliceBlueToolStripMenuItem.Checked = false;
+                    HoneydewToolStripMenuItem.Checked = false;
+                    WhiteSmokeToolStripMenuItem.Checked = false;
+                    DarkToolStripMenuItem.Checked = false;
+                    break;
+                case "Green":
+                    ColorSetting = "Green";
+                    this.BackColor = Color.Honeydew;
+                    ShowListButton.BackColor = Color.Honeydew;
+                    menuStrip1.BackColor = Color.FromArgb(192, 255, 192);
+                    ShowProjcetNameTextBox.BackColor = Color.FromArgb(192, 255, 192);
+                    dataGridView1.BackgroundColor = Color.FromArgb(192, 255, 192);
+                    InventoryModeDataGridView.BackgroundColor = Color.FromArgb(192, 255, 192);
+                    Thumbnail.BackColor = Color.FromArgb(192, 255, 192);
+                    NoImageLabel.BackColor = Color.FromArgb(192, 255, 192);
+                    HoneydewToolStripMenuItem.Checked = true;
+                    AliceBlueToolStripMenuItem.Checked = false;
+                    LavenderBlushToolStripMenuItem.Checked = false;
+                    WhiteSmokeToolStripMenuItem.Checked = false;
+                    DarkToolStripMenuItem.Checked = false;
+                    break;
+                default:
+                    ColorSetting = "Blue";
+                    this.BackColor = Color.AliceBlue;
+                    ShowListButton.BackColor = Color.AliceBlue;
+                    menuStrip1.BackColor = SystemColors.InactiveCaption;
+                    ShowProjcetNameTextBox.BackColor = SystemColors.InactiveCaption;
+                    dataGridView1.BackgroundColor = SystemColors.InactiveCaption;
+                    InventoryModeDataGridView.BackgroundColor = SystemColors.InactiveCaption;
+                    Thumbnail.BackColor = SystemColors.InactiveCaption;
+                    NoImageLabel.BackColor = SystemColors.InactiveCaption;
+                    AliceBlueToolStripMenuItem.Checked = true;
+                    HoneydewToolStripMenuItem.Checked = false;
+                    LavenderBlushToolStripMenuItem.Checked = false;
+                    WhiteSmokeToolStripMenuItem.Checked = false;
+                    DarkToolStripMenuItem.Checked = false;
+                    break;
+            }
+        }
         #endregion
-                
     }
 }
