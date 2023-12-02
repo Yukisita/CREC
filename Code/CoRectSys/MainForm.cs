@@ -1963,6 +1963,7 @@ namespace CoRectSys
                         NoData = false;
                         if (DataLoadingStatus == "stop")
                         {
+                            DataLoadingStatus = "false";
                             break;
                         }
                         // 変数初期化「List読み込み内でのみ使用すること」
@@ -2204,7 +2205,6 @@ namespace CoRectSys
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "CREC");
                         DataLoadingLabel.Visible = false;
                         this.Cursor = Cursors.Default;
                         DataLoadingStatus = "false";
