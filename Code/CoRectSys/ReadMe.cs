@@ -1,6 +1,6 @@
 ﻿/*
 ReadMe
-Copyright (c) [2022-2023] [Yukisita Mfg.]
+Copyright (c) [2022-2024] [Yukisita Mfg.]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
@@ -40,6 +40,10 @@ namespace CoRectSys
                     break;
                 case "Green":
                     this.BackColor = Color.Honeydew;
+                    break;
+                default:
+                    this.BackColor = Color.AliceBlue;
+                    ColorSetting = "Blue";
                     break;
             }
         }

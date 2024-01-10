@@ -35,6 +35,9 @@
             // 
             // ReadMeTextBox
             // 
+            this.ReadMeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ReadMeTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ReadMeTextBox.HideSelection = false;
             this.ReadMeTextBox.Location = new System.Drawing.Point(12, 12);

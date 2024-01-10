@@ -82,13 +82,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(355, 148);
+            this.ClientSize = new System.Drawing.Size(440, 148);
             this.Controls.Add(this.ProjcetAccessedDateLabel);
             this.Controls.Add(this.ProjcetModifiedDateLabel);
             this.Controls.Add(this.ProjcetCreatedDateLabel);
             this.Controls.Add(this.ProjcetNameLabel);
             this.Name = "ProjectInfoForm";
-            this.Text = "ProjectInfoForm";
+            this.Text = "プロジェクト情報";
             this.ResumeLayout(false);
             this.PerformLayout();
 

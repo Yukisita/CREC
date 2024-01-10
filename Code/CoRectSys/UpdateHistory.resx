@@ -285,7 +285,27 @@ ID生成にUUIDを導入
 マルチディスプレイ環境で複数のスケーリングが設定されている環境対応に向けた変更
 ソースコードのメンテナンス性見直し
 MITライセンスと矛盾していたReadMeを修正
-その他軽微（では）な（い）バグを修正</value>
+その他軽微（では）な（い）バグを修正
+
+ver6.05(2023/12/01)
+HiDPI環境下でのバグを修正
+データ一覧表示まわりのバグを修正
+編集内容のリセット機能を追加
+メニュバーにショートカットキーを設定
+ReadMeおよび更新履歴画面でウインドウサイズ調整時に中身の大きさが変わらない問題を修正
+プロジェクト作成後にデータ追加するか確認する機能を追加
+色設定を保持する機能を追加
+放置していたプロジェクト情報表示機能を実装（中）
+その他軽微（では）な（い）バグを修正
+
+ver6.06(2023/12/02)
+ver6.05のデータ検索機能で発生するフリーズ問題を修正
+
+ver7.01(2023/12/22)
+最近表示した項目を表示する機能を追加（中）
+自動検索のON/OFFを設定する機能を追加
+HiDPI環境でプロジェクト作成・編集画面のUIが崩壊する問題を修正
+新規データ作成時、IDを手動で設定するか尋ねる機能を追加（予定）</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

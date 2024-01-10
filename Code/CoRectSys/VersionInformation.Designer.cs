@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -61,7 +62,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2023/10/18";
+            this.ReleaseDate.Text = "Release: 2024/01/11";
             // 
             // VersionName
             // 
@@ -71,7 +72,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(96, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 6.05β";
+            this.VersionName.Text = "Version 7.01β";
             // 
             // label5
             // 
@@ -81,7 +82,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(136, 20);
             this.label5.TabIndex = 4;
-            this.label5.Text = "©　雪下製作所 2023";
+            this.label5.Text = "©　雪下製作所 2024";
             // 
             // ShowSystemInformationsLabel
             // 
@@ -106,11 +107,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(387, 111);
+            this.label1.Location = new System.Drawing.Point(539, 107);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 12);
+            this.label1.Size = new System.Drawing.Size(143, 12);
             this.label1.TabIndex = 9;
-            this.label1.Text = "秋ですね～";
+            this.label1.Text = "2024年もよろしくお願いします";
             // 
             // label2
             // 
@@ -134,7 +135,7 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2023_autumn;
+            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_Winter;
             this.pictureBox2.Location = new System.Drawing.Point(345, 12);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(302, 271);
@@ -142,14 +143,24 @@
             this.pictureBox2.TabIndex = 8;
             this.pictureBox2.TabStop = false;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(585, 271);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 12);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "雪下 せつな";
+            // 
             // VersionInformation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(340, 311);
+            this.ClientSize = new System.Drawing.Size(697, 311);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.SystemInformationsLabel);
@@ -161,7 +172,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "`";
+            this.Text = "VersionInformation";
             this.Load += new System.EventHandler(this.VersionInformation_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
@@ -182,5 +193,6 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
