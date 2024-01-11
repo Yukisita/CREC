@@ -27,17 +27,17 @@ namespace CoRectSys
 {
     public partial class MainForm : Form
     {
-        # region 変数の宣言
+        #region 変数の宣言
         // プロジェクトファイル読み込み用変数
-        string TargetProjectName = ""; // プロジェクト名
-        string TargetFolderPath = ""; // データ保管場所のフォルダパス
-        string TargetCRECPath = ""; // 管理ファイル（.crec）のファイルパス
-        string TargetIndexPath = ""; // Indexの場所
-        string TargetDetailsPath = ""; // 説明txtのパス
-        string TargetBackupPath = ""; // バックアップ場所のフォルダパス
-        string TargetListOutputPath = ""; // 一覧List出力場所のフォルダパス
-        bool StartUpBackUp=false;// S、起動時にバックアップ
-        bool EditedBackUp=false;// E、編集後にバックアップ
+        string TargetProjectName = "";// プロジェクト名
+        string TargetFolderPath = "";// データ保管場所のフォルダパス
+        string TargetCRECPath = "";// 管理ファイル（.crec）のファイルパス
+        string TargetIndexPath = "";// Indexの場所
+        string TargetDetailsPath = "";// 説明txtのパス
+        string TargetBackupPath = "";// バックアップ場所のフォルダパス
+        string TargetListOutputPath = "";// 一覧List出力場所のフォルダパス
+        bool StartUpBackUp = false;// S、起動時にバックアップ
+        bool EditedBackUp = false;// E、編集後にバックアップ
         bool CloseBackUp = false;// C、終了時にバックアップ
         bool StartUpListOutput = false;// S、起動時に一覧作成
         bool EditedListOutput = false;// E、編集後に一覧作成
@@ -83,7 +83,7 @@ namespace CoRectSys
         string ColorSetting = "Blue";// 色設定
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
-        string TargetContentsPath = ""; // 詳細表示するデータのフォルダパス
+        string TargetContentsPath = "";// 詳細表示するデータのフォルダパス
         string ThisName = "";
         string ThisID = "";
         string ThisMC = "";
@@ -133,8 +133,8 @@ namespace CoRectSys
             }
             SetFormLayout();
             ImportConfig();// configファイルの読み込み・自動生成
-            SetColorMethod(); // 色設定を反映
-            // ToolTipsの設定
+            SetColorMethod();// 色設定を反映
+                             // ToolTipsの設定
             SetTagNameToolTips();
             // バックグラウンド処理の開始
             CheckContentsList();
@@ -182,7 +182,7 @@ namespace CoRectSys
 
         #region メニューバー関係
         private void NewProjectToolStripMenuItem_Click(object sender, EventArgs e)// 新規プロジェクト作成
-        {            
+        {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
@@ -207,11 +207,11 @@ namespace CoRectSys
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
                     TargetCRECPath = makenewproject.ReturnTargetProject;
-                    LoadProjectFileMethod(); // プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                 }
             }
         }
-        private void OpenMenu_Click(object sender, EventArgs e) // 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
+        private void OpenMenu_Click(object sender, EventArgs e)// 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
             if (StartUpListOutput == true)
@@ -367,7 +367,7 @@ namespace CoRectSys
                     case "openListafteroutput":
                         if (cols[1].Contains("O"))
                         {
-                             OpenListAfterOutput= true;
+                            OpenListAfterOutput = true;
                         }
                         else
                         {
@@ -379,7 +379,7 @@ namespace CoRectSys
                         {
                             ListOutputFormat = "CSV";
                         }
-                        else if (cols[1] =="TSV")
+                        else if (cols[1] == "TSV")
                         {
                             ListOutputFormat = "TSV";
                         }
@@ -417,7 +417,7 @@ namespace CoRectSys
                                 ShowObjectName.Visible = true;
                             }
                         }
-                        catch 
+                        catch
                         {
                             ShowObjectNameLabelVisible = true;
                             ObjectNameLabel.Visible = true;
@@ -443,8 +443,8 @@ namespace CoRectSys
                             }
                             else
                             {
-                                ShowIDLabelVisible= true;
-                                IDLabel.Visible= true;
+                                ShowIDLabelVisible = true;
+                                IDLabel.Visible = true;
                                 ShowID.Visible = true;
                                 AllowEditIDButton.Visible = true;
                             }
@@ -476,9 +476,9 @@ namespace CoRectSys
                             }
                             else
                             {
-                                ShowMCLabelVisible= true;
-                                MCLabel.Visible= true;
-                                ShowMC.Visible= true;
+                                ShowMCLabelVisible = true;
+                                MCLabel.Visible = true;
+                                ShowMC.Visible = true;
                                 CheckSameMCButton.Visible = true;
                             }
                         }
@@ -493,7 +493,7 @@ namespace CoRectSys
                     case "ShowRegistrationDateLabel":
                         try
                         {
-                            if (cols[1].Length > 0) 
+                            if (cols[1].Length > 0)
                             {
                                 ShowRegistrationDateLabel = cols[1];
                             }
@@ -510,11 +510,11 @@ namespace CoRectSys
                             else
                             {
                                 ShowRegistrationDateLabelVisible = true;
-                                RegistrationDateLabel.Visible= true;
+                                RegistrationDateLabel.Visible = true;
                                 ShowRegistrationDate.Visible = true;
                             }
                         }
-                        catch 
+                        catch
                         {
                             ShowRegistrationDateLabelVisible = true;
                             RegistrationDateLabel.Visible = true;
@@ -524,7 +524,7 @@ namespace CoRectSys
                     case "ShowCategoryLabel":
                         try
                         {
-                            if (cols[1].Length > 0) 
+                            if (cols[1].Length > 0)
                             {
                                 ShowCategoryLabel = cols[1];
                             }
@@ -539,7 +539,7 @@ namespace CoRectSys
                                 ShowCategory.Visible = false;
                             }
                             else
-                            { 
+                            {
                                 ShowCategoryLabelVisible = true;
                                 CategoryLabel.Visible = true;
                                 ShowCategory.Visible = true;
@@ -561,11 +561,11 @@ namespace CoRectSys
                             }
                             else
                             {
-                                Tag1Name = "タグ１";                                
+                                Tag1Name = "タグ１";
                             }
-                            if (cols[2] == "f") 
+                            if (cols[2] == "f")
                             {
-                                ShowTag1NameVisible = false;       
+                                ShowTag1NameVisible = false;
                                 Tag1NameLabel.Visible = false;
                                 ShowTag1.Visible = false;
                             }
@@ -669,7 +669,7 @@ namespace CoRectSys
                                 ShowRealLocation.Visible = true;
                             }
                         }
-                        catch 
+                        catch
                         {
                             ShowRealLocationLabelVisible = true;
                             RealLocationLabel.Visible = true;
@@ -687,7 +687,7 @@ namespace CoRectSys
                             {
                                 ShowDataLocationLabel = "データ保管場所";
                             }
-                            if (cols[2] == "f") 
+                            if (cols[2] == "f")
                             {
                                 ShowDataLocationLabelVisible = false;
                                 ShowDataLocation.Visible = false;
@@ -698,8 +698,8 @@ namespace CoRectSys
                             {
                                 ShowDataLocationLabelVisible = true;
                                 ShowDataLocation.Visible = true;
-                                OpenDataLocation.Visible= true;
-                                CopyDataLocationPath.Visible= true;
+                                OpenDataLocation.Visible = true;
+                                CopyDataLocationPath.Visible = true;
                             }
                         }
                         catch
@@ -879,14 +879,14 @@ namespace CoRectSys
             dataGridView1.Columns["MCList"].HeaderText = ShowMCLabel;
             dataGridView1.Columns["ObjectNameList"].HeaderText = ShowObjectNameLabel;
             dataGridView1.Columns["RegistrationDateList"].HeaderText = ShowRegistrationDateLabel;
-            dataGridView1.Columns["CategoryList"].HeaderText= ShowCategoryLabel;
+            dataGridView1.Columns["CategoryList"].HeaderText = ShowCategoryLabel;
             dataGridView1.Columns["Tag1List"].HeaderText = Tag1Name;
             dataGridView1.Columns["Tag2List"].HeaderText = Tag2Name;
             dataGridView1.Columns["Tag3List"].HeaderText = Tag3Name;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
             IDListVisibleToolStripMenuItem.Text = ShowIDLabel;
             MCListVisibleToolStripMenuItem.Text = ShowMCLabel;
-            NameListVisibleToolStripMenuItem.Text= ShowObjectNameLabel;
+            NameListVisibleToolStripMenuItem.Text = ShowObjectNameLabel;
             RegistrationDateListVisibleToolStripMenuItem.Text = ShowRegistrationDateLabel;
             CategoryListVisibleToolStripMenuItem.Text = ShowCategoryLabel;
             Tag1ListVisibleToolStripMenuItem.Text = Tag1Name;
@@ -970,7 +970,7 @@ namespace CoRectSys
                 {
                     tempTargetListOutputPath = TargetFolderPath;
                 }
-                if (ListOutputFormat == "CSV") // CSV出力用
+                if (ListOutputFormat == "CSV")// CSV出力用
                 {
                     StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
                     streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
@@ -1006,13 +1006,13 @@ namespace CoRectSys
                                     switch (cols[0])
                                     {
                                         case "名称":
-                                            ListThisName = line.Substring(3).Replace(",","");
+                                            ListThisName = line.Substring(3).Replace(",", "");
                                             break;
                                         case "ID":
-                                            ListThisID = line.Substring(3).Replace(",","");
+                                            ListThisID = line.Substring(3).Replace(",", "");
                                             break;
                                         case "MC":
-                                            ListThisMC = line.Substring(3).Replace(",","");
+                                            ListThisMC = line.Substring(3).Replace(",", "");
                                             break;
                                         case "登録日":
                                             ListRegistrationDate = line.Substring(4).Replace(",", "");
@@ -1332,7 +1332,7 @@ namespace CoRectSys
         }
         private void ResetEditingContentsToolStripMenuItem_Click(object sender, EventArgs e)// 編集内容をリセット
         {
-            if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータを破棄し、編集前の状態に戻しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)
@@ -1369,9 +1369,9 @@ namespace CoRectSys
                         MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
                     }
                     EditNameTextBox.Text = ThisName;
-                    EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                    EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                     EditIDTextBox.Text = ThisID;
-                    EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
+                    EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                     AllowEditIDButton.Text = "編集不可";
                     ReissueUUIDToolStripMenuItem.Enabled = false;
                     EditMCTextBox.Text = ThisMC;
@@ -1383,7 +1383,7 @@ namespace CoRectSys
                     EditRealLocationTextBox.Text = ThisRealLocation;
                 }
                 else if (result == System.Windows.MessageBoxResult.No)
-                {               
+                {
                     // 何もしない
                 }
             }
@@ -1436,7 +1436,7 @@ namespace CoRectSys
             if (MCListVisibleToolStripMenuItem.Checked == true)
             {
                 MCList.Visible = true;
-                dataGridView1.Columns["MCList"].Visible=true;
+                dataGridView1.Columns["MCList"].Visible = true;
             }
             else if (MCListVisibleToolStripMenuItem.Checked == false)
             {
@@ -1484,7 +1484,7 @@ namespace CoRectSys
             if (CategoryListVisibleToolStripMenuItem.Checked == true)
             {
                 CategoryList.Visible = true;
-                dataGridView1.Columns["CategoryList"].Visible= true;
+                dataGridView1.Columns["CategoryList"].Visible = true;
             }
             else if (CategoryListVisibleToolStripMenuItem.Checked == false)
             {
@@ -1548,7 +1548,7 @@ namespace CoRectSys
             if (InventoryInformationListToolStripMenuItem.Checked == true)
             {
                 InventoryList.Visible = true;
-                dataGridView1.Columns["InventoryList"].Visible=true;
+                dataGridView1.Columns["InventoryList"].Visible = true;
                 InventoryStatusList.Visible = true;
                 dataGridView1.Columns["InventoryStatusList"].Visible = true;
             }
@@ -1643,9 +1643,9 @@ namespace CoRectSys
             DarkToolStripMenuItem.Checked = true;
         }
         #endregion
-        private void AboutToolStripMenuItem_Click(object sender, EventArgs e) // バージョン情報表示
+        private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting);
+            VersionInformation VerInfo = new VersionInformation(ColorSetting,CurrentDPI);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -1674,7 +1674,7 @@ namespace CoRectSys
                     }
                     // データ保存メソッドを呼び出し
                     SaveContentsMethod();
-                    if(CloseListOutput == true)
+                    if (CloseListOutput == true)
                     {
                         if (ListOutputFormat == "CSV")
                         {
@@ -1796,7 +1796,7 @@ namespace CoRectSys
                     this.Hide();// メインフォームを消す
                     CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                    // バックアップ作成
+                                                                      // バックアップ作成
                     DateTime DT = DateTime.Now;
                     try
                     {
@@ -1863,9 +1863,9 @@ namespace CoRectSys
                 // 現時点でのデータを読み込んで表示
                 LoadDetails();
                 EditNameTextBox.Text = ThisName;
-                EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                 EditIDTextBox.Text = ThisID;
-                EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
+                EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                 EditMCTextBox.Text = ThisMC;
                 EditRegistrationDateTextBox.Text = ThisRegistrationDate;
                 EditCategoryTextBox.Text = ThisCategory;
@@ -1884,7 +1884,7 @@ namespace CoRectSys
             }
             else
             {
-                if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+                if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                 {
                     if (CheckEditingContents() == true)
                     {
@@ -1913,7 +1913,7 @@ namespace CoRectSys
                 }
             }
         }
-        private void ProjectInformationToolStripMenuItem_Click(object sender, EventArgs e) // プロジェクト情報の表示
+        private void ProjectInformationToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト情報の表示
         {
             if (TargetCRECPath.Length == 0)
             {
@@ -1959,7 +1959,7 @@ namespace CoRectSys
                 }
             }
             // DataGridView関係
-            bool NoData = true; // データが1つも存在しない場合はtrue
+            bool NoData = true;// データが1つも存在しない場合はtrue
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
@@ -2181,7 +2181,7 @@ namespace CoRectSys
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
-                    }                    
+                    }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
                     dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
                 }
@@ -2204,9 +2204,9 @@ namespace CoRectSys
             }
 
             // データが存在する/しないで場合分け
-            if (NoData == false) // データが存在する場合は更新前に選択されていたデータを復元
-            {               
-                if (DataLoadingStatus == "true")  // 更新前に選択されていたデータを選択
+            if (NoData == false)// データが存在する場合は更新前に選択されていたデータを復元
+            {
+                if (DataLoadingStatus == "true") // 更新前に選択されていたデータを選択
                 {
                     dataGridView1.ClearSelection();
                     try
@@ -2226,14 +2226,14 @@ namespace CoRectSys
                     DataLoadingStatus = "false";
                 }
             }
-            else if(NoData == true) // データが１つも存在しない場合は新規データ作成するか確認
+            else if (NoData == true)// データが１つも存在しない場合は新規データ作成するか確認
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("このプロジェクトにはデータがありません。\nデータを作成しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// データ作成
                 {
                     AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
                 }
-                else if(result == System.Windows.MessageBoxResult.No)// データ作成しない
+                else if (result == System.Windows.MessageBoxResult.No)// データ作成しない
                 {
                 }
                 DataLoadingLabel.Visible = false;
@@ -2248,9 +2248,9 @@ namespace CoRectSys
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
         }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) // 詳細表示
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
-            if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)
                 {
@@ -2266,7 +2266,7 @@ namespace CoRectSys
                 ShowDetails();
             }
         }
-        private void OpenDataLocation_Click(object sender, EventArgs e) // ファイルの場所を表示
+        private void OpenDataLocation_Click(object sender, EventArgs e)// ファイルの場所を表示
         {
             try
             {
@@ -2277,7 +2277,7 @@ namespace CoRectSys
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
             }
         }
-        private void CopyDataLocationPath_Click(object sender, EventArgs e) // ファイルのパスをクリップボードにコピー
+        private void CopyDataLocationPath_Click(object sender, EventArgs e)// ファイルのパスをクリップボードにコピー
         {
             try
             {
@@ -2288,7 +2288,7 @@ namespace CoRectSys
                 MessageBox.Show("データのパスをクリップボードにコピーできません。\n" + ex.Message, "CREC");
             }
         }
-        private void ShowConfidentialDataButton_Click(object sender, EventArgs e) // 機密情報表示・非表示
+        private void ShowConfidentialDataButton_Click(object sender, EventArgs e)// 機密情報表示・非表示
         {
             Size FormSize = Size;
             if (ShowConfidentialData == false)
@@ -2321,7 +2321,7 @@ namespace CoRectSys
                 }
             }
         }
-        private bool CheckEditingContents() // 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
+        private bool CheckEditingContents()// 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
         {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータがあります。保存しますか？\n保存されなかったデータは削除されます。", "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 保存して編集画面を閉じる
@@ -2364,7 +2364,7 @@ namespace CoRectSys
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
                 ReissueUUIDToolStripMenuItem.Enabled = false;
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -2420,7 +2420,7 @@ namespace CoRectSys
                 AllowEditID = false;
                 AllowEditIDButton.Text = "編集不可";
                 ReissueUUIDToolStripMenuItem.Enabled = false;
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -2456,7 +2456,7 @@ namespace CoRectSys
             {
                 ShowID.Visible = false;
             }
-            else 
+            else
             {
                 ShowID.Visible = true;
             }
@@ -2472,8 +2472,8 @@ namespace CoRectSys
             {
                 ShowRegistrationDate.Visible = false;
             }
-            else 
-            { 
+            else
+            {
                 ShowRegistrationDate.Visible = true;
             }
             if (ShowCategoryLabelVisible == false)
@@ -2482,15 +2482,15 @@ namespace CoRectSys
             }
             else
             {
-                ShowCategory.Visible = true; 
+                ShowCategory.Visible = true;
             }
             if (ShowTag1NameVisible == false)
             {
                 ShowTag1.Visible = false;
             }
             else
-            { 
-                ShowTag1.Visible = true; 
+            {
+                ShowTag1.Visible = true;
             }
             if (ShowTag2NameVisible == false)
             {
@@ -2522,7 +2522,7 @@ namespace CoRectSys
             }
             else
             {
-                ShowDataLocation.Visible = true;  
+                ShowDataLocation.Visible = true;
             }
 
             if (File.Exists(TargetContentsPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
@@ -2539,7 +2539,7 @@ namespace CoRectSys
             ShowObjectName.Text = ThisName;
             IDLabel.Text = ShowIDLabel + "：";
             ShowID.Text = ThisID;
-            MCLabel.Text = ShowMCLabel + "：" ;
+            MCLabel.Text = ShowMCLabel + "：";
             ShowMC.Text = ThisMC;
             RegistrationDateLabel.Text = ShowRegistrationDateLabel + "：";
             ShowRegistrationDate.Text = ThisRegistrationDate;
@@ -2703,7 +2703,7 @@ namespace CoRectSys
             ShowObjectName.Text = "";
             ThisID = "";
             IDLabel.Text = ShowIDLabel + "：";
-            ShowID.Text = "" ;
+            ShowID.Text = "";
             ThisMC = "";
             MCLabel.Text = ShowMCLabel + "：";
             ShowMC.Text = "";
@@ -2730,9 +2730,9 @@ namespace CoRectSys
             ConfidentialDataTextBox.Text = "";
             // 入力フォームをリセット
             EditNameTextBox.ResetText();
-            EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+            EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
             EditIDTextBox.ResetText();
-            EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを再開
+            EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを再開
             EditMCTextBox.ResetText();
             EditRegistrationDateTextBox.ResetText();
             EditCategoryTextBox.ResetText();
@@ -2821,7 +2821,7 @@ namespace CoRectSys
         private void ClosePicturesButton_Click(object sender, EventArgs e)// 詳細画像非表示ボタン
         {
             ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-            // 一覧表示モードに戻る
+                                      // 一覧表示モードに戻る
             dataGridView1.Visible = true;
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
@@ -2833,7 +2833,7 @@ namespace CoRectSys
         private void ClosePicturesViewMethod()// 画像表示モードを閉じるメソッド
         {
             PictureBox1.Visible = false;
-            PictureBox1.Image = null; // これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
+            PictureBox1.Image = null;// これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
             ClosePicturesButton.Visible = false;
             NextPictureButton.Visible = false;
             PreviousPictureButton.Visible = false;
@@ -2861,7 +2861,7 @@ namespace CoRectSys
         #endregion
 
         #region 編集・データ追加・データ削除関係
-        private void EditButton_Click(object sender, EventArgs e) // 編集画面表示
+        private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
             if (AllowEdit == false)
             {
@@ -2928,9 +2928,9 @@ namespace CoRectSys
                     MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
                 }
                 EditNameTextBox.Text = ThisName;
-                EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                 EditIDTextBox.Text = ThisID;
-                EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
+                EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                 AllowEditIDButton.Text = "編集不可";
                 ReissueUUIDToolStripMenuItem.Enabled = false;
                 EditMCTextBox.Text = ThisMC;
@@ -2948,7 +2948,7 @@ namespace CoRectSys
             FileStream FileStream = File.Create(TargetContentsPath + "\\DED");
             FileStream.Close();
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
-            // サムネ用画像変更用データが残っていた場合削除
+                               // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
             {
                 File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
@@ -2958,42 +2958,42 @@ namespace CoRectSys
             {
                 EditNameTextBox.Visible = true;
             }
-            if(ShowIDLabelVisible == true)
+            if (ShowIDLabelVisible == true)
             {
                 EditIDTextBox.Visible = true;
                 AllowEditIDButton.Visible = true;
             }
-            if(ShowMCLabelVisible == true)
+            if (ShowMCLabelVisible == true)
             {
                 EditMCTextBox.Visible = true;
                 CheckSameMCButton.Visible = true;
             }
-            if(ShowRegistrationDateLabelVisible == true)
+            if (ShowRegistrationDateLabelVisible == true)
             {
                 EditRegistrationDateTextBox.Visible = true;
             }
-            if(ShowCategoryLabelVisible == true)
+            if (ShowCategoryLabelVisible == true)
             {
                 EditCategoryTextBox.Visible = true;
             }
-            if(ShowTag1NameVisible == true)
+            if (ShowTag1NameVisible == true)
             {
                 EditTag1TextBox.Visible = true;
             }
-            if(ShowTag2NameVisible == true)
+            if (ShowTag2NameVisible == true)
             {
                 EditTag2TextBox.Visible = true;
             }
-            if(ShowTag3NameVisible == true)
+            if (ShowTag3NameVisible == true)
             {
                 EditTag3TextBox.Visible = true;
             }
-            if(ShowRealLocationLabelVisible == true)
+            if (ShowRealLocationLabelVisible == true)
             {
                 EditRealLocationTextBox.Visible = true;
             }
-            if(ShowDataLocationLabelVisible == true)
-            {                
+            if (ShowDataLocationLabelVisible == true)
+            {
             }
             SaveAndCloseEditButton.Visible = true;
             SelectThumbnailButton.Visible = true;
@@ -3008,7 +3008,7 @@ namespace CoRectSys
             ShowTag1.Visible = false;
             ShowTag2.Visible = false;
             ShowTag3.Visible = false;
-            ShowRealLocation.Visible = false;            
+            ShowRealLocation.Visible = false;
 
             // 各ラベルの表示内容を編集用に変更
             ShowPicturesButton.Text = "画像保存場所";
@@ -3085,7 +3085,7 @@ namespace CoRectSys
             AllowEditIDButton.Text = "編集不可";
             ReissueUUIDToolStripMenuItem.Enabled = false;
             // 再度詳細情報を表示
-            if(DataLoadingStatus == "true")
+            if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
             }
@@ -3109,7 +3109,7 @@ namespace CoRectSys
                 MessageBox.Show("データの削除に失敗しました。\n" + ex.Message, "CREC");
                 return;
             }
-            if(DataLoadingStatus == "true")
+            if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
             }
@@ -3147,7 +3147,7 @@ namespace CoRectSys
                 AllowEditIDButton.Text = "編集不可";
                 ReissueUUIDToolStripMenuItem.Enabled = false;
                 // 再度詳細情報を表示
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -3166,7 +3166,7 @@ namespace CoRectSys
                 if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
                 {
                     AllowEditIDButton.Text = "設定不可";
-                    ReissueUUIDToolStripMenuItem.Enabled= false;
+                    ReissueUUIDToolStripMenuItem.Enabled = false;
                     AllowEditIDButton.ForeColor = Color.Red;
                     MessageBox.Show("入力されたIDは使用済みです。", "CREC");
                     return false;
@@ -3222,7 +3222,7 @@ namespace CoRectSys
                 MessageBox.Show("プロジェクトを開いてください。", "CREC");
                 return;
             }
-            if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)
                 {
@@ -3235,10 +3235,10 @@ namespace CoRectSys
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            // ID(UUID)を設定
+                                             // ID(UUID)を設定
             ThisID = Convert.ToString(Guid.NewGuid());
             EditIDTextBox.Text = ThisID;// UUIDを入力
-            // 現在時刻からMCを設定
+                                        // 現在時刻からMCを設定
             DateTime DT = DateTime.Now;
             EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
@@ -3326,15 +3326,15 @@ namespace CoRectSys
             }
             // Indexデータを保存
             StreamWriter Indexfile = new StreamWriter(TargetContentsPath + "\\index.txt", false, Encoding.GetEncoding("UTF-8"));
-            if(EditNameTextBox.Text.Length == 0)
+            if (EditNameTextBox.Text.Length == 0)
             {
                 EditNameTextBox.Text = "　ー　";
             }
-            if(EditIDTextBox.Text.Length == 0)
+            if (EditIDTextBox.Text.Length == 0)
             {
                 EditIDTextBox.Text = "　ー　";
             }
-            if(EditMCTextBox.Text.Length == 0)
+            if (EditMCTextBox.Text.Length == 0)
             {
                 EditMCTextBox.Text = "　ー　";
             }
@@ -3361,7 +3361,7 @@ namespace CoRectSys
             if (EditRealLocationTextBox.Text.Length == 0)
             {
                 EditRealLocationTextBox.Text = "　ー　";
-            }            
+            }
             Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
             Indexfile.Close();
             // 詳細データの保存
@@ -3391,7 +3391,7 @@ namespace CoRectSys
             {
                 Directory.Move(@TargetContentsPath, @TargetFolderPath + "\\" + EditIDTextBox.Text);
             }
-            if(EditedListOutput == true)
+            if (EditedListOutput == true)
             {
                 if (ListOutputFormat == "CSV")
                 {
@@ -3418,7 +3418,7 @@ namespace CoRectSys
         }
         private void ListUpdateButton_Click(object sender, EventArgs e)// 一覧更新ボタン
         {
-            if(DataLoadingStatus == "true")
+            if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
             }
@@ -3464,7 +3464,7 @@ namespace CoRectSys
                 AddContentsButton.Visible = false;
                 ListUpdateButton.Visible = false;
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                // 必要なものを表示
+                                          // 必要なものを表示
                 InventoryLabel.Visible = true;
                 InventoryModeDataGridView.Visible = true;
                 OperationOptionComboBox.Visible = true;
@@ -3529,7 +3529,7 @@ namespace CoRectSys
             else if (InventoryModeDataGridView.Visible == true)// 在庫管理モードを終了
             {
                 CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
-                // 必要なものを表示
+                                           // 必要なものを表示
                 if (StandardDisplayModeToolStripMenuItem.Checked)
                 {
                     dataGridView1.Visible = true;
@@ -3539,7 +3539,7 @@ namespace CoRectSys
                     SearchFormTextBoxClearButton.Visible = true;
                     AddContentsButton.Visible = true;
                     ListUpdateButton.Visible = true;
-                    if(DataLoadingStatus == "true")
+                    if (DataLoadingStatus == "true")
                     {
                         DataLoadingStatus = "stop";
                     }
@@ -3555,7 +3555,7 @@ namespace CoRectSys
         {
             // 行数を確認
             string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            int error = 1; // 入力内容に不備がない場合は0に変更
+            int error = 1;// 入力内容に不備がない場合は0に変更
             switch (OperationOptionComboBox.SelectedIndex)// 入力されたデータの整合性チェック
             {
                 case 0:
@@ -3711,7 +3711,7 @@ namespace CoRectSys
                 SaveProperInventorySettingsButton.Text = "変更";
                 // 行数を確認
                 string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                int error = 1; // 入力内容に不備がない場合は0に変更
+                int error = 1;// 入力内容に不備がない場合は0に変更
                 StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
                 for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
                 {
@@ -3871,7 +3871,7 @@ namespace CoRectSys
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
                 //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -3880,7 +3880,7 @@ namespace CoRectSys
             else if (TargetFolderPath.Length != 0)
             {
                 //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
@@ -3892,14 +3892,14 @@ namespace CoRectSys
             if (TargetFolderPath.Length != 0)
             {
                 //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
-                if(DataLoadingStatus == "true")
+                if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
                 LoadGrid();// 再度読み込み
             }
         }
-        private void SearchButton_Click(object sender, EventArgs e) // 検索ボタン、自動検索OFF時に使用
+        private void SearchButton_Click(object sender, EventArgs e)// 検索ボタン、自動検索OFF時に使用
         {
             if (TargetFolderPath.Length != 0)
             {
@@ -3915,7 +3915,10 @@ namespace CoRectSys
         {
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Clear();
-            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            if (AutoSearch == true)
+            {
+                SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            }
             LoadGrid();// 再度読み込み
         }
         private bool SearchMethod(string Keywords)// 検索窓の入力内容とキーワードが指定の検索方法で一致するか判定
@@ -4059,16 +4062,16 @@ namespace CoRectSys
                     }
                     sw.Write('\n');
                     sw.Write("openListafteroutput,");
-                    if(OpenListAfterOutput == true)
+                    if (OpenListAfterOutput == true)
                     {
                         sw.Write("O");
                     }
                     sw.Write('\n');
-                    sw.WriteLine("ListOutputFormat,{0}",ListOutputFormat);
+                    sw.WriteLine("ListOutputFormat,{0}", ListOutputFormat);
                     sw.WriteLine("{0},{1}", "created", TargetCreatedDate);
                     sw.WriteLine("{0},{1}", "modified", TargetModifiedDate);
                     sw.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
-                    if(ShowObjectNameLabelVisible == true)
+                    if (ShowObjectNameLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "t");
                     }
@@ -4076,7 +4079,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "f");
                     }
-                    if(ShowIDLabelVisible == true)
+                    if (ShowIDLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "t");
                     }
@@ -4084,7 +4087,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "f");
                     }
-                    if(ShowMCLabelVisible == true)
+                    if (ShowMCLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "t");
                     }
@@ -4092,7 +4095,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "f");
                     }
-                    if(ShowRegistrationDateLabelVisible == true)
+                    if (ShowRegistrationDateLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "t");
                     }
@@ -4100,7 +4103,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "f");
                     }
-                    if(ShowCategoryLabelVisible == true)
+                    if (ShowCategoryLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "t");
                     }
@@ -4108,9 +4111,9 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "f");
                     }
-                    if(ShowTag1NameVisible == true)
+                    if (ShowTag1NameVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name,"t");
+                        sw.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "t");
                     }
                     else
                     {
@@ -4132,7 +4135,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "f");
                     }
-                    if(ShowRealLocationLabelVisible == true)
+                    if (ShowRealLocationLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "t");
                     }
@@ -4140,7 +4143,7 @@ namespace CoRectSys
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "f");
                     }
-                    if(ShowDataLocationLabelVisible == true)
+                    if (ShowDataLocationLabelVisible == true)
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "t");
                     }
@@ -4411,7 +4414,7 @@ namespace CoRectSys
             else if (ShowUserAssistToolTips == false)
             {
                 configfile.WriteLine("ShowUserAssistToolTips,false");
-            }            
+            }
             if (OpenLastTimeProject == true)
             {
                 configfile.WriteLine("AutoLoadProject,{0}", TargetCRECPath);
@@ -4430,7 +4433,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("AutoSearch,false");
             }
-            if(RecentShownContents == true)
+            if (RecentShownContents == true)
             {
                 configfile.WriteLine("RecentShownContents,true");
             }
@@ -4466,6 +4469,7 @@ namespace CoRectSys
                 dataGridView1BackgroundPictureBox.Width = Convert.ToInt32(FormSize.Width);
                 dataGridView1BackgroundPictureBox.Height = Convert.ToInt32(FormSize.Height - 35 * DpiScale);
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
+                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
             }
             dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
@@ -4497,7 +4501,7 @@ namespace CoRectSys
             CenterLine.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5), Convert.ToInt32(54 * DpiScale));
             CenterLine.Height = Convert.ToInt32(FormSize.Height - 100 * DpiScale);
             ObjectNameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowObjectName.Location.Y);
-            ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10*DpiScale), ShowObjectName.Location.Y);
+            ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10 * DpiScale), ShowObjectName.Location.Y);
             EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditNameTextBox.Location.Y);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
             ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
@@ -4569,8 +4573,8 @@ namespace CoRectSys
                 EditTag3TextBox.Width = Convert.ToInt32(FormSize.Width - 1120 * DpiScale) / 2;
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
-            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height)/2);
-            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y+ (EditMCTextBox.Height - CheckSameMCButton.Height)/2);
+            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
+            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
             ShowPicturesButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), ShowPicturesButton.Location.Y);
             SelectThumbnailButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), SelectThumbnailButton.Location.Y);
@@ -4578,7 +4582,7 @@ namespace CoRectSys
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得
         {
-            CurrentDPI = e.DeviceDpiNew/96.0;
+            CurrentDPI = e.DeviceDpiNew / 96.0;
         }
         private void MainForm_ResizeEnd(object sender, EventArgs e)// ウインドウサイズの変更・移動を取得
         {
@@ -4648,9 +4652,9 @@ namespace CoRectSys
                             MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
                         }
                         EditNameTextBox.Text = ThisName;
-                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                         EditIDTextBox.Text = ThisID;
-                        EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを開始
+                        EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                         AllowEditIDButton.Text = "編集不可";
                         ReissueUUIDToolStripMenuItem.Enabled = false;
                         EditMCTextBox.Text = ThisMC;
@@ -4716,9 +4720,9 @@ namespace CoRectSys
                         SearchOptionComboBox.SelectedIndex = 0;
                         // 入力フォームをリセット
                         EditNameTextBox.ResetText();
-                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged; // ID重複確認イベントを停止
+                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                         EditIDTextBox.ResetText();
-                        EditIDTextBox.TextChanged += IDTextBox_TextChanged; // ID重複確認イベントを再開
+                        EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを再開
                         EditMCTextBox.ResetText();
                         EditRegistrationDateTextBox.ResetText();
                         EditCategoryTextBox.ResetText();
@@ -4739,7 +4743,7 @@ namespace CoRectSys
                         DetailsTextBox.ReadOnly = true;
                         ConfidentialDataTextBox.ReadOnly = true;
                         // 再度詳細情報を表示
-                        if(DataLoadingStatus == "true")
+                        if (DataLoadingStatus == "true")
                         {
                             DataLoadingStatus = "stop";
                         }
@@ -4769,7 +4773,7 @@ namespace CoRectSys
                     if (ThisID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
                     {
                         //MessageBox.Show(ThisID + "/" + Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value));
-                        if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+                        if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                         {
                             if (CheckEditingContents() == true)
                             {
@@ -4871,7 +4875,7 @@ namespace CoRectSys
         }
         private void ListUpdateContextStripMenuItem_Click(object sender, EventArgs e)// 一覧を更新
         {
-            if(DataLoadingStatus == "true")
+            if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
             }
@@ -4947,7 +4951,7 @@ namespace CoRectSys
             try
             {
                 string tempTargetListOutputPath = "";
-                if(Directory.Exists(TargetListOutputPath))
+                if (Directory.Exists(TargetListOutputPath))
                 {
                     tempTargetListOutputPath = TargetListOutputPath;
                 }
@@ -4988,13 +4992,13 @@ namespace CoRectSys
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = line.Substring(3).Replace(",","");
+                                        ListThisName = line.Substring(3).Replace(",", "");
                                         break;
                                     case "ID":
-                                        ListThisID = line.Substring(3).Replace(",","");
+                                        ListThisID = line.Substring(3).Replace(",", "");
                                         break;
                                     case "MC":
-                                        ListThisMC = line.Substring(3).Replace(",","");
+                                        ListThisMC = line.Substring(3).Replace(",", "");
                                         break;
                                     case "登録日":
                                         ListRegistrationDate = line.Substring(4).Replace(",", "");
@@ -5392,7 +5396,7 @@ namespace CoRectSys
         }
         private void ShowListButton_Click(object sender, EventArgs e)// List表示モードに戻る
         {
-            if (SaveAndCloseEditButton.Visible == true) // 編集中の場合は警告を表示
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)
                 {
@@ -5516,7 +5520,7 @@ namespace CoRectSys
         }
         #endregion
 
-        private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e) // 最近表示した項目
+        private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
 
         }
