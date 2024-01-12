@@ -3915,11 +3915,11 @@ namespace CoRectSys
         {
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Clear();
-            if (AutoSearch == true)
+            if (AutoSearch == true)// 自動検索が有効な場合
             {
                 SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+                LoadGrid();// 再度読み込み
             }
-            LoadGrid();// 再度読み込み
         }
         private bool SearchMethod(string Keywords)// 検索窓の入力内容とキーワードが指定の検索方法で一致するか判定
         {
@@ -4502,31 +4502,31 @@ namespace CoRectSys
             CenterLine.Height = Convert.ToInt32(FormSize.Height - 100 * DpiScale);
             ObjectNameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowObjectName.Location.Y);
             ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10 * DpiScale), ShowObjectName.Location.Y);
-            EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditNameTextBox.Location.Y);
+            EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowObjectName.Location.Y);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
             ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
-            EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditIDTextBox.Location.Y);
+            EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowID.Location.Y);
             MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowMC.Location.Y);
             ShowMC.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + MCLabel.Width - 10 * DpiScale), ShowMC.Location.Y);
-            EditMCTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditMCTextBox.Location.Y);
+            EditMCTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowMC.Location.Y);
             RegistrationDateLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowRegistrationDate.Location.Y);
             ShowRegistrationDate.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RegistrationDateLabel.Width - 10 * DpiScale), ShowRegistrationDate.Location.Y);
-            EditRegistrationDateTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditRegistrationDateTextBox.Location.Y);
+            EditRegistrationDateTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowRegistrationDate.Location.Y);
             CategoryLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowCategory.Location.Y);
             ShowCategory.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + CategoryLabel.Width - 10 * DpiScale), ShowCategory.Location.Y);
-            EditCategoryTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), EditCategoryTextBox.Location.Y);
-            Tag1NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Tag1NameLabel.Location.Y);
+            EditCategoryTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowCategory.Location.Y);
+            Tag1NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag1.Location.Y);
             ShowTag1.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag1.Location.Y);
-            EditTag1TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), EditTag1TextBox.Location.Y);
-            Tag2NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Tag2NameLabel.Location.Y);
+            EditTag1TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag1.Location.Y);
+            Tag2NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag2.Location.Y);
             ShowTag2.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag2.Location.Y);
-            EditTag2TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), EditTag2TextBox.Location.Y);
-            Tag3NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Tag3NameLabel.Location.Y);
+            EditTag2TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag2.Location.Y);
+            Tag3NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag3.Location.Y);
             ShowTag3.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag3.Location.Y);
-            EditTag3TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), EditTag3TextBox.Location.Y);
+            EditTag3TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag3.Location.Y);
             RealLocationLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowRealLocation.Location.Y);
             ShowRealLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RealLocationLabel.Width - 10 * DpiScale), ShowRealLocation.Location.Y);
-            EditRealLocationTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 185 * DpiScale), EditRealLocationTextBox.Location.Y);
+            EditRealLocationTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 185 * DpiScale), ShowRealLocation.Location.Y);
             ShowDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowDataLocation.Location.Y);
             OpenDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 190 * DpiScale), OpenDataLocation.Location.Y);
             CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 310 * DpiScale), CopyDataLocationPath.Location.Y);

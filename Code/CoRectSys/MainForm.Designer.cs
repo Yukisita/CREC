@@ -30,16 +30,16 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle25 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle26 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle27 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle28 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle29 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle30 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle31 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle32 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileMenuStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -758,8 +758,8 @@
             // TargetPath
             // 
             this.TargetPath.DataPropertyName = "TargetPath";
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle2;
             this.TargetPath.HeaderText = "TargetPath";
             this.TargetPath.MinimumWidth = 100;
             this.TargetPath.Name = "TargetPath";
@@ -770,8 +770,8 @@
             // IDList
             // 
             this.IDList.DataPropertyName = "IDList";
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.IDList.DefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
             this.IDList.HeaderText = "ID";
             this.IDList.MinimumWidth = 100;
             this.IDList.Name = "IDList";
@@ -782,8 +782,8 @@
             // MCList
             // 
             this.MCList.DataPropertyName = "MCList";
-            dataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.MCList.DefaultCellStyle = dataGridViewCellStyle25;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
             this.MCList.HeaderText = "管理コード";
             this.MCList.MinimumWidth = 200;
             this.MCList.Name = "MCList";
@@ -793,8 +793,8 @@
             // ObjectNameList
             // 
             this.ObjectNameList.DataPropertyName = "ObjectNameList";
-            dataGridViewCellStyle26.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle26;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
             this.ObjectNameList.HeaderText = "名称";
             this.ObjectNameList.MinimumWidth = 100;
             this.ObjectNameList.Name = "ObjectNameList";
@@ -815,8 +815,8 @@
             // CategoryList
             // 
             this.CategoryList.DataPropertyName = "CategoryList";
-            dataGridViewCellStyle27.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle27;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
             this.CategoryList.HeaderText = "カテゴリ";
             this.CategoryList.MinimumWidth = 100;
             this.CategoryList.Name = "CategoryList";
@@ -827,8 +827,8 @@
             // Tag1List
             // 
             this.Tag1List.DataPropertyName = "Tag1List";
-            dataGridViewCellStyle28.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle28;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
             this.Tag1List.HeaderText = "Tag1";
             this.Tag1List.MinimumWidth = 6;
             this.Tag1List.Name = "Tag1List";
@@ -839,8 +839,8 @@
             // Tag2List
             // 
             this.Tag2List.DataPropertyName = "Tag2List";
-            dataGridViewCellStyle29.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle29;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
             this.Tag2List.HeaderText = "Tag2";
             this.Tag2List.MinimumWidth = 6;
             this.Tag2List.Name = "Tag2List";
@@ -851,8 +851,8 @@
             // Tag3List
             // 
             this.Tag3List.DataPropertyName = "Tag3List";
-            dataGridViewCellStyle30.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle30;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
             this.Tag3List.HeaderText = "Tag3";
             this.Tag3List.MinimumWidth = 6;
             this.Tag3List.Name = "Tag3List";
@@ -863,8 +863,8 @@
             // InventoryList
             // 
             this.InventoryList.DataPropertyName = "InventoryList";
-            dataGridViewCellStyle31.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle31;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
             this.InventoryList.HeaderText = "在庫数";
             this.InventoryList.MinimumWidth = 6;
             this.InventoryList.Name = "InventoryList";
@@ -875,8 +875,8 @@
             // InventoryStatusList
             // 
             this.InventoryStatusList.DataPropertyName = "InventoryStatusList";
-            dataGridViewCellStyle32.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle32;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
             this.InventoryStatusList.HeaderText = "在庫状況";
             this.InventoryStatusList.MinimumWidth = 6;
             this.InventoryStatusList.Name = "InventoryStatusList";
@@ -1007,7 +1007,7 @@
             this.ShowTag1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowTag1.AutoSize = true;
             this.ShowTag1.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowTag1.Location = new System.Drawing.Point(1080, 258);
+            this.ShowTag1.Location = new System.Drawing.Point(1080, 260);
             this.ShowTag1.Name = "ShowTag1";
             this.ShowTag1.Size = new System.Drawing.Size(0, 30);
             this.ShowTag1.TabIndex = 15;
@@ -1029,7 +1029,7 @@
             this.ShowTag3.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowTag3.AutoSize = true;
             this.ShowTag3.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowTag3.Location = new System.Drawing.Point(1080, 338);
+            this.ShowTag3.Location = new System.Drawing.Point(1080, 340);
             this.ShowTag3.Name = "ShowTag3";
             this.ShowTag3.Size = new System.Drawing.Size(0, 30);
             this.ShowTag3.TabIndex = 17;
@@ -1320,7 +1320,7 @@
             // 
             this.Tag2NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Tag2NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag2NameLabel.Location = new System.Drawing.Point(925, 299);
+            this.Tag2NameLabel.Location = new System.Drawing.Point(925, 300);
             this.Tag2NameLabel.Name = "Tag2NameLabel";
             this.Tag2NameLabel.Size = new System.Drawing.Size(160, 30);
             this.Tag2NameLabel.TabIndex = 51;
@@ -1342,7 +1342,7 @@
             // 
             this.Tag1NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Tag1NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag1NameLabel.Location = new System.Drawing.Point(925, 258);
+            this.Tag1NameLabel.Location = new System.Drawing.Point(925, 260);
             this.Tag1NameLabel.Name = "Tag1NameLabel";
             this.Tag1NameLabel.Size = new System.Drawing.Size(160, 30);
             this.Tag1NameLabel.TabIndex = 50;
@@ -1644,7 +1644,7 @@
             this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(930, 50);
             this.ShowSelectedItemInformationButton.Name = "ShowSelectedItemInformationButton";
-            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(254, 40);
+            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(254, 39);
             this.ShowSelectedItemInformationButton.TabIndex = 83;
             this.ShowSelectedItemInformationButton.Text = "選択項目の情報を表示";
             this.ShowSelectedItemInformationButton.UseVisualStyleBackColor = true;

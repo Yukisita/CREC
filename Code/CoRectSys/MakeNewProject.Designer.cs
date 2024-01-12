@@ -600,7 +600,7 @@
             this.ShowObjectNameLabelVisibleCheckBox.AutoSize = true;
             this.ShowObjectNameLabelVisibleCheckBox.Checked = true;
             this.ShowObjectNameLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowObjectNameLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowObjectNameLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowObjectNameLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 140);
             this.ShowObjectNameLabelVisibleCheckBox.Name = "ShowObjectNameLabelVisibleCheckBox";
             this.ShowObjectNameLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -623,7 +623,7 @@
             this.ShowIDLabelVisibleCheckBox.AutoSize = true;
             this.ShowIDLabelVisibleCheckBox.Checked = true;
             this.ShowIDLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowIDLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowIDLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowIDLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 189);
             this.ShowIDLabelVisibleCheckBox.Name = "ShowIDLabelVisibleCheckBox";
             this.ShowIDLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -635,7 +635,7 @@
             this.ShowMCLabelVisibleCheckBox.AutoSize = true;
             this.ShowMCLabelVisibleCheckBox.Checked = true;
             this.ShowMCLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowMCLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowMCLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowMCLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 235);
             this.ShowMCLabelVisibleCheckBox.Name = "ShowMCLabelVisibleCheckBox";
             this.ShowMCLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -647,7 +647,7 @@
             this.ShowRegistrationDateLabelVisibleCheckBox.AutoSize = true;
             this.ShowRegistrationDateLabelVisibleCheckBox.Checked = true;
             this.ShowRegistrationDateLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowRegistrationDateLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowRegistrationDateLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowRegistrationDateLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 276);
             this.ShowRegistrationDateLabelVisibleCheckBox.Name = "ShowRegistrationDateLabelVisibleCheckBox";
             this.ShowRegistrationDateLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -659,7 +659,7 @@
             this.ShowCategoryLabelVisibleCheckBox.AutoSize = true;
             this.ShowCategoryLabelVisibleCheckBox.Checked = true;
             this.ShowCategoryLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowCategoryLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowCategoryLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowCategoryLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 321);
             this.ShowCategoryLabelVisibleCheckBox.Name = "ShowCategoryLabelVisibleCheckBox";
             this.ShowCategoryLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -671,7 +671,7 @@
             this.Tag1NameVisibleCheckBox.AutoSize = true;
             this.Tag1NameVisibleCheckBox.Checked = true;
             this.Tag1NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.Tag1NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag1NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Tag1NameVisibleCheckBox.Location = new System.Drawing.Point(1188, 359);
             this.Tag1NameVisibleCheckBox.Name = "Tag1NameVisibleCheckBox";
             this.Tag1NameVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -683,7 +683,7 @@
             this.Tag2NameVisibleCheckBox.AutoSize = true;
             this.Tag2NameVisibleCheckBox.Checked = true;
             this.Tag2NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.Tag2NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag2NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Tag2NameVisibleCheckBox.Location = new System.Drawing.Point(1188, 404);
             this.Tag2NameVisibleCheckBox.Name = "Tag2NameVisibleCheckBox";
             this.Tag2NameVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -695,7 +695,7 @@
             this.Tag3NameVisibleCheckBox.AutoSize = true;
             this.Tag3NameVisibleCheckBox.Checked = true;
             this.Tag3NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.Tag3NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag3NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Tag3NameVisibleCheckBox.Location = new System.Drawing.Point(1188, 452);
             this.Tag3NameVisibleCheckBox.Name = "Tag3NameVisibleCheckBox";
             this.Tag3NameVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -707,7 +707,7 @@
             this.ShowRealLocationLabelVisibleCheckBox.AutoSize = true;
             this.ShowRealLocationLabelVisibleCheckBox.Checked = true;
             this.ShowRealLocationLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowRealLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowRealLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowRealLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 493);
             this.ShowRealLocationLabelVisibleCheckBox.Name = "ShowRealLocationLabelVisibleCheckBox";
             this.ShowRealLocationLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
@@ -719,7 +719,7 @@
             this.ShowDataLocationLabelVisibleCheckBox.AutoSize = true;
             this.ShowDataLocationLabelVisibleCheckBox.Checked = true;
             this.ShowDataLocationLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShowDataLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowDataLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowDataLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1188, 541);
             this.ShowDataLocationLabelVisibleCheckBox.Name = "ShowDataLocationLabelVisibleCheckBox";
             this.ShowDataLocationLabelVisibleCheckBox.Size = new System.Drawing.Size(15, 14);
