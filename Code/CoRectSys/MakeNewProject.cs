@@ -144,6 +144,10 @@ namespace CoRectSys
                     sw.Write("E");
                 }
                 sw.Write('\n');
+                // 圧縮方法
+                sw.Write("CompressType,");
+                sw.Write(Convert.ToString(CompressTypeComboBox.SelectedIndex));
+                sw.Write('\n');
                 // 一覧出力先の設定
                 if (EditListOutputLocationTextBox.Text.Length == 0)
                 {
@@ -410,6 +414,8 @@ namespace CoRectSys
         }
         private void MakeNewProject_Load(object sender, EventArgs e)// 既存の.crecを読み込み
         {
+            // 必要な項目を初期化
+            CompressTypeComboBox.SelectedIndex = 0;
             if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
                 MakeNewProjectButton.Text = "保存";
@@ -461,6 +467,17 @@ namespace CoRectSys
                             else
                             {
                                 EditedBackUpCheckBox.Checked = false;
+                            }
+                            break;
+                        case "CompressType":
+                            try
+                            {
+                                CompressTypeComboBox.SelectedIndex = Convert.ToInt32(cols[1]);
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Windows.Forms.MessageBox.Show(ex.Message);
+                                CompressTypeComboBox.SelectedIndex = 1;
                             }
                             break;
                         case "Listoutputlocation":

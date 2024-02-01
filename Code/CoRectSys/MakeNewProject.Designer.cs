@@ -91,6 +91,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.TSVOutputRadioButton = new System.Windows.Forms.RadioButton();
             this.CSVOutputRadioButton = new System.Windows.Forms.RadioButton();
+            this.CompressTypeLabel = new System.Windows.Forms.Label();
+            this.CompressTypeComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -108,7 +110,7 @@
             // 
             this.ProjectLocation.AutoSize = true;
             this.ProjectLocation.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjectLocation.Location = new System.Drawing.Point(5, 112);
+            this.ProjectLocation.Location = new System.Drawing.Point(5, 94);
             this.ProjectLocation.Name = "ProjectLocation";
             this.ProjectLocation.Size = new System.Drawing.Size(99, 41);
             this.ProjectLocation.TabIndex = 1;
@@ -118,7 +120,7 @@
             // 
             this.BackupLocation.AutoSize = true;
             this.BackupLocation.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BackupLocation.Location = new System.Drawing.Point(5, 234);
+            this.BackupLocation.Location = new System.Drawing.Point(5, 214);
             this.BackupLocation.Name = "BackupLocation";
             this.BackupLocation.Size = new System.Drawing.Size(261, 41);
             this.BackupLocation.TabIndex = 2;
@@ -161,7 +163,7 @@
             // 
             this.MakeNewProjectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MakeNewProjectButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.MakeNewProjectButton.Location = new System.Drawing.Point(1152, 582);
+            this.MakeNewProjectButton.Location = new System.Drawing.Point(1152, 627);
             this.MakeNewProjectButton.Name = "MakeNewProjectButton";
             this.MakeNewProjectButton.Size = new System.Drawing.Size(74, 40);
             this.MakeNewProjectButton.TabIndex = 18;
@@ -181,19 +183,19 @@
             // EditProjectLocationTextBox
             // 
             this.EditProjectLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditProjectLocationTextBox.Location = new System.Drawing.Point(5, 179);
+            this.EditProjectLocationTextBox.Location = new System.Drawing.Point(5, 161);
             this.EditProjectLocationTextBox.MaximumSize = new System.Drawing.Size(3480, 35);
             this.EditProjectLocationTextBox.Name = "EditProjectLocationTextBox";
-            this.EditProjectLocationTextBox.Size = new System.Drawing.Size(631, 36);
+            this.EditProjectLocationTextBox.Size = new System.Drawing.Size(631, 35);
             this.EditProjectLocationTextBox.TabIndex = 3;
             // 
             // EditBackupLocationTextBox
             // 
             this.EditBackupLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditBackupLocationTextBox.Location = new System.Drawing.Point(5, 304);
+            this.EditBackupLocationTextBox.Location = new System.Drawing.Point(5, 284);
             this.EditBackupLocationTextBox.MaximumSize = new System.Drawing.Size(3480, 35);
             this.EditBackupLocationTextBox.Name = "EditBackupLocationTextBox";
-            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(631, 36);
+            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(631, 35);
             this.EditBackupLocationTextBox.TabIndex = 5;
             // 
             // EditTag1NameTextBox
@@ -229,7 +231,7 @@
             // ProjectLocationReferenceButton
             // 
             this.ProjectLocationReferenceButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjectLocationReferenceButton.Location = new System.Drawing.Point(93, 111);
+            this.ProjectLocationReferenceButton.Location = new System.Drawing.Point(93, 93);
             this.ProjectLocationReferenceButton.Name = "ProjectLocationReferenceButton";
             this.ProjectLocationReferenceButton.Size = new System.Drawing.Size(74, 40);
             this.ProjectLocationReferenceButton.TabIndex = 2;
@@ -240,7 +242,7 @@
             // BackupLocationReferenceButton
             // 
             this.BackupLocationReferenceButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BackupLocationReferenceButton.Location = new System.Drawing.Point(253, 234);
+            this.BackupLocationReferenceButton.Location = new System.Drawing.Point(253, 214);
             this.BackupLocationReferenceButton.Name = "BackupLocationReferenceButton";
             this.BackupLocationReferenceButton.Size = new System.Drawing.Size(74, 40);
             this.BackupLocationReferenceButton.TabIndex = 4;
@@ -252,7 +254,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(8, 152);
+            this.label1.Location = new System.Drawing.Point(8, 134);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(458, 24);
             this.label1.TabIndex = 42;
@@ -262,7 +264,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(8, 275);
+            this.label2.Location = new System.Drawing.Point(8, 255);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(458, 24);
             this.label2.TabIndex = 42;
@@ -272,7 +274,7 @@
             // 
             this.AutoBackUp.AutoSize = true;
             this.AutoBackUp.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoBackUp.Location = new System.Drawing.Point(5, 343);
+            this.AutoBackUp.Location = new System.Drawing.Point(5, 323);
             this.AutoBackUp.Name = "AutoBackUp";
             this.AutoBackUp.Size = new System.Drawing.Size(423, 41);
             this.AutoBackUp.TabIndex = 43;
@@ -282,7 +284,7 @@
             // 
             this.StartUpBackUpCheckBox.AutoSize = true;
             this.StartUpBackUpCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.StartUpBackUpCheckBox.Location = new System.Drawing.Point(12, 387);
+            this.StartUpBackUpCheckBox.Location = new System.Drawing.Point(12, 367);
             this.StartUpBackUpCheckBox.Name = "StartUpBackUpCheckBox";
             this.StartUpBackUpCheckBox.Size = new System.Drawing.Size(88, 32);
             this.StartUpBackUpCheckBox.TabIndex = 44;
@@ -293,7 +295,7 @@
             // 
             this.CloseBackUpCheckBox.AutoSize = true;
             this.CloseBackUpCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseBackUpCheckBox.Location = new System.Drawing.Point(106, 387);
+            this.CloseBackUpCheckBox.Location = new System.Drawing.Point(106, 367);
             this.CloseBackUpCheckBox.Name = "CloseBackUpCheckBox";
             this.CloseBackUpCheckBox.Size = new System.Drawing.Size(88, 32);
             this.CloseBackUpCheckBox.TabIndex = 45;
@@ -304,7 +306,7 @@
             // 
             this.EditedBackUpCheckBox.AutoSize = true;
             this.EditedBackUpCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedBackUpCheckBox.Location = new System.Drawing.Point(200, 387);
+            this.EditedBackUpCheckBox.Location = new System.Drawing.Point(200, 367);
             this.EditedBackUpCheckBox.Name = "EditedBackUpCheckBox";
             this.EditedBackUpCheckBox.Size = new System.Drawing.Size(145, 32);
             this.EditedBackUpCheckBox.TabIndex = 46;
@@ -315,7 +317,7 @@
             // 
             this.EditedListOutputCheckBox.AutoSize = true;
             this.EditedListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(200, 587);
+            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(200, 623);
             this.EditedListOutputCheckBox.Name = "EditedListOutputCheckBox";
             this.EditedListOutputCheckBox.Size = new System.Drawing.Size(145, 32);
             this.EditedListOutputCheckBox.TabIndex = 54;
@@ -326,7 +328,7 @@
             // 
             this.CloseListOutputCheckBox.AutoSize = true;
             this.CloseListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(106, 587);
+            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(106, 623);
             this.CloseListOutputCheckBox.Name = "CloseListOutputCheckBox";
             this.CloseListOutputCheckBox.Size = new System.Drawing.Size(88, 32);
             this.CloseListOutputCheckBox.TabIndex = 53;
@@ -337,7 +339,7 @@
             // 
             this.StartUpListOutputCheckBox.AutoSize = true;
             this.StartUpListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.StartUpListOutputCheckBox.Location = new System.Drawing.Point(12, 587);
+            this.StartUpListOutputCheckBox.Location = new System.Drawing.Point(12, 623);
             this.StartUpListOutputCheckBox.Name = "StartUpListOutputCheckBox";
             this.StartUpListOutputCheckBox.Size = new System.Drawing.Size(88, 32);
             this.StartUpListOutputCheckBox.TabIndex = 52;
@@ -348,7 +350,7 @@
             // 
             this.AutoListOutput.AutoSize = true;
             this.AutoListOutput.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoListOutput.Location = new System.Drawing.Point(5, 543);
+            this.AutoListOutput.Location = new System.Drawing.Point(5, 579);
             this.AutoListOutput.Name = "AutoListOutput";
             this.AutoListOutput.Size = new System.Drawing.Size(450, 41);
             this.AutoListOutput.TabIndex = 51;
@@ -358,7 +360,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label4.Location = new System.Drawing.Point(8, 480);
+            this.label4.Location = new System.Drawing.Point(8, 516);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(464, 24);
             this.label4.TabIndex = 50;
@@ -367,7 +369,7 @@
             // ListOutputLocationReferenceButton
             // 
             this.ListOutputLocationReferenceButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ListOutputLocationReferenceButton.Location = new System.Drawing.Point(284, 437);
+            this.ListOutputLocationReferenceButton.Location = new System.Drawing.Point(284, 473);
             this.ListOutputLocationReferenceButton.Name = "ListOutputLocationReferenceButton";
             this.ListOutputLocationReferenceButton.Size = new System.Drawing.Size(74, 40);
             this.ListOutputLocationReferenceButton.TabIndex = 6;
@@ -378,17 +380,17 @@
             // EditListOutputLocationTextBox
             // 
             this.EditListOutputLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditListOutputLocationTextBox.Location = new System.Drawing.Point(5, 504);
+            this.EditListOutputLocationTextBox.Location = new System.Drawing.Point(5, 540);
             this.EditListOutputLocationTextBox.MaximumSize = new System.Drawing.Size(3480, 35);
             this.EditListOutputLocationTextBox.Name = "EditListOutputLocationTextBox";
-            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(631, 36);
+            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(631, 35);
             this.EditListOutputLocationTextBox.TabIndex = 7;
             // 
             // ListOutputLocation
             // 
             this.ListOutputLocation.AutoSize = true;
             this.ListOutputLocation.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ListOutputLocation.Location = new System.Drawing.Point(7, 437);
+            this.ListOutputLocation.Location = new System.Drawing.Point(7, 473);
             this.ListOutputLocation.Name = "ListOutputLocation";
             this.ListOutputLocation.Size = new System.Drawing.Size(288, 41);
             this.ListOutputLocation.TabIndex = 47;
@@ -398,7 +400,7 @@
             // 
             this.OpenListAfterOutputCheckBox.AutoSize = true;
             this.OpenListAfterOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenListAfterOutputCheckBox.Location = new System.Drawing.Point(461, 545);
+            this.OpenListAfterOutputCheckBox.Location = new System.Drawing.Point(461, 581);
             this.OpenListAfterOutputCheckBox.Name = "OpenListAfterOutputCheckBox";
             this.OpenListAfterOutputCheckBox.Size = new System.Drawing.Size(145, 32);
             this.OpenListAfterOutputCheckBox.TabIndex = 55;
@@ -592,7 +594,7 @@
             this.CenterLine.Location = new System.Drawing.Point(655, 9);
             this.CenterLine.Margin = new System.Windows.Forms.Padding(0);
             this.CenterLine.Name = "CenterLine";
-            this.CenterLine.Size = new System.Drawing.Size(2, 600);
+            this.CenterLine.Size = new System.Drawing.Size(2, 645);
             this.CenterLine.TabIndex = 68;
             // 
             // ShowObjectNameLabelVisibleCheckBox
@@ -730,7 +732,7 @@
             // 
             this.groupBox1.Controls.Add(this.TSVOutputRadioButton);
             this.groupBox1.Controls.Add(this.CSVOutputRadioButton);
-            this.groupBox1.Location = new System.Drawing.Point(537, 439);
+            this.groupBox1.Location = new System.Drawing.Point(537, 475);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(99, 65);
             this.groupBox1.TabIndex = 80;
@@ -760,12 +762,37 @@
             this.CSVOutputRadioButton.Text = "CSV形式";
             this.CSVOutputRadioButton.UseVisualStyleBackColor = true;
             // 
+            // CompressTypeLabel
+            // 
+            this.CompressTypeLabel.AutoSize = true;
+            this.CompressTypeLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CompressTypeLabel.Location = new System.Drawing.Point(5, 402);
+            this.CompressTypeLabel.Name = "CompressTypeLabel";
+            this.CompressTypeLabel.Size = new System.Drawing.Size(234, 41);
+            this.CompressTypeLabel.TabIndex = 81;
+            this.CompressTypeLabel.Text = "ファイル圧縮方法";
+            // 
+            // CompressTypeComboBox
+            // 
+            this.CompressTypeComboBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CompressTypeComboBox.FormattingEnabled = true;
+            this.CompressTypeComboBox.Items.AddRange(new object[] {
+            "単一ファイルに圧縮",
+            "項目ごとに圧縮",
+            "圧縮なし"});
+            this.CompressTypeComboBox.Location = new System.Drawing.Point(244, 403);
+            this.CompressTypeComboBox.Name = "CompressTypeComboBox";
+            this.CompressTypeComboBox.Size = new System.Drawing.Size(218, 36);
+            this.CompressTypeComboBox.TabIndex = 82;
+            // 
             // MakeNewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(1264, 632);
+            this.ClientSize = new System.Drawing.Size(1264, 677);
+            this.Controls.Add(this.CompressTypeComboBox);
+            this.Controls.Add(this.CompressTypeLabel);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ShowDataLocationLabelVisibleCheckBox);
             this.Controls.Add(this.ShowRealLocationLabelVisibleCheckBox);
@@ -902,5 +929,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton TSVOutputRadioButton;
         private System.Windows.Forms.RadioButton CSVOutputRadioButton;
+        private System.Windows.Forms.Label CompressTypeLabel;
+        private System.Windows.Forms.ComboBox CompressTypeComboBox;
     }
 }

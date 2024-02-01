@@ -39,6 +39,7 @@ namespace CoRectSys
         bool StartUpBackUp = false;// S、起動時にバックアップ
         bool EditedBackUp = false;// E、編集後にバックアップ
         bool CloseBackUp = false;// C、終了時にバックアップ
+        int CompressType = 1;// 圧縮方法
         bool StartUpListOutput = false;// S、起動時に一覧作成
         bool EditedListOutput = false;// E、編集後に一覧作成
         bool CloseListOutput = false;// C、終了時に一覧作成
@@ -178,6 +179,7 @@ namespace CoRectSys
         {
             SetFormLayout();// レイアウト初期化、DPI反映
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
+            dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
         }
 
         #region メニューバー関係
@@ -333,6 +335,17 @@ namespace CoRectSys
                         else
                         {
                             EditedBackUp = false;
+                        }
+                        break;
+                    case "CompressType":
+                        try
+                        {
+                            CompressType = Convert.ToInt32(cols[1]);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Windows.Forms.MessageBox.Show(ex.Message);
+                            CompressType = 1;
                         }
                         break;
                     case "Listoutputlocation":
@@ -919,7 +932,7 @@ namespace CoRectSys
         private void BackupToolStripMenuItem_Click(object sender, EventArgs e)// 手動バックアップ作成
         {
             BackUpMethod();
-            MakeBackUpZip();// ZIP圧縮を非同期で開始)
+            MakeBackUpZip();// ZIP圧縮を非同期で開始
         }
         private void OpenBackUpFolderToolStripMenuItem_Click(object sender, EventArgs e)// バックアップ保存場所を開く
         {
@@ -1798,19 +1811,26 @@ namespace CoRectSys
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                                                                       // バックアップ作成
                     DateTime DT = DateTime.Now;
-                    try
+                    if (CompressType == 0)
                     {
-                        ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                        try
+                        {
+                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                            BackupToolStripMenuItem.Text = "バックアップ作成";
+                            BackupToolStripMenuItem.Enabled = true;
+                            return;
+                        }
+                        Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                    }
+                    else if(CompressType == 1)
+                    {
 
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                        BackupToolStripMenuItem.Text = "バックアップ作成";
-                        BackupToolStripMenuItem.Enabled = true;
-                        return;
-                    }
-                    Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                 }
             }
         }
@@ -2108,7 +2128,6 @@ namespace CoRectSys
                             {
                                 if (SearchMethod(ListInventoryStatus) == true)
                                 {
-                                    //dataGridView1.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);旧バージョン・新バージョンで動作確認後削除
                                     ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                                 }
                             }
@@ -3211,9 +3230,19 @@ namespace CoRectSys
         }
         private void CheckSameMCButton_Click(object sender, EventArgs e)// 同一コードを検索
         {
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchOptionComboBox.SelectedIndex = 1;
             SearchMethodComboBox.SelectedIndex = 3;
             SearchFormTextBox.Text = EditMCTextBox.Text;
+            LoadGrid();
+            if(AutoSearch == true)
+            {
+                SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+                SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
+                SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            }
         }
         private void AddContentsMethod()// 新規にデータを追加する処理のメソッド
         {
@@ -4046,6 +4075,7 @@ namespace CoRectSys
                         sw.Write("E");
                     }
                     sw.Write('\n');
+                    sw.WriteLine("CompressType,{0}",CompressType);
                     sw.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
                     sw.Write("autoListoutput,");
                     if (StartUpListOutput == true)
@@ -4453,7 +4483,6 @@ namespace CoRectSys
         }
         private void SetFormLayout()// コントロールサイズ更新処理
         {
-            //float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
             float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
@@ -4502,9 +4531,11 @@ namespace CoRectSys
             CenterLine.Height = Convert.ToInt32(FormSize.Height - 100 * DpiScale);
             ObjectNameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowObjectName.Location.Y);
             ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10 * DpiScale), ShowObjectName.Location.Y);
+            EditNameTextBox.Height = Convert.ToInt32(36 * DpiScale);
             EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowObjectName.Location.Y);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
             ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
+            EditIDTextBox.Height = Convert.ToInt32(20 * DpiScale);
             EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowID.Location.Y);
             MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowMC.Location.Y);
             ShowMC.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + MCLabel.Width - 10 * DpiScale), ShowMC.Location.Y);
@@ -4824,25 +4855,70 @@ namespace CoRectSys
         }
         private async void MakeBackUpZip()// バックアップ処理のうちZIP圧縮の部分
         {
+            DateTime DT = DateTime.Now;
             BackupToolStripMenuItem.Text = "バックアップ作成中";
             BackupToolStripMenuItem.Enabled = false;
-            await Task.Run(() =>
+            // バックアップ作成
+            //現時点でのデータを複製
+            if (CompressType == 0)// 単一ZIPに圧縮
             {
-                // バックアップ作成
-                DateTime DT = DateTime.Now;
-                try
+                await Task.Run(() =>
                 {
-                    ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
-                }
-                catch (Exception ex)
+                    try
+                    {
+                        ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                        BackupToolStripMenuItem.Text = "バックアップ作成";
+                        BackupToolStripMenuItem.Enabled = true;
+                        return;
+                    }
+                    Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                });
+            }
+            else if (CompressType == 1)// コンテンツごとに圧縮
+            {
+                await Task.Run(() =>
                 {
-                    MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                    BackupToolStripMenuItem.Text = "バックアップ作成";
-                    BackupToolStripMenuItem.Enabled = true;
-                    return;
-                }
-                Directory.Delete(TargetBackupPath + "\\backuptmp", true);
-            });
+                    // バックアップ用フォルダ作成
+                    Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
+                    File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                    try
+                    {
+                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                        try
+                        {
+                            IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                            foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                            {
+                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\"+subFolder.Name+"\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                ZipFile.CreateFromDirectory("backuptmp\\"+subFolder.Name+"\\datatemp", "backuptmp\\"+subFolder.Name+"backupziptemp.zip");// 圧縮
+                                File.Move("backuptmp\\"+subFolder.Name+"backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                Directory.Delete("backuptmp\\"+subFolder.Name, true);// 削除
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                            BackupToolStripMenuItem.Text = "バックアップ作成";
+                            BackupToolStripMenuItem.Enabled = true;
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                        BackupToolStripMenuItem.Text = "バックアップ作成";
+                        BackupToolStripMenuItem.Enabled = true;
+                        return;
+                    }
+                    Directory.Delete("backuptmp", true);// 削除
+                });
+
+            }
+
             BackupToolStripMenuItem.Text = "バックアップ作成";
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
@@ -4902,7 +4978,7 @@ namespace CoRectSys
             if (StartUpBackUp == true)// 自動バックアップ
             {
                 BackUpMethod();
-                MakeBackUpZip();// ZIP圧縮を非同期で開始)
+                MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
         }
         #endregion
@@ -4932,10 +5008,17 @@ namespace CoRectSys
                 return;
             }
             BackupToolStripMenuItem.Text = "バックアップ作成中";
-            //現時点でのデータを複製
-            FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-            File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
-            //MakeBackUpZip();// ZIP圧縮を非同期で開始
+            if (CompressType == 0)
+            {
+                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
+            }
+            else if(CompressType == 2)
+            {
+                DateTime DT = DateTime.Now;
+                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);
+            }
         }
         #endregion
 
