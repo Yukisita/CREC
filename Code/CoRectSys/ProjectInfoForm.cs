@@ -35,7 +35,7 @@ namespace ColRECt
 
         private void ReadProjcetInformationMethod()// 管理ファイルを読み込んで表示
         {
-            if (TargetCRECPath.Length > 0) // 編集の場合は既存の.crecを読み込み
+            if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
@@ -45,7 +45,7 @@ namespace ColRECt
                     switch (cols[0])
                     {
                         case "projectname":
-                            ProjcetNameLabel.Text ="　名　称　：" + cols[1];
+                            ProjcetNameLabel.Text = "　名　称　：" + cols[1];
                             break;
                         case "created":
                             ProjcetCreatedDateLabel.Text = "　作　成　日　：" + cols[1];

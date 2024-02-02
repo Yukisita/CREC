@@ -927,7 +927,161 @@ namespace CoRectSys
             {
                 DataLoadingStatus = "stop";
             }
+            // 最近使用したプロジェクトに登録
+            try
+            {
+                IEnumerable<string> RecentlyOpendProjectList = null;
+                if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+                {
+                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    File.Delete("RecentlyOpenedProjectList.log");
+                    StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    streamWriter.WriteLine(TargetProjectName + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    int Count = 0;
+                    foreach (string line in RecentlyOpendProjectList)
+                    {
+                        if (line != TargetProjectName + "," + TargetCRECPath)// 重複を回避
+                        {
+                            streamWriter.WriteLine(line);
+                            Count++;
+                        }
+                        if (Count > 5)// 登録数を超えたらWhile抜ける
+                        {
+                            break;
+                        }
+                    }
+                    streamWriter.Close();
+                }
+                else// 履歴存在しない場合は新規作成
+                {
+                    StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    streamWriter.WriteLine(TargetProjectName + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    streamWriter.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("最近使用したプロジェクトの登録に失敗しました。\n" + ex.Message, "CREC");
+            }
             LoadGrid();
+        }
+        private void OpenRecentlyOpendProjectToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 最近使用したプロジェクト表示
+        {
+            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Clear();// 初期化
+            string[] RecentlyOpendProjectList = null;
+            if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            {
+                RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                for (int i = 0; i < RecentlyOpendProjectList.Length; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            ToolStripItem OpenRecentlyOpendProjectToolStripMenuItem0 = new ToolStripMenuItem();
+                            OpenRecentlyOpendProjectToolStripMenuItem0.Click += OpenRecentlyOpendProjectToolStripMenuItemSub_Click;
+                            OpenRecentlyOpendProjectToolStripMenuItem0.Text = RecentlyOpendProjectList[0].Split(',')[0];
+                            OpenRecentlyOpendProjectToolStripMenuItem0.ToolTipText = RecentlyOpendProjectList[0].Split(',')[1];
+                            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItem0);
+                            break;
+                        case 1:
+                            ToolStripItem OpenRecentlyOpendProjectToolStripMenuItem1 = new ToolStripMenuItem();
+                            OpenRecentlyOpendProjectToolStripMenuItem1.Click += OpenRecentlyOpendProjectToolStripMenuItemSub_Click;
+                            OpenRecentlyOpendProjectToolStripMenuItem1.Text = RecentlyOpendProjectList[1].Split(',')[0];
+                            OpenRecentlyOpendProjectToolStripMenuItem1.ToolTipText = RecentlyOpendProjectList[1].Split(',')[1];
+                            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItem1);
+                            break;
+                        case 2:
+                            ToolStripItem OpenRecentlyOpendProjectToolStripMenuItem2 = new ToolStripMenuItem();
+                            OpenRecentlyOpendProjectToolStripMenuItem2.Click += OpenRecentlyOpendProjectToolStripMenuItemSub_Click;
+                            OpenRecentlyOpendProjectToolStripMenuItem2.Text = RecentlyOpendProjectList[2].Split(',')[0];
+                            OpenRecentlyOpendProjectToolStripMenuItem2.ToolTipText = RecentlyOpendProjectList[2].Split(',')[1];
+                            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItem2);
+                            break;
+                        case 3:
+                            ToolStripItem OpenRecentlyOpendProjectToolStripMenuItem3 = new ToolStripMenuItem();
+                            OpenRecentlyOpendProjectToolStripMenuItem3.Click += OpenRecentlyOpendProjectToolStripMenuItemSub_Click;
+                            OpenRecentlyOpendProjectToolStripMenuItem3.Text = RecentlyOpendProjectList[3].Split(',')[0];
+                            OpenRecentlyOpendProjectToolStripMenuItem3.ToolTipText = RecentlyOpendProjectList[3].Split(',')[1];
+                            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItem3);
+                            break;
+                        case 4:
+                            ToolStripItem OpenRecentlyOpendProjectToolStripMenuItem4 = new ToolStripMenuItem();
+                            OpenRecentlyOpendProjectToolStripMenuItem4.Click += OpenRecentlyOpendProjectToolStripMenuItemSub_Click;
+                            OpenRecentlyOpendProjectToolStripMenuItem4.Text = RecentlyOpendProjectList[4].Split(',')[0];
+                            OpenRecentlyOpendProjectToolStripMenuItem4.ToolTipText = RecentlyOpendProjectList[4].Split(',')[1];
+                            OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItem4);
+                            break;
+                    }
+                }
+            }
+        }
+        private void OpenRecentlyOpendProjectToolStripMenuItemSub_Click(object sender, EventArgs e)// 最近使用したプロジェクト表示（イベント）
+        {
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+            {
+                if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
+                {
+                    switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
+                    {
+                        case 0:
+                            DataLoadingStatus = "false";
+                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                            break;
+                        case 1:
+                            DataLoadingStatus = "false";
+                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                            break;
+                        case 2:
+                            DataLoadingStatus = "false";
+                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                            break;
+                        case 3:
+                            DataLoadingStatus = "false";
+                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                            break;
+                        case 4:
+                            DataLoadingStatus = "false";
+                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
+                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
+                {
+                    case 0:
+                        DataLoadingStatus = "false";
+                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        break;
+                    case 1:
+                        DataLoadingStatus = "false";
+                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        break;
+                    case 2:
+                        DataLoadingStatus = "false";
+                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        break;
+                    case 3:
+                        DataLoadingStatus = "false";
+                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        break;
+                    case 4:
+                        DataLoadingStatus = "false";
+                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
+                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                        break;
+                }
+            }
         }
         private void BackupToolStripMenuItem_Click(object sender, EventArgs e)// 手動バックアップ作成
         {
@@ -1658,7 +1812,7 @@ namespace CoRectSys
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting,CurrentDPI);
+            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -1827,7 +1981,7 @@ namespace CoRectSys
                         }
                         Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                     }
-                    else if(CompressType == 1)
+                    else if (CompressType == 1)
                     {
 
                     }
@@ -3237,7 +3391,7 @@ namespace CoRectSys
             SearchMethodComboBox.SelectedIndex = 3;
             SearchFormTextBox.Text = EditMCTextBox.Text;
             LoadGrid();
-            if(AutoSearch == true)
+            if (AutoSearch == true)
             {
                 SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
                 SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
@@ -4075,7 +4229,7 @@ namespace CoRectSys
                         sw.Write("E");
                     }
                     sw.Write('\n');
-                    sw.WriteLine("CompressType,{0}",CompressType);
+                    sw.WriteLine("CompressType,{0}", CompressType);
                     sw.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
                     sw.Write("autoListoutput,");
                     if (StartUpListOutput == true)
@@ -4859,7 +5013,6 @@ namespace CoRectSys
             BackupToolStripMenuItem.Text = "バックアップ作成中";
             BackupToolStripMenuItem.Enabled = false;
             // バックアップ作成
-            //現時点でのデータを複製
             if (CompressType == 0)// 単一ZIPに圧縮
             {
                 await Task.Run(() =>
@@ -4888,23 +5041,22 @@ namespace CoRectSys
                     try
                     {
                         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
-                        try
+                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        foreach (System.IO.DirectoryInfo subFolder in subFolders)
                         {
-                            IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                            foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                            try
                             {
-                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\"+subFolder.Name+"\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                ZipFile.CreateFromDirectory("backuptmp\\"+subFolder.Name+"\\datatemp", "backuptmp\\"+subFolder.Name+"backupziptemp.zip");// 圧縮
-                                File.Move("backuptmp\\"+subFolder.Name+"backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                Directory.Delete("backuptmp\\"+subFolder.Name, true);// 削除
+                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = "バックアップ作成";
-                            BackupToolStripMenuItem.Enabled = true;
-                            return;
+                            catch// バックアップ失敗時はログに書き込み
+                            {
+                                StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                streamWriter.WriteLine(subFolder.FullName);
+                                streamWriter.Close();
+                            }
+                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                         }
                     }
                     catch (Exception ex)
@@ -4915,8 +5067,11 @@ namespace CoRectSys
                         return;
                     }
                     Directory.Delete("backuptmp", true);// 削除
+                    if (File.Exists("BackupErrorLog.txt"))
+                    {
+                        MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                    }
                 });
-
             }
 
             BackupToolStripMenuItem.Text = "バックアップ作成";
@@ -5013,7 +5168,7 @@ namespace CoRectSys
                 FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                 File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
             }
-            else if(CompressType == 2)
+            else if (CompressType == 2)
             {
                 DateTime DT = DateTime.Now;
                 FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);

@@ -62,7 +62,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/02/01";
+            this.ReleaseDate.Text = "Release: 2024/02/03";
             // 
             // VersionName
             // 
@@ -78,7 +78,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(185, 107);
+            this.label5.Location = new System.Drawing.Point(185, 113);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(136, 20);
             this.label5.TabIndex = 4;
