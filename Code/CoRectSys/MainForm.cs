@@ -971,7 +971,14 @@ namespace CoRectSys
             string[] RecentlyOpendProjectList = null;
             if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
             {
-                RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                try
+                {
+                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                }
                 for (int i = 0; i < RecentlyOpendProjectList.Length; i++)
                 {
                     switch (i)
@@ -1013,6 +1020,11 @@ namespace CoRectSys
                             break;
                     }
                 }
+                // 履歴削除を追加
+                ToolStripItem DeleteRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
+                DeleteRecentlyOpendProjectListToolStripMenuItem.Click += DeleteRecentlyOpendProjectListToolStripMenuItem_Click;
+                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = "履歴を削除";
+                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
             }
         }
         private void OpenRecentlyOpendProjectToolStripMenuItemSub_Click(object sender, EventArgs e)// 最近使用したプロジェクト表示（イベント）
@@ -1080,6 +1092,20 @@ namespace CoRectSys
                         TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
                         LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                         break;
+                }
+            }
+        }
+        private void DeleteRecentlyOpendProjectListToolStripMenuItem_Click(object sender, EventArgs e)// 最近使用したプロジェクトの履歴を削除（イベント）
+        {
+            if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            {
+                try
+                {
+                    File.Delete("RecentlyOpenedProjectList.log");
+                }
+                catch(Exception ex)
+                {
+                    System.Windows.Forms.MessageBox.Show("履歴削除に失敗しました。\n" + ex.Message, "CREC");
                 }
             }
         }
@@ -3418,10 +3444,8 @@ namespace CoRectSys
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-                                             // ID(UUID)を設定
             ThisID = Convert.ToString(Guid.NewGuid());
             EditIDTextBox.Text = ThisID;// UUIDを入力
-                                        // 現在時刻からMCを設定
             DateTime DT = DateTime.Now;
             EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
@@ -3439,6 +3463,7 @@ namespace CoRectSys
             FileStream.Close();
             FileStream = File.Create(TargetContentsPath + "\\confidentialdata.txt");
             FileStream.Close();
+            // 在庫管理を行うか確認
             DialogResult result = MessageBox.Show("在庫数管理を行いますか。", "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
