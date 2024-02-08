@@ -1,6 +1,6 @@
 ﻿/*
 MakeNewProjectForm
-Copyright (c) [2022-2023] [Yukisita Mfg.]
+Copyright (c) [2022-2024] [Yukisita Mfg.]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
@@ -19,7 +19,7 @@ namespace CoRectSys
 {
     public partial class MakeNewProject : Form
     {
-        string TargetCRECPath = ""; //管理ファイル（.crec）のファイルパス
+        string TargetCRECPath = "";//管理ファイル（.crec）のファイルパス
         string[] cols;// List等読み込み用
         string ColorSetting = "Blue";
         public string ReturnTargetProject { get; private set; } = "";
@@ -30,25 +30,25 @@ namespace CoRectSys
             ColorSetting = colorSetting;
             SetColorMethod();
         }
-        private void MakeNewProjectButton_Click(object sender, EventArgs e) // 保存してプロジェクト編集画面を閉じる
-        {             
+        private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
+        {
             // 内容を確認
-            int error = 0; // 入力内容に不備がない場合は0、不備を発見した場合は1に変更
-            if(EditProjectNameTextBox.TextLength == 0)
+            int error = 0;// 入力内容に不備がない場合は0、不備を発見した場合は1に変更
+            if (EditProjectNameTextBox.TextLength == 0)
             {
                 error = 1;
-                MessageBox.Show("プロジェクト名を空欄にすることはできません。","CREC");
+                MessageBox.Show("プロジェクト名を空欄にすることはできません。", "CREC");
             }
-            if(EditProjectLocationTextBox.TextLength == 0)
+            if (EditProjectLocationTextBox.TextLength == 0)
             {
                 error = 1;
-                MessageBox.Show("プロジェクトの作成場所を空欄にすることはできません。","CREC");
+                MessageBox.Show("プロジェクトの作成場所を空欄にすることはできません。", "CREC");
             }
 
             if (error == 0)// 記入内容に問題がなかった場合は.crsファイルを作成
             {
                 // プロジェクトデータ保管場所が存在するか判定し、作成
-                if (TargetCRECPath.Length == 0) // 新規プロジェクト作成の場合
+                if (TargetCRECPath.Length == 0)// 新規プロジェクト作成の場合
                 {
                     if (Directory.Exists(EditProjectLocationTextBox.Text))
                     {
@@ -60,14 +60,14 @@ namespace CoRectSys
                         {
                             Directory.CreateDirectory(EditProjectLocationTextBox.Text);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             MessageBox.Show("プロジェクトフォルダの作成に失敗しました。\n" + ex.Message, "CREC");
                             return;
                         }
                     }
                 }
-                else // 既存プロジェクト編集の場合
+                else// 既存プロジェクト編集の場合
                 {
                     if (Directory.Exists(EditProjectLocationTextBox.Text))
                     {
@@ -78,7 +78,7 @@ namespace CoRectSys
                         MessageBox.Show("指定されたプロジェクトフォルダが見つかりませんでした。", "CREC");
                     }
                 }
-                if (EditBackupLocationTextBox.Text.Length != 0) // バックアップ場所の作成
+                if (EditBackupLocationTextBox.Text.Length != 0)// バックアップ場所の作成
                 {
                     if (Directory.Exists(EditBackupLocationTextBox.Text))
                     {
@@ -97,13 +97,13 @@ namespace CoRectSys
                         }
                     }
                 }
-                if (TargetCRECPath.Length > 0) // 編集時は既存の.crecを削除
+                if (TargetCRECPath.Length > 0)// 編集時は既存の.crecを削除
                 {
                     try
                     {
                         File.Delete(TargetCRECPath);
                     }
-                    catch(Exception ex) 
+                    catch (Exception ex)
                     {
                         MessageBox.Show("既存の管理ファイルの削除に失敗しました。\n新規に管理ファイルを作成します。\n" + ex.Message, "CREC");
                     }
@@ -111,59 +111,63 @@ namespace CoRectSys
                 // crec出力先の設定
                 if (TargetCRECPath.Length > 0)
                 {
-                    
+
                 }
                 else
                 {
                     TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
                 }
                 StreamWriter sw = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
-                
-                sw.WriteLine("{0},{1}\n{2},{3}", "projectname", EditProjectNameTextBox.Text, "projectlocation", EditProjectLocationTextBox.Text );                
-               // バックアップ場所の設定
+
+                sw.WriteLine("{0},{1}\n{2},{3}", "projectname", EditProjectNameTextBox.Text, "projectlocation", EditProjectLocationTextBox.Text);
+                // バックアップ場所の設定
                 if (EditBackupLocationTextBox.Text.Length == 0)
                 {
                     sw.WriteLine("{0},{1}", "backuplocation", "null");
                 }
                 else
                 {
-                    sw.WriteLine("{0},{1}", "backuplocation", EditBackupLocationTextBox.Text );
+                    sw.WriteLine("{0},{1}", "backuplocation", EditBackupLocationTextBox.Text);
                 }
                 // 自動バックアップの設定
                 sw.Write("autobackup,");
-                if(StartUpBackUpCheckBox.Checked == true)
+                if (StartUpBackUpCheckBox.Checked == true)
                 {
                     sw.Write("S");
                 }
-                if(CloseBackUpCheckBox.Checked == true)
+                if (CloseBackUpCheckBox.Checked == true)
                 {
                     sw.Write("C");
                 }
-                if(EditedBackUpCheckBox.Checked == true)
+                if (EditedBackUpCheckBox.Checked == true)
                 {
                     sw.Write("E");
                 }
                 sw.Write('\n');
+                // 圧縮方法
+                sw.Write("CompressType,");
+                sw.Write(Convert.ToString(CompressTypeComboBox.SelectedIndex));
+                sw.Write('\n');
                 // 一覧出力先の設定
-                if(EditListOutputLocationTextBox.Text.Length==0)
+                if (EditListOutputLocationTextBox.Text.Length == 0)
                 {
-                    sw.WriteLine("{0},{1}", "Listoutputlocation","null");
+                    sw.WriteLine("{0},{1}", "Listoutputlocation", "null");
                 }
                 else
                 {
-                    sw.WriteLine("{0},{1}", "Listoutputlocation",EditListOutputLocationTextBox.Text);
+                    sw.WriteLine("{0},{1}", "Listoutputlocation", EditListOutputLocationTextBox.Text);
                 }
                 // 自動一覧出力の設定
                 sw.Write("autoListoutput,");
-                if(StartUpListOutputCheckBox.Checked == true)
+                if (StartUpListOutputCheckBox.Checked == true)
                 {
                     sw.Write("S");
                 }
-                if(CloseListOutputCheckBox.Checked == true)
+                if (CloseListOutputCheckBox.Checked == true)
                 {
                     sw.Write("C");
                 }
-                if(EditedListOutputCheckBox.Checked ==true)
+                if (EditedListOutputCheckBox.Checked == true)
                 {
                     sw.Write("E");
                 }
@@ -175,11 +179,11 @@ namespace CoRectSys
                 }
                 sw.Write('\n');
                 sw.Write("ListOutputFormat,");
-                if(CSVOutputRadioButton.Checked)
+                if (CSVOutputRadioButton.Checked)
                 {
                     sw.Write("CSV");
                 }
-                else if(TSVOutputRadioButton.Checked)
+                else if (TSVOutputRadioButton.Checked)
                 {
                     sw.Write("TSV");
                 }
@@ -188,23 +192,23 @@ namespace CoRectSys
                 DateTime DT = DateTime.Now;
                 sw.WriteLine("{0},{1}\n{2},{3}\n{4},{5}", "created", DT.ToString("yyyy/MM/dd hh:mm:ss"), "modified", DT.ToString("yyyy/MM/dd hh:mm:ss"), "accesssed", DT.ToString("yyyy/MM/dd hh:mm:ss"));
                 // 各ラベルの表示名設定を書き込み
-                if(EditShowObjectNameLabelTextBox.Text.Length > 0)
+                if (EditShowObjectNameLabelTextBox.Text.Length > 0)
                 {
-                    sw.Write("{0},{1},", "ShowObjectNameLabel",EditShowObjectNameLabelTextBox.Text);
+                    sw.Write("{0},{1},", "ShowObjectNameLabel", EditShowObjectNameLabelTextBox.Text);
                 }
                 else
                 {
                     sw.Write("{0},{1},", "ShowObjectNameLabel", "名称");
                 }
-                if(ShowObjectNameLabelVisibleCheckBox.Checked == true)
+                if (ShowObjectNameLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowObjectNameLabelVisibleCheckBox.Checked == false)
+                else if (ShowObjectNameLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditShowIDLabelTextBox.Text.Length > 0)
+                if (EditShowIDLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowIDLabel", EditShowIDLabelTextBox.Text);
                 }
@@ -212,15 +216,15 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "ShowIDLabel", "ID");
                 }
-                if(ShowIDLabelVisibleCheckBox.Checked == true)
+                if (ShowIDLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowIDLabelVisibleCheckBox.Checked == false)
+                else if (ShowIDLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditShowMCLabelTextBox.Text.Length > 0)
+                if (EditShowMCLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowMCLabel", EditShowMCLabelTextBox.Text);
                 }
@@ -228,15 +232,15 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "ShowMCLabel", "管理コード");
                 }
-                if(ShowMCLabelVisibleCheckBox.Checked == true)
+                if (ShowMCLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowMCLabelVisibleCheckBox.Checked == false)
+                else if (ShowMCLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditShowRegistrationDateLabelTextBox.Text.Length > 0)
+                if (EditShowRegistrationDateLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowRegistrationDateLabel", EditShowRegistrationDateLabelTextBox.Text);
                 }
@@ -244,15 +248,15 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "ShowRegistrationDateLabel", "登録日");
                 }
-                if(ShowRegistrationDateLabelVisibleCheckBox.Checked == true)
+                if (ShowRegistrationDateLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowRegistrationDateLabelVisibleCheckBox.Checked == false)
+                else if (ShowRegistrationDateLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditShowCategoryLabelTextBox.Text.Length > 0)
+                if (EditShowCategoryLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowCategoryLabel", EditShowCategoryLabelTextBox.Text);
                 }
@@ -260,15 +264,15 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "ShowCategoryLabel", "カテゴリ");
                 }
-                if(ShowCategoryLabelVisibleCheckBox.Checked == true)
+                if (ShowCategoryLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowCategoryLabelVisibleCheckBox.Checked == false)
+                else if (ShowCategoryLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditTag1NameTextBox.Text.Length > 0)
+                if (EditTag1NameTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "Tag1Name", EditTag1NameTextBox.Text);
                 }
@@ -276,15 +280,15 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "Tag1Name", "タグ1");
                 }
-                if(Tag1NameVisibleCheckBox.Checked == true)
+                if (Tag1NameVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(Tag1NameVisibleCheckBox.Checked == false)
+                else if (Tag1NameVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditTag2NameTextBox.Text.Length > 0)
+                if (EditTag2NameTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "Tag2Name", EditTag2NameTextBox.Text);
                 }
@@ -322,17 +326,17 @@ namespace CoRectSys
                 }
                 else
                 {
-                    sw.Write("{0},{1},", "ShowRealLocationLabel","現物保管場所");
+                    sw.Write("{0},{1},", "ShowRealLocationLabel", "現物保管場所");
                 }
-                if(ShowRealLocationLabelVisibleCheckBox.Checked == true)
+                if (ShowRealLocationLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowRealLocationLabelVisibleCheckBox.Checked == false)
+                else if (ShowRealLocationLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
-                if(EditShowDataLocationLabelTextBox.Text.Length>0)
+                if (EditShowDataLocationLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowDataLocationLabel", EditShowDataLocationLabelTextBox.Text);
                 }
@@ -340,11 +344,11 @@ namespace CoRectSys
                 {
                     sw.Write("{0},{1},", "ShowDataLocationLabel", "データ保管場所");
                 }
-                if(ShowDataLocationLabelVisibleCheckBox.Checked==true)
+                if (ShowDataLocationLabelVisibleCheckBox.Checked == true)
                 {
                     sw.Write("t\n");
                 }
-                else if(ShowDataLocationLabelVisibleCheckBox.Checked == false)
+                else if (ShowDataLocationLabelVisibleCheckBox.Checked == false)
                 {
                     sw.Write("f\n");
                 }
@@ -355,7 +359,7 @@ namespace CoRectSys
         }
         private void ProjectLocationReferenceButton_Click(object sender, EventArgs e)// プロジェクトの場所を参照
         {
-            if(EditProjectNameTextBox.Text.Length == 0)
+            if (EditProjectNameTextBox.Text.Length == 0)
             {
                 MessageBox.Show("先にプロジェクト名を入力してください。", "CREC");
                 return;
@@ -368,7 +372,7 @@ namespace CoRectSys
             openFolderDialog.CheckFileExists = false;
             if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
             {
-                if(TargetCRECPath.Length == 0)
+                if (TargetCRECPath.Length == 0)
                 {
                     EditProjectLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName) + "\\" + EditProjectNameTextBox.Text;
                 }
@@ -380,7 +384,7 @@ namespace CoRectSys
             }
             if (EditProjectLocationTextBox.Text == EditBackupLocationTextBox.Text)
             {
-                MessageBox.Show("プロジェクト場所とバックアップは同じフォルダに設定できません。","CREC");
+                MessageBox.Show("プロジェクト場所とバックアップは同じフォルダに設定できません。", "CREC");
                 EditProjectLocationTextBox.ResetText();
             }
         }
@@ -399,7 +403,7 @@ namespace CoRectSys
             openFolderDialog.CheckFileExists = false;
             if (openFolderDialog.ShowDialog() == DialogResult.OK)// フォルダ読み込み成功
             {
-                EditBackupLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName) + "\\" + EditProjectNameTextBox.Text+ "_Backup";
+                EditBackupLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName) + "\\" + EditProjectNameTextBox.Text + "_Backup";
                 openFolderDialog.Dispose();
             }
             if (EditProjectLocationTextBox.Text == EditBackupLocationTextBox.Text)
@@ -410,7 +414,9 @@ namespace CoRectSys
         }
         private void MakeNewProject_Load(object sender, EventArgs e)// 既存の.crecを読み込み
         {
-            if (TargetCRECPath.Length > 0) // 編集の場合は既存の.crecを読み込み
+            // 必要な項目を初期化
+            CompressTypeComboBox.SelectedIndex = 0;
+            if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
                 MakeNewProjectButton.Text = "保存";
                 label1.Text = "入力されたパスをプロジェクトフォルダとして設定します。";
@@ -461,6 +467,17 @@ namespace CoRectSys
                             else
                             {
                                 EditedBackUpCheckBox.Checked = false;
+                            }
+                            break;
+                        case "CompressType":
+                            try
+                            {
+                                CompressTypeComboBox.SelectedIndex = Convert.ToInt32(cols[1]);
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Windows.Forms.MessageBox.Show(ex.Message);
+                                CompressTypeComboBox.SelectedIndex = 1;
                             }
                             break;
                         case "Listoutputlocation":
@@ -779,7 +796,7 @@ namespace CoRectSys
                 }
 
             }
-        }        
+        }
         private void SetColorMethod()// 色設定のメソッド
         {
             switch (ColorSetting)

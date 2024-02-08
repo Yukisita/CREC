@@ -62,7 +62,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2023/12/02";
+            this.ReleaseDate.Text = "Release: 2024/02/09";
             // 
             // VersionName
             // 
@@ -72,17 +72,17 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(88, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 6.06";
+            this.VersionName.Text = "Version 7.03";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(185, 107);
+            this.label5.Location = new System.Drawing.Point(185, 113);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(136, 20);
             this.label5.TabIndex = 4;
-            this.label5.Text = "©　雪下製作所 2023";
+            this.label5.Text = "©　雪下製作所 2024";
             // 
             // ShowSystemInformationsLabel
             // 
@@ -107,11 +107,11 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(387, 111);
+            this.label1.Location = new System.Drawing.Point(539, 107);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 12);
+            this.label1.Size = new System.Drawing.Size(143, 12);
             this.label1.TabIndex = 9;
-            this.label1.Text = "秋ですね～";
+            this.label1.Text = "2024年もよろしくお願いします";
             // 
             // label2
             // 
@@ -135,7 +135,7 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2023_autumn;
+            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_Winter;
             this.pictureBox2.Location = new System.Drawing.Point(345, 12);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(302, 271);
@@ -157,7 +157,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(341, 311);
+            this.ClientSize = new System.Drawing.Size(697, 311);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);

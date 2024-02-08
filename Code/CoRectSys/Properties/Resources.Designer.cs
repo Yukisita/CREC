@@ -83,6 +83,16 @@ namespace ColRECt.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap _2024_Winter {
+            get {
+                object obj = ResourceManager.GetObject("2024-Winter", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap Comic_001 {
             get {
                 object obj = ResourceManager.GetObject("Comic_001", resourceCulture);

@@ -1,6 +1,6 @@
 ﻿/*
 VersionInformation
-Copyright (c) [2022-2023] [Yukisita Mfg.]
+Copyright (c) [2022-2024] [Yukisita Mfg.]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
@@ -23,10 +23,12 @@ namespace CoRectSys
     {
         string SystemInformations;
         string ColorSetting = "Blue";
-        public VersionInformation(string colorSetting)
+        float CurrentDPI = 0;
+        public VersionInformation(string colorSetting, double currentDPI)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
+            CurrentDPI = (float)currentDPI;
             SetColorMethod();
         }
 
@@ -39,8 +41,6 @@ namespace CoRectSys
             SystemInformations = await Task.Run(() =>
             {
                 string temp = "";
-                float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX / 96 * 100);// DPI取得
-                //float DpiScale = (DeviceDpi / 96 * 100);// DPI取得
                 ManagementClass mcOS = new ManagementClass("Win32_OperatingSystem");
                 ManagementObjectCollection mocOS = mcOS.GetInstances();
                 foreach (ManagementObject m in mocOS)
@@ -59,7 +59,7 @@ namespace CoRectSys
                     temp =
                          (temp
                         + "CPU名：" + m["Name"].ToString() + "\n"
-                        + "表示スケール：" + Convert.ToInt32(DpiScale).ToString() + "%\n"
+                        + "表示スケール：" + Convert.ToInt32(CurrentDPI * 100).ToString() + "%\n"
                          );
                 }
                 return temp;
