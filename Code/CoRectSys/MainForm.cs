@@ -1303,12 +1303,13 @@ namespace CoRectSys
                             }
                             streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
+                        streamWriter.Close();
+                        MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                     }
                     catch (Exception ex)
                     {
 
                     }
-                    streamWriter.Close();
                     if (OpenListAfterOutput == true)
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
@@ -1452,12 +1453,13 @@ namespace CoRectSys
                             }
                             streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
+                        streamWriter.Close();
+                        MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                     }
                     catch (Exception ex)
                     {
 
                     }
-                    streamWriter.Close();
                     if (OpenListAfterOutput == true)
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
@@ -3243,6 +3245,10 @@ namespace CoRectSys
         }
         private void SaveAndCloseEditButton_Click(object sender, EventArgs e)// 編集画面の終了
         {
+            // ボタンを無効化
+            SaveAndCloseEditButton.Enabled = false;
+            SaveAndCloseEditButton.Text = "保存中";
+            SaveAndCloseEditButton.Update();
             // 入力内容を確認
             if (CheckContent() == false)
             {
@@ -3252,6 +3258,10 @@ namespace CoRectSys
             ShowPicturesButton.Text = "画像を表示";
             // データ保存メソッドを呼び出し
             SaveContentsMethod();
+            // ボタンを有効化
+            SaveAndCloseEditButton.Enabled = true;
+            SaveAndCloseEditButton.Text = "保存して終了";
+            SaveAndCloseEditButton.Update();
             // 通常画面に不要な物を非表示に
             EditNameTextBox.Visible = false;
             EditIDTextBox.Visible = false;
@@ -3266,7 +3276,7 @@ namespace CoRectSys
             EditRealLocationTextBox.Visible = false;
             SaveAndCloseEditButton.Visible = false;
             SelectThumbnailButton.Visible = false;
-            //　再表示時に編集したデータを表示するための処理
+            // 再表示時に編集したデータを表示するための処理
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchFormTextBox.Text = EditIDTextBox.Text;
@@ -5359,12 +5369,13 @@ namespace CoRectSys
                         }
                         streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
+                    streamWriter.Close();
+                    MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n"+ tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
 
                 }
-                streamWriter.Close();
                 if (OpenListAfterOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
@@ -5540,12 +5551,13 @@ namespace CoRectSys
                         }
                         streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
+                    streamWriter.Close();
+                    MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                 }
                 catch (Exception ex)
                 {
 
                 }
-                streamWriter.Close();
                 if (OpenListAfterOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
