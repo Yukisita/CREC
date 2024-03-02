@@ -285,7 +285,23 @@ namespace CoRectSys
         {
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
             IEnumerable<string> tmp = null;
-            tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
+            if (File.Exists(TargetCRECPath))
+            {
+                try
+                {
+                    tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
+                }
+                catch 
+                {
+                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。","CREC");
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("プロジェクトファイルが見つかりませんでした。","CREC");
+                return;
+            }
             // 表示内容復元時にToolStripMenuが出たままにならないようイベントハンドラを一時停止
             IDListVisibleToolStripMenuItem.CheckedChanged -= IDVisibleToolStripMenuItem_CheckedChanged;
             MCListVisibleToolStripMenuItem.CheckedChanged -= MCVisibleToolStripMenuItem_CheckedChanged;
@@ -978,6 +994,7 @@ namespace CoRectSys
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                    return;
                 }
                 for (int i = 0; i < RecentlyOpendProjectList.Length; i++)
                 {
@@ -1028,74 +1045,79 @@ namespace CoRectSys
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Text = "履歴を削除";
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
             }
+            else
+            {
+                ToolStripItem NoRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
+                NoRecentlyOpendProjectListToolStripMenuItem.Text = "履歴はありません";
+                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(NoRecentlyOpendProjectListToolStripMenuItem);
+            }
         }
         private void OpenRecentlyOpendProjectToolStripMenuItemSub_Click(object sender, EventArgs e)// 最近使用したプロジェクト表示（イベント）
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
+                if (CheckEditingContents() != true)// 編集中のファイルへの操作が完了した場合
                 {
-                    switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
+                    return;
+                }
+            }
+
+            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
+            if (!File.Exists(TargetCRECPath))
+            {
+                MessageBox.Show("プロジェクトファイルが見つかりませんでした。\nこの項目を「最近使用したプロジェクト」から削除します。", "CREC");
+                // 見つからなかったプロジェクトを履歴から削除
+                IEnumerable<string> RecentlyOpendProjectList = null;
+                try
+                {
+                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                    return;
+                }
+                File.Delete("RecentlyOpenedProjectList.log");
+                StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                foreach (string line in RecentlyOpendProjectList)
+                {
+                    if (!line.Contains(TargetCRECPath))// 見つからなかったプロジェクト以外は書き込み
                     {
-                        case 0:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 1:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 2:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 3:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 4:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
+                        streamWriter.WriteLine(line);
                     }
                 }
+                streamWriter.Close();
+                return;
             }
-            else
+            switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
             {
-                switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
-                {
-                    case 0:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 1:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 2:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 3:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 4:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                }
+                case 0:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 1:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 2:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 3:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 4:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
             }
+
         }
         private void DeleteRecentlyOpendProjectListToolStripMenuItem_Click(object sender, EventArgs e)// 最近使用したプロジェクトの履歴を削除（イベント）
         {
@@ -1534,15 +1556,13 @@ namespace CoRectSys
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータを破棄し、編集前の状態に戻しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
-                    // 再度データを読み込み
-
                     // 詳細情報読み込み＆表示
                     StreamReader sr1 = null;
                     try
                     {
                         sr1 = new StreamReader(TargetDetailsPath);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         DetailsTextBox.Text = "No Data.";
                     }
@@ -1640,7 +1660,7 @@ namespace CoRectSys
                 MCList.Visible = false;
                 dataGridView1.Columns["MCList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1656,7 +1676,7 @@ namespace CoRectSys
                 ObjectNameList.Visible = false;
                 dataGridView1.Columns["ObjectNameList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1672,7 +1692,7 @@ namespace CoRectSys
                 RegistrationDateList.Visible = false;
                 dataGridView1.Columns["RegistrationDateList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1688,7 +1708,7 @@ namespace CoRectSys
                 CategoryList.Visible = false;
                 dataGridView1.Columns["CategoryList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1704,7 +1724,7 @@ namespace CoRectSys
                 Tag1List.Visible = false;
                 dataGridView1.Columns["Tag1List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1720,7 +1740,7 @@ namespace CoRectSys
                 Tag2List.Visible = false;
                 dataGridView1.Columns["Tag2List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1736,7 +1756,7 @@ namespace CoRectSys
                 Tag3List.Visible = false;
                 dataGridView1.Columns["Tag3List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1756,7 +1776,7 @@ namespace CoRectSys
                 InventoryStatusList.Visible = false;
                 dataGridView1.Columns["InventoryStatusList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1993,7 +2013,7 @@ namespace CoRectSys
                     this.Hide();// メインフォームを消す
                     CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                                                                      // バックアップ作成
+                    // バックアップ作成
                     DateTime DT = DateTime.Now;
                     if (CompressType == 0)
                     {
@@ -2826,7 +2846,6 @@ namespace CoRectSys
         {
             if (dataGridView1.CurrentRow == null)
             {
-                //MessageBox.Show("プロジェクトを開いてください。１", "CREC");
                 return;
             }
             try
@@ -3024,7 +3043,7 @@ namespace CoRectSys
         private void ClosePicturesButton_Click(object sender, EventArgs e)// 詳細画像非表示ボタン
         {
             ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                                      // 一覧表示モードに戻る
+            // 一覧表示モードに戻る
             dataGridView1.Visible = true;
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
@@ -3151,7 +3170,7 @@ namespace CoRectSys
             FileStream FileStream = File.Create(TargetContentsPath + "\\DED");
             FileStream.Close();
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
-                               // サムネ用画像変更用データが残っていた場合削除
+            // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
             {
                 File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
@@ -3684,7 +3703,7 @@ namespace CoRectSys
                 AddContentsButton.Visible = false;
                 ListUpdateButton.Visible = false;
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                                          // 必要なものを表示
+                // 必要なものを表示
                 InventoryLabel.Visible = true;
                 InventoryModeDataGridView.Visible = true;
                 OperationOptionComboBox.Visible = true;
@@ -3749,7 +3768,7 @@ namespace CoRectSys
             else if (InventoryModeDataGridView.Visible == true)// 在庫管理モードを終了
             {
                 CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
-                                           // 必要なものを表示
+                // 必要なものを表示
                 if (StandardDisplayModeToolStripMenuItem.Checked)
                 {
                     dataGridView1.Visible = true;
@@ -4247,7 +4266,6 @@ namespace CoRectSys
             {
                 if (TargetCRECPath.Length > 0)
                 {
-                    //MessageBox.Show(TargetCRECPath);
                     StreamWriter sw = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
                     sw.WriteLine("{0},{1}", "projectname", TargetProjectName);
                     sw.WriteLine("{0},{1}", "projectlocation", TargetFolderPath);
@@ -4994,7 +5012,6 @@ namespace CoRectSys
                 {
                     if (ThisID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
                     {
-                        //MessageBox.Show(ThisID + "/" + Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value));
                         if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                         {
                             if (CheckEditingContents() == true)

@@ -292,7 +292,7 @@ HiDPI環境下でのバグを修正
 データ一覧表示まわりのバグを修正
 編集内容のリセット機能を追加
 メニュバーにショートカットキーを設定
-ReadMeおよび更新履歴画面でウインドウサイズ調整時に中身の大きさが変わらない問題を修正３
+ReadMeおよび更新履歴画面でウインドウサイズ調整時に中身の大きさが変わらない問題を修正
 プロジェクト作成後にデータ追加するか確認する機能を追加
 色設定を保持する機能を追加
 放置していたプロジェクト情報表示機能を実装
@@ -310,7 +310,10 @@ HiDPI環境でプロジェクト作成・編集画面のUIが崩壊する問題�
 
 ver7.03.01（2024/02/23）
 CSV/TSV出力後に通知を追加
-データ保存処理中に保存ボタンを繰り返し押すことができる問題を修正</value>
+データ保存処理中に保存ボタンを繰り返し押すことができる問題を修正
+
+ver7.03.02（2024/03/02）
+最近使用したプロジェクトに登録されている項目が見つからなかった場合にアプリケーションが停止する問題を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
