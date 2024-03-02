@@ -25,6 +25,12 @@ namespace CoRectSys
             ColorSetting = colorSetting;
             SetColorMethod();
         }
+        private void UpdateHistory_Shown(object sender, EventArgs e)// ウインドウ表示後の処理
+        {
+            // 一番下までスクロール
+            UpdateHistoryTextBox.SelectionStart = UpdateHistoryTextBox.Text.Length;
+            UpdateHistoryTextBox.ScrollToCaret();
+        }
         private void SetColorMethod()// 色設定のメソッド
         {
             switch (ColorSetting)
@@ -47,5 +53,6 @@ namespace CoRectSys
                     break;
             }
         }
+
     }
 }

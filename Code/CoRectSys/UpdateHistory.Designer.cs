@@ -66,6 +66,7 @@
             this.Name = "UpdateHistory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "UpdateHistory";
+            this.Shown += new System.EventHandler(this.UpdateHistory_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

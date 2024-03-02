@@ -72,7 +72,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(109, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.03.02";
+            this.VersionName.Text = "Version 7.03.03";
             // 
             // label5
             // 
@@ -109,9 +109,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(539, 107);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(143, 12);
+            this.label1.Size = new System.Drawing.Size(77, 12);
             this.label1.TabIndex = 9;
-            this.label1.Text = "2024年もよろしくお願いします";
+            this.label1.Text = "春が来ましたね";
             // 
             // label2
             // 
