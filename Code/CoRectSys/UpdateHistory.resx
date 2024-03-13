@@ -317,7 +317,10 @@ ver7.03.02（2024/03/02）
 
 ver7.03.03（2024/03/02）
 終了時バックアップが実行されない場合がある問題を修正
-更新履歴画面を一番下（最新の更新項目）から表示するよう変更</value>
+更新履歴画面を一番下（最新の更新項目）から表示するよう変更
+
+ver7.03.04（2024/03/14）
+DPIの異なるモニタにフォームを移動した際にフォントサイズが正しく表示されない問題を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
