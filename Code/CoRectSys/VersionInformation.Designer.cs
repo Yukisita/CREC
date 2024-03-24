@@ -64,24 +64,24 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(220, 30);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/03/14";
+            this.ReleaseDate.Text = "Release: 2024/03/25";
             // 
             // VersionName
             // 
             this.VersionName.AutoSize = true;
             this.VersionName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.VersionName.Location = new System.Drawing.Point(318, 130);
+            this.VersionName.Location = new System.Drawing.Point(314, 130);
             this.VersionName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(166, 30);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.03.04";
+            this.VersionName.Text = "Version 7.04.01";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(336, 160);
+            this.label5.Location = new System.Drawing.Point(332, 160);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(148, 30);
@@ -135,7 +135,7 @@
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC128_icon;
             this.pictureBox1.Location = new System.Drawing.Point(24, 18);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(192, 192);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -146,7 +146,7 @@
             // 
             this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_Winter;
             this.pictureBox2.Location = new System.Drawing.Point(518, 18);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(453, 406);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -181,7 +181,7 @@
             this.Controls.Add(this.ReleaseDate);
             this.Controls.Add(this.ProjectName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "VersionInformation";

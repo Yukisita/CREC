@@ -78,6 +78,9 @@
             this.LavenderBlushToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.WhiteSmokeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FontSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZoomInFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZoomOutFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.VisibleListElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IDListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -430,6 +433,7 @@
             this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DisplayModeToolStripMenuItem,
             this.SelectBackgroundColorToolStripMenuItem,
+            this.FontSizeToolStripMenuItem,
             this.toolStripSeparator5,
             this.VisibleListElementsToolStripMenuItem,
             this.toolStripSeparator8,
@@ -522,6 +526,29 @@
             this.DarkToolStripMenuItem.Size = new System.Drawing.Size(320, 46);
             this.DarkToolStripMenuItem.Text = "Dark(実装中）";
             this.DarkToolStripMenuItem.Click += new System.EventHandler(this.DarkToolStripMenuItem_Click);
+            // 
+            // FontSizeToolStripMenuItem
+            // 
+            this.FontSizeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ZoomInFontToolStripMenuItem,
+            this.ZoomOutFontToolStripMenuItem});
+            this.FontSizeToolStripMenuItem.Name = "FontSizeToolStripMenuItem";
+            this.FontSizeToolStripMenuItem.Size = new System.Drawing.Size(487, 46);
+            this.FontSizeToolStripMenuItem.Text = "文字サイズ";
+            // 
+            // ZoomInFontToolStripMenuItem
+            // 
+            this.ZoomInFontToolStripMenuItem.Name = "ZoomInFontToolStripMenuItem";
+            this.ZoomInFontToolStripMenuItem.Size = new System.Drawing.Size(182, 46);
+            this.ZoomInFontToolStripMenuItem.Text = "拡大";
+            this.ZoomInFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomInFontToolStripMenuItem_Click);
+            // 
+            // ZoomOutFontToolStripMenuItem
+            // 
+            this.ZoomOutFontToolStripMenuItem.Name = "ZoomOutFontToolStripMenuItem";
+            this.ZoomOutFontToolStripMenuItem.Size = new System.Drawing.Size(182, 46);
+            this.ZoomOutFontToolStripMenuItem.Text = "縮小";
+            this.ZoomOutFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomOutFontToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -708,7 +735,7 @@
             this.ShowListButton.Name = "ShowListButton";
             this.ShowListButton.Padding = new System.Windows.Forms.Padding(1);
             this.ShowListButton.ReadOnly = true;
-            this.ShowListButton.Size = new System.Drawing.Size(184, 43);
+            this.ShowListButton.Size = new System.Drawing.Size(175, 43);
             this.ShowListButton.Text = "⇚一覧に戻る";
             this.ShowListButton.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ShowListButton.Visible = false;
@@ -757,13 +784,13 @@
             this.dataGridView1.ContextMenuStrip = this.dataGridViewContextMenuStrip;
             this.dataGridView1.Font = new System.Drawing.Font("メイリオ", 16F);
             this.dataGridView1.Location = new System.Drawing.Point(18, 210);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(1347, 1320);
+            this.dataGridView1.Size = new System.Drawing.Size(1348, 1320);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -933,8 +960,8 @@
             this.ShowObjectName.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowObjectName.AutoSize = true;
             this.ShowObjectName.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowObjectName.Location = new System.Drawing.Point(1578, 68);
-            this.ShowObjectName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowObjectName.Location = new System.Drawing.Point(1578, 67);
+            this.ShowObjectName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowObjectName.Name = "ShowObjectName";
             this.ShowObjectName.Size = new System.Drawing.Size(0, 52);
             this.ShowObjectName.TabIndex = 3;
@@ -944,8 +971,8 @@
             this.ShowID.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowID.AutoSize = true;
             this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowID.Location = new System.Drawing.Point(1606, 134);
-            this.ShowID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowID.Location = new System.Drawing.Point(1607, 133);
+            this.ShowID.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowID.Name = "ShowID";
             this.ShowID.Size = new System.Drawing.Size(0, 30);
             this.ShowID.TabIndex = 4;
@@ -955,10 +982,10 @@
             this.CenterLine.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CenterLine.BackColor = System.Drawing.Color.Black;
             this.CenterLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CenterLine.Location = new System.Drawing.Point(1380, 81);
+            this.CenterLine.Location = new System.Drawing.Point(1380, 80);
             this.CenterLine.Margin = new System.Windows.Forms.Padding(0);
             this.CenterLine.Name = "CenterLine";
-            this.CenterLine.Size = new System.Drawing.Size(2, 1469);
+            this.CenterLine.Size = new System.Drawing.Size(2, 1470);
             this.CenterLine.TabIndex = 8;
             // 
             // ShowRealLocation
@@ -966,8 +993,8 @@
             this.ShowRealLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowRealLocation.AutoSize = true;
             this.ShowRealLocation.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRealLocation.Location = new System.Drawing.Point(1696, 579);
-            this.ShowRealLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowRealLocation.Location = new System.Drawing.Point(1697, 580);
+            this.ShowRealLocation.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowRealLocation.Name = "ShowRealLocation";
             this.ShowRealLocation.Size = new System.Drawing.Size(0, 46);
             this.ShowRealLocation.TabIndex = 9;
@@ -975,13 +1002,14 @@
             // ShowDataLocation
             // 
             this.ShowDataLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ShowDataLocation.AutoSize = true;
             this.ShowDataLocation.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowDataLocation.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.ShowDataLocation.Location = new System.Drawing.Point(1388, 640);
-            this.ShowDataLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowDataLocation.Location = new System.Drawing.Point(1387, 641);
+            this.ShowDataLocation.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowDataLocation.Name = "ShowDataLocation";
             this.ShowDataLocation.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ShowDataLocation.Size = new System.Drawing.Size(285, 45);
+            this.ShowDataLocation.Size = new System.Drawing.Size(283, 46);
             this.ShowDataLocation.TabIndex = 9;
             this.ShowDataLocation.Text = "データ保管場所：";
             this.ShowDataLocation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -990,10 +1018,10 @@
             // 
             this.OpenDataLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.OpenDataLocation.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenDataLocation.Location = new System.Drawing.Point(1665, 636);
-            this.OpenDataLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.OpenDataLocation.Location = new System.Drawing.Point(1664, 636);
+            this.OpenDataLocation.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.OpenDataLocation.Name = "OpenDataLocation";
-            this.OpenDataLocation.Size = new System.Drawing.Size(165, 54);
+            this.OpenDataLocation.Size = new System.Drawing.Size(164, 54);
             this.OpenDataLocation.TabIndex = 19;
             this.OpenDataLocation.Text = "開く";
             this.OpenDataLocation.UseVisualStyleBackColor = true;
@@ -1004,8 +1032,8 @@
             this.ShowRegistrationDate.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowRegistrationDate.AutoSize = true;
             this.ShowRegistrationDate.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRegistrationDate.Location = new System.Drawing.Point(1606, 256);
-            this.ShowRegistrationDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowRegistrationDate.Location = new System.Drawing.Point(1607, 257);
+            this.ShowRegistrationDate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowRegistrationDate.Name = "ShowRegistrationDate";
             this.ShowRegistrationDate.Size = new System.Drawing.Size(0, 46);
             this.ShowRegistrationDate.TabIndex = 13;
@@ -1014,11 +1042,11 @@
             // 
             this.ShowCategory.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowCategory.AutoSize = true;
-            this.ShowCategory.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowCategory.Location = new System.Drawing.Point(1606, 322);
-            this.ShowCategory.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowCategory.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowCategory.Location = new System.Drawing.Point(1607, 323);
+            this.ShowCategory.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowCategory.Name = "ShowCategory";
-            this.ShowCategory.Size = new System.Drawing.Size(0, 52);
+            this.ShowCategory.Size = new System.Drawing.Size(0, 46);
             this.ShowCategory.TabIndex = 14;
             // 
             // ShowTag1
@@ -1027,7 +1055,7 @@
             this.ShowTag1.AutoSize = true;
             this.ShowTag1.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowTag1.Location = new System.Drawing.Point(1620, 390);
-            this.ShowTag1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowTag1.Name = "ShowTag1";
             this.ShowTag1.Size = new System.Drawing.Size(0, 46);
             this.ShowTag1.TabIndex = 15;
@@ -1039,7 +1067,7 @@
             this.ShowTag2.AutoSize = true;
             this.ShowTag2.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowTag2.Location = new System.Drawing.Point(1620, 450);
-            this.ShowTag2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowTag2.Name = "ShowTag2";
             this.ShowTag2.Size = new System.Drawing.Size(0, 46);
             this.ShowTag2.TabIndex = 16;
@@ -1051,7 +1079,7 @@
             this.ShowTag3.AutoSize = true;
             this.ShowTag3.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowTag3.Location = new System.Drawing.Point(1620, 510);
-            this.ShowTag3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowTag3.Name = "ShowTag3";
             this.ShowTag3.Size = new System.Drawing.Size(0, 46);
             this.ShowTag3.TabIndex = 17;
@@ -1063,23 +1091,23 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DetailsTextBox.BackColor = System.Drawing.Color.White;
             this.DetailsTextBox.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DetailsTextBox.Location = new System.Drawing.Point(1388, 750);
-            this.DetailsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.DetailsTextBox.Location = new System.Drawing.Point(1387, 750);
+            this.DetailsTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.DetailsTextBox.Multiline = true;
             this.DetailsTextBox.Name = "DetailsTextBox";
             this.DetailsTextBox.ReadOnly = true;
             this.DetailsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DetailsTextBox.Size = new System.Drawing.Size(1308, 718);
+            this.DetailsTextBox.Size = new System.Drawing.Size(1307, 718);
             this.DetailsTextBox.TabIndex = 20;
             // 
             // EditButton
             // 
             this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditButton.Location = new System.Drawing.Point(1839, 1485);
-            this.EditButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditButton.Location = new System.Drawing.Point(1840, 1484);
+            this.EditButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditButton.Name = "EditButton";
-            this.EditButton.Size = new System.Drawing.Size(225, 60);
+            this.EditButton.Size = new System.Drawing.Size(224, 60);
             this.EditButton.TabIndex = 19;
             this.EditButton.Text = "編　集";
             this.EditButton.UseVisualStyleBackColor = true;
@@ -1089,10 +1117,10 @@
             // 
             this.ShowPicturesButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowPicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowPicturesButton.Location = new System.Drawing.Point(2325, 591);
-            this.ShowPicturesButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowPicturesButton.Location = new System.Drawing.Point(2316, 592);
+            this.ShowPicturesButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ShowPicturesButton.Name = "ShowPicturesButton";
-            this.ShowPicturesButton.Size = new System.Drawing.Size(255, 60);
+            this.ShowPicturesButton.Size = new System.Drawing.Size(272, 60);
             this.ShowPicturesButton.TabIndex = 22;
             this.ShowPicturesButton.Text = "画像を表示";
             this.ShowPicturesButton.UseVisualStyleBackColor = true;
@@ -1102,8 +1130,8 @@
             // 
             this.ClosePicturesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ClosePicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ClosePicturesButton.Location = new System.Drawing.Point(1155, 1440);
-            this.ClosePicturesButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ClosePicturesButton.Location = new System.Drawing.Point(1156, 1440);
+            this.ClosePicturesButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ClosePicturesButton.Name = "ClosePicturesButton";
             this.ClosePicturesButton.Size = new System.Drawing.Size(270, 60);
             this.ClosePicturesButton.TabIndex = 23;
@@ -1117,7 +1145,7 @@
             this.NextPictureButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.NextPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NextPictureButton.Location = new System.Drawing.Point(420, 1440);
-            this.NextPictureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.NextPictureButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.NextPictureButton.Name = "NextPictureButton";
             this.NextPictureButton.Size = new System.Drawing.Size(270, 60);
             this.NextPictureButton.TabIndex = 24;
@@ -1130,8 +1158,8 @@
             // 
             this.PreviousPictureButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.PreviousPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.PreviousPictureButton.Location = new System.Drawing.Point(15, 1440);
-            this.PreviousPictureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.PreviousPictureButton.Location = new System.Drawing.Point(16, 1440);
+            this.PreviousPictureButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.PreviousPictureButton.Name = "PreviousPictureButton";
             this.PreviousPictureButton.Size = new System.Drawing.Size(270, 60);
             this.PreviousPictureButton.TabIndex = 25;
@@ -1149,10 +1177,10 @@
             "管理コード",
             "名称",
             "カテゴリー"});
-            this.SearchOptionComboBox.Location = new System.Drawing.Point(894, 75);
-            this.SearchOptionComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchOptionComboBox.Location = new System.Drawing.Point(894, 76);
+            this.SearchOptionComboBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SearchOptionComboBox.Name = "SearchOptionComboBox";
-            this.SearchOptionComboBox.Size = new System.Drawing.Size(223, 56);
+            this.SearchOptionComboBox.Size = new System.Drawing.Size(222, 56);
             this.SearchOptionComboBox.TabIndex = 3;
             this.SearchOptionComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchOptionComboBox_SelectedIndexChanged);
             // 
@@ -1160,10 +1188,10 @@
             // 
             this.SearchFormTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.SearchFormTextBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SearchFormTextBox.Location = new System.Drawing.Point(15, 75);
-            this.SearchFormTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchFormTextBox.Location = new System.Drawing.Point(16, 76);
+            this.SearchFormTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SearchFormTextBox.Name = "SearchFormTextBox";
-            this.SearchFormTextBox.Size = new System.Drawing.Size(869, 55);
+            this.SearchFormTextBox.Size = new System.Drawing.Size(868, 55);
             this.SearchFormTextBox.TabIndex = 10;
             this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
             // 
@@ -1171,10 +1199,10 @@
             // 
             this.ShowConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ShowConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowConfidentialDataButton.Location = new System.Drawing.Point(2415, 1485);
-            this.ShowConfidentialDataButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowConfidentialDataButton.Location = new System.Drawing.Point(2416, 1484);
+            this.ShowConfidentialDataButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ShowConfidentialDataButton.Name = "ShowConfidentialDataButton";
-            this.ShowConfidentialDataButton.Size = new System.Drawing.Size(285, 60);
+            this.ShowConfidentialDataButton.Size = new System.Drawing.Size(284, 60);
             this.ShowConfidentialDataButton.TabIndex = 21;
             this.ShowConfidentialDataButton.Text = "機密情報表示";
             this.ShowConfidentialDataButton.UseVisualStyleBackColor = true;
@@ -1184,10 +1212,10 @@
             // 
             this.SaveAndCloseEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SaveAndCloseEditButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveAndCloseEditButton.Location = new System.Drawing.Point(1830, 1485);
-            this.SaveAndCloseEditButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SaveAndCloseEditButton.Location = new System.Drawing.Point(1819, 1484);
+            this.SaveAndCloseEditButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SaveAndCloseEditButton.Name = "SaveAndCloseEditButton";
-            this.SaveAndCloseEditButton.Size = new System.Drawing.Size(240, 60);
+            this.SaveAndCloseEditButton.Size = new System.Drawing.Size(250, 60);
             this.SaveAndCloseEditButton.TabIndex = 24;
             this.SaveAndCloseEditButton.Text = "保存して終了";
             this.SaveAndCloseEditButton.UseVisualStyleBackColor = true;
@@ -1201,13 +1229,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ConfidentialDataTextBox.BackColor = System.Drawing.Color.White;
             this.ConfidentialDataTextBox.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ConfidentialDataTextBox.Location = new System.Drawing.Point(1395, 746);
-            this.ConfidentialDataTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ConfidentialDataTextBox.Location = new System.Drawing.Point(1396, 745);
+            this.ConfidentialDataTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ConfidentialDataTextBox.Multiline = true;
             this.ConfidentialDataTextBox.Name = "ConfidentialDataTextBox";
             this.ConfidentialDataTextBox.ReadOnly = true;
             this.ConfidentialDataTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ConfidentialDataTextBox.Size = new System.Drawing.Size(1300, 727);
+            this.ConfidentialDataTextBox.Size = new System.Drawing.Size(1300, 728);
             this.ConfidentialDataTextBox.TabIndex = 20;
             this.ConfidentialDataTextBox.Visible = false;
             // 
@@ -1215,8 +1243,8 @@
             // 
             this.InventoryManagementModeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryManagementModeButton.Location = new System.Drawing.Point(2092, 1485);
-            this.InventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.InventoryManagementModeButton.Location = new System.Drawing.Point(2093, 1484);
+            this.InventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.InventoryManagementModeButton.Name = "InventoryManagementModeButton";
             this.InventoryManagementModeButton.Size = new System.Drawing.Size(300, 60);
             this.InventoryManagementModeButton.TabIndex = 40;
@@ -1238,8 +1266,8 @@
             this.quantity,
             this.note});
             this.InventoryModeDataGridView.Font = new System.Drawing.Font("メイリオ", 16F);
-            this.InventoryModeDataGridView.Location = new System.Drawing.Point(15, 210);
-            this.InventoryModeDataGridView.Margin = new System.Windows.Forms.Padding(4);
+            this.InventoryModeDataGridView.Location = new System.Drawing.Point(16, 210);
+            this.InventoryModeDataGridView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.InventoryModeDataGridView.Name = "InventoryModeDataGridView";
             this.InventoryModeDataGridView.RowHeadersVisible = false;
             this.InventoryModeDataGridView.RowHeadersWidth = 48;
@@ -1281,8 +1309,8 @@
             // 
             this.InventoryLabel.AutoSize = true;
             this.InventoryLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryLabel.Location = new System.Drawing.Point(34, 75);
-            this.InventoryLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryLabel.Location = new System.Drawing.Point(35, 76);
+            this.InventoryLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InventoryLabel.Name = "InventoryLabel";
             this.InventoryLabel.Size = new System.Drawing.Size(0, 52);
             this.InventoryLabel.TabIndex = 42;
@@ -1297,10 +1325,10 @@
             "入庫",
             "出庫",
             "棚卸"});
-            this.OperationOptionComboBox.Location = new System.Drawing.Point(45, 1380);
-            this.OperationOptionComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.OperationOptionComboBox.Location = new System.Drawing.Point(44, 1380);
+            this.OperationOptionComboBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.OperationOptionComboBox.Name = "OperationOptionComboBox";
-            this.OperationOptionComboBox.Size = new System.Drawing.Size(223, 56);
+            this.OperationOptionComboBox.Size = new System.Drawing.Size(222, 56);
             this.OperationOptionComboBox.TabIndex = 41;
             this.OperationOptionComboBox.Visible = false;
             // 
@@ -1308,8 +1336,8 @@
             // 
             this.AddInventoryOperationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.AddInventoryOperationButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddInventoryOperationButton.Location = new System.Drawing.Point(1118, 1372);
-            this.AddInventoryOperationButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddInventoryOperationButton.Location = new System.Drawing.Point(1117, 1373);
+            this.AddInventoryOperationButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.AddInventoryOperationButton.Name = "AddInventoryOperationButton";
             this.AddInventoryOperationButton.Size = new System.Drawing.Size(240, 60);
             this.AddInventoryOperationButton.TabIndex = 44;
@@ -1323,8 +1351,8 @@
             this.InventoryOperation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InventoryOperation.AutoSize = true;
             this.InventoryOperation.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryOperation.Location = new System.Drawing.Point(45, 1328);
-            this.InventoryOperation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryOperation.Location = new System.Drawing.Point(44, 1327);
+            this.InventoryOperation.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InventoryOperation.Name = "InventoryOperation";
             this.InventoryOperation.Size = new System.Drawing.Size(164, 46);
             this.InventoryOperation.TabIndex = 46;
@@ -1336,8 +1364,8 @@
             this.InputQuantitiy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InputQuantitiy.AutoSize = true;
             this.InputQuantitiy.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InputQuantitiy.Location = new System.Drawing.Point(315, 1328);
-            this.InputQuantitiy.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InputQuantitiy.Location = new System.Drawing.Point(316, 1327);
+            this.InputQuantitiy.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InputQuantitiy.Name = "InputQuantitiy";
             this.InputQuantitiy.Size = new System.Drawing.Size(92, 46);
             this.InputQuantitiy.TabIndex = 47;
@@ -1349,8 +1377,8 @@
             this.InventoryOperationNote.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InventoryOperationNote.AutoSize = true;
             this.InventoryOperationNote.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryOperationNote.Location = new System.Drawing.Point(45, 1440);
-            this.InventoryOperationNote.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryOperationNote.Location = new System.Drawing.Point(44, 1440);
+            this.InventoryOperationNote.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.InventoryOperationNote.Name = "InventoryOperationNote";
             this.InventoryOperationNote.Size = new System.Drawing.Size(122, 46);
             this.InventoryOperationNote.TabIndex = 48;
@@ -1360,11 +1388,12 @@
             // Tag2NameLabel
             // 
             this.Tag2NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.Tag2NameLabel.AutoSize = true;
             this.Tag2NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag2NameLabel.Location = new System.Drawing.Point(1388, 450);
-            this.Tag2NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag2NameLabel.Location = new System.Drawing.Point(1387, 450);
+            this.Tag2NameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.Tag2NameLabel.Name = "Tag2NameLabel";
-            this.Tag2NameLabel.Size = new System.Drawing.Size(240, 45);
+            this.Tag2NameLabel.Size = new System.Drawing.Size(145, 46);
             this.Tag2NameLabel.TabIndex = 51;
             this.Tag2NameLabel.Text = "タグ２：";
             this.Tag2NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1372,11 +1401,12 @@
             // Tag3NameLabel
             // 
             this.Tag3NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.Tag3NameLabel.AutoSize = true;
             this.Tag3NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag3NameLabel.Location = new System.Drawing.Point(1388, 510);
-            this.Tag3NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag3NameLabel.Location = new System.Drawing.Point(1387, 510);
+            this.Tag3NameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.Tag3NameLabel.Name = "Tag3NameLabel";
-            this.Tag3NameLabel.Size = new System.Drawing.Size(240, 45);
+            this.Tag3NameLabel.Size = new System.Drawing.Size(145, 46);
             this.Tag3NameLabel.TabIndex = 52;
             this.Tag3NameLabel.Text = "タグ３：";
             this.Tag3NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1384,11 +1414,12 @@
             // Tag1NameLabel
             // 
             this.Tag1NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.Tag1NameLabel.AutoSize = true;
             this.Tag1NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag1NameLabel.Location = new System.Drawing.Point(1388, 390);
-            this.Tag1NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag1NameLabel.Location = new System.Drawing.Point(1387, 390);
+            this.Tag1NameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.Tag1NameLabel.Name = "Tag1NameLabel";
-            this.Tag1NameLabel.Size = new System.Drawing.Size(240, 45);
+            this.Tag1NameLabel.Size = new System.Drawing.Size(145, 46);
             this.Tag1NameLabel.TabIndex = 50;
             this.Tag1NameLabel.Text = "タグ１：";
             this.Tag1NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1402,10 +1433,10 @@
             "部分一致",
             "後方一致",
             "完全一致"});
-            this.SearchMethodComboBox.Location = new System.Drawing.Point(1140, 75);
-            this.SearchMethodComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchMethodComboBox.Location = new System.Drawing.Point(1140, 76);
+            this.SearchMethodComboBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SearchMethodComboBox.Name = "SearchMethodComboBox";
-            this.SearchMethodComboBox.Size = new System.Drawing.Size(223, 56);
+            this.SearchMethodComboBox.Size = new System.Drawing.Size(222, 56);
             this.SearchMethodComboBox.TabIndex = 4;
             this.SearchMethodComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchMethodComboBox_SelectedIndexChanged);
             // 
@@ -1415,8 +1446,8 @@
             this.EditQuantityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditQuantityTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.EditQuantityTextBox.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.EditQuantityTextBox.Location = new System.Drawing.Point(315, 1380);
-            this.EditQuantityTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditQuantityTextBox.Location = new System.Drawing.Point(316, 1380);
+            this.EditQuantityTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditQuantityTextBox.Name = "EditQuantityTextBox";
             this.EditQuantityTextBox.Size = new System.Drawing.Size(236, 50);
             this.EditQuantityTextBox.TabIndex = 42;
@@ -1428,10 +1459,10 @@
             this.EditInventoryOperationNoteTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.EditInventoryOperationNoteTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditInventoryOperationNoteTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditInventoryOperationNoteTextBox.Location = new System.Drawing.Point(45, 1485);
-            this.EditInventoryOperationNoteTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditInventoryOperationNoteTextBox.Location = new System.Drawing.Point(44, 1484);
+            this.EditInventoryOperationNoteTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditInventoryOperationNoteTextBox.Name = "EditInventoryOperationNoteTextBox";
-            this.EditInventoryOperationNoteTextBox.Size = new System.Drawing.Size(1312, 50);
+            this.EditInventoryOperationNoteTextBox.Size = new System.Drawing.Size(1311, 50);
             this.EditInventoryOperationNoteTextBox.TabIndex = 43;
             this.EditInventoryOperationNoteTextBox.Visible = false;
             // 
@@ -1443,10 +1474,10 @@
             "安全在庫数",
             "発注点",
             "最大在庫数"});
-            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(44, 144);
-            this.ProperInventorySettingsComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(43, 144);
+            this.ProperInventorySettingsComboBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ProperInventorySettingsComboBox.Name = "ProperInventorySettingsComboBox";
-            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(223, 56);
+            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(222, 56);
             this.ProperInventorySettingsComboBox.TabIndex = 45;
             this.ProperInventorySettingsComboBox.Visible = false;
             this.ProperInventorySettingsComboBox.SelectedIndexChanged += new System.EventHandler(this.ProperInventorySettingsComboBox_SelectedIndexChanged);
@@ -1456,11 +1487,11 @@
             this.ProperInventorySettingsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ProperInventorySettingsTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ProperInventorySettingsTextBox.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(290, 146);
-            this.ProperInventorySettingsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(289, 145);
+            this.ProperInventorySettingsTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ProperInventorySettingsTextBox.Name = "ProperInventorySettingsTextBox";
             this.ProperInventorySettingsTextBox.ReadOnly = true;
-            this.ProperInventorySettingsTextBox.Size = new System.Drawing.Size(215, 50);
+            this.ProperInventorySettingsTextBox.Size = new System.Drawing.Size(214, 50);
             this.ProperInventorySettingsTextBox.TabIndex = 46;
             this.ProperInventorySettingsTextBox.Visible = false;
             this.ProperInventorySettingsTextBox.TextChanged += new System.EventHandler(this.ProperInventorySettingsTextBox_TextChanged);
@@ -1469,10 +1500,10 @@
             // SaveProperInventorySettingsButton
             // 
             this.SaveProperInventorySettingsButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(538, 144);
-            this.SaveProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(539, 144);
+            this.SaveProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SaveProperInventorySettingsButton.Name = "SaveProperInventorySettingsButton";
-            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(112, 54);
+            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(113, 54);
             this.SaveProperInventorySettingsButton.TabIndex = 47;
             this.SaveProperInventorySettingsButton.Text = "変更";
             this.SaveProperInventorySettingsButton.UseVisualStyleBackColor = true;
@@ -1483,8 +1514,8 @@
             // 
             this.ProperInventorySettingsNotificationLabel.AutoSize = true;
             this.ProperInventorySettingsNotificationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(300, 86);
-            this.ProperInventorySettingsNotificationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(300, 85);
+            this.ProperInventorySettingsNotificationLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ProperInventorySettingsNotificationLabel.Name = "ProperInventorySettingsNotificationLabel";
             this.ProperInventorySettingsNotificationLabel.Size = new System.Drawing.Size(0, 36);
             this.ProperInventorySettingsNotificationLabel.TabIndex = 60;
@@ -1494,10 +1525,10 @@
             // 
             this.SelectThumbnailButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectThumbnailButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SelectThumbnailButton.Location = new System.Drawing.Point(2325, 660);
-            this.SelectThumbnailButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SelectThumbnailButton.Location = new System.Drawing.Point(2316, 660);
+            this.SelectThumbnailButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SelectThumbnailButton.Name = "SelectThumbnailButton";
-            this.SelectThumbnailButton.Size = new System.Drawing.Size(255, 60);
+            this.SelectThumbnailButton.Size = new System.Drawing.Size(272, 60);
             this.SelectThumbnailButton.TabIndex = 23;
             this.SelectThumbnailButton.Text = "サムネイル選択";
             this.SelectThumbnailButton.UseVisualStyleBackColor = true;
@@ -1509,10 +1540,10 @@
             this.EditNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditNameTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditNameTextBox.Location = new System.Drawing.Point(1587, 68);
-            this.EditNameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditNameTextBox.Location = new System.Drawing.Point(1586, 67);
+            this.EditNameTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditNameTextBox.Name = "EditNameTextBox";
-            this.EditNameTextBox.Size = new System.Drawing.Size(389, 50);
+            this.EditNameTextBox.Size = new System.Drawing.Size(388, 50);
             this.EditNameTextBox.TabIndex = 10;
             this.EditNameTextBox.Visible = false;
             // 
@@ -1521,11 +1552,11 @@
             this.EditIDTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditIDTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditIDTextBox.Location = new System.Drawing.Point(1587, 129);
-            this.EditIDTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditIDTextBox.Location = new System.Drawing.Point(1586, 128);
+            this.EditIDTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditIDTextBox.Name = "EditIDTextBox";
             this.EditIDTextBox.ReadOnly = true;
-            this.EditIDTextBox.Size = new System.Drawing.Size(389, 43);
+            this.EditIDTextBox.Size = new System.Drawing.Size(388, 43);
             this.EditIDTextBox.TabIndex = 80;
             this.EditIDTextBox.Visible = false;
             // 
@@ -1534,10 +1565,10 @@
             this.EditRegistrationDateTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditRegistrationDateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditRegistrationDateTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRegistrationDateTextBox.Location = new System.Drawing.Point(1587, 252);
-            this.EditRegistrationDateTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRegistrationDateTextBox.Location = new System.Drawing.Point(1586, 252);
+            this.EditRegistrationDateTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditRegistrationDateTextBox.Name = "EditRegistrationDateTextBox";
-            this.EditRegistrationDateTextBox.Size = new System.Drawing.Size(389, 50);
+            this.EditRegistrationDateTextBox.Size = new System.Drawing.Size(388, 50);
             this.EditRegistrationDateTextBox.TabIndex = 13;
             this.EditRegistrationDateTextBox.Visible = false;
             // 
@@ -1546,10 +1577,10 @@
             this.EditCategoryTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditCategoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditCategoryTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.EditCategoryTextBox.Location = new System.Drawing.Point(1587, 321);
-            this.EditCategoryTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditCategoryTextBox.Location = new System.Drawing.Point(1620, 323);
+            this.EditCategoryTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditCategoryTextBox.Name = "EditCategoryTextBox";
-            this.EditCategoryTextBox.Size = new System.Drawing.Size(389, 50);
+            this.EditCategoryTextBox.Size = new System.Drawing.Size(388, 50);
             this.EditCategoryTextBox.TabIndex = 14;
             this.EditCategoryTextBox.Visible = false;
             // 
@@ -1558,10 +1589,10 @@
             this.EditTag1TextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditTag1TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditTag1TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag1TextBox.Location = new System.Drawing.Point(1620, 382);
-            this.EditTag1TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag1TextBox.Location = new System.Drawing.Point(1620, 383);
+            this.EditTag1TextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditTag1TextBox.Name = "EditTag1TextBox";
-            this.EditTag1TextBox.Size = new System.Drawing.Size(359, 50);
+            this.EditTag1TextBox.Size = new System.Drawing.Size(358, 50);
             this.EditTag1TextBox.TabIndex = 15;
             this.EditTag1TextBox.Visible = false;
             // 
@@ -1571,9 +1602,9 @@
             this.EditTag2TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditTag2TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.EditTag2TextBox.Location = new System.Drawing.Point(1620, 444);
-            this.EditTag2TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag2TextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditTag2TextBox.Name = "EditTag2TextBox";
-            this.EditTag2TextBox.Size = new System.Drawing.Size(359, 50);
+            this.EditTag2TextBox.Size = new System.Drawing.Size(358, 50);
             this.EditTag2TextBox.TabIndex = 16;
             this.EditTag2TextBox.Visible = false;
             // 
@@ -1582,10 +1613,10 @@
             this.EditTag3TextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditTag3TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditTag3TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag3TextBox.Location = new System.Drawing.Point(1620, 506);
-            this.EditTag3TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag3TextBox.Location = new System.Drawing.Point(1620, 505);
+            this.EditTag3TextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditTag3TextBox.Name = "EditTag3TextBox";
-            this.EditTag3TextBox.Size = new System.Drawing.Size(359, 50);
+            this.EditTag3TextBox.Size = new System.Drawing.Size(358, 50);
             this.EditTag3TextBox.TabIndex = 17;
             this.EditTag3TextBox.Visible = false;
             // 
@@ -1594,10 +1625,10 @@
             this.EditRealLocationTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditRealLocationTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditRealLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRealLocationTextBox.Location = new System.Drawing.Point(1665, 574);
-            this.EditRealLocationTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRealLocationTextBox.Location = new System.Drawing.Point(1664, 575);
+            this.EditRealLocationTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditRealLocationTextBox.Name = "EditRealLocationTextBox";
-            this.EditRealLocationTextBox.Size = new System.Drawing.Size(419, 50);
+            this.EditRealLocationTextBox.Size = new System.Drawing.Size(418, 50);
             this.EditRealLocationTextBox.TabIndex = 18;
             this.EditRealLocationTextBox.Visible = false;
             // 
@@ -1608,10 +1639,10 @@
             this.SearchFormTextBoxClearButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SearchFormTextBoxClearButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.SearchFormTextBoxClearButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SearchFormTextBoxClearButton.Location = new System.Drawing.Point(837, 82);
-            this.SearchFormTextBoxClearButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchFormTextBoxClearButton.Location = new System.Drawing.Point(836, 83);
+            this.SearchFormTextBoxClearButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SearchFormTextBoxClearButton.Name = "SearchFormTextBoxClearButton";
-            this.SearchFormTextBoxClearButton.Size = new System.Drawing.Size(45, 45);
+            this.SearchFormTextBoxClearButton.Size = new System.Drawing.Size(44, 44);
             this.SearchFormTextBoxClearButton.TabIndex = 2;
             this.SearchFormTextBoxClearButton.Text = "X";
             this.SearchFormTextBoxClearButton.UseVisualStyleBackColor = false;
@@ -1622,7 +1653,7 @@
             this.NoImageLabel.AutoSize = true;
             this.NoImageLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NoImageLabel.Location = new System.Drawing.Point(2376, 270);
-            this.NoImageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NoImageLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.NoImageLabel.Name = "NoImageLabel";
             this.NoImageLabel.Size = new System.Drawing.Size(167, 44);
             this.NoImageLabel.TabIndex = 72;
@@ -1631,10 +1662,10 @@
             // AllowEditIDButton
             // 
             this.AllowEditIDButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditIDButton.Location = new System.Drawing.Point(1874, 134);
-            this.AllowEditIDButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AllowEditIDButton.Location = new System.Drawing.Point(1873, 133);
+            this.AllowEditIDButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.AllowEditIDButton.Name = "AllowEditIDButton";
-            this.AllowEditIDButton.Size = new System.Drawing.Size(98, 38);
+            this.AllowEditIDButton.Size = new System.Drawing.Size(97, 37);
             this.AllowEditIDButton.TabIndex = 73;
             this.AllowEditIDButton.Text = "編集不可";
             this.AllowEditIDButton.UseVisualStyleBackColor = true;
@@ -1646,10 +1677,10 @@
             this.EditMCTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditMCTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.EditMCTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditMCTextBox.Location = new System.Drawing.Point(1587, 190);
-            this.EditMCTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditMCTextBox.Location = new System.Drawing.Point(1586, 191);
+            this.EditMCTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditMCTextBox.Name = "EditMCTextBox";
-            this.EditMCTextBox.Size = new System.Drawing.Size(389, 50);
+            this.EditMCTextBox.Size = new System.Drawing.Size(388, 50);
             this.EditMCTextBox.TabIndex = 11;
             this.EditMCTextBox.Visible = false;
             // 
@@ -1658,8 +1689,8 @@
             this.ShowMC.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowMC.AutoSize = true;
             this.ShowMC.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowMC.Location = new System.Drawing.Point(1606, 195);
-            this.ShowMC.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowMC.Location = new System.Drawing.Point(1607, 194);
+            this.ShowMC.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ShowMC.Name = "ShowMC";
             this.ShowMC.Size = new System.Drawing.Size(0, 46);
             this.ShowMC.TabIndex = 74;
@@ -1671,10 +1702,10 @@
             // CheckSameMCButton
             // 
             this.CheckSameMCButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CheckSameMCButton.Location = new System.Drawing.Point(1833, 200);
-            this.CheckSameMCButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CheckSameMCButton.Location = new System.Drawing.Point(1832, 199);
+            this.CheckSameMCButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.CheckSameMCButton.Name = "CheckSameMCButton";
-            this.CheckSameMCButton.Size = new System.Drawing.Size(135, 38);
+            this.CheckSameMCButton.Size = new System.Drawing.Size(136, 37);
             this.CheckSameMCButton.TabIndex = 12;
             this.CheckSameMCButton.Text = "同コード検索";
             this.CheckSameMCButton.UseVisualStyleBackColor = true;
@@ -1686,8 +1717,8 @@
             this.DetailsLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DetailsLabel.AutoSize = true;
             this.DetailsLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DetailsLabel.Location = new System.Drawing.Point(1425, 705);
-            this.DetailsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DetailsLabel.Location = new System.Drawing.Point(1424, 704);
+            this.DetailsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.DetailsLabel.Name = "DetailsLabel";
             this.DetailsLabel.Size = new System.Drawing.Size(164, 46);
             this.DetailsLabel.TabIndex = 20;
@@ -1696,11 +1727,11 @@
             // EditRequestingButton
             // 
             this.EditRequestingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditRequestingButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRequestingButton.Location = new System.Drawing.Point(1838, 1485);
-            this.EditRequestingButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRequestingButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditRequestingButton.Location = new System.Drawing.Point(1837, 1484);
+            this.EditRequestingButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.EditRequestingButton.Name = "EditRequestingButton";
-            this.EditRequestingButton.Size = new System.Drawing.Size(225, 60);
+            this.EditRequestingButton.Size = new System.Drawing.Size(224, 60);
             this.EditRequestingButton.TabIndex = 81;
             this.EditRequestingButton.Text = "編集待機中";
             this.EditRequestingButton.UseVisualStyleBackColor = true;
@@ -1710,10 +1741,10 @@
             // 
             this.ShowSelectedItemInformationButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(1395, 75);
-            this.ShowSelectedItemInformationButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(1396, 76);
+            this.ShowSelectedItemInformationButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ShowSelectedItemInformationButton.Name = "ShowSelectedItemInformationButton";
-            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(381, 58);
+            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(380, 59);
             this.ShowSelectedItemInformationButton.TabIndex = 83;
             this.ShowSelectedItemInformationButton.Text = "選択項目の情報を表示";
             this.ShowSelectedItemInformationButton.UseVisualStyleBackColor = true;
@@ -1724,8 +1755,8 @@
             // 
             this.NoPicturesLabel.AutoSize = true;
             this.NoPicturesLabel.Font = new System.Drawing.Font("メイリオ", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.NoPicturesLabel.Location = new System.Drawing.Point(434, 692);
-            this.NoPicturesLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NoPicturesLabel.Location = new System.Drawing.Point(433, 691);
+            this.NoPicturesLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.NoPicturesLabel.Name = "NoPicturesLabel";
             this.NoPicturesLabel.Size = new System.Drawing.Size(276, 72);
             this.NoPicturesLabel.TabIndex = 84;
@@ -1735,8 +1766,8 @@
             // AddContentsButton
             // 
             this.AddContentsButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddContentsButton.Location = new System.Drawing.Point(15, 146);
-            this.AddContentsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddContentsButton.Location = new System.Drawing.Point(16, 145);
+            this.AddContentsButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.AddContentsButton.Name = "AddContentsButton";
             this.AddContentsButton.Size = new System.Drawing.Size(180, 54);
             this.AddContentsButton.TabIndex = 85;
@@ -1747,8 +1778,8 @@
             // ListUpdateButton
             // 
             this.ListUpdateButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ListUpdateButton.Location = new System.Drawing.Point(242, 146);
-            this.ListUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ListUpdateButton.Location = new System.Drawing.Point(241, 145);
+            this.ListUpdateButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ListUpdateButton.Name = "ListUpdateButton";
             this.ListUpdateButton.Size = new System.Drawing.Size(180, 54);
             this.ListUpdateButton.TabIndex = 86;
@@ -1760,10 +1791,10 @@
             // 
             this.CopyDataLocationPath.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.CopyDataLocationPath.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CopyDataLocationPath.Location = new System.Drawing.Point(1845, 636);
-            this.CopyDataLocationPath.Margin = new System.Windows.Forms.Padding(4);
+            this.CopyDataLocationPath.Location = new System.Drawing.Point(1844, 636);
+            this.CopyDataLocationPath.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.CopyDataLocationPath.Name = "CopyDataLocationPath";
-            this.CopyDataLocationPath.Size = new System.Drawing.Size(165, 54);
+            this.CopyDataLocationPath.Size = new System.Drawing.Size(164, 54);
             this.CopyDataLocationPath.TabIndex = 87;
             this.CopyDataLocationPath.Text = "パスをコピー";
             this.CopyDataLocationPath.UseVisualStyleBackColor = true;
@@ -1772,12 +1803,13 @@
             // ObjectNameLabel
             // 
             this.ObjectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ObjectNameLabel.AutoSize = true;
             this.ObjectNameLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ObjectNameLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.ObjectNameLabel.Location = new System.Drawing.Point(1380, 68);
-            this.ObjectNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ObjectNameLabel.Location = new System.Drawing.Point(1380, 67);
+            this.ObjectNameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.ObjectNameLabel.Name = "ObjectNameLabel";
-            this.ObjectNameLabel.Size = new System.Drawing.Size(218, 52);
+            this.ObjectNameLabel.Size = new System.Drawing.Size(145, 52);
             this.ObjectNameLabel.TabIndex = 88;
             this.ObjectNameLabel.Text = "名称：";
             this.ObjectNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1785,11 +1817,12 @@
             // CategoryLabel
             // 
             this.CategoryLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.CategoryLabel.AutoSize = true;
             this.CategoryLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CategoryLabel.Location = new System.Drawing.Point(1380, 322);
-            this.CategoryLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CategoryLabel.Location = new System.Drawing.Point(1380, 323);
+            this.CategoryLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.CategoryLabel.Name = "CategoryLabel";
-            this.CategoryLabel.Size = new System.Drawing.Size(218, 52);
+            this.CategoryLabel.Size = new System.Drawing.Size(179, 52);
             this.CategoryLabel.TabIndex = 91;
             this.CategoryLabel.Text = "カテゴリ：";
             this.CategoryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1797,11 +1830,12 @@
             // RegistrationDateLabel
             // 
             this.RegistrationDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.RegistrationDateLabel.AutoSize = true;
             this.RegistrationDateLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.RegistrationDateLabel.Location = new System.Drawing.Point(1380, 256);
-            this.RegistrationDateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.RegistrationDateLabel.Location = new System.Drawing.Point(1380, 257);
+            this.RegistrationDateLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.RegistrationDateLabel.Name = "RegistrationDateLabel";
-            this.RegistrationDateLabel.Size = new System.Drawing.Size(218, 45);
+            this.RegistrationDateLabel.Size = new System.Drawing.Size(164, 46);
             this.RegistrationDateLabel.TabIndex = 90;
             this.RegistrationDateLabel.Text = "登録日：";
             this.RegistrationDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1809,11 +1843,12 @@
             // IDLabel
             // 
             this.IDLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.IDLabel.AutoSize = true;
             this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.IDLabel.Location = new System.Drawing.Point(1380, 134);
-            this.IDLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.IDLabel.Location = new System.Drawing.Point(1380, 133);
+            this.IDLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(208, 30);
+            this.IDLabel.Size = new System.Drawing.Size(65, 30);
             this.IDLabel.TabIndex = 89;
             this.IDLabel.Text = "ID：";
             this.IDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1821,11 +1856,12 @@
             // MCLabel
             // 
             this.MCLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.MCLabel.AutoSize = true;
             this.MCLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.MCLabel.Location = new System.Drawing.Point(1380, 195);
-            this.MCLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.MCLabel.Location = new System.Drawing.Point(1380, 194);
+            this.MCLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.MCLabel.Name = "MCLabel";
-            this.MCLabel.Size = new System.Drawing.Size(218, 45);
+            this.MCLabel.Size = new System.Drawing.Size(207, 46);
             this.MCLabel.TabIndex = 92;
             this.MCLabel.Text = "管理コード：";
             this.MCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1833,12 +1869,13 @@
             // RealLocationLabel
             // 
             this.RealLocationLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.RealLocationLabel.AutoSize = true;
             this.RealLocationLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.RealLocationLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.RealLocationLabel.Location = new System.Drawing.Point(1388, 579);
-            this.RealLocationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.RealLocationLabel.Location = new System.Drawing.Point(1387, 580);
+            this.RealLocationLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.RealLocationLabel.Name = "RealLocationLabel";
-            this.RealLocationLabel.Size = new System.Drawing.Size(285, 45);
+            this.RealLocationLabel.Size = new System.Drawing.Size(272, 46);
             this.RealLocationLabel.TabIndex = 93;
             this.RealLocationLabel.Text = "現物保管場所：";
             this.RealLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1847,10 +1884,10 @@
             // 
             this.DataLoadingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DataLoadingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataLoadingLabel.Location = new System.Drawing.Point(1148, 147);
-            this.DataLoadingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DataLoadingLabel.Location = new System.Drawing.Point(1147, 148);
+            this.DataLoadingLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.DataLoadingLabel.Name = "DataLoadingLabel";
-            this.DataLoadingLabel.Size = new System.Drawing.Size(218, 45);
+            this.DataLoadingLabel.Size = new System.Drawing.Size(217, 44);
             this.DataLoadingLabel.TabIndex = 94;
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1858,10 +1895,10 @@
             // 
             // dataGridView1BackgroundPictureBox
             // 
-            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(1266, 134);
-            this.dataGridView1BackgroundPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(1266, 133);
+            this.dataGridView1BackgroundPictureBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
-            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(110, 75);
+            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(109, 76);
             this.dataGridView1BackgroundPictureBox.TabIndex = 82;
             this.dataGridView1BackgroundPictureBox.TabStop = false;
             // 
@@ -1869,8 +1906,8 @@
             // 
             this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Thumbnail.Location = new System.Drawing.Point(2220, 75);
-            this.Thumbnail.Margin = new System.Windows.Forms.Padding(4);
+            this.Thumbnail.Location = new System.Drawing.Point(2220, 76);
+            this.Thumbnail.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Thumbnail.Name = "Thumbnail";
             this.Thumbnail.Size = new System.Drawing.Size(492, 492);
             this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -1882,10 +1919,10 @@
             this.PictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.PictureBox1.Location = new System.Drawing.Point(15, 105);
-            this.PictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.PictureBox1.Location = new System.Drawing.Point(16, 104);
+            this.PictureBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.PictureBox1.Name = "PictureBox1";
-            this.PictureBox1.Size = new System.Drawing.Size(1251, 1320);
+            this.PictureBox1.Size = new System.Drawing.Size(1252, 1320);
             this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox1.TabIndex = 21;
             this.PictureBox1.TabStop = false;
@@ -1898,10 +1935,10 @@
             this.SearchButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.SearchButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.SearchButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SearchButton.Location = new System.Drawing.Point(783, 84);
-            this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchButton.Location = new System.Drawing.Point(782, 84);
+            this.SearchButton.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(45, 45);
+            this.SearchButton.Size = new System.Drawing.Size(44, 44);
             this.SearchButton.TabIndex = 96;
             this.SearchButton.Text = "🔍";
             this.SearchButton.UseVisualStyleBackColor = false;
@@ -1913,7 +1950,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(2736, 1562);
+            this.ClientSize = new System.Drawing.Size(2736, 1561);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
             this.Controls.Add(this.AllowEditIDButton);
@@ -1991,9 +2028,9 @@
             this.Controls.Add(this.IDLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(5749, 3209);
-            this.MinimumSize = new System.Drawing.Size(1909, 929);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.MaximumSize = new System.Drawing.Size(5747, 3203);
+            this.MinimumSize = new System.Drawing.Size(1907, 923);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CREC";
@@ -2173,6 +2210,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem RecentShownContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenRecentlyOpendProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FontSizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZoomInFontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZoomOutFontToolStripMenuItem;
     }
 }
 
