@@ -142,8 +142,7 @@ namespace CoRectSys
             SetFormLayout();
             ImportConfig();// configファイルの読み込み・自動生成
             SetColorMethod();// 色設定を反映
-                             // ToolTipsの設定
-            SetTagNameToolTips();
+            SetTagNameToolTips();// ToolTipsの設定
             // バックグラウンド処理の開始
             CheckContentsList();
             CheckEditing();
@@ -1880,7 +1879,6 @@ namespace CoRectSys
             FontSizeToolStripMenuItem.ShowDropDown();
             ZoomInFontToolStripMenuItem.ShowDropDown();
         }
-
         private void ZoomOutFontToolStripMenuItem_Click(object sender, EventArgs e)// フォントサイズを1Pt小さくする
         {
             if (extrasmallfontsize <= 1)
@@ -2629,6 +2627,7 @@ namespace CoRectSys
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
+            //CheckContentsList();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -3172,6 +3171,7 @@ namespace CoRectSys
             SearchFormTextBox.Visible = false;
             SearchOptionComboBox.Visible = false;
             SearchMethodComboBox.Visible = false;
+            SearchButton.Visible = false;
             SearchFormTextBoxClearButton.Visible = false;
             AddContentsButton.Visible = false;
             ListUpdateButton.Visible = false;
@@ -3207,6 +3207,10 @@ namespace CoRectSys
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
             SearchMethodComboBox.Visible = true;
+            if(AutoSearch == false)
+            {
+                SearchButton.Visible = true;
+            }
             SearchFormTextBoxClearButton.Visible = true;
             AddContentsButton.Visible = true;
             ListUpdateButton.Visible = true;
@@ -4901,6 +4905,7 @@ namespace CoRectSys
                 EditTag3TextBox.Width = Convert.ToInt32(FormSize.Width - 1120 * DpiScale) / 2;
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
+            DataLoadingLabel.Font = new Font(fontname, mainfontsize);
             dataGridView1.Font = new Font(fontname, mainfontsize);
             dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
@@ -4922,13 +4927,13 @@ namespace CoRectSys
             SearchFormTextBoxClearButton.Font = new Font(fontname, mainfontsize);
             SearchFormTextBoxClearButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
             DetailsTextBox.Font = new Font(fontname, mainfontsize);
-            DetailsTextBox.Width = Convert.ToInt32(FormSize.Width * 0.46);
+            DetailsTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 50 * DpiScale);
             DetailsTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
-            DetailsTextBox.Location = new Point(Convert.ToInt32(-42 * DpiScale + FormSize.Width * 0.54), Convert.ToInt32(500 * DpiScale));
+            DetailsTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 15 * DpiScale), Convert.ToInt32(500 * DpiScale));
             ConfidentialDataTextBox.Font = new Font(fontname, mainfontsize);
-            ConfidentialDataTextBox.Width = Convert.ToInt32(FormSize.Width * 0.46);
+            ConfidentialDataTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 50 * DpiScale);
             ConfidentialDataTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
-            ConfidentialDataTextBox.Location = new Point(Convert.ToInt32(-42 * DpiScale + FormSize.Width * 0.54), Convert.ToInt32(500 * DpiScale));
+            ConfidentialDataTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 15 * DpiScale), Convert.ToInt32(500 * DpiScale));
             NextPictureButton.Font = new Font(fontname, mainfontsize);
             NextPictureButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 90 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
             PreviousPictureButton.Font = new Font(fontname, mainfontsize);
@@ -4940,14 +4945,12 @@ namespace CoRectSys
             ShowObjectName.Font = new Font(fontname, bigfontsize);
             ShowObjectName.Location = new Point(Convert.ToInt32(ObjectNameLabel.Location.X + ObjectNameLabel.Width), ShowObjectName.Location.Y);
             EditNameTextBox.Font = new Font(fontname, mainfontsize);
-            //EditNameTextBox.Height = Convert.ToInt32(36 * DpiScale);
             EditNameTextBox.Location = new Point(Convert.ToInt32(ObjectNameLabel.Location.X + ObjectNameLabel.Width), ShowObjectName.Location.Y);
             EditNameTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditNameTextBox.Location.X - 5 * DpiScale);
             IDLabel.Font = new Font(fontname, smallfontsize);
             IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), ShowID.Location.Y);
             ShowID.Font = new Font(fontname, smallfontsize);
             ShowID.Location = new Point(Convert.ToInt32(IDLabel.Location.X + IDLabel.Width), ShowID.Location.Y);
-            //EditIDTextBox.Height = Convert.ToInt32(20 * DpiScale);
             EditIDTextBox.Font = new Font(fontname, smallfontsize);
             EditIDTextBox.Location = new Point(Convert.ToInt32(IDLabel.Location.X + IDLabel.Width), ShowID.Location.Y);
             EditIDTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditIDTextBox.Location.X - 5 * DpiScale);
@@ -4956,7 +4959,6 @@ namespace CoRectSys
             ShowMC.Font = new Font(fontname, mainfontsize);
             ShowMC.Location = new Point(Convert.ToInt32(MCLabel.Location.X + MCLabel.Width), ShowMC.Location.Y);
             EditMCTextBox.Font = new Font(fontname, mainfontsize);
-            //EditMCTextBox.Height = Convert.ToInt32(20 * DpiScale);
             EditMCTextBox.Location = new Point(Convert.ToInt32(MCLabel.Location.X + MCLabel.Width), ShowMC.Location.Y);
             EditMCTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditMCTextBox.Location.X - 5 * DpiScale);
             RegistrationDateLabel.Font = new Font(fontname, mainfontsize);
@@ -5007,7 +5009,7 @@ namespace CoRectSys
             OpenDataLocation.Font = new Font(fontname, smallfontsize);
             CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ShowDataLocation.Width + OpenDataLocation.Width + 5 * DpiScale), ShowDataLocation.Location.Y);
             CopyDataLocationPath.Font = new Font(fontname, smallfontsize);
-            DetailsLabel.Location = new Point(DetailsTextBox.Location.X, DetailsTextBox.Location.Y - DetailsLabel.Height);
+            DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), DetailsTextBox.Location.Y - DetailsLabel.Height);
             DetailsLabel.Font = new Font(fontname, mainfontsize);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditButton.Font = new Font(fontname, mainfontsize);

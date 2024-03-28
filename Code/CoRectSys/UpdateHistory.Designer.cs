@@ -40,32 +40,29 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.UpdateHistoryTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.UpdateHistoryTextBox.HideSelection = false;
-            this.UpdateHistoryTextBox.Location = new System.Drawing.Point(20, 18);
-            this.UpdateHistoryTextBox.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.UpdateHistoryTextBox.Location = new System.Drawing.Point(12, 12);
             this.UpdateHistoryTextBox.Multiline = true;
             this.UpdateHistoryTextBox.Name = "UpdateHistoryTextBox";
             this.UpdateHistoryTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.UpdateHistoryTextBox.Size = new System.Drawing.Size(1291, 637);
+            this.UpdateHistoryTextBox.Size = new System.Drawing.Size(776, 426);
             this.UpdateHistoryTextBox.TabIndex = 1;
             this.UpdateHistoryTextBox.Text = resources.GetString("UpdateHistoryTextBox.Text");
             // 
             // DummyTextBox
             // 
-            this.DummyTextBox.Location = new System.Drawing.Point(520, 452);
-            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            this.DummyTextBox.Location = new System.Drawing.Point(312, 301);
             this.DummyTextBox.Name = "DummyTextBox";
-            this.DummyTextBox.Size = new System.Drawing.Size(164, 25);
+            this.DummyTextBox.Size = new System.Drawing.Size(100, 19);
             this.DummyTextBox.TabIndex = 0;
             // 
             // UpdateHistory
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1333, 675);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.UpdateHistoryTextBox);
             this.Controls.Add(this.DummyTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "UpdateHistory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "UpdateHistory";

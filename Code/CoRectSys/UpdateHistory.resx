@@ -324,7 +324,16 @@ DPIの異なるモニタにフォームを移動した際にフォントサイ�
 
 ver7.04.01（2024/03/25）
 起動中にDPIが変更された場合に文字サイズが正しく変更されない問題を修正
-文字サイズ変更機能を追加</value>
+文字サイズ変更機能を追加
+
+ver7.04.02（2024/03/26）
+詳細情報、機密情報のTexBoxの位置がズレる問題を修正
+リストで選択されているコンテンツと詳細表示内容を同一にする処理が止まる問題を修正
+
+ver7.04/03（2024/03/29）
+詳細表示・機密情報の表示位置がズレる問題を修正
+自動検索無効時に画像を表示すると、検索ボタンが表示されたままになる問題を修正
+「読み込み中」の表示が、DPIによって大きさが狂う問題を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
