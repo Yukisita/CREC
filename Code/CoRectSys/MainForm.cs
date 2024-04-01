@@ -3163,6 +3163,7 @@ namespace CoRectSys
             }
             // 必要なものを表示
             PictureBox1.Visible = true;
+            ShowPictureFileNameLabel.Visible = true;
             if (StandardDisplayModeToolStripMenuItem.Checked) { ClosePicturesButton.Visible = true; }
             else if (FullDisplayModeToolStripMenuItem.Checked) { ClosePicturesButton.Visible = false; }
 
@@ -3188,6 +3189,7 @@ namespace CoRectSys
             try
             {
                 PictureBox1.ImageLocation = PicturesList[PictureNumber];
+                ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
                 NextPictureButton.Visible = true;
                 PreviousPictureButton.Visible = true;
                 NoPicturesLabel.Visible = false;
@@ -3218,6 +3220,7 @@ namespace CoRectSys
         private void ClosePicturesViewMethod()// 画像表示モードを閉じるメソッド
         {
             PictureBox1.Visible = false;
+            ShowPictureFileNameLabel.Visible = false;
             PictureBox1.Image = null;// これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
             ClosePicturesButton.Visible = false;
             NextPictureButton.Visible = false;
@@ -3233,6 +3236,7 @@ namespace CoRectSys
                 PictureNumber = 0;
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
+            ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
         }
         private void PreviousPictureButton_Click(object sender, EventArgs e)// 前の画像を表示
         {
@@ -3242,6 +3246,7 @@ namespace CoRectSys
                 PictureNumber = PictureCount - 1;
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
+            ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
         }
         #endregion
 
@@ -4914,6 +4919,8 @@ namespace CoRectSys
             PictureBox1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
             PictureBox1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             PictureBox1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(70 * DpiScale));
+            ShowPictureFileNameLabel.Font = new Font(fontname, mainfontsize);
+            ShowPictureFileNameLabel.Location = new Point(PictureBox1.Location.X, Convert.ToInt32(30 * DpiScale));
             NoPicturesLabel.Font = new Font(fontname, mainfontsize);
             NoPicturesLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 92 * DpiScale), Convert.ToInt32(FormSize.Height * 0.5));
             ClosePicturesButton.Font = new Font(fontname, mainfontsize);

@@ -37,9 +37,9 @@
             this.SystemInformationsLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -62,7 +62,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/03/29";
+            this.ReleaseDate.Text = "Release: 2024/04/01";
             // 
             // VersionName
             // 
@@ -72,7 +72,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(109, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.04.03";
+            this.VersionName.Text = "Version 7.05.01";
             // 
             // label5
             // 
@@ -107,11 +107,12 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(539, 107);
+            this.label1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label1.Location = new System.Drawing.Point(534, 44);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 12);
+            this.label1.Size = new System.Drawing.Size(104, 15);
             this.label1.TabIndex = 9;
-            this.label1.Text = "春が来ましたね";
+            this.label1.Text = "猫っていいですよね。";
             // 
             // label2
             // 
@@ -122,6 +123,16 @@
             this.label2.Size = new System.Drawing.Size(314, 20);
             this.label2.TabIndex = 10;
             this.label2.Text = "This software is released under the MIT License.";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label3.Location = new System.Drawing.Point(585, 271);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 15);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "雪下 せつな";
             // 
             // pictureBox1
             // 
@@ -135,22 +146,13 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_Winter;
+            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_2_Spring;
             this.pictureBox2.Location = new System.Drawing.Point(345, 12);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(302, 271);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 8;
             this.pictureBox2.TabStop = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(585, 271);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(62, 12);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "雪下 せつな";
             // 
             // VersionInformation
             // 

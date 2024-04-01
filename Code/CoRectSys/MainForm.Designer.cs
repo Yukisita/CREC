@@ -199,6 +199,7 @@
             this.Thumbnail = new System.Windows.Forms.PictureBox();
             this.PictureBox1 = new System.Windows.Forms.PictureBox();
             this.SearchButton = new System.Windows.Forms.Button();
+            this.ShowPictureFileNameLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -1869,12 +1870,23 @@
             this.SearchButton.Visible = false;
             this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
+            // ShowPictureFileNameLabel
+            // 
+            this.ShowPictureFileNameLabel.AutoSize = true;
+            this.ShowPictureFileNameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowPictureFileNameLabel.Location = new System.Drawing.Point(12, 39);
+            this.ShowPictureFileNameLabel.Name = "ShowPictureFileNameLabel";
+            this.ShowPictureFileNameLabel.Size = new System.Drawing.Size(0, 30);
+            this.ShowPictureFileNameLabel.TabIndex = 97;
+            this.ShowPictureFileNameLabel.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1824, 1041);
+            this.Controls.Add(this.ShowPictureFileNameLabel);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
             this.Controls.Add(this.AllowEditIDButton);
@@ -2136,6 +2148,7 @@
         private System.Windows.Forms.ToolStripMenuItem FontSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZoomInFontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZoomOutFontToolStripMenuItem;
+        private System.Windows.Forms.Label ShowPictureFileNameLabel;
     }
 }
 

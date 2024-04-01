@@ -187,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CREC.ico" />
+    <None Include="Resources\2024-2-Spring.png" />
     <None Include="Resources\2023-autumn.png" />
     <None Include="Resources\2023-summer.png" />
     <None Include="Resources\Comic_0011.png" />
