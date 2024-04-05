@@ -245,6 +245,12 @@ namespace CoRectSys
         }
         private void OpenProjectMethod()// 既存の在庫管理プロジェクトを読み込むメソッド
         {
+            // 開いているプロジェクトがあった場合は内容を保存
+            if (TargetContentsPath.Length > 0)
+            {
+                SaveSearchSettings();
+            }
+
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
@@ -911,13 +917,21 @@ namespace CoRectSys
             // ラベルの名称を読み込んでDGVに設定
             dataGridView1.Refresh();
             dataGridView1.Columns["IDList"].HeaderText = ShowIDLabel;
+            dataGridView1.Columns["IDList"].Visible = IDListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["MCList"].HeaderText = ShowMCLabel;
+            dataGridView1.Columns["MCList"].Visible = MCListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["ObjectNameList"].HeaderText = ShowObjectNameLabel;
+            dataGridView1.Columns["ObjectNameList"].Visible = NameListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["RegistrationDateList"].HeaderText = ShowRegistrationDateLabel;
+            dataGridView1.Columns["RegistrationDateList"].Visible = RegistrationDateListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["CategoryList"].HeaderText = ShowCategoryLabel;
+            dataGridView1.Columns["CategoryList"].Visible = CategoryListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag1List"].HeaderText = Tag1Name;
+            dataGridView1.Columns["Tag1List"].Visible = Tag1ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag2List"].HeaderText = Tag2Name;
+            dataGridView1.Columns["Tag2List"].Visible = Tag2ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag3List"].HeaderText = Tag3Name;
+            dataGridView1.Columns["Tag3List"].Visible = Tag3ListVisibleToolStripMenuItem.Checked;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
             IDListVisibleToolStripMenuItem.Text = ShowIDLabel;
             MCListVisibleToolStripMenuItem.Text = ShowMCLabel;
@@ -930,10 +944,7 @@ namespace CoRectSys
             // ToolTipsの設定
             SetTagNameToolTips();
             // ListOutputPathの設定
-            if (Directory.Exists(TargetListOutputPath))
-            {
-            }
-            else
+            if (!Directory.Exists(TargetListOutputPath))
             {
                 TargetListOutputPath = TargetFolderPath;
             }
@@ -1067,6 +1078,11 @@ namespace CoRectSys
                 {
                     return;
                 }
+            }
+            // 開いているプロジェクトがあった場合は内容を保存
+            if (TargetContentsPath.Length > 0)
+            {
+                SaveSearchSettings();
             }
 
             TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
@@ -4864,6 +4880,8 @@ namespace CoRectSys
             string fontname = "Meiryo UI";// フォント指定 
             float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
+            // フォームの最小サイズを変更
+            this.MinimumSize = new Size(Convert.ToInt32(1280*DpiScale),Convert.ToInt32(640*DpiScale));
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
                 dataGridView1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
