@@ -69,6 +69,9 @@
             this.Name = "ReadMe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ReadMe";
+            this.Shown += new System.EventHandler(this.ReadMe_Shown);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.ReadMe_DpiChanged);
+            this.SizeChanged += new System.EventHandler(this.ReadMe_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 

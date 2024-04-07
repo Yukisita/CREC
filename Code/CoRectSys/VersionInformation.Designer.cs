@@ -58,11 +58,11 @@
             // 
             this.ReleaseDate.AutoSize = true;
             this.ReleaseDate.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ReleaseDate.Location = new System.Drawing.Point(173, 67);
+            this.ReleaseDate.Location = new System.Drawing.Point(175, 67);
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/04/06";
+            this.ReleaseDate.Text = "Release: 2024/04/08";
             // 
             // VersionName
             // 
@@ -72,7 +72,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(109, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.05.02";
+            this.VersionName.Text = "Version 7.05.03";
             // 
             // label5
             // 

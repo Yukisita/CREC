@@ -35,12 +35,10 @@
             // 
             // UpdateHistoryTextBox
             // 
-            this.UpdateHistoryTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.UpdateHistoryTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.UpdateHistoryTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.UpdateHistoryTextBox.HideSelection = false;
-            this.UpdateHistoryTextBox.Location = new System.Drawing.Point(12, 12);
+            this.UpdateHistoryTextBox.Location = new System.Drawing.Point(11, 11);
             this.UpdateHistoryTextBox.Multiline = true;
             this.UpdateHistoryTextBox.Name = "UpdateHistoryTextBox";
             this.UpdateHistoryTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -67,6 +65,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "UpdateHistory";
             this.Shown += new System.EventHandler(this.UpdateHistory_Shown);
+            this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.UpdateHistory_DpiChanged);
+            this.SizeChanged += new System.EventHandler(this.UpdateHistory_SizeChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
 
