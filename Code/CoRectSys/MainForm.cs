@@ -1929,6 +1929,14 @@ namespace CoRectSys
             UpdateHistory updateHistory = new UpdateHistory(ColorSetting);
             updateHistory.ShowDialog();
         }
+        private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+            {
+                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+            }
+        }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
             SaveSearchSettings();
@@ -2835,6 +2843,12 @@ namespace CoRectSys
         }
         private void ShowDetails()// 詳細情報の表示
         {
+            // 読み込み中の画面に切り替え
+            NoImageLabel.Text = "Loading";
+            NoImageLabel.Visible = true;
+            Thumbnail.Image = null;
+            Thumbnail.BackColor = menuStrip1.BackColor;
+            Application.DoEvents();
             LoadDetails();
             // 表示・非表示項目の設定
             AllowEditIDButton.Visible = false;
@@ -2955,11 +2969,13 @@ namespace CoRectSys
             TargetDetailsPath = (TargetContentsPath + "\\details.txt");
             if (System.IO.File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.jpg"))
             {
+                NoImageLabel.Text = "NO IMAGE";
                 NoImageLabel.Visible = false;
                 Thumbnail.BackColor = this.BackColor;
             }
             else
             {
+                NoImageLabel.Text = "NO IMAGE";
                 NoImageLabel.Visible = true;
                 Thumbnail.BackColor = menuStrip1.BackColor;
             }
@@ -3013,7 +3029,7 @@ namespace CoRectSys
                     EditButton.ForeColor = Color.Black;
                 }
             }
-            // 最近表示した項目としてUUID、名称を保存
+            // 最近表示した項目としてUUID、名称を保存<- 未実装項目
 
         }
         private void LoadDetails()// 詳細情報を読み込み
@@ -6087,5 +6103,6 @@ namespace CoRectSys
         private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
         }
+
     }
 }
