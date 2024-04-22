@@ -5050,7 +5050,7 @@ namespace CoRectSys
             OpenDataLocation.Font = new Font(fontname, smallfontsize);
             CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ShowDataLocation.Width + OpenDataLocation.Width + 5 * DpiScale), ShowDataLocation.Location.Y);
             CopyDataLocationPath.Font = new Font(fontname, smallfontsize);
-            DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), DetailsTextBox.Location.Y - DetailsLabel.Height);
+            DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Convert.ToInt32(DetailsTextBox.Location.Y - DetailsLabel.Height - 5 * DpiScale));
             DetailsLabel.Font = new Font(fontname, mainfontsize);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditButton.Font = new Font(fontname, mainfontsize);
