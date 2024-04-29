@@ -4904,6 +4904,8 @@ namespace CoRectSys
                 dataGridView1BackgroundPictureBox.Width = 0;
                 dataGridView1BackgroundPictureBox.Height = 0;
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
+                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
+                ShowSelectedItemInformationButton.Font = new Font(fontname, mainfontsize);
             }
             else if (FullDisplayModeToolStripMenuItem.Checked)
             {
@@ -5085,7 +5087,6 @@ namespace CoRectSys
             ProperInventorySettingsComboBox.Font = new Font(fontname, mainfontsize);
             ProperInventorySettingsTextBox.Font = new Font(fontname, mainfontsize);
             SaveProperInventorySettingsButton.Font = new Font(fontname, mainfontsize);
-
             AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
             AllowEditIDButton.Font = new Font(fontname, extrasmallfontsize);
             CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);

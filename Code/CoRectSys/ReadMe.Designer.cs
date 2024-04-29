@@ -38,12 +38,14 @@
             this.ReadMeTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReadMeTextBox.BackColor = System.Drawing.Color.White;
             this.ReadMeTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ReadMeTextBox.HideSelection = false;
             this.ReadMeTextBox.Location = new System.Drawing.Point(22, 21);
             this.ReadMeTextBox.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.ReadMeTextBox.Multiline = true;
             this.ReadMeTextBox.Name = "ReadMeTextBox";
+            this.ReadMeTextBox.ReadOnly = true;
             this.ReadMeTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.ReadMeTextBox.Size = new System.Drawing.Size(1419, 742);
             this.ReadMeTextBox.TabIndex = 1;

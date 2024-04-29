@@ -36,11 +36,13 @@
             // UpdateHistoryTextBox
             // 
             this.UpdateHistoryTextBox.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.UpdateHistoryTextBox.BackColor = System.Drawing.Color.White;
             this.UpdateHistoryTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.UpdateHistoryTextBox.HideSelection = false;
             this.UpdateHistoryTextBox.Location = new System.Drawing.Point(11, 11);
             this.UpdateHistoryTextBox.Multiline = true;
             this.UpdateHistoryTextBox.Name = "UpdateHistoryTextBox";
+            this.UpdateHistoryTextBox.ReadOnly = true;
             this.UpdateHistoryTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.UpdateHistoryTextBox.Size = new System.Drawing.Size(776, 426);
             this.UpdateHistoryTextBox.TabIndex = 1;
