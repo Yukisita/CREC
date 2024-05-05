@@ -118,8 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="2023-autumn" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\2023-autumn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="2024-Winter" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\2024-Winter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="2023-summer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\2023-summer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Comic_001" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Comic_001.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -127,13 +130,13 @@
   <data name="Comic_0011" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Comic_0011.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="2023-summer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\2023-summer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CREC128_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\CREC128_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="2024-Winter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\2024-Winter.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="2023-autumn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\2023-autumn.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="2024-2-Spring" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\2024-2-Spring.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

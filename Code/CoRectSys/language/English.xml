@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<list>
+	<metadata>
+		<name>English</name>
+		<editor>yukisita</editor>
+	</metadata>
+	<mainform>
+		<item>
+			<itemtype>Button</itemtype>
+			<itemname>AddContentsButton</itemname>
+			<itemtext>Add</itemtext>
+		</item>
+		<item>
+			<itemtype>Button</itemtype>
+			<itemname>ListUpdateButton</itemname>
+			<itemtext>Update</itemtext>
+		</item>
+		<item>
+			<itemtype>Button</itemtype>
+			<itemname>ShowConfidentialDataButton</itemname>
+			<itemtext>Confidential Data</itemtext>
+		</item>
+		<item>
+			<itemtype>Button</itemtype>
+			<itemname>OpenDataLocation</itemname>
+			<itemtext>Open</itemtext>
+		</item>
+		<item>
+			<itemtype>Button</itemtype>
+			<itemname>CopyDataLocationPath</itemname>
+			<itemtext>Copy</itemtext>
+		</item>
+		<item>
+			<itemtype>Label</itemtype>
+			<itemname>DetailsLabel</itemname>
+			<itemtext>Detail Information</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>FileMenuStrip</itemname>
+			<itemtext>File(&amp;F)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>NewProjectToolStripMenuItem</itemname>
+			<itemtext>Make New Project(&amp;N)...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>OpenProjectMenuItem</itemname>
+			<itemtext>Open Project(&amp;O)...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>OpenRecentlyOpendProjectToolStripMenuItem</itemname>
+			<itemtext>Recent Project</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>BackupToolStripMenuItem</itemname>
+			<itemtext>Backup Project Data</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>OpenBackUpFolderToolStripMenuItem</itemname>
+			<itemtext>Open Backup Folder...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>OutputListToolStripMenuItem</itemname>
+			<itemtext>Output Contents List(TSV os CSV)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>EditConfigSysToolStripMenuItem</itemname>
+			<itemtext>General Settings...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>CloseToolStripMenuItem</itemname>
+			<itemtext>Close Application(&amp;X)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>RestartToolStripMenuItem</itemname>
+			<itemtext>Restart Application</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>EditToolStripMenuItem</itemname>
+			<itemtext>Edit(&amp;E)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AddContentsToolStripMenuItem</itemname>
+			<itemtext>Create a new entry</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ResetEditingContentsToolStripMenuItem</itemname>
+			<itemtext>Reset Editing Contents</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AddInventoryModeToolStripMenuItem</itemname>
+			<itemtext>Create the Inventory Managiment File</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AdvancedFeaturesToolStripMenuItem</itemname>
+			<itemtext>Advanced Features</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>DeleteContentToolStripMenuItem</itemname>
+			<itemtext>Delete Content</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ReissueUUIDToolStripMenuItem</itemname>
+			<itemtext>Reissue UUID</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ForceEditRequestToolStripMenuItem</itemname>
+			<itemtext>Get Edit Authority(Force)</itemtext>
+		</item>
+		
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ViewToolStripMenuItem</itemname>
+			<itemtext>View(&amp;V)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>DisplayModeToolStripMenuItem</itemname>
+			<itemtext>Display Mode</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>StandardDisplayModeToolStripMenuItem</itemname>
+			<itemtext>Standard Display Mode</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>FullDisplayModeToolStripMenuItem</itemname>
+			<itemtext>Full Display Mode</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>SelectBackgroundColorToolStripMenuItem</itemname>
+			<itemtext>Select Theme Color</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AliceBlueToolStripMenuItem</itemname>
+			<itemtext>Blue</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>HoneydewToolStripMenuItem</itemname>
+			<itemtext>Green</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>LavenderBlushToolStripMenuItem</itemname>
+			<itemtext>Sakura</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>WhiteSmokeToolStripMenuItem</itemname>
+			<itemtext>White</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>DarkToolStripMenuItem</itemname>
+			<itemtext>Dark(not able)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>LanguageSettingToolStripMenuItem</itemname>
+			<itemtext>Language Setting</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>FontSizeToolStripMenuItem</itemname>
+			<itemtext>FontSize Setting</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ZoomInFontToolStripMenuItem</itemname>
+			<itemtext>Zoom In</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ZoomOutFontToolStripMenuItem</itemname>
+			<itemtext>Zoom Out</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>VisibleListElementsToolStripMenuItem</itemname>
+			<itemtext>Items Displayed in the List</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>RecentShownContentsToolStripMenuItem</itemname>
+			<itemtext>Recent Shown Contents(not able)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ProjectToolStripMenuItem</itemname>
+			<itemtext>Project(&amp;P)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>EditProjectToolStripMenuItem</itemname>
+			<itemtext>Edit ProjectFile...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>ProjectInformationToolStripMenuItem</itemname>
+			<itemtext>Project Information...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>HelpToolStripMenuItem</itemname>
+			<itemtext>Help(&amp;H)</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AboutToolStripMenuItem</itemname>
+			<itemtext>About CREC(&amp;A)...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>readmeToolStripMenuItem</itemname>
+			<itemtext>ReadMe...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>UpdateHistoryToolStripMenuItem</itemname>
+			<itemtext>Update History...</itemtext>
+		</item>
+		<item>
+			<itemtype>ToolStripMenuItem</itemtype>
+			<itemname>AccessLatestReleaseToolStripMenuItem</itemname>
+			<itemtext>Latest Release...</itemtext>
+		</item>
+	</mainform>
+	<makenewproject>
+		
+	</makenewproject>
+</list>

@@ -1,6 +1,6 @@
 ﻿/*
 MainForm
-Copyright (c) [2022-2024] [Yukisita Mfg.]
+Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using System.IO;
 using File = System.IO.File;
 using System.Threading;
@@ -22,6 +23,7 @@ using System.IO.Compression;
 using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
 using ColRECt;
+using System.CodeDom.Compiler;
 
 namespace CoRectSys
 {
@@ -73,7 +75,8 @@ namespace CoRectSys
         string AutoLoadProjectPath = "";// 自動読み込みプロジェクトのパス
         bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
         string[] cols;// List等読み込み用
-
+        ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
+        string CurrentLanguage = "";
         // config.sys読み込み用変数
         bool AllowEdit;// 編集可否を設定
         bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
@@ -101,6 +104,12 @@ namespace CoRectSys
 
         // 表示関係
         double CurrentDPI = 1.0;// 現在のDPI値
+        double FirstDPI = 1.0;// 起動時の表示スケール値
+        // フォントサイズ
+        float extrasmallfontsize = (float)(9);// 最小フォントのサイズ
+        float smallfontsize = (float)(14.25);// 小フォントのサイズ
+        float mainfontsize = (float)(18.0);// 標準フォントのサイズ
+        float bigfontsize = (float)(20.25);// 大フォントのサイズ
         #endregion
 
         public MainForm()
@@ -128,6 +137,7 @@ namespace CoRectSys
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
             float DpiScale = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
             CurrentDPI = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// DPI取得
+            FirstDPI = ((new System.Windows.Forms.Form()).CreateGraphics().DpiX) / 96;// 起動時の表示スケール取得
             if (ScreenWidth < 1280 * DpiScale || ScreenHeight < 620 * DpiScale)// 非対応モニタが検出された場合は警告を表示
             {
                 MessageBox.Show("このスクリーンでは正常に表示されない場合があります。\n" + "モニタ解像度=" + ScreenWidth + "X" + ScreenHeight + "\n表示スケール=" + DpiScale * 100 + "%");
@@ -135,8 +145,7 @@ namespace CoRectSys
             SetFormLayout();
             ImportConfig();// configファイルの読み込み・自動生成
             SetColorMethod();// 色設定を反映
-                             // ToolTipsの設定
-            SetTagNameToolTips();
+            SetTagNameToolTips();// ToolTipsの設定
             // バックグラウンド処理の開始
             CheckContentsList();
             CheckEditing();
@@ -239,6 +248,12 @@ namespace CoRectSys
         }
         private void OpenProjectMethod()// 既存の在庫管理プロジェクトを読み込むメソッド
         {
+            // 開いているプロジェクトがあった場合は内容を保存
+            if (TargetContentsPath.Length > 0)
+            {
+                SaveSearchSettings();
+            }
+
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
@@ -285,7 +300,23 @@ namespace CoRectSys
         {
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
             IEnumerable<string> tmp = null;
-            tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
+            if (File.Exists(TargetCRECPath))
+            {
+                try
+                {
+                    tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
+                }
+                catch
+                {
+                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("プロジェクトファイルが見つかりませんでした。", "CREC");
+                return;
+            }
             // 表示内容復元時にToolStripMenuが出たままにならないようイベントハンドラを一時停止
             IDListVisibleToolStripMenuItem.CheckedChanged -= IDVisibleToolStripMenuItem_CheckedChanged;
             MCListVisibleToolStripMenuItem.CheckedChanged -= MCVisibleToolStripMenuItem_CheckedChanged;
@@ -889,13 +920,21 @@ namespace CoRectSys
             // ラベルの名称を読み込んでDGVに設定
             dataGridView1.Refresh();
             dataGridView1.Columns["IDList"].HeaderText = ShowIDLabel;
+            dataGridView1.Columns["IDList"].Visible = IDListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["MCList"].HeaderText = ShowMCLabel;
+            dataGridView1.Columns["MCList"].Visible = MCListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["ObjectNameList"].HeaderText = ShowObjectNameLabel;
+            dataGridView1.Columns["ObjectNameList"].Visible = NameListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["RegistrationDateList"].HeaderText = ShowRegistrationDateLabel;
+            dataGridView1.Columns["RegistrationDateList"].Visible = RegistrationDateListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["CategoryList"].HeaderText = ShowCategoryLabel;
+            dataGridView1.Columns["CategoryList"].Visible = CategoryListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag1List"].HeaderText = Tag1Name;
+            dataGridView1.Columns["Tag1List"].Visible = Tag1ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag2List"].HeaderText = Tag2Name;
+            dataGridView1.Columns["Tag2List"].Visible = Tag2ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag3List"].HeaderText = Tag3Name;
+            dataGridView1.Columns["Tag3List"].Visible = Tag3ListVisibleToolStripMenuItem.Checked;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
             IDListVisibleToolStripMenuItem.Text = ShowIDLabel;
             MCListVisibleToolStripMenuItem.Text = ShowMCLabel;
@@ -908,10 +947,7 @@ namespace CoRectSys
             // ToolTipsの設定
             SetTagNameToolTips();
             // ListOutputPathの設定
-            if (Directory.Exists(TargetListOutputPath))
-            {
-            }
-            else
+            if (!Directory.Exists(TargetListOutputPath))
             {
                 TargetListOutputPath = TargetFolderPath;
             }
@@ -964,6 +1000,7 @@ namespace CoRectSys
                 System.Windows.Forms.MessageBox.Show("最近使用したプロジェクトの登録に失敗しました。\n" + ex.Message, "CREC");
             }
             LoadGrid();
+            SetFormLayout();// ラベルの文字に併せてレイアウトを変更
         }
         private void OpenRecentlyOpendProjectToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 最近使用したプロジェクト表示
         {
@@ -975,9 +1012,10 @@ namespace CoRectSys
                 {
                     RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                    return;
                 }
                 for (int i = 0; i < RecentlyOpendProjectList.Length; i++)
                 {
@@ -1021,79 +1059,91 @@ namespace CoRectSys
                     }
                 }
                 // 履歴削除を追加
+                ToolStripSeparator OpenRecentlyOpendProjectToolStripMenuItemDropDownItemsSeparator = new ToolStripSeparator();
+                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItemDropDownItemsSeparator);
                 ToolStripItem DeleteRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Click += DeleteRecentlyOpendProjectListToolStripMenuItem_Click;
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Text = "履歴を削除";
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
+            }
+            else
+            {
+                ToolStripItem NoRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
+                NoRecentlyOpendProjectListToolStripMenuItem.Text = "履歴はありません";
+                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(NoRecentlyOpendProjectListToolStripMenuItem);
             }
         }
         private void OpenRecentlyOpendProjectToolStripMenuItemSub_Click(object sender, EventArgs e)// 最近使用したプロジェクト表示（イベント）
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
+                if (CheckEditingContents() != true)// 編集中のファイルへの操作が完了した場合
                 {
-                    switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
+                    return;
+                }
+            }
+            // 開いているプロジェクトがあった場合は内容を保存
+            if (TargetContentsPath.Length > 0)
+            {
+                SaveSearchSettings();
+            }
+
+            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
+            if (!File.Exists(TargetCRECPath))
+            {
+                MessageBox.Show("プロジェクトファイルが見つかりませんでした。\nこの項目を「最近使用したプロジェクト」から削除します。", "CREC");
+                // 見つからなかったプロジェクトを履歴から削除
+                IEnumerable<string> RecentlyOpendProjectList = null;
+                try
+                {
+                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                    return;
+                }
+                File.Delete("RecentlyOpenedProjectList.log");
+                StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                foreach (string line in RecentlyOpendProjectList)
+                {
+                    if (!line.Contains(TargetCRECPath))// 見つからなかったプロジェクト以外は書き込み
                     {
-                        case 0:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 1:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 2:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 3:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
-                        case 4:
-                            DataLoadingStatus = "false";
-                            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                            break;
+                        streamWriter.WriteLine(line);
                     }
                 }
+                streamWriter.Close();
+                return;
             }
-            else
+            switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
             {
-                switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
-                {
-                    case 0:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 1:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 2:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 3:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                    case 4:
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        break;
-                }
+                case 0:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 1:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 2:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 3:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
+                case 4:
+                    DataLoadingStatus = "false";
+                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
+                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    break;
             }
+
         }
         private void DeleteRecentlyOpendProjectListToolStripMenuItem_Click(object sender, EventArgs e)// 最近使用したプロジェクトの履歴を削除（イベント）
         {
@@ -1103,7 +1153,7 @@ namespace CoRectSys
                 {
                     File.Delete("RecentlyOpenedProjectList.log");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     System.Windows.Forms.MessageBox.Show("履歴削除に失敗しました。\n" + ex.Message, "CREC");
                 }
@@ -1301,12 +1351,13 @@ namespace CoRectSys
                             }
                             streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
+                        streamWriter.Close();
+                        MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                     }
                     catch (Exception ex)
                     {
 
                     }
-                    streamWriter.Close();
                     if (OpenListAfterOutput == true)
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
@@ -1450,12 +1501,13 @@ namespace CoRectSys
                             }
                             streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
+                        streamWriter.Close();
+                        MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                     }
                     catch (Exception ex)
                     {
 
                     }
-                    streamWriter.Close();
                     if (OpenListAfterOutput == true)
                     {
                         System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
@@ -1530,15 +1582,13 @@ namespace CoRectSys
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータを破棄し、編集前の状態に戻しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
-                    // 再度データを読み込み
-
                     // 詳細情報読み込み＆表示
                     StreamReader sr1 = null;
                     try
                     {
                         sr1 = new StreamReader(TargetDetailsPath);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         DetailsTextBox.Text = "No Data.";
                     }
@@ -1636,7 +1686,7 @@ namespace CoRectSys
                 MCList.Visible = false;
                 dataGridView1.Columns["MCList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1652,7 +1702,7 @@ namespace CoRectSys
                 ObjectNameList.Visible = false;
                 dataGridView1.Columns["ObjectNameList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1668,7 +1718,7 @@ namespace CoRectSys
                 RegistrationDateList.Visible = false;
                 dataGridView1.Columns["RegistrationDateList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1684,7 +1734,7 @@ namespace CoRectSys
                 CategoryList.Visible = false;
                 dataGridView1.Columns["CategoryList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1700,7 +1750,7 @@ namespace CoRectSys
                 Tag1List.Visible = false;
                 dataGridView1.Columns["Tag1List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1716,7 +1766,7 @@ namespace CoRectSys
                 Tag2List.Visible = false;
                 dataGridView1.Columns["Tag2List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1732,7 +1782,7 @@ namespace CoRectSys
                 Tag3List.Visible = false;
                 dataGridView1.Columns["Tag3List"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1752,7 +1802,7 @@ namespace CoRectSys
                 InventoryStatusList.Visible = false;
                 dataGridView1.Columns["InventoryStatusList"].Visible = false;
             }
-            //選択後もMenuItem開いたままにする処理
+            // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
@@ -1836,6 +1886,37 @@ namespace CoRectSys
             DarkToolStripMenuItem.Checked = true;
         }
         #endregion
+        #region 文字サイズ
+        private void ZoomInFontToolStripMenuItem_Click(object sender, EventArgs e)// フォントサイズを1Pt大きくする
+        {
+            extrasmallfontsize += 1;// 最小フォントのサイズ
+            smallfontsize += 1;// 小フォントのサイズ
+            mainfontsize += 1;// 標準フォントのサイズ
+            bigfontsize += 1;// 大フォントのサイズ
+            SetFormLayout();
+            //選択後もMenuItem開いたままにする処理
+            FontSizeToolStripMenuItem.ShowDropDown();
+            ZoomInFontToolStripMenuItem.ShowDropDown();
+        }
+        private void ZoomOutFontToolStripMenuItem_Click(object sender, EventArgs e)// フォントサイズを1Pt小さくする
+        {
+            if (extrasmallfontsize <= 1)
+            {
+                MessageBox.Show("これ以上縮小することはできません。", "CREC");
+            }
+            else
+            {
+                extrasmallfontsize -= 1;// 最小フォントのサイズ
+                smallfontsize -= 1;// 小フォントのサイズ
+                mainfontsize -= 1;// 標準フォントのサイズ
+                bigfontsize -= 1;// 大フォントのサイズ
+                SetFormLayout();
+                //選択後もMenuItem開いたままにする処理
+                FontSizeToolStripMenuItem.ShowDropDown();
+                ZoomOutFontToolStripMenuItem.ShowDropDown();
+            }
+        }
+        #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
             VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI);
@@ -1850,6 +1931,14 @@ namespace CoRectSys
         {
             UpdateHistory updateHistory = new UpdateHistory(ColorSetting);
             updateHistory.ShowDialog();
+        }
+        private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+            {
+                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+            }
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
@@ -1889,19 +1978,61 @@ namespace CoRectSys
                         CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         DateTime DT = DateTime.Now;
-                        try
+                        if (CompressType == 0)
                         {
-                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                            try
+                            {
+                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
 
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                         }
-                        catch (Exception ex)
+                        else if (CompressType == 1)
                         {
-                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = "バックアップ作成";
-                            BackupToolStripMenuItem.Enabled = true;
-                            return;
+                            // バックアップ用フォルダ作成
+                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
+                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                            try
+                            {
+                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                {
+                                    try
+                                    {
+                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                    }
+                                    catch// バックアップ失敗時はログに書き込み
+                                    {
+                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                        streamWriter.WriteLine(subFolder.FullName);
+                                        streamWriter.Close();
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete("backuptmp", true);// 削除
+                            if (File.Exists("BackupErrorLog.txt"))
+                            {
+                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                            }
                         }
-                        Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                     }
                 }
                 else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
@@ -1943,21 +2074,63 @@ namespace CoRectSys
                         this.Hide();// メインフォームを消す
                         CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                                                                          // バックアップ作成
+                        // バックアップ作成
                         DateTime DT = DateTime.Now;
-                        try
+                        if (CompressType == 0)
                         {
-                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                            try
+                            {
+                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
 
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                         }
-                        catch (Exception ex)
+                        else if (CompressType == 1)
                         {
-                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = "バックアップ作成";
-                            BackupToolStripMenuItem.Enabled = true;
-                            return;
+                            // バックアップ用フォルダ作成
+                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
+                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                            try
+                            {
+                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                {
+                                    try
+                                    {
+                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                    }
+                                    catch// バックアップ失敗時はログに書き込み
+                                    {
+                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                        streamWriter.WriteLine(subFolder.FullName);
+                                        streamWriter.Close();
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete("backuptmp", true);// 削除
+                            if (File.Exists("BackupErrorLog.txt"))
+                            {
+                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                            }
                         }
-                        Directory.Delete(TargetBackupPath + "\\backuptmp", true);
                     }
                 }
                 else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ終了をキャンセル
@@ -1989,7 +2162,7 @@ namespace CoRectSys
                     this.Hide();// メインフォームを消す
                     CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                                                                      // バックアップ作成
+                    // バックアップ作成
                     DateTime DT = DateTime.Now;
                     if (CompressType == 0)
                     {
@@ -2009,7 +2182,42 @@ namespace CoRectSys
                     }
                     else if (CompressType == 1)
                     {
-
+                        // バックアップ用フォルダ作成
+                        Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
+                        File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                        try
+                        {
+                            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                            IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                            foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                            {
+                                try
+                                {
+                                    FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                    ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                    Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                }
+                                catch// バックアップ失敗時はログに書き込み
+                                {
+                                    StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                    streamWriter.WriteLine(subFolder.FullName);
+                                    streamWriter.Close();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                            BackupToolStripMenuItem.Text = "バックアップ作成";
+                            BackupToolStripMenuItem.Enabled = true;
+                            return;
+                        }
+                        Directory.Delete("backuptmp", true);// 削除
+                        if (File.Exists("BackupErrorLog.txt"))
+                        {
+                            MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                        }
                     }
                 }
             }
@@ -2446,6 +2654,7 @@ namespace CoRectSys
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
+            //CheckContentsList();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -2637,6 +2846,12 @@ namespace CoRectSys
         }
         private void ShowDetails()// 詳細情報の表示
         {
+            // 読み込み中の画面に切り替え
+            NoImageLabel.Text = "Loading";
+            NoImageLabel.Visible = true;
+            Thumbnail.Image = null;
+            Thumbnail.BackColor = menuStrip1.BackColor;
+            Application.DoEvents();
             LoadDetails();
             // 表示・非表示項目の設定
             AllowEditIDButton.Visible = false;
@@ -2757,11 +2972,13 @@ namespace CoRectSys
             TargetDetailsPath = (TargetContentsPath + "\\details.txt");
             if (System.IO.File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.jpg"))
             {
+                NoImageLabel.Text = "NO IMAGE";
                 NoImageLabel.Visible = false;
                 Thumbnail.BackColor = this.BackColor;
             }
             else
             {
+                NoImageLabel.Text = "NO IMAGE";
                 NoImageLabel.Visible = true;
                 Thumbnail.BackColor = menuStrip1.BackColor;
             }
@@ -2815,14 +3032,13 @@ namespace CoRectSys
                     EditButton.ForeColor = Color.Black;
                 }
             }
-            // 最近表示した項目としてUUID、名称を保存
+            // 最近表示した項目としてUUID、名称を保存<- 未実装項目
 
         }
         private void LoadDetails()// 詳細情報を読み込み
         {
             if (dataGridView1.CurrentRow == null)
             {
-                //MessageBox.Show("プロジェクトを開いてください。１", "CREC");
                 return;
             }
             try
@@ -2982,6 +3198,7 @@ namespace CoRectSys
             }
             // 必要なものを表示
             PictureBox1.Visible = true;
+            ShowPictureFileNameLabel.Visible = true;
             if (StandardDisplayModeToolStripMenuItem.Checked) { ClosePicturesButton.Visible = true; }
             else if (FullDisplayModeToolStripMenuItem.Checked) { ClosePicturesButton.Visible = false; }
 
@@ -2990,6 +3207,7 @@ namespace CoRectSys
             SearchFormTextBox.Visible = false;
             SearchOptionComboBox.Visible = false;
             SearchMethodComboBox.Visible = false;
+            SearchButton.Visible = false;
             SearchFormTextBoxClearButton.Visible = false;
             AddContentsButton.Visible = false;
             ListUpdateButton.Visible = false;
@@ -3006,6 +3224,7 @@ namespace CoRectSys
             try
             {
                 PictureBox1.ImageLocation = PicturesList[PictureNumber];
+                ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
                 NextPictureButton.Visible = true;
                 PreviousPictureButton.Visible = true;
                 NoPicturesLabel.Visible = false;
@@ -3020,11 +3239,15 @@ namespace CoRectSys
         private void ClosePicturesButton_Click(object sender, EventArgs e)// 詳細画像非表示ボタン
         {
             ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                                      // 一覧表示モードに戻る
+            // 一覧表示モードに戻る
             dataGridView1.Visible = true;
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
             SearchMethodComboBox.Visible = true;
+            if(AutoSearch == false)
+            {
+                SearchButton.Visible = true;
+            }
             SearchFormTextBoxClearButton.Visible = true;
             AddContentsButton.Visible = true;
             ListUpdateButton.Visible = true;
@@ -3032,6 +3255,7 @@ namespace CoRectSys
         private void ClosePicturesViewMethod()// 画像表示モードを閉じるメソッド
         {
             PictureBox1.Visible = false;
+            ShowPictureFileNameLabel.Visible = false;
             PictureBox1.Image = null;// これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
             ClosePicturesButton.Visible = false;
             NextPictureButton.Visible = false;
@@ -3047,6 +3271,7 @@ namespace CoRectSys
                 PictureNumber = 0;
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
+            ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
         }
         private void PreviousPictureButton_Click(object sender, EventArgs e)// 前の画像を表示
         {
@@ -3056,6 +3281,7 @@ namespace CoRectSys
                 PictureNumber = PictureCount - 1;
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
+            ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
         }
         #endregion
 
@@ -3147,7 +3373,7 @@ namespace CoRectSys
             FileStream FileStream = File.Create(TargetContentsPath + "\\DED");
             FileStream.Close();
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
-                               // サムネ用画像変更用データが残っていた場合削除
+            // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
             {
                 File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
@@ -3241,6 +3467,10 @@ namespace CoRectSys
         }
         private void SaveAndCloseEditButton_Click(object sender, EventArgs e)// 編集画面の終了
         {
+            // ボタンを無効化
+            SaveAndCloseEditButton.Enabled = false;
+            SaveAndCloseEditButton.Text = "保存中";
+            SaveAndCloseEditButton.Update();
             // 入力内容を確認
             if (CheckContent() == false)
             {
@@ -3250,6 +3480,10 @@ namespace CoRectSys
             ShowPicturesButton.Text = "画像を表示";
             // データ保存メソッドを呼び出し
             SaveContentsMethod();
+            // ボタンを有効化
+            SaveAndCloseEditButton.Enabled = true;
+            SaveAndCloseEditButton.Text = "保存して終了";
+            SaveAndCloseEditButton.Update();
             // 通常画面に不要な物を非表示に
             EditNameTextBox.Visible = false;
             EditIDTextBox.Visible = false;
@@ -3264,7 +3498,7 @@ namespace CoRectSys
             EditRealLocationTextBox.Visible = false;
             SaveAndCloseEditButton.Visible = false;
             SelectThumbnailButton.Visible = false;
-            //　再表示時に編集したデータを表示するための処理
+            // 再表示時に編集したデータを表示するための処理
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchFormTextBox.Text = EditIDTextBox.Text;
@@ -3672,7 +3906,7 @@ namespace CoRectSys
                 AddContentsButton.Visible = false;
                 ListUpdateButton.Visible = false;
                 ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                                          // 必要なものを表示
+                // 必要なものを表示
                 InventoryLabel.Visible = true;
                 InventoryModeDataGridView.Visible = true;
                 OperationOptionComboBox.Visible = true;
@@ -3737,7 +3971,7 @@ namespace CoRectSys
             else if (InventoryModeDataGridView.Visible == true)// 在庫管理モードを終了
             {
                 CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
-                                           // 必要なものを表示
+                // 必要なものを表示
                 if (StandardDisplayModeToolStripMenuItem.Checked)
                 {
                     dataGridView1.Visible = true;
@@ -4235,7 +4469,6 @@ namespace CoRectSys
             {
                 if (TargetCRECPath.Length > 0)
                 {
-                    //MessageBox.Show(TargetCRECPath);
                     StreamWriter sw = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
                     sw.WriteLine("{0},{1}", "projectname", TargetProjectName);
                     sw.WriteLine("{0},{1}", "projectlocation", TargetFolderPath);
@@ -4662,14 +4895,20 @@ namespace CoRectSys
         }
         private void SetFormLayout()// コントロールサイズ更新処理
         {
+            // 処理がダサい。インスタンスを使うと良いらしい（調べておく）
+            string fontname = "Meiryo UI";// フォント指定 
             float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
+            // フォームの最小サイズを変更
+            this.MinimumSize = new Size(Convert.ToInt32(1280*DpiScale),Convert.ToInt32(640*DpiScale));
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
                 dataGridView1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
                 dataGridView1BackgroundPictureBox.Width = 0;
                 dataGridView1BackgroundPictureBox.Height = 0;
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
+                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
+                ShowSelectedItemInformationButton.Font = new Font(fontname, mainfontsize);
             }
             else if (FullDisplayModeToolStripMenuItem.Checked)
             {
@@ -4678,82 +4917,9 @@ namespace CoRectSys
                 dataGridView1BackgroundPictureBox.Height = Convert.ToInt32(FormSize.Height - 35 * DpiScale);
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
                 ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
+                ShowSelectedItemInformationButton.Font = new Font(fontname, mainfontsize);
             }
-            dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
-            dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
-            InventoryModeDataGridView.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
-            InventoryModeDataGridView.Height = Convert.ToInt32(FormSize.Height - 340 * DpiScale);
-            InventoryModeDataGridView.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
-            SearchOptionComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 320 * DpiScale), SearchOptionComboBox.Location.Y);
-            PictureBox1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
-            PictureBox1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
-            PictureBox1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(70 * DpiScale));
-            NoPicturesLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 92 * DpiScale), Convert.ToInt32(FormSize.Height * 0.5));
-            PreviousPictureButton.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            NextPictureButton.Location = new Point(Convert.ToInt32(280 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            ClosePicturesButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            SearchMethodComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 160 * DpiScale), SearchOptionComboBox.Location.Y);
-            SearchFormTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 340 * DpiScale);
-            SearchButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5 - 40 * DpiScale), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
-            SearchFormTextBoxClearButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
-            DetailsTextBox.Width = Convert.ToInt32(FormSize.Width * 0.46);
-            DetailsTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
-            DetailsTextBox.Location = new Point(Convert.ToInt32(-42 * DpiScale + FormSize.Width * 0.54), Convert.ToInt32(500 * DpiScale));
-            ConfidentialDataTextBox.Width = Convert.ToInt32(FormSize.Width * 0.46);
-            ConfidentialDataTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
-            ConfidentialDataTextBox.Location = new Point(Convert.ToInt32(-42 * DpiScale + FormSize.Width * 0.54), Convert.ToInt32(500 * DpiScale));
-            ClosePicturesButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 190 * DpiScale), ClosePicturesButton.Location.Y);
-            NextPictureButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 90 * DpiScale), NextPictureButton.Location.Y);
-            EditInventoryOperationNoteTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 40 * DpiScale);
-            AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 170 * DpiScale), AddInventoryOperationButton.Location.Y);
-            CenterLine.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5), Convert.ToInt32(54 * DpiScale));
-            CenterLine.Height = Convert.ToInt32(FormSize.Height - 100 * DpiScale);
-            ObjectNameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowObjectName.Location.Y);
-            ShowObjectName.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ObjectNameLabel.Width - 10 * DpiScale), ShowObjectName.Location.Y);
-            EditNameTextBox.Height = Convert.ToInt32(36 * DpiScale);
-            EditNameTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowObjectName.Location.Y);
-            IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowID.Location.Y);
-            ShowID.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + IDLabel.Width), ShowID.Location.Y);
-            EditIDTextBox.Height = Convert.ToInt32(20 * DpiScale);
-            EditIDTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowID.Location.Y);
-            MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowMC.Location.Y);
-            ShowMC.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + MCLabel.Width - 10 * DpiScale), ShowMC.Location.Y);
-            EditMCTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowMC.Location.Y);
-            RegistrationDateLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowRegistrationDate.Location.Y);
-            ShowRegistrationDate.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RegistrationDateLabel.Width - 10 * DpiScale), ShowRegistrationDate.Location.Y);
-            EditRegistrationDateTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowRegistrationDate.Location.Y);
-            CategoryLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowCategory.Location.Y);
-            ShowCategory.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + CategoryLabel.Width - 10 * DpiScale), ShowCategory.Location.Y);
-            EditCategoryTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 138 * DpiScale), ShowCategory.Location.Y);
-            Tag1NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag1.Location.Y);
-            ShowTag1.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag1.Location.Y);
-            EditTag1TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag1.Location.Y);
-            Tag2NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag2.Location.Y);
-            ShowTag2.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag2.Location.Y);
-            EditTag2TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag2.Location.Y);
-            Tag3NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowTag3.Location.Y);
-            ShowTag3.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag3.Location.Y);
-            EditTag3TextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 160 * DpiScale), ShowTag3.Location.Y);
-            RealLocationLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowRealLocation.Location.Y);
-            ShowRealLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RealLocationLabel.Width - 10 * DpiScale), ShowRealLocation.Location.Y);
-            EditRealLocationTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 185 * DpiScale), ShowRealLocation.Location.Y);
-            ShowDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowDataLocation.Location.Y);
-            OpenDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 190 * DpiScale), OpenDataLocation.Location.Y);
-            CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 310 * DpiScale), CopyDataLocationPath.Location.Y);
-            DetailsLabel.Location = new Point(DetailsTextBox.Location.X, DetailsTextBox.Location.Y - DetailsLabel.Height);
-            EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
-            EditRequestingButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
-            SaveAndCloseEditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
-            InventoryManagementModeButton.Location = new Point(Convert.ToInt32(FormSize.Width - 445 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
-            ShowConfidentialDataButton.Location = new Point(Convert.ToInt32(FormSize.Width - 230 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
-            // 在庫管理モード関係
-            InventoryOperation.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
-            InputQuantitiy.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
-            OperationOptionComboBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
-            EditQuantityTextBox.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
-            AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 165 * DpiScale));
-            InventoryOperationNote.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            EditInventoryOperationNoteTextBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            // 編集TextBox関係
             if (FormSize.Width < 1600 * DpiScale)
             {
                 Thumbnail.Width = Convert.ToInt32(FormSize.Width * 0.4 - 312 * DpiScale);
@@ -4783,16 +4949,170 @@ namespace CoRectSys
                 EditTag3TextBox.Width = Convert.ToInt32(FormSize.Width - 1120 * DpiScale) / 2;
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
+            DataLoadingLabel.Font = new Font(fontname, mainfontsize);
+            dataGridView1.Font = new Font(fontname, mainfontsize);
+            dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
+            dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
+            SearchOptionComboBox.Font = new Font(fontname, mainfontsize);
+            SearchOptionComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 320 * DpiScale), SearchOptionComboBox.Location.Y);
+            PictureBox1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
+            PictureBox1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
+            PictureBox1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(70 * DpiScale));
+            ShowPictureFileNameLabel.Font = new Font(fontname, mainfontsize);
+            ShowPictureFileNameLabel.Location = new Point(PictureBox1.Location.X, Convert.ToInt32(30 * DpiScale));
+            NoPicturesLabel.Font = new Font(fontname, mainfontsize);
+            NoPicturesLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 92 * DpiScale), Convert.ToInt32(FormSize.Height * 0.5));
+            ClosePicturesButton.Font = new Font(fontname, mainfontsize);
+            ClosePicturesButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 190 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
+            SearchMethodComboBox.Font = new Font(fontname, mainfontsize);
+            SearchMethodComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 160 * DpiScale), SearchOptionComboBox.Location.Y);
+            SearchFormTextBox.Font = new Font(fontname, mainfontsize);
+            SearchFormTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 340 * DpiScale);
+            SearchButton.Font = new Font(fontname, mainfontsize);
+            SearchButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5 - 40 * DpiScale), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
+            SearchFormTextBoxClearButton.Font = new Font(fontname, mainfontsize);
+            SearchFormTextBoxClearButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
+            DetailsTextBox.Font = new Font(fontname, mainfontsize);
+            DetailsTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 50 * DpiScale);
+            DetailsTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
+            DetailsTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 15 * DpiScale), Convert.ToInt32(500 * DpiScale));
+            ConfidentialDataTextBox.Font = new Font(fontname, mainfontsize);
+            ConfidentialDataTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 50 * DpiScale);
+            ConfidentialDataTextBox.Height = Convert.ToInt32(FormSize.Height - 600 * DpiScale);
+            ConfidentialDataTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 15 * DpiScale), Convert.ToInt32(500 * DpiScale));
+            NextPictureButton.Font = new Font(fontname, mainfontsize);
+            NextPictureButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 90 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
+            PreviousPictureButton.Font = new Font(fontname, mainfontsize);
+            PreviousPictureButton.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
+            CenterLine.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5), Convert.ToInt32(54 * DpiScale));
+            CenterLine.Height = Convert.ToInt32(FormSize.Height - 100 * DpiScale);
+            ObjectNameLabel.Font = new Font(fontname, bigfontsize);
+            ObjectNameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), ShowObjectName.Location.Y);
+            ShowObjectName.Font = new Font(fontname, bigfontsize);
+            ShowObjectName.Location = new Point(Convert.ToInt32(ObjectNameLabel.Location.X + ObjectNameLabel.Width), ShowObjectName.Location.Y);
+            EditNameTextBox.Font = new Font(fontname, mainfontsize);
+            EditNameTextBox.Location = new Point(Convert.ToInt32(ObjectNameLabel.Location.X + ObjectNameLabel.Width), ShowObjectName.Location.Y);
+            EditNameTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditNameTextBox.Location.X - 5 * DpiScale);
+            IDLabel.Font = new Font(fontname, smallfontsize);
+            IDLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), ShowID.Location.Y);
+            ShowID.Font = new Font(fontname, smallfontsize);
+            ShowID.Location = new Point(Convert.ToInt32(IDLabel.Location.X + IDLabel.Width), ShowID.Location.Y);
+            EditIDTextBox.Font = new Font(fontname, smallfontsize);
+            EditIDTextBox.Location = new Point(Convert.ToInt32(IDLabel.Location.X + IDLabel.Width), ShowID.Location.Y);
+            EditIDTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditIDTextBox.Location.X - 5 * DpiScale);
+            MCLabel.Font = new Font(fontname, mainfontsize);
+            MCLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), ShowMC.Location.Y);
+            ShowMC.Font = new Font(fontname, mainfontsize);
+            ShowMC.Location = new Point(Convert.ToInt32(MCLabel.Location.X + MCLabel.Width), ShowMC.Location.Y);
+            EditMCTextBox.Font = new Font(fontname, mainfontsize);
+            EditMCTextBox.Location = new Point(Convert.ToInt32(MCLabel.Location.X + MCLabel.Width), ShowMC.Location.Y);
+            EditMCTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditMCTextBox.Location.X - 5 * DpiScale);
+            RegistrationDateLabel.Font = new Font(fontname, mainfontsize);
+            RegistrationDateLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), RegistrationDateLabel.Location.Y);
+            ShowRegistrationDate.Font = new Font(fontname, mainfontsize);
+            ShowRegistrationDate.Location = new Point(Convert.ToInt32(RegistrationDateLabel.Location.X + RegistrationDateLabel.Width), RegistrationDateLabel.Location.Y);
+            EditRegistrationDateTextBox.Font = new Font(fontname, mainfontsize);
+            EditRegistrationDateTextBox.Location = new Point(Convert.ToInt32(RegistrationDateLabel.Location.X + RegistrationDateLabel.Width), RegistrationDateLabel.Location.Y);
+            EditRegistrationDateTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditRegistrationDateTextBox.Location.X - 5 * DpiScale);
+            CategoryLabel.Font = new Font(fontname, mainfontsize);
+            CategoryLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), CategoryLabel.Location.Y);
+            ShowCategory.Font = new Font(fontname, mainfontsize);
+            ShowCategory.Location = new Point(Convert.ToInt32(CategoryLabel.Location.X + CategoryLabel.Width), CategoryLabel.Location.Y);
+            EditCategoryTextBox.Font = new Font(fontname, mainfontsize);
+            EditCategoryTextBox.Location = new Point(Convert.ToInt32(CategoryLabel.Location.X + CategoryLabel.Width), CategoryLabel.Location.Y);
+            EditCategoryTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditCategoryTextBox.Location.X - 5 * DpiScale);
+            Tag1NameLabel.Font = new Font(fontname, mainfontsize);
+            Tag1NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 20 * DpiScale), Tag1NameLabel.Location.Y);
+            ShowTag1.Font = new Font(fontname, mainfontsize);
+            ShowTag1.Location = new Point(Convert.ToInt32(Tag1NameLabel.Location.X + Tag1NameLabel.Width), Tag1NameLabel.Location.Y);
+            EditTag1TextBox.Font = new Font(fontname, mainfontsize);
+            EditTag1TextBox.Location = new Point(Convert.ToInt32(Tag1NameLabel.Location.X + +Tag1NameLabel.Width), Tag1NameLabel.Location.Y);
+            EditTag1TextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditTag1TextBox.Location.X - 5 * DpiScale);
+            Tag2NameLabel.Font = new Font(fontname, mainfontsize);
+            Tag2NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 20 * DpiScale), Tag2NameLabel.Location.Y);
+            ShowTag2.Font = new Font(fontname, mainfontsize);
+            ShowTag2.Location = new Point(Convert.ToInt32(Tag2NameLabel.Location.X + Tag2NameLabel.Width), Tag2NameLabel.Location.Y);
+            EditTag2TextBox.Font = new Font(fontname, mainfontsize);
+            EditTag2TextBox.Location = new Point(Convert.ToInt32(Tag2NameLabel.Location.X + Tag2NameLabel.Width), Tag2NameLabel.Location.Y);
+            EditTag2TextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditTag2TextBox.Location.X - 5 * DpiScale);
+            Tag3NameLabel.Font = new Font(fontname, mainfontsize);
+            Tag3NameLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 20 * DpiScale), Tag3NameLabel.Location.Y);
+            ShowTag3.Font = new Font(fontname, mainfontsize);
+            ShowTag3.Location = new Point(Convert.ToInt32(Tag3NameLabel.Location.X + Tag3NameLabel.Width), Tag3NameLabel.Location.Y);
+            EditTag3TextBox.Font = new Font(fontname, mainfontsize);
+            EditTag3TextBox.Location = new Point(Convert.ToInt32(Tag3NameLabel.Location.X + Tag3NameLabel.Width), Tag3NameLabel.Location.Y);
+            EditTag3TextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditTag3TextBox.Location.X - 5 * DpiScale);
+            RealLocationLabel.Font = new Font(fontname, mainfontsize);
+            RealLocationLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowRealLocation.Location.Y);
+            ShowRealLocation.Font = new Font(fontname, mainfontsize);
+            ShowRealLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RealLocationLabel.Width), ShowRealLocation.Location.Y);
+            EditRealLocationTextBox.Font = new Font(fontname, mainfontsize);
+            EditRealLocationTextBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + RealLocationLabel.Width), ShowRealLocation.Location.Y);
+            EditRealLocationTextBox.Width = Convert.ToInt32(Thumbnail.Location.X - EditRealLocationTextBox.Location.X - 5 * DpiScale);
+            ShowDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), ShowDataLocation.Location.Y);
+            ShowDataLocation.Font = new Font(fontname, mainfontsize);
+            OpenDataLocation.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ShowDataLocation.Width), ShowDataLocation.Location.Y);
+            OpenDataLocation.Font = new Font(fontname, smallfontsize);
+            CopyDataLocationPath.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + ShowDataLocation.Width + OpenDataLocation.Width + 5 * DpiScale), ShowDataLocation.Location.Y);
+            CopyDataLocationPath.Font = new Font(fontname, smallfontsize);
+            DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Convert.ToInt32(DetailsTextBox.Location.Y - DetailsLabel.Height - 5 * DpiScale));
+            DetailsLabel.Font = new Font(fontname, mainfontsize);
+            EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            EditButton.Font = new Font(fontname, mainfontsize);
+            EditRequestingButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            EditRequestingButton.Font = new Font(fontname, mainfontsize);
+            SaveAndCloseEditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            SaveAndCloseEditButton.Font = new Font(fontname, mainfontsize);
+            InventoryManagementModeButton.Location = new Point(Convert.ToInt32(FormSize.Width - 445 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            InventoryManagementModeButton.Font = new Font(fontname, mainfontsize);
+            ShowConfidentialDataButton.Location = new Point(Convert.ToInt32(FormSize.Width - 230 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            ShowConfidentialDataButton.Font = new Font(fontname, mainfontsize);
+            // 在庫管理モード関係
+            InventoryModeDataGridView.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
+            InventoryModeDataGridView.Height = Convert.ToInt32(FormSize.Height - 340 * DpiScale);
+            InventoryModeDataGridView.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
+            InventoryModeDataGridView.Font = new Font(fontname, mainfontsize);
+            InventoryOperation.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
+            InventoryOperation.Font = new Font(fontname, mainfontsize);
+            InputQuantitiy.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
+            InputQuantitiy.Font = new Font(fontname, mainfontsize);
+            OperationOptionComboBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
+            OperationOptionComboBox.Font = new Font(fontname, mainfontsize);
+            EditQuantityTextBox.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
+            EditQuantityTextBox.Font = new Font(fontname, mainfontsize);
+            AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 165 * DpiScale));
+            AddInventoryOperationButton.Font = new Font(fontname, mainfontsize);
+            InventoryOperationNote.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
+            InventoryOperationNote.Font = new Font(fontname, mainfontsize);
+            EditInventoryOperationNoteTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 40 * DpiScale);
+            EditInventoryOperationNoteTextBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            EditInventoryOperationNoteTextBox.Font = new Font(fontname, mainfontsize);
+            ProperInventorySettingsComboBox.Font = new Font(fontname, mainfontsize);
+            ProperInventorySettingsTextBox.Font = new Font(fontname, mainfontsize);
+            SaveProperInventorySettingsButton.Font = new Font(fontname, mainfontsize);
             AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
+            AllowEditIDButton.Font = new Font(fontname, extrasmallfontsize);
             CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);
+            CheckSameMCButton.Font = new Font(fontname, extrasmallfontsize);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
             ShowPicturesButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), ShowPicturesButton.Location.Y);
+            ShowPicturesButton.Font = new Font(fontname, mainfontsize);
             SelectThumbnailButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), SelectThumbnailButton.Location.Y);
+            SelectThumbnailButton.Font = new Font(fontname, mainfontsize);
             ShowListButton.Width = Convert.ToInt32(130 * DpiScale);
+            ShowListButton.Font = new Font(fontname, mainfontsize);
+            // dataGridViewContextMenuStripの文字サイズ
+            AddContentsContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            ListUpdateContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
         }
-        private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得
+        private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得および文字サイズの計算
         {
             CurrentDPI = e.DeviceDpiNew / 96.0;
+            extrasmallfontsize = (float)(9 * CurrentDPI / FirstDPI);// 最小フォントのサイズ
+            smallfontsize = (float)(14.25 * CurrentDPI / FirstDPI);// 小フォントのサイズ
+            mainfontsize = (float)(18.0 * CurrentDPI / FirstDPI);// 標準フォントのサイズ
+            bigfontsize = (float)(20.25 * CurrentDPI / FirstDPI);// 大フォントのサイズ
         }
         private void MainForm_ResizeEnd(object sender, EventArgs e)// ウインドウサイズの変更・移動を取得
         {
@@ -4982,7 +5302,6 @@ namespace CoRectSys
                 {
                     if (ThisID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
                     {
-                        //MessageBox.Show(ThisID + "/" + Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value));
                         if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                         {
                             if (CheckEditingContents() == true)
@@ -5074,6 +5393,7 @@ namespace CoRectSys
                                 FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
                                 File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                             }
                             catch// バックアップ失敗時はログに書き込み
                             {
@@ -5081,7 +5401,6 @@ namespace CoRectSys
                                 streamWriter.WriteLine(subFolder.FullName);
                                 streamWriter.Close();
                             }
-                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                         }
                     }
                     catch (Exception ex)
@@ -5357,12 +5676,13 @@ namespace CoRectSys
                         }
                         streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
+                    streamWriter.Close();
+                    MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
 
                 }
-                streamWriter.Close();
                 if (OpenListAfterOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
@@ -5538,12 +5858,13 @@ namespace CoRectSys
                         }
                         streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
+                    streamWriter.Close();
+                    MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                 }
                 catch (Exception ex)
                 {
 
                 }
-                streamWriter.Close();
                 if (OpenListAfterOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
@@ -5785,7 +6106,110 @@ namespace CoRectSys
 
         private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
-
+            // 実装検討中
         }
+
+        #region 言語設定
+        private void LanguageSettingToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 表示言語リストを表示
+        {
+            LanguageSettingToolStripMenuItem.DropDownItems.Clear();
+            int count = -1;
+            try
+            {
+                System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
+                System.IO.FileInfo[] fileInfos = directoryInfo.GetFiles("*.xml");
+                LanguageSettingToolStripMenuItems = new ToolStripMenuItem[10];// あとでここの配列確保を動的にすること
+                foreach (FileInfo fileInfo in fileInfos)
+                {
+                    count++;
+                    LanguageSettingToolStripMenuItems[count] = new ToolStripMenuItem();
+                    XElement xElement = XElement.Load(fileInfo.FullName);
+                    IEnumerable<string> strings = from item in xElement.Elements("metadata").Elements("name") select item.Value;
+                    foreach (string s in strings)
+                    {
+                        LanguageSettingToolStripMenuItems[count].Text = s;
+                        LanguageSettingToolStripMenuItems[count].ToolTipText = fileInfo.FullName;
+                        LanguageSettingToolStripMenuItem.DropDownItems.Add(LanguageSettingToolStripMenuItems[count]);
+                        LanguageSettingToolStripMenuItems[count].Click += new EventHandler(LanguageSettingToolStripMenuItems_Click);
+                        if(CurrentLanguage == s)
+                        {
+                            LanguageSettingToolStripMenuItems[count].Checked = true;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                if(count <= 0)
+                {
+                    MessageBox.Show("言語ファイルが見つかりませんでした。", "CREC");
+                }
+            }
+        }
+        private void LanguageSettingToolStripMenuItems_Click(object sender, EventArgs e)// 表示言語がクリックされた時のイベント
+        {
+            CurrentLanguage = ((ToolStripItem)sender).Text;
+            SetLanguage(((ToolStripItem)sender).ToolTipText);
+        }
+        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            XElement xElement = XElement.Load(targetLanguageFilePath);
+            IEnumerable<XElement> itemDataList = from item in xElement.Elements("mainform").Elements("item") select item;
+            foreach (XElement itemData in itemDataList)
+            {
+                try
+                {
+                    if (itemData.Element("itemtype").Value == "ToolStripMenuItem")// ToolStripMenuItem用
+                    {
+                        foreach (var toolStripMenuItem1 in menuStrip1.Items)
+                        {
+                            if (toolStripMenuItem1 is ToolStripMenuItem)
+                            {
+                                if (((ToolStripMenuItem)toolStripMenuItem1).Name == itemData.Element("itemname").Value)
+                                {
+                                    ((ToolStripMenuItem)toolStripMenuItem1).Text = itemData.Element("itemtext").Value;
+                                    break;
+                                }
+                                foreach (var toolStripMenuItem2 in ((ToolStripMenuItem)toolStripMenuItem1).DropDownItems)
+                                {
+                                    if (toolStripMenuItem2 is ToolStripMenuItem)
+                                    {
+                                        if (((ToolStripMenuItem)toolStripMenuItem2).Name == itemData.Element("itemname").Value)
+                                        {
+                                            ((ToolStripMenuItem)toolStripMenuItem2).Text = itemData.Element("itemtext").Value;
+                                            break;
+                                        }
+                                        foreach (var toolStripMenuItem3 in ((ToolStripMenuItem)toolStripMenuItem2).DropDownItems)
+                                        {
+                                            if(toolStripMenuItem3 is ToolStripMenuItem)
+                                            {
+                                                if(((ToolStripMenuItem)toolStripMenuItem3).Name == itemData.Element("itemname").Value)
+                                                {
+                                                    ((ToolStripMenuItem)toolStripMenuItem3).Text = itemData.Element("itemtext").Value;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else// その他のコントール用
+                    {
+                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                        if (targetContrl.Length > 0)
+                        {
+                            targetContrl[0].Text = itemData.Element("itemtext").Value;
+                        }
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+        #endregion
     }
 }

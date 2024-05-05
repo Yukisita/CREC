@@ -1,6 +1,6 @@
 ﻿/*
 VersionInformation
-Copyright (c) [2022-2024] [Yukisita Mfg.]
+Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
@@ -23,12 +23,14 @@ namespace CoRectSys
     {
         string SystemInformations;
         string ColorSetting = "Blue";
-        float CurrentDPI = 0;
-        public VersionInformation(string colorSetting, double currentDPI)
+        float mainFormCurrentDPI = 0;// MainFormのDPI
+        // 表示関係
+        double CurrentDPI = 1.0;// 現在のDPI値
+        public VersionInformation(string colorSetting, double MainFormCurrentDPI)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
-            CurrentDPI = (float)currentDPI;
+            mainFormCurrentDPI = (float)MainFormCurrentDPI;
             SetColorMethod();
         }
 
@@ -59,7 +61,7 @@ namespace CoRectSys
                     temp =
                          (temp
                         + "CPU名：" + m["Name"].ToString() + "\n"
-                        + "表示スケール：" + Convert.ToInt32(CurrentDPI * 100).ToString() + "%\n"
+                        + "表示スケール：" + Convert.ToInt32(mainFormCurrentDPI * 100).ToString() + "%\n"
                          );
                 }
                 return temp;
@@ -88,5 +90,12 @@ namespace CoRectSys
                     break;
             }
         }
+
+        #region 画面サイズ変更時のコントロールサイズ更新処理
+        private void VersionInformation_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            CurrentDPI = e.DeviceDpiNew / 96.0;
+        }
+        #endregion
     }
 }

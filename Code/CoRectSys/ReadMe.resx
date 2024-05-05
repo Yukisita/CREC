@@ -122,9 +122,9 @@
 在庫管理するソフトです。
 
 ～動作環境～
-OS　　　　　Windows10, 11
-必要なスペック　Windows10, 11が動く、モニタはFHD以上推奨
-　　　　　　　（FHDかつスケーリング175％以上の場合はレイアウトが乱れます）
+OS　　　　　Windows11（多分10でも動くけど未検証）
+必要なスペック　Windows11が動く、モニタはFHD以上推奨
+　　　　　　　（175%を超える高DPI環境ではレイアウトが崩れる場合があります。）
 
 ～使い方～
 考えるな。感じろ。
@@ -153,7 +153,7 @@ exeを削除してください。レジストリ等への書き込みは一切�
 本ソフトウェアはMITライセンスの元で公開されています。
 This software is released under the MIT License.
 
-Copyright &lt;2023&gt; &lt;Yukisita Mfg.&gt;
+Copyright &lt;2023-2024&gt; &lt;S.Yukisita&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -162,7 +162,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ～連絡先～
-雪下製作所
+雪下
 Twitter：@Yukisita_Mfg
 （hを抜きました。Yuki"shit"aで垢バンされる恐れがあったので）
 E-mail:contact.yukishita.mfg@gmail.com</value>
