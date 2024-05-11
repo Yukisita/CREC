@@ -352,9 +352,13 @@ ver7.06.01（2024/04/14）
 ver7.06.02（2024/04/23）
 詳細情報・機密情報のラベルがDPI設定によって下の表示領域に被る問題を修正
 
-ver7.06.03（2024/04/30）
-ReadMe、更新履歴が編集可能になっていた不具合を修正
-全体表示モードにおいて「選択項目の情報を表示」ボタンの文字サイズがDPIによって崩れる問題を修正</value>
+ver7.06.03（2024/04/23）
+詳細情報・機密情報のラベルがDPI設定によって下の表示領域に被る問題を修正
+全体表示モードにおいて「選択項目の情報を表示」ボタンの文字サイズがDPIによって崩れる問題を修正
+
+ver7.07.01（2024/05/11）
+表示中の画像を別アプリケーションで開く機能を追加
+「読み込み中」のラベル位置がDPIによってズレる不具合を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

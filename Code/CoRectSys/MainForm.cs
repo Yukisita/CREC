@@ -3280,6 +3280,28 @@ namespace CoRectSys
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
             ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
         }
+        private void OpenPicturewithAppToolStripMenuItem_Click(object sender, EventArgs e)// 画像をアプリケーションで開く
+        {
+            if (PicturesList.Count > 0)
+            {
+                try
+                {
+                    var pInfo = new ProcessStartInfo
+                    {
+                        FileName = PicturesList[PictureNumber]
+                    };
+                    Process.Start(pInfo);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("画像の表示に失敗しました。\n" + ex, "CREC");
+                }
+            }
+            else
+            {
+                MessageBox.Show("表示可能な画像が見つかりません。", "CREC");
+            }
+        }
         #endregion
 
         #region 編集・データ追加・データ削除関係
@@ -4947,6 +4969,7 @@ namespace CoRectSys
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
             DataLoadingLabel.Font = new Font(fontname, mainfontsize);
+            DataLoadingLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - DataLoadingLabel.Width - 10 * DpiScale), DataLoadingLabel.Location.Y);
             dataGridView1.Font = new Font(fontname, mainfontsize);
             dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
@@ -5102,6 +5125,8 @@ namespace CoRectSys
             AddContentsContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             ListUpdateContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            // PictureBox1ContextMenuStripの文字サイズ
+            OpenPicturewithAppToolStripMenuItem.Font = new Font(fontname, mainfontsize);
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得および文字サイズの計算
         {
@@ -6104,6 +6129,5 @@ namespace CoRectSys
         private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
         }
-
     }
 }
