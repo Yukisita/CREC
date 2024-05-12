@@ -111,6 +111,20 @@ namespace CoRectSys
 
         public MainForm()
         {
+            // Boot画面を表示
+            BootingForm bootingForm = new BootingForm();
+            try
+            {
+                bootingForm.Show(this);
+                Application.DoEvents();// これをやらないとBootingFormが真っ白なままになる
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("アプリケーションの起動に失敗しました。\n" + ex, "CREC");
+            }
+            bootingForm.BootingProgressLabel.Text = "アプリケーション起動中...おまちください。";
+            Application.DoEvents();
+            // 起動処理開始
             InitializeComponent();
             // データ一覧のDGVにダブルバッファリングを設定
             Type dgvType = typeof(DataGridView);
@@ -139,17 +153,31 @@ namespace CoRectSys
             {
                 MessageBox.Show("このスクリーンでは正常に表示されない場合があります。\n" + "モニタ解像度=" + ScreenWidth + "X" + ScreenHeight + "\n表示スケール=" + DpiScale * 100 + "%");
             }
-            SetFormLayout();
+            bootingForm.BootingProgressLabel.Text = "設定ファイル読み込み中";
+            Application.DoEvents();
             ImportConfig();// configファイルの読み込み・自動生成
             SetColorMethod();// 色設定を反映
             SetTagNameToolTips();// ToolTipsの設定
+            bootingForm.BootingProgressLabel.Text = "ウインドウレイアウト調整中";
+            Application.DoEvents();
+            SetFormLayout();
             // バックグラウンド処理の開始
             CheckContentsList();
             CheckEditing();
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
             if (TargetCRECPath.Length > 0)
             {
+                bootingForm.BootingProgressLabel.Text = "プロジェクト読み込み中";
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                // Boot画面を閉じる
+                try
+                {
+                    bootingForm.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("" + ex, "CREC");
+                }
                 if (StartUpListOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
@@ -169,6 +197,18 @@ namespace CoRectSys
                 {
                     BackUpMethod();
                     MakeBackUpZip();// ZIP圧縮を非同期で開始
+                }
+            }
+            else
+            {
+                // Boot画面を閉じる
+                try
+                {
+                    bootingForm.Close();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show("" + ex, "CREC");
                 }
             }
             if (AutoSearch == true)

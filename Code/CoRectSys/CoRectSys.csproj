@@ -77,6 +77,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BootingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BootingForm.Designer.cs">
+      <DependentUpon>BootingForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CloseBackUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,9 @@
     <Compile Include="VersionInformation.Designer.cs">
       <DependentUpon>VersionInformation.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="BootingForm.resx">
+      <DependentUpon>BootingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CloseBackUpForm.resx">
       <DependentUpon>CloseBackUpForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -187,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="CREC.ico" />
+    <None Include="Resources\CREC256_icon.png" />
     <None Include="Resources\2024-2-Spring.png" />
     <None Include="Resources\2023-autumn.png" />
     <None Include="Resources\2023-summer.png" />
