@@ -3863,7 +3863,16 @@ namespace CoRectSys
             {
                 EditRealLocationTextBox.Text = "　ー　";
             }
-            Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
+            Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}",
+                "名称," + EditNameTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "ID," + EditIDTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "MC," + EditMCTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "登録日," + EditRegistrationDateTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "カテゴリ," + EditCategoryTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ1," + EditTag1TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ2," + EditTag2TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ3," + EditTag3TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "場所1(Real)," + EditRealLocationTextBox.Text.Replace("\r", "").Replace("\n", "")));
             Indexfile.Close();
             // 詳細データの保存
             StreamWriter Detailsfile = new StreamWriter(TargetContentsPath + "\\details.txt", false, Encoding.GetEncoding("UTF-8"));
