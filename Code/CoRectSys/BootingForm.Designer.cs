@@ -39,7 +39,7 @@
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC256_icon;
             this.pictureBox1.Location = new System.Drawing.Point(7, 7);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(140, 146);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -55,7 +55,7 @@
             this.CRECVersionLabel.Name = "CRECVersionLabel";
             this.CRECVersionLabel.Size = new System.Drawing.Size(154, 28);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC v7.08.01";
+            this.CRECVersionLabel.Text = "CREC v7.08.02";
             // 
             // BootingProgressLabel
             // 
@@ -91,7 +91,7 @@
             this.Controls.Add(this.BootingProgressLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.CRECVersionLabel);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "BootingForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
