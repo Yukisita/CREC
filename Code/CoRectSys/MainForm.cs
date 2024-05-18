@@ -5176,6 +5176,8 @@ namespace CoRectSys
             OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             // PictureBox1ContextMenuStripの文字サイズ
             OpenPicturewithAppToolStripMenuItem.Font = new Font(fontname, mainfontsize);
+            AddContentsButton.Font = new Font(fontname, smallfontsize);
+            ListUpdateButton.Font = new Font(fontname, smallfontsize);
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得および文字サイズの計算
         {
@@ -5457,14 +5459,19 @@ namespace CoRectSys
                     {
                         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                         IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        int CountBackupedData = 0;
+                        int TotalBackupData = subFolders.Count();
                         foreach (System.IO.DirectoryInfo subFolder in subFolders)
                         {
                             try
                             {
-                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
                                 File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                CountBackupedData += 1;
+                                BackupToolStripMenuItem.Text = "バックアップ作成中：" + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
+                                Application.DoEvents();
                             }
                             catch// バックアップ失敗時はログに書き込み
                             {
@@ -5571,6 +5578,7 @@ namespace CoRectSys
             // バックアップフォルダが存在するか確認
             if (Directory.Exists(TargetBackupPath))
             {
+
             }
             else
             {

@@ -365,7 +365,11 @@ ver7.08.01（2024/05/13）
 
 ver7.08.02（2024/05/15）
 編集時にコピー&amp;ペーストした際に改行コードが含まれていた場合、
-Indexファイルが破損する問題を修正</value>
+Indexファイルが破損する問題を修正
+
+ver7.08.03（2024/05/18）
+項目ごとバックアップ時の表示を改善
+起動中にDPIが変更された場合に文字サイズが正しく変更されない問題を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

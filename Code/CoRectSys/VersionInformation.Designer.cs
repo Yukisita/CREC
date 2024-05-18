@@ -62,7 +62,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(145, 20);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/05/15";
+            this.ReleaseDate.Text = "Release: 2024/05/18";
             // 
             // VersionName
             // 
@@ -72,7 +72,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(109, 20);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.08.02";
+            this.VersionName.Text = "Version 7.08.03";
             // 
             // label5
             // 
@@ -138,7 +138,7 @@
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC128_icon;
             this.pictureBox1.Location = new System.Drawing.Point(16, 12);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(128, 128);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -149,7 +149,7 @@
             // 
             this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_2_Spring;
             this.pictureBox2.Location = new System.Drawing.Point(345, 12);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(5);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(302, 271);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -174,7 +174,7 @@
             this.Controls.Add(this.ReleaseDate);
             this.Controls.Add(this.ProjectName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(5);
+            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "VersionInformation";
