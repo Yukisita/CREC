@@ -1977,6 +1977,14 @@ namespace CoRectSys
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
             }
         }
+        private void HelpToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+            {
+                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95");
+            }
+        }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
             SaveSearchSettings();
@@ -5178,6 +5186,29 @@ namespace CoRectSys
             OpenPicturewithAppToolStripMenuItem.Font = new Font(fontname, mainfontsize);
             AddContentsButton.Font = new Font(fontname, smallfontsize);
             ListUpdateButton.Font = new Font(fontname, smallfontsize);
+            // ToolStorip関係
+            ShowListButton.Font = new Font(fontname, smallfontsize);
+            foreach (var toolStripMenuItem1 in menuStrip1.Items)
+            {
+                if (toolStripMenuItem1 is ToolStripMenuItem)
+                {
+                    ((ToolStripMenuItem)toolStripMenuItem1).Font = new Font(fontname, smallfontsize);
+                    foreach (var toolStripMenuItem2 in ((ToolStripMenuItem)toolStripMenuItem1).DropDownItems)
+                    {
+                        if (toolStripMenuItem2 is ToolStripMenuItem)
+                        {
+                            ((ToolStripMenuItem)toolStripMenuItem2).Font = new Font(fontname, smallfontsize);
+                            foreach (var toolStripMenuItem3 in ((ToolStripMenuItem)toolStripMenuItem2).DropDownItems)
+                            {
+                                if (toolStripMenuItem3 is ToolStripMenuItem)
+                                {
+                                    ((ToolStripMenuItem)toolStripMenuItem3).Font = new Font(fontname, smallfontsize);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得および文字サイズの計算
         {
@@ -6186,5 +6217,6 @@ namespace CoRectSys
         private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
         }
+
     }
 }

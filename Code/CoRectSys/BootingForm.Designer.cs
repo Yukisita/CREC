@@ -39,10 +39,10 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC256_icon;
-            this.pictureBox1.Location = new System.Drawing.Point(7, 7);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Location = new System.Drawing.Point(9, 9);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(140, 146);
+            this.pictureBox1.Size = new System.Drawing.Size(187, 182);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -51,21 +51,19 @@
             // 
             this.CRECVersionLabel.AutoSize = true;
             this.CRECVersionLabel.Font = new System.Drawing.Font("メイリオ", 14.14286F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CRECVersionLabel.Location = new System.Drawing.Point(149, 7);
-            this.CRECVersionLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.CRECVersionLabel.Location = new System.Drawing.Point(199, 9);
             this.CRECVersionLabel.Name = "CRECVersionLabel";
-            this.CRECVersionLabel.Size = new System.Drawing.Size(154, 28);
+            this.CRECVersionLabel.Size = new System.Drawing.Size(191, 36);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC v7.08.03";
+            this.CRECVersionLabel.Text = "CREC v7.08.04";
             // 
             // BootingProgressLabel
             // 
             this.BootingProgressLabel.AutoSize = true;
             this.BootingProgressLabel.Font = new System.Drawing.Font("メイリオ", 9.857143F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BootingProgressLabel.Location = new System.Drawing.Point(15, 166);
-            this.BootingProgressLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.BootingProgressLabel.Location = new System.Drawing.Point(20, 208);
             this.BootingProgressLabel.Name = "BootingProgressLabel";
-            this.BootingProgressLabel.Size = new System.Drawing.Size(291, 21);
+            this.BootingProgressLabel.Size = new System.Drawing.Size(353, 25);
             this.BootingProgressLabel.TabIndex = 3;
             this.BootingProgressLabel.Text = "アプリケーション起動中...おまちください。";
             this.BootingProgressLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -74,10 +72,9 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("メイリオ", 9.857143F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(215, 56);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(287, 70);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 21);
+            this.label1.Size = new System.Drawing.Size(91, 25);
             this.label1.TabIndex = 4;
             this.label1.Text = "S.Yukisita";
             // 
@@ -85,26 +82,25 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("メイリオ", 9.857143F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(198, 35);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(264, 44);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(94, 21);
+            this.label2.Size = new System.Drawing.Size(116, 25);
             this.label2.TabIndex = 5;
-            this.label2.Text = "2024/05/18";
+            this.label2.Text = "2024/05/25";
             // 
             // BootingForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(303, 192);
+            this.ClientSize = new System.Drawing.Size(404, 240);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BootingProgressLabel);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.CRECVersionLabel);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "BootingForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
