@@ -103,6 +103,7 @@
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.UpdateHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AccessLatestReleaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.UserManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowListButton = new System.Windows.Forms.ToolStripTextBox();
             this.ShowProjcetNameTextBox = new System.Windows.Forms.ToolStripTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -203,7 +204,6 @@
             this.OpenPicturewithAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchButton = new System.Windows.Forms.Button();
             this.ShowPictureFileNameLabel = new System.Windows.Forms.Label();
-            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -705,7 +705,7 @@
             this.readmeToolStripMenuItem,
             this.UpdateHistoryToolStripMenuItem,
             this.AccessLatestReleaseToolStripMenuItem,
-            this.HelpToolStripMenuItem});
+            this.UserManualToolStripMenuItem});
             this.ヘルプToolStripMenuItem.Name = "ヘルプToolStripMenuItem";
             this.ヘルプToolStripMenuItem.Size = new System.Drawing.Size(125, 37);
             this.ヘルプToolStripMenuItem.Text = "ヘルプ(&H)";
@@ -738,6 +738,13 @@
             this.AccessLatestReleaseToolStripMenuItem.Text = "最新バージョンの入手...";
             this.AccessLatestReleaseToolStripMenuItem.Click += new System.EventHandler(this.AccessLatestReleaseToolStripMenuItem_Click);
             // 
+            // UserManualToolStripMenuItem
+            // 
+            this.UserManualToolStripMenuItem.Name = "UserManualToolStripMenuItem";
+            this.UserManualToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.UserManualToolStripMenuItem.Text = "使用ガイド...";
+            this.UserManualToolStripMenuItem.Click += new System.EventHandler(this.UserManualToolStripMenuItem_Click);
+            // 
             // ShowListButton
             // 
             this.ShowListButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
@@ -749,7 +756,7 @@
             this.ShowListButton.Name = "ShowListButton";
             this.ShowListButton.Padding = new System.Windows.Forms.Padding(1);
             this.ShowListButton.ReadOnly = true;
-            this.ShowListButton.Size = new System.Drawing.Size(128, 37);
+            this.ShowListButton.Size = new System.Drawing.Size(125, 37);
             this.ShowListButton.Text = "⇚一覧に戻る";
             this.ShowListButton.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ShowListButton.Visible = false;
@@ -1984,13 +1991,6 @@
             this.ShowPictureFileNameLabel.TabIndex = 97;
             this.ShowPictureFileNameLabel.Visible = false;
             // 
-            // HelpToolStripMenuItem
-            // 
-            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
-            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
-            this.HelpToolStripMenuItem.Text = "使用ガイド...";
-            this.HelpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -2076,8 +2076,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(4783, 2642);
-            this.MinimumSize = new System.Drawing.Size(1583, 742);
+            this.MaximumSize = new System.Drawing.Size(4782, 2637);
+            this.MinimumSize = new System.Drawing.Size(1582, 737);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CREC";
@@ -2265,7 +2265,7 @@
         private System.Windows.Forms.ToolStripMenuItem AccessLatestReleaseToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip PictureBox1ContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem OpenPicturewithAppToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem UserManualToolStripMenuItem;
     }
 }
 

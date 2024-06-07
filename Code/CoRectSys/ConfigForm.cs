@@ -46,6 +46,7 @@ namespace CoRectSys
             ShowUserAssistRadioButton.Checked = true;
             OpenLastTimeProjectCheckBox.Checked = false;
             AllowAutoSearchRadioButton.Checked = true;
+            AllowBootUpdateCheckRadioButton.Checked = true;
             // config.sysから該当項目読み込み
             for (ConfigNumber = 0; ConfigNumber <= Convert.ToInt32(tmp.Length - 1); ConfigNumber++)
             {
@@ -58,7 +59,7 @@ namespace CoRectSys
                         {
                             AllowEditRadioButton.Checked = true;
                         }
-                        else if (cols[1] == "false")
+                        else
                         {
                             DenyEditRadioButton.Checked = true;
                         }
@@ -68,7 +69,7 @@ namespace CoRectSys
                         {
                             AllowConfidentialDataRadioButton.Checked = true;
                         }
-                        else if (cols[1] == "false")
+                        else
                         {
                             DenyConfidentialDataRadioButton.Checked = true;
                         }
@@ -78,7 +79,7 @@ namespace CoRectSys
                         {
                             ShowUserAssistRadioButton.Checked = true;
                         }
-                        else if (cols[1] == "false")
+                        else
                         {
                             HideUserAssistRadioButton.Checked = true;
                         }
@@ -103,7 +104,7 @@ namespace CoRectSys
                         {
                             AllowAutoSearchRadioButton.Checked = true;
                         }
-                        else if (cols[1] == "false")
+                        else
                         {
                             DenyAutoSearchRadioButton.Checked = true;
                         }
@@ -113,9 +114,19 @@ namespace CoRectSys
                         {
                             SaveRecentShownContentsRadioButton.Checked = true;
                         }
-                        else if (cols[1] == "false")
+                        else
                         {
                             DiscardRecentShownContentsRadioButton.Checked = true;
+                        }
+                        break;
+                    case "BootUpdateCheck":
+                        if (cols[1] == "true")
+                        {
+                            AllowBootUpdateCheckRadioButton.Checked = true;
+                        }
+                        else
+                        {
+                            DenyBootUpdateCheckRadioButton.Checked = true;
                         }
                         break;
                 }
@@ -173,6 +184,14 @@ namespace CoRectSys
             else if (DiscardRecentShownContentsRadioButton.Checked)
             {
                 configfile.WriteLine("RecentShownContents,false");
+            }
+            if (AllowBootUpdateCheckRadioButton.Checked)
+            {
+                configfile.WriteLine("BootUpdateCheck,true");
+            }
+            else if(DenyBootUpdateCheckRadioButton.Checked)
+            {
+                configfile.WriteLine("BootUpdateCheck,false");
             }
             configfile.Close();
             this.Close();

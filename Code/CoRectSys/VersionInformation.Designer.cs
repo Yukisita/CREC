@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/05/25";
+            this.ReleaseDate.Text = "Release: 2024/06/07";
             // 
             // VersionName
             // 
@@ -75,7 +75,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(146, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.08.04";
+            this.VersionName.Text = "Version 7.09.01";
             // 
             // label5
             // 
@@ -114,7 +114,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(668, 55);
+            this.label1.Location = new System.Drawing.Point(715, 55);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(128, 19);
@@ -136,7 +136,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(731, 339);
+            this.label3.Location = new System.Drawing.Point(778, 339);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(82, 19);
@@ -147,7 +147,7 @@
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC128_icon;
             this.pictureBox1.Location = new System.Drawing.Point(20, 15);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(160, 160);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -157,8 +157,8 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_2_Spring;
-            this.pictureBox2.Location = new System.Drawing.Point(431, 15);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.pictureBox2.Location = new System.Drawing.Point(478, 15);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(6);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(378, 339);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -183,7 +183,7 @@
             this.Controls.Add(this.ReleaseDate);
             this.Controls.Add(this.ProjectName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "VersionInformation";

@@ -22,12 +22,17 @@ using System.IO.Compression;
 using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
 using ColRECt;
+using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
 
 namespace CoRectSys
 {
     public partial class MainForm : Form
     {
         #region 変数の宣言
+        // アップデート確認用、Release前に変更忘れずに
+        string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.09.01.zip";
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = "";// プロジェクト名
         string TargetFolderPath = "";// データ保管場所のフォルダパス
@@ -81,6 +86,7 @@ namespace CoRectSys
         bool ShowUserAssistToolTips;// ユーザー補助のポップアップの表示・非表示を設定
         bool AutoSearch;// 検索窓に入力された内容を自動で検索するか設定
         bool RecentShownContents;// 検索候補を表示するか設定
+        bool BootUpdateCheck;// 起動時に更新確認するか設定
         string ColorSetting = "Blue";// 色設定
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
@@ -118,7 +124,7 @@ namespace CoRectSys
                 bootingForm.Show(this);
                 Application.DoEvents();// これをやらないとBootingFormが真っ白なままになる
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("アプリケーションの起動に失敗しました。\n" + ex, "CREC");
             }
@@ -206,7 +212,7 @@ namespace CoRectSys
                 {
                     bootingForm.Close();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("" + ex, "CREC");
                 }
@@ -226,6 +232,10 @@ namespace CoRectSys
             SetFormLayout();// レイアウト初期化、DPI反映
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
+            if (BootUpdateCheck == true)
+            {
+                CheckLatestVersion();// 更新の確認
+            }
         }
 
         #region メニューバー関係
@@ -336,6 +346,21 @@ namespace CoRectSys
         private void LoadProjectFileMethod()// CREC読み込み用の処理メソッド
         {
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
+            // 画像表示モードを閉じる
+            dataGridView1.Visible = true;
+            dataGridView1BackgroundPictureBox.Visible = true;
+            if (FullDisplayModeToolStripMenuItem.Checked == true)
+            {
+                ShowSelectedItemInformationButton.Visible = true;
+            }
+            SearchFormTextBox.Visible = true;
+            SearchFormTextBoxClearButton.Visible = true;
+            SearchOptionComboBox.Visible = true;
+            SearchMethodComboBox.Visible = true;
+            AddContentsButton.Visible = true;
+            ListUpdateButton.Visible = true;
+            ShowListButton.Visible = false;
+            ClosePicturesViewMethod();
             IEnumerable<string> tmp = null;
             if (File.Exists(TargetCRECPath))
             {
@@ -1977,7 +2002,7 @@ namespace CoRectSys
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
             }
         }
-        private void HelpToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
+        private void UserManualToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
         {
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
@@ -3289,7 +3314,7 @@ namespace CoRectSys
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
             SearchMethodComboBox.Visible = true;
-            if(AutoSearch == false)
+            if (AutoSearch == false)
             {
                 SearchButton.Visible = true;
             }
@@ -3300,6 +3325,7 @@ namespace CoRectSys
         private void ClosePicturesViewMethod()// 画像表示モードを閉じるメソッド
         {
             PictureBox1.Visible = false;
+            ShowPictureFileNameLabel.Text = "";
             ShowPictureFileNameLabel.Visible = false;
             PictureBox1.Image = null;// これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
             ClosePicturesButton.Visible = false;
@@ -4754,7 +4780,7 @@ namespace CoRectSys
         #endregion
 
         #region Config読み込み・保存
-        private string ConfigFile = "config.sys";
+        private readonly string ConfigFile = "config.sys";
         private void ImportConfig()// config.sysの読み込み
         {
             if (File.Exists(ConfigFile))
@@ -4766,6 +4792,7 @@ namespace CoRectSys
                 OpenLastTimeProject = false;
                 AutoSearch = true;
                 RecentShownContents = false;
+                BootUpdateCheck = false;
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in tmp)
@@ -4778,7 +4805,7 @@ namespace CoRectSys
                             {
                                 AllowEdit = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 AllowEdit = false;
                             }
@@ -4788,7 +4815,7 @@ namespace CoRectSys
                             {
                                 ShowConfidentialData = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 ShowConfidentialData = false;
                             }
@@ -4799,7 +4826,7 @@ namespace CoRectSys
                                 ShowUserAssistToolTips = true;
                                 SetUserAssistToolTips();
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 ShowUserAssistToolTips = false;
                                 SetUserAssistToolTips();
@@ -4844,7 +4871,7 @@ namespace CoRectSys
                                 SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
                                 SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 SearchButton.Visible = true;
                                 AutoSearch = false;
@@ -4858,9 +4885,19 @@ namespace CoRectSys
                             {
                                 RecentShownContents = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 RecentShownContents = false;
+                            }
+                            break;
+                        case "BootUpdateCheck":
+                            if (cols[1] == "true")
+                            {
+                                BootUpdateCheck = true;
+                            }
+                            else
+                            {
+                                BootUpdateCheck = false;
                             }
                             break;
                         case "ColorSetting":
@@ -4891,6 +4928,7 @@ namespace CoRectSys
                     sw.WriteLine("OpenLastTimeProject,false");
                     sw.WriteLine("AutoSearch,true");
                     sw.WriteLine("RecentShownContents,true");
+                    sw.WriteLine("BootUpdateCheck,true");
                     sw.WriteLine("ColorSetting,Blue");
                     sw.Close();
                     AllowEdit = true;
@@ -4899,6 +4937,7 @@ namespace CoRectSys
                     OpenLastTimeProject = false;
                     AutoSearch = true;
                     RecentShownContents = false;
+                    BootUpdateCheck = true;
                 }
                 catch (Exception ex)
                 {
@@ -4913,7 +4952,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("AllowEdit,true");
             }
-            else if (AllowEdit == false)
+            else
             {
                 configfile.WriteLine("AllowEdit,false");
             }
@@ -4921,7 +4960,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("ShowConfidentialData,true");
             }
-            else if (ShowConfidentialData == false)
+            else
             {
                 configfile.WriteLine("ShowConfidentialData,false");
             }
@@ -4929,7 +4968,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("ShowUserAssistToolTips,true");
             }
-            else if (ShowUserAssistToolTips == false)
+            else
             {
                 configfile.WriteLine("ShowUserAssistToolTips,false");
             }
@@ -4959,6 +4998,14 @@ namespace CoRectSys
             {
                 configfile.WriteLine("RecentShownContents,false");
             }
+            if (BootUpdateCheck == true)
+            {
+                configfile.WriteLine("BootUpdateCheck,true");
+            }
+            else
+            {
+                configfile.WriteLine("BootUpdateCheck,false");
+            }
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.Close();
         }
@@ -4976,7 +5023,7 @@ namespace CoRectSys
             float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
             // フォームの最小サイズを変更
-            this.MinimumSize = new Size(Convert.ToInt32(1280*DpiScale),Convert.ToInt32(640*DpiScale));
+            this.MinimumSize = new Size(Convert.ToInt32(1280 * DpiScale), Convert.ToInt32(640 * DpiScale));
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
                 dataGridView1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
@@ -5530,6 +5577,43 @@ namespace CoRectSys
             BackupToolStripMenuItem.Text = "バックアップ作成";
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
+        }
+        private async void CheckLatestVersion()// 更新確認
+        {
+            HttpClient httpClient = new HttpClient();
+            try
+            {
+                // githubのreleaseにアクセスできるか確認
+                HttpResponseMessage httpResponseMessage1 = await httpClient.GetAsync("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                if (httpResponseMessage1.IsSuccessStatusCode)// githubへのアクセスができた場合
+                {
+                    try
+                    {
+                        // 本バージョンと一致する配布先があるか確認
+                        HttpResponseMessage httpResponseMessage2 = await httpClient.GetAsync(LatestVersionDownloadLink);
+                        if (httpResponseMessage2.IsSuccessStatusCode)// 配布バージョンと一致した場合
+                        {
+                            // MessageBox.Show("success");//デバッグ用
+                        }
+                        else
+                        {
+                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("アプリケーションの更新が見つかりました。\n最新バージョンの配布先にアクセスしますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+                            {
+                                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+                return;
+            }
         }
         #endregion
 
@@ -6217,6 +6301,5 @@ namespace CoRectSys
         private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
         {
         }
-
     }
 }

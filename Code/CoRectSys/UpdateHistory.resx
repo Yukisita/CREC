@@ -373,7 +373,11 @@ ver7.08.03（2024/05/18）
 
 ver7.08.04（2024/05/25）
 DPIによってメニューストリップの文字サイズが正しく表示されない問題を修正
-利用ガイド（WiKi）へのリンクボタンを追加</value>
+利用ガイド（WiKi）へのリンクボタンを追加
+
+ver7.09.01（2024/06/07）
+起動時にアプリケーションの更新を確認する機能を追加
+プロジェクト変更時に画像を開いていた場合に画像が表示されたままになる問題を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
