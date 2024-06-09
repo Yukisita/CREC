@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
 using System.Runtime.Remoting.Messaging;
-//using System.Net.NetworkInformation;
+using System.Xml.Linq;
 
 namespace CoRectSys
 {
@@ -24,19 +24,23 @@ namespace CoRectSys
         string SystemInformations;
         string ColorSetting = "Blue";
         float mainFormCurrentDPI = 0;// MainFormのDPI
+        string CurrentLanguage = "";// 言語設定
+
         // 表示関係
         double CurrentDPI = 1.0;// 現在のDPI値
-        public VersionInformation(string colorSetting, double MainFormCurrentDPI)
+        public VersionInformation(string colorSetting, double MainFormCurrentDPI, string currentLanguage)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
             mainFormCurrentDPI = (float)MainFormCurrentDPI;
+            CurrentLanguage = currentLanguage;
             SetColorMethod();
         }
 
         private void VersionInformation_Load(object sender, EventArgs e)
         {
             GetSystemInformation();// 下の非同期処理
+            SetLanguage("language\\" + CurrentLanguage + ".xml");
         }
         private async void GetSystemInformation()// 非同期でシステム情報を取得し、結果を表示
         {
@@ -95,6 +99,52 @@ namespace CoRectSys
         private void VersionInformation_DpiChanged(object sender, DpiChangedEventArgs e)
         {
             CurrentDPI = e.DeviceDpiNew / 96.0;
+        }
+        #endregion
+
+        #region 言語設定
+        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            try
+            {
+                XElement xElement = XElement.Load(targetLanguageFilePath);
+                IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("VersionInformation").Elements("Button").Elements("item") select item;
+                foreach (XElement itemData in buttonItemDataList)
+                {
+                    try
+                    {
+                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                        if (targetContrl.Length > 0)
+                        {
+                            targetContrl[0].Text = itemData.Element("itemtext").Value;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+                IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("VersionInformation").Elements("Label").Elements("item") select item;
+                foreach (XElement itemData in labelItemDataList)
+                {
+                    try
+                    {
+                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                        if (targetContrl.Length > 0)
+                        {
+                            targetContrl[0].Text = itemData.Element("itemtext").Value;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message,"CREC");
+            }
         }
         #endregion
     }

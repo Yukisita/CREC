@@ -48,10 +48,10 @@
             // 
             this.ProjectName.AutoSize = true;
             this.ProjectName.Font = new System.Drawing.Font("メイリオ", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjectName.Location = new System.Drawing.Point(327, 26);
-            this.ProjectName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.ProjectName.Location = new System.Drawing.Point(234, 19);
+            this.ProjectName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProjectName.Name = "ProjectName";
-            this.ProjectName.Size = new System.Drawing.Size(214, 98);
+            this.ProjectName.Size = new System.Drawing.Size(155, 71);
             this.ProjectName.TabIndex = 1;
             this.ProjectName.Text = "CREC";
             // 
@@ -59,32 +59,32 @@
             // 
             this.ReleaseDate.AutoSize = true;
             this.ReleaseDate.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ReleaseDate.Location = new System.Drawing.Point(315, 119);
-            this.ReleaseDate.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.ReleaseDate.Location = new System.Drawing.Point(225, 84);
+            this.ReleaseDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReleaseDate.Name = "ReleaseDate";
-            this.ReleaseDate.Size = new System.Drawing.Size(250, 34);
+            this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/05/05";
+            this.ReleaseDate.Text = "Release: 2024/06/09";
             // 
             // VersionName
             // 
             this.VersionName.AutoSize = true;
             this.VersionName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.VersionName.Location = new System.Drawing.Point(345, 153);
-            this.VersionName.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.VersionName.Location = new System.Drawing.Point(251, 109);
+            this.VersionName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.VersionName.Name = "VersionName";
-            this.VersionName.Size = new System.Drawing.Size(220, 34);
+            this.VersionName.Size = new System.Drawing.Size(167, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.06.03β1";
+            this.VersionName.Text = "Version 7.09.01β1";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(394, 187);
-            this.label5.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label5.Location = new System.Drawing.Point(288, 134);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(171, 34);
+            this.label5.Size = new System.Drawing.Size(130, 25);
             this.label5.TabIndex = 4;
             this.label5.Text = "©　雪下 2024";
             // 
@@ -92,10 +92,10 @@
             // 
             this.ShowSystemInformationsLabel.AutoSize = true;
             this.ShowSystemInformationsLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowSystemInformationsLabel.Location = new System.Drawing.Point(23, 322);
-            this.ShowSystemInformationsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.ShowSystemInformationsLabel.Location = new System.Drawing.Point(16, 230);
+            this.ShowSystemInformationsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ShowSystemInformationsLabel.Name = "ShowSystemInformationsLabel";
-            this.ShowSystemInformationsLabel.Size = new System.Drawing.Size(140, 31);
+            this.ShowSystemInformationsLabel.Size = new System.Drawing.Size(100, 23);
             this.ShowSystemInformationsLabel.TabIndex = 5;
             this.ShowSystemInformationsLabel.Text = "情報取得中...";
             // 
@@ -103,10 +103,10 @@
             // 
             this.SystemInformationsLabel.AutoSize = true;
             this.SystemInformationsLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SystemInformationsLabel.Location = new System.Drawing.Point(23, 289);
-            this.SystemInformationsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.SystemInformationsLabel.Location = new System.Drawing.Point(16, 206);
+            this.SystemInformationsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.SystemInformationsLabel.Name = "SystemInformationsLabel";
-            this.SystemInformationsLabel.Size = new System.Drawing.Size(140, 31);
+            this.SystemInformationsLabel.Size = new System.Drawing.Size(100, 23);
             this.SystemInformationsLabel.TabIndex = 6;
             this.SystemInformationsLabel.Text = "システム情報";
             // 
@@ -114,10 +114,10 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(934, 77);
-            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label1.Location = new System.Drawing.Point(730, 52);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(180, 26);
+            this.label1.Size = new System.Drawing.Size(128, 19);
             this.label1.TabIndex = 9;
             this.label1.Text = "猫っていいですよね。";
             // 
@@ -125,10 +125,10 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(24, 247);
-            this.label2.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label2.Location = new System.Drawing.Point(18, 176);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(558, 34);
+            this.label2.Size = new System.Drawing.Size(415, 25);
             this.label2.TabIndex = 10;
             this.label2.Text = "This software is released under the MIT License.";
             // 
@@ -136,20 +136,20 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(1024, 474);
-            this.label3.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label3.Location = new System.Drawing.Point(775, 255);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(113, 26);
+            this.label3.Size = new System.Drawing.Size(82, 19);
             this.label3.TabIndex = 9;
             this.label3.Text = "雪下 せつな";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC128_icon;
-            this.pictureBox1.Location = new System.Drawing.Point(28, 21);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(9);
+            this.pictureBox1.Location = new System.Drawing.Point(20, 15);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(224, 224);
+            this.pictureBox1.Size = new System.Drawing.Size(160, 160);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 7;
             this.pictureBox1.TabStop = false;
@@ -157,20 +157,20 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_2_Spring;
-            this.pictureBox2.Location = new System.Drawing.Point(604, 21);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(9);
+            this.pictureBox2.Location = new System.Drawing.Point(480, 13);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(528, 474);
+            this.pictureBox2.Size = new System.Drawing.Size(378, 339);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 8;
             this.pictureBox2.TabStop = false;
             // 
             // VersionInformation
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(168F, 168F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(1220, 544);
+            this.ClientSize = new System.Drawing.Size(871, 389);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label3);
@@ -183,7 +183,7 @@
             this.Controls.Add(this.ReleaseDate);
             this.Controls.Add(this.ProjectName);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(9);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "VersionInformation";

@@ -23,13 +23,17 @@ using System.IO.Compression;
 using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
 using ColRECt;
-using System.CodeDom.Compiler;
+using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
 
 namespace CoRectSys
 {
     public partial class MainForm : Form
     {
         #region 変数の宣言
+        // アップデート確認用、Release前に変更忘れずに
+        string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.09.01.zip";
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = "";// プロジェクト名
         string TargetFolderPath = "";// データ保管場所のフォルダパス
@@ -84,6 +88,7 @@ namespace CoRectSys
         bool ShowUserAssistToolTips;// ユーザー補助のポップアップの表示・非表示を設定
         bool AutoSearch;// 検索窓に入力された内容を自動で検索するか設定
         bool RecentShownContents;// 検索候補を表示するか設定
+        bool BootUpdateCheck;// 起動時に更新確認するか設定
         string ColorSetting = "Blue";// 色設定
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
@@ -114,6 +119,20 @@ namespace CoRectSys
 
         public MainForm()
         {
+            // Boot画面を表示
+            BootingForm bootingForm = new BootingForm();
+            try
+            {
+                bootingForm.Show(this);
+                Application.DoEvents();// これをやらないとBootingFormが真っ白なままになる
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("アプリケーションの起動に失敗しました。\n" + ex, "CREC");
+            }
+            bootingForm.BootingProgressLabel.Text = "アプリケーション起動中...おまちください。";
+            Application.DoEvents();
+            // 起動処理開始
             InitializeComponent();
             // データ一覧のDGVにダブルバッファリングを設定
             Type dgvType = typeof(DataGridView);
@@ -142,17 +161,31 @@ namespace CoRectSys
             {
                 MessageBox.Show("このスクリーンでは正常に表示されない場合があります。\n" + "モニタ解像度=" + ScreenWidth + "X" + ScreenHeight + "\n表示スケール=" + DpiScale * 100 + "%");
             }
-            SetFormLayout();
+            bootingForm.BootingProgressLabel.Text = "設定ファイル読み込み中";
+            Application.DoEvents();
             ImportConfig();// configファイルの読み込み・自動生成
             SetColorMethod();// 色設定を反映
             SetTagNameToolTips();// ToolTipsの設定
+            bootingForm.BootingProgressLabel.Text = "ウインドウレイアウト調整中";
+            Application.DoEvents();
+            SetFormLayout();
             // バックグラウンド処理の開始
             CheckContentsList();
             CheckEditing();
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
             if (TargetCRECPath.Length > 0)
             {
+                bootingForm.BootingProgressLabel.Text = "プロジェクト読み込み中";
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                // Boot画面を閉じる
+                try
+                {
+                    bootingForm.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("" + ex, "CREC");
+                }
                 if (StartUpListOutput == true)
                 {
                     if (ListOutputFormat == "CSV")
@@ -174,6 +207,18 @@ namespace CoRectSys
                     MakeBackUpZip();// ZIP圧縮を非同期で開始
                 }
             }
+            else
+            {
+                // Boot画面を閉じる
+                try
+                {
+                    bootingForm.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("" + ex, "CREC");
+                }
+            }
             if (AutoSearch == true)
             {
                 SearchButton.Visible = false;
@@ -186,9 +231,21 @@ namespace CoRectSys
 
         private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
         {
+            try
+            {
+                SetLanguage("language\\" + CurrentLanguage + ".xml");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("言語の設定に失敗しました。" + ex.Message, "CREC");
+            }
             SetFormLayout();// レイアウト初期化、DPI反映
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
+            if (BootUpdateCheck == true)
+            {
+                CheckLatestVersion();// 更新の確認
+            }
         }
 
         #region メニューバー関係
@@ -299,6 +356,21 @@ namespace CoRectSys
         private void LoadProjectFileMethod()// CREC読み込み用の処理メソッド
         {
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
+            // 画像表示モードを閉じる
+            dataGridView1.Visible = true;
+            dataGridView1BackgroundPictureBox.Visible = true;
+            if (FullDisplayModeToolStripMenuItem.Checked == true)
+            {
+                ShowSelectedItemInformationButton.Visible = true;
+            }
+            SearchFormTextBox.Visible = true;
+            SearchFormTextBoxClearButton.Visible = true;
+            SearchOptionComboBox.Visible = true;
+            SearchMethodComboBox.Visible = true;
+            AddContentsButton.Visible = true;
+            ListUpdateButton.Visible = true;
+            ShowListButton.Visible = false;
+            ClosePicturesViewMethod();
             IEnumerable<string> tmp = null;
             if (File.Exists(TargetCRECPath))
             {
@@ -1919,7 +1991,7 @@ namespace CoRectSys
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI);
+            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI,CurrentLanguage);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -1938,6 +2010,14 @@ namespace CoRectSys
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+            }
+        }
+        private void UserManualToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+            {
+                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95");
             }
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
@@ -3244,7 +3324,7 @@ namespace CoRectSys
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
             SearchMethodComboBox.Visible = true;
-            if(AutoSearch == false)
+            if (AutoSearch == false)
             {
                 SearchButton.Visible = true;
             }
@@ -3255,6 +3335,7 @@ namespace CoRectSys
         private void ClosePicturesViewMethod()// 画像表示モードを閉じるメソッド
         {
             PictureBox1.Visible = false;
+            ShowPictureFileNameLabel.Text = "";
             ShowPictureFileNameLabel.Visible = false;
             PictureBox1.Image = null;// これやらないと次の物に切り替えた直後に前の物の画像が一瞬表示される
             ClosePicturesButton.Visible = false;
@@ -3282,6 +3363,28 @@ namespace CoRectSys
             }
             PictureBox1.ImageLocation = PicturesList[PictureNumber];
             ShowPictureFileNameLabel.Text = Path.GetFileName(PicturesList[PictureNumber].ToString());
+        }
+        private void OpenPicturewithAppToolStripMenuItem_Click(object sender, EventArgs e)// 画像をアプリケーションで開く
+        {
+            if (PicturesList.Count > 0)
+            {
+                try
+                {
+                    var pInfo = new ProcessStartInfo
+                    {
+                        FileName = PicturesList[PictureNumber]
+                    };
+                    Process.Start(pInfo);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("画像の表示に失敗しました。\n" + ex, "CREC");
+                }
+            }
+            else
+            {
+                MessageBox.Show("表示可能な画像が見つかりません。", "CREC");
+            }
         }
         #endregion
 
@@ -3804,7 +3907,16 @@ namespace CoRectSys
             {
                 EditRealLocationTextBox.Text = "　ー　";
             }
-            Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
+            Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}",
+                "名称," + EditNameTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "ID," + EditIDTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "MC," + EditMCTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "登録日," + EditRegistrationDateTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "カテゴリ," + EditCategoryTextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ1," + EditTag1TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ2," + EditTag2TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "タグ3," + EditTag3TextBox.Text.Replace("\r", "").Replace("\n", ""),
+                "場所1(Real)," + EditRealLocationTextBox.Text.Replace("\r", "").Replace("\n", "")));
             Indexfile.Close();
             // 詳細データの保存
             StreamWriter Detailsfile = new StreamWriter(TargetContentsPath + "\\details.txt", false, Encoding.GetEncoding("UTF-8"));
@@ -3912,9 +4024,9 @@ namespace CoRectSys
                 OperationOptionComboBox.Visible = true;
                 EditQuantityTextBox.Visible = true;
                 AddInventoryOperationButton.Visible = true;
-                InventoryOperation.Visible = true;
-                InputQuantitiy.Visible = true;
-                InventoryOperationNote.Visible = true;
+                InventoryOperationLabel.Visible = true;
+                InputQuantitiyLabel.Visible = true;
+                InventoryOperationNoteLabel.Visible = true;
                 EditInventoryOperationNoteTextBox.Visible = true;
                 ProperInventorySettingsComboBox.Visible = true;
                 ProperInventorySettingsTextBox.Visible = true;
@@ -4250,9 +4362,9 @@ namespace CoRectSys
             OperationOptionComboBox.Visible = false;
             EditQuantityTextBox.Visible = false;
             AddInventoryOperationButton.Visible = false;
-            InventoryOperation.Visible = false;
-            InputQuantitiy.Visible = false;
-            InventoryOperationNote.Visible = false;
+            InventoryOperationLabel.Visible = false;
+            InputQuantitiyLabel.Visible = false;
+            InventoryOperationNoteLabel.Visible = false;
             EditInventoryOperationNoteTextBox.Visible = false;
             ProperInventorySettingsComboBox.Visible = false;
             ProperInventorySettingsTextBox.Visible = false;
@@ -4678,7 +4790,7 @@ namespace CoRectSys
         #endregion
 
         #region Config読み込み・保存
-        private string ConfigFile = "config.sys";
+        private readonly string ConfigFile = "config.sys";
         private void ImportConfig()// config.sysの読み込み
         {
             if (File.Exists(ConfigFile))
@@ -4690,6 +4802,8 @@ namespace CoRectSys
                 OpenLastTimeProject = false;
                 AutoSearch = true;
                 RecentShownContents = false;
+                BootUpdateCheck = false;
+                CurrentLanguage = "Japanese";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in tmp)
@@ -4702,7 +4816,7 @@ namespace CoRectSys
                             {
                                 AllowEdit = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 AllowEdit = false;
                             }
@@ -4712,7 +4826,7 @@ namespace CoRectSys
                             {
                                 ShowConfidentialData = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 ShowConfidentialData = false;
                             }
@@ -4723,7 +4837,7 @@ namespace CoRectSys
                                 ShowUserAssistToolTips = true;
                                 SetUserAssistToolTips();
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 ShowUserAssistToolTips = false;
                                 SetUserAssistToolTips();
@@ -4768,7 +4882,7 @@ namespace CoRectSys
                                 SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
                                 SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 SearchButton.Visible = true;
                                 AutoSearch = false;
@@ -4782,9 +4896,19 @@ namespace CoRectSys
                             {
                                 RecentShownContents = true;
                             }
-                            else if (cols[1] == "false")
+                            else
                             {
                                 RecentShownContents = false;
+                            }
+                            break;
+                        case "BootUpdateCheck":
+                            if (cols[1] == "true")
+                            {
+                                BootUpdateCheck = true;
+                            }
+                            else
+                            {
+                                BootUpdateCheck = false;
                             }
                             break;
                         case "ColorSetting":
@@ -4795,6 +4919,16 @@ namespace CoRectSys
                             else
                             {
                                 ColorSetting = cols[1];
+                            }
+                            break;
+                        case "Language":
+                            if (cols[1].Length == 0)
+                            {
+                                CurrentLanguage = "Japanese.xml";
+                            }
+                            else
+                            {
+                                CurrentLanguage = cols[1];
                             }
                             break;
                     }
@@ -4815,7 +4949,9 @@ namespace CoRectSys
                     sw.WriteLine("OpenLastTimeProject,false");
                     sw.WriteLine("AutoSearch,true");
                     sw.WriteLine("RecentShownContents,true");
+                    sw.WriteLine("BootUpdateCheck,true");
                     sw.WriteLine("ColorSetting,Blue");
+                    sw.WriteLine("Language,Japanese");
                     sw.Close();
                     AllowEdit = true;
                     ShowConfidentialData = false;
@@ -4823,6 +4959,8 @@ namespace CoRectSys
                     OpenLastTimeProject = false;
                     AutoSearch = true;
                     RecentShownContents = false;
+                    BootUpdateCheck = true;
+                    CurrentLanguage = "Japanese.xml";
                 }
                 catch (Exception ex)
                 {
@@ -4837,7 +4975,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("AllowEdit,true");
             }
-            else if (AllowEdit == false)
+            else
             {
                 configfile.WriteLine("AllowEdit,false");
             }
@@ -4845,7 +4983,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("ShowConfidentialData,true");
             }
-            else if (ShowConfidentialData == false)
+            else
             {
                 configfile.WriteLine("ShowConfidentialData,false");
             }
@@ -4853,7 +4991,7 @@ namespace CoRectSys
             {
                 configfile.WriteLine("ShowUserAssistToolTips,true");
             }
-            else if (ShowUserAssistToolTips == false)
+            else
             {
                 configfile.WriteLine("ShowUserAssistToolTips,false");
             }
@@ -4883,7 +5021,16 @@ namespace CoRectSys
             {
                 configfile.WriteLine("RecentShownContents,false");
             }
+            if (BootUpdateCheck == true)
+            {
+                configfile.WriteLine("BootUpdateCheck,true");
+            }
+            else
+            {
+                configfile.WriteLine("BootUpdateCheck,false");
+            }
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
+            configfile.WriteLine("Language,{0}", CurrentLanguage);
             configfile.Close();
         }
         #endregion
@@ -4900,7 +5047,7 @@ namespace CoRectSys
             float DpiScale = (float)CurrentDPI;// DPI取得
             Size FormSize = Size;// フォームサイズを取得
             // フォームの最小サイズを変更
-            this.MinimumSize = new Size(Convert.ToInt32(1280*DpiScale),Convert.ToInt32(640*DpiScale));
+            this.MinimumSize = new Size(Convert.ToInt32(1280 * DpiScale), Convert.ToInt32(640 * DpiScale));
             if (StandardDisplayModeToolStripMenuItem.Checked)// 通常表示モードの時は非表示
             {
                 dataGridView1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
@@ -4950,6 +5097,7 @@ namespace CoRectSys
                 EditRealLocationTextBox.Width = Convert.ToInt32(FormSize.Width - 1220 * DpiScale) / 2;
             }
             DataLoadingLabel.Font = new Font(fontname, mainfontsize);
+            DataLoadingLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - DataLoadingLabel.Width - 10 * DpiScale), DataLoadingLabel.Location.Y);
             dataGridView1.Font = new Font(fontname, mainfontsize);
             dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
@@ -5072,18 +5220,18 @@ namespace CoRectSys
             InventoryModeDataGridView.Height = Convert.ToInt32(FormSize.Height - 340 * DpiScale);
             InventoryModeDataGridView.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
             InventoryModeDataGridView.Font = new Font(fontname, mainfontsize);
-            InventoryOperation.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
-            InventoryOperation.Font = new Font(fontname, mainfontsize);
-            InputQuantitiy.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
-            InputQuantitiy.Font = new Font(fontname, mainfontsize);
+            InventoryOperationLabel.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
+            InventoryOperationLabel.Font = new Font(fontname, mainfontsize);
+            InputQuantitiyLabel.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
+            InputQuantitiyLabel.Font = new Font(fontname, mainfontsize);
             OperationOptionComboBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
             OperationOptionComboBox.Font = new Font(fontname, mainfontsize);
             EditQuantityTextBox.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
             EditQuantityTextBox.Font = new Font(fontname, mainfontsize);
             AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 165 * DpiScale));
             AddInventoryOperationButton.Font = new Font(fontname, mainfontsize);
-            InventoryOperationNote.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            InventoryOperationNote.Font = new Font(fontname, mainfontsize);
+            InventoryOperationNoteLabel.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
+            InventoryOperationNoteLabel.Font = new Font(fontname, mainfontsize);
             EditInventoryOperationNoteTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 40 * DpiScale);
             EditInventoryOperationNoteTextBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditInventoryOperationNoteTextBox.Font = new Font(fontname, mainfontsize);
@@ -5105,6 +5253,33 @@ namespace CoRectSys
             AddContentsContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             ListUpdateContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            // PictureBox1ContextMenuStripの文字サイズ
+            OpenPicturewithAppToolStripMenuItem.Font = new Font(fontname, mainfontsize);
+            AddContentsButton.Font = new Font(fontname, smallfontsize);
+            ListUpdateButton.Font = new Font(fontname, smallfontsize);
+            // ToolStorip関係
+            ShowListButton.Font = new Font(fontname, smallfontsize);
+            foreach (var toolStripMenuItem1 in menuStrip1.Items)
+            {
+                if (toolStripMenuItem1 is ToolStripMenuItem)
+                {
+                    ((ToolStripMenuItem)toolStripMenuItem1).Font = new Font(fontname, smallfontsize);
+                    foreach (var toolStripMenuItem2 in ((ToolStripMenuItem)toolStripMenuItem1).DropDownItems)
+                    {
+                        if (toolStripMenuItem2 is ToolStripMenuItem)
+                        {
+                            ((ToolStripMenuItem)toolStripMenuItem2).Font = new Font(fontname, smallfontsize);
+                            foreach (var toolStripMenuItem3 in ((ToolStripMenuItem)toolStripMenuItem2).DropDownItems)
+                            {
+                                if (toolStripMenuItem3 is ToolStripMenuItem)
+                                {
+                                    ((ToolStripMenuItem)toolStripMenuItem3).Font = new Font(fontname, smallfontsize);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         private void MainForm_DpiChanged(object sender, DpiChangedEventArgs e)// DPIの変更を取得および文字サイズの計算
         {
@@ -5386,14 +5561,19 @@ namespace CoRectSys
                     {
                         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                         IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                        int CountBackupedData = 0;
+                        int TotalBackupData = subFolders.Count();
                         foreach (System.IO.DirectoryInfo subFolder in subFolders)
                         {
                             try
                             {
-                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
                                 File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                CountBackupedData += 1;
+                                BackupToolStripMenuItem.Text = "バックアップ作成中：" + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
+                                Application.DoEvents();
                             }
                             catch// バックアップ失敗時はログに書き込み
                             {
@@ -5421,6 +5601,43 @@ namespace CoRectSys
             BackupToolStripMenuItem.Text = "バックアップ作成";
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
+        }
+        private async void CheckLatestVersion()// 更新確認
+        {
+            HttpClient httpClient = new HttpClient();
+            try
+            {
+                // githubのreleaseにアクセスできるか確認
+                HttpResponseMessage httpResponseMessage1 = await httpClient.GetAsync("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                if (httpResponseMessage1.IsSuccessStatusCode)// githubへのアクセスができた場合
+                {
+                    try
+                    {
+                        // 本バージョンと一致する配布先があるか確認
+                        HttpResponseMessage httpResponseMessage2 = await httpClient.GetAsync(LatestVersionDownloadLink);
+                        if (httpResponseMessage2.IsSuccessStatusCode)// 配布バージョンと一致した場合
+                        {
+                            // MessageBox.Show("success");//デバッグ用
+                        }
+                        else
+                        {
+                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("アプリケーションの更新が見つかりました。\n最新バージョンの配布先にアクセスしますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                            if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
+                            {
+                                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+                return;
+            }
         }
         #endregion
 
@@ -5500,6 +5717,7 @@ namespace CoRectSys
             // バックアップフォルダが存在するか確認
             if (Directory.Exists(TargetBackupPath))
             {
+
             }
             else
             {
@@ -6108,7 +6326,6 @@ namespace CoRectSys
         {
             // 実装検討中
         }
-
         #region 言語設定
         private void LanguageSettingToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 表示言語リストを表示
         {
@@ -6117,77 +6334,117 @@ namespace CoRectSys
             try
             {
                 System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
-                System.IO.FileInfo[] fileInfos = directoryInfo.GetFiles("*.xml");
-                LanguageSettingToolStripMenuItems = new ToolStripMenuItem[10];// あとでここの配列確保を動的にすること
-                foreach (FileInfo fileInfo in fileInfos)
+                if (!directoryInfo.Exists)
                 {
-                    count++;
-                    LanguageSettingToolStripMenuItems[count] = new ToolStripMenuItem();
-                    XElement xElement = XElement.Load(fileInfo.FullName);
-                    IEnumerable<string> strings = from item in xElement.Elements("metadata").Elements("name") select item.Value;
-                    foreach (string s in strings)
+                    MessageBox.Show("言語フォルダが見つかりません。", "CREC");
+                    return;
+                }
+                System.IO.FileInfo[] fileInfos = directoryInfo.GetFiles("*.xml");
+                if (fileInfos.Length > 0)
+                {
+                    LanguageSettingToolStripMenuItems = new ToolStripMenuItem[fileInfos.Length];
+                    foreach (FileInfo fileInfo in fileInfos)
                     {
-                        LanguageSettingToolStripMenuItems[count].Text = s;
-                        LanguageSettingToolStripMenuItems[count].ToolTipText = fileInfo.FullName;
-                        LanguageSettingToolStripMenuItem.DropDownItems.Add(LanguageSettingToolStripMenuItems[count]);
-                        LanguageSettingToolStripMenuItems[count].Click += new EventHandler(LanguageSettingToolStripMenuItems_Click);
-                        if(CurrentLanguage == s)
+                        LanguageSettingToolStripMenuItem.Enabled = true;
+                        count++;
+                        LanguageSettingToolStripMenuItems[count] = new ToolStripMenuItem();
+                        XElement xElement = XElement.Load(fileInfo.FullName);
+                        IEnumerable<string> strings = from item in xElement.Elements("metadata").Elements("name") select item.Value;
+                        foreach (string s in strings)
                         {
-                            LanguageSettingToolStripMenuItems[count].Checked = true;
+                            LanguageSettingToolStripMenuItems[count].Text = s;
+                            LanguageSettingToolStripMenuItems[count].ToolTipText = fileInfo.FullName;
+                            LanguageSettingToolStripMenuItem.DropDownItems.Add(LanguageSettingToolStripMenuItems[count]);
+                            LanguageSettingToolStripMenuItems[count].Click += new EventHandler(LanguageSettingToolStripMenuItems_Click);
+                            if (CurrentLanguage == Path.GetFileNameWithoutExtension(fileInfo.FullName))
+                            {
+                                LanguageSettingToolStripMenuItems[count].Checked = true;
+                            }
                         }
                     }
                 }
-            }
-            catch
-            {
-                if(count <= 0)
+                else
                 {
-                    MessageBox.Show("言語ファイルが見つかりませんでした。", "CREC");
+                    LanguageSettingToolStripMenuItem.Text = "言語ファイルなし";
+                    LanguageSettingToolStripMenuItem.Enabled = false;
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("言語ファイル取得中にエラーが発生しました。\n" + ex.Message, "CREC");
             }
         }
         private void LanguageSettingToolStripMenuItems_Click(object sender, EventArgs e)// 表示言語がクリックされた時のイベント
         {
-            CurrentLanguage = ((ToolStripItem)sender).Text;
+            CurrentLanguage = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
             SetLanguage(((ToolStripItem)sender).ToolTipText);
         }
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {
             XElement xElement = XElement.Load(targetLanguageFilePath);
-            IEnumerable<XElement> itemDataList = from item in xElement.Elements("mainform").Elements("item") select item;
-            foreach (XElement itemData in itemDataList)
+            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("mainform").Elements("Button").Elements("item") select item;
+            foreach (XElement itemData in buttonItemDataList)
             {
                 try
                 {
-                    if (itemData.Element("itemtype").Value == "ToolStripMenuItem")// ToolStripMenuItem用
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
                     {
-                        foreach (var toolStripMenuItem1 in menuStrip1.Items)
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("mainform").Elements("Label").Elements("item") select item;
+            foreach (XElement itemData in labelItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> toolStripMenuItemItemDataList = from item in xElement.Elements("mainform").Elements("ToolStripMenuItem").Elements("item") select item;
+            foreach (XElement itemData in toolStripMenuItemItemDataList)
+            {
+                try
+                {
+                    foreach (var toolStripMenuItem1 in menuStrip1.Items)
+                    {
+                        if (toolStripMenuItem1 is ToolStripMenuItem)
                         {
-                            if (toolStripMenuItem1 is ToolStripMenuItem)
+                            if (((ToolStripMenuItem)toolStripMenuItem1).Name == itemData.Element("itemname").Value)
                             {
-                                if (((ToolStripMenuItem)toolStripMenuItem1).Name == itemData.Element("itemname").Value)
+                                ((ToolStripMenuItem)toolStripMenuItem1).Text = itemData.Element("itemtext").Value;
+                                break;
+                            }
+                            foreach (var toolStripMenuItem2 in ((ToolStripMenuItem)toolStripMenuItem1).DropDownItems)
+                            {
+                                if (toolStripMenuItem2 is ToolStripMenuItem)
                                 {
-                                    ((ToolStripMenuItem)toolStripMenuItem1).Text = itemData.Element("itemtext").Value;
-                                    break;
-                                }
-                                foreach (var toolStripMenuItem2 in ((ToolStripMenuItem)toolStripMenuItem1).DropDownItems)
-                                {
-                                    if (toolStripMenuItem2 is ToolStripMenuItem)
+                                    if (((ToolStripMenuItem)toolStripMenuItem2).Name == itemData.Element("itemname").Value)
                                     {
-                                        if (((ToolStripMenuItem)toolStripMenuItem2).Name == itemData.Element("itemname").Value)
+                                        ((ToolStripMenuItem)toolStripMenuItem2).Text = itemData.Element("itemtext").Value;
+                                        break;
+                                    }
+                                    foreach (var toolStripMenuItem3 in ((ToolStripMenuItem)toolStripMenuItem2).DropDownItems)
+                                    {
+                                        if (toolStripMenuItem3 is ToolStripMenuItem)
                                         {
-                                            ((ToolStripMenuItem)toolStripMenuItem2).Text = itemData.Element("itemtext").Value;
-                                            break;
-                                        }
-                                        foreach (var toolStripMenuItem3 in ((ToolStripMenuItem)toolStripMenuItem2).DropDownItems)
-                                        {
-                                            if(toolStripMenuItem3 is ToolStripMenuItem)
+                                            if (((ToolStripMenuItem)toolStripMenuItem3).Name == itemData.Element("itemname").Value)
                                             {
-                                                if(((ToolStripMenuItem)toolStripMenuItem3).Name == itemData.Element("itemname").Value)
-                                                {
-                                                    ((ToolStripMenuItem)toolStripMenuItem3).Text = itemData.Element("itemtext").Value;
-                                                    break;
-                                                }
+                                                ((ToolStripMenuItem)toolStripMenuItem3).Text = itemData.Element("itemtext").Value;
+                                                break;
                                             }
                                         }
                                     }
@@ -6195,16 +6452,8 @@ namespace CoRectSys
                             }
                         }
                     }
-                    else// その他のコントール用
-                    {
-                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
-                        if (targetContrl.Length > 0)
-                        {
-                            targetContrl[0].Text = itemData.Element("itemtext").Value;
-                        }
-                    }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
                 }
