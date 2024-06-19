@@ -227,6 +227,46 @@
 				<itemtext>User's Manual...</itemtext>
 			</item>
 		</ToolStripMenuItem>
+		<MessageBox>
+			<item>
+				<itemname>WebAccessCheck</itemname>
+				<itemtext>Do you want to allow application to access our website?</itemtext>
+			</item>
+			<item>
+				<itemname>AskSaveUnsavedData</itemname>
+				<itemtext>Save unsaved data?&#xD;&#xA;Unsaved data will be deleted.</itemtext>
+			</item>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>Open a project.</itemtext>
+			</item>
+		</MessageBox>
+		<ToolTip>
+			<item>
+				<itemname>SearchFormTextBox</itemname>
+				<itemtext>Search</itemtext>
+			</item>
+			<item>
+				<itemname>SearchOptionComboBox</itemname>
+				<itemtext>Search Target</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodComboBox</itemname>
+				<itemtext>Search Method</itemtext>
+			</item>
+			<item>
+				<itemname>EditIDTextBox</itemname>
+				<itemtext>ID for System</itemtext>
+			</item>
+			<item>
+				<itemname>EditMCTextBox</itemname>
+				<itemtext>ID for User</itemtext>
+			</item>
+			<item>
+				<itemname>EditQuantityTextBox</itemname>
+				<itemtext>Quantity</itemtext>
+			</item>
+		</ToolTip>
 	</mainform>
 	<makenewproject>
 		

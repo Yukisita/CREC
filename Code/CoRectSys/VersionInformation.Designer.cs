@@ -1,4 +1,4 @@
-﻿namespace CoRectSys
+﻿namespace CREC
 {
     partial class VersionInformation
     {
@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/06/09";
+            this.ReleaseDate.Text = "Release: 2024/06/20";
             // 
             // VersionName
             // 
@@ -75,7 +75,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(167, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.09.01β1";
+            this.VersionName.Text = "Version 7.09.01β2";
             // 
             // label5
             // 

@@ -1,4 +1,4 @@
-﻿namespace CoRectSys
+﻿namespace CREC
 {
     partial class ConfigForm
     {

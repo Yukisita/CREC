@@ -229,9 +229,48 @@
 				<itemtext>使用ガイド...</itemtext>
 			</item>
 		</ToolStripMenuItem>
+		<MessageBox>
+			<item>
+				<itemname>WebAccessCheck</itemname>
+				<itemtext>Webサイトにアクセスします。&#xD;&#xA;許可しますか？</itemtext>
+			</item>
+			<item>
+				<itemname>AskSaveUnsavedData</itemname>
+				<itemtext>編集中のデータがあります。保存しますか？&#xD;&#xA;保存されなかったデータは削除されます。</itemtext>
+			</item>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>プロジェクトを開いてください。</itemtext>
+			</item>
+		</MessageBox>
+		<ToolTip>
+			<item>
+				<itemname>SearchFormTextBox</itemname>
+				<itemtext>検索する文字列を入力</itemtext>
+			</item>
+			<item>
+				<itemname>SearchOptionComboBox</itemname>
+				<itemtext>検索内容を選択</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodComboBox</itemname>
+				<itemtext>検索方法を選択</itemtext>
+			</item>
+			<item>
+				<itemname>EditIDTextBox</itemname>
+				<itemtext>システムに必要な固有値</itemtext>
+			</item>
+			<item>
+				<itemname>EditMCTextBox</itemname>
+				<itemtext>JAN等の任意で管理コードを入力</itemtext>
+			</item>
+			<item>
+				<itemname>EditQuantityTextBox</itemname>
+				<itemtext>数字を入力</itemtext>
+			</item>
+		</ToolTip>
 	</mainform>
 	<makenewproject>
-
 	</makenewproject>
 	<VersionInformation>
 		<Label>

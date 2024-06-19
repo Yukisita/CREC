@@ -27,7 +27,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
 
-namespace CoRectSys
+namespace CREC
 {
     public partial class MainForm : Form
     {
@@ -80,7 +80,7 @@ namespace CoRectSys
         bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
-        string CurrentLanguage = "";
+        string CurrentLanguageFileName = "";
         // config.sys読み込み用変数
         bool AllowEdit;// 編集可否を設定
         bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
@@ -233,7 +233,7 @@ namespace CoRectSys
         {
             try
             {
-                SetLanguage("language\\" + CurrentLanguage + ".xml");
+                SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
             }
             catch (Exception ex)
             {
@@ -1240,7 +1240,7 @@ namespace CoRectSys
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             if (TargetBackupPath.Length == 0)
@@ -1606,7 +1606,7 @@ namespace CoRectSys
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
             {
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータがあります。保存しますか？\n保存されなかったデータは削除されます。", "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
                 {
                     // 保存関係の処理、入力内容を確認
@@ -1991,7 +1991,7 @@ namespace CoRectSys
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI,CurrentLanguage);
+            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI, CurrentLanguageFileName);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -2006,7 +2006,7 @@ namespace CoRectSys
         }
         private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("WebAccessCheck", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
@@ -2014,7 +2014,7 @@ namespace CoRectSys
         }
         private void UserManualToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("Webサイトにアクセスします。\n許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("WebAccessCheck", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95");
@@ -2026,7 +2026,7 @@ namespace CoRectSys
             SaveConfig();
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
             {
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータがあります。保存しますか？\n保存されなかったデータは削除されます。", "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
                 {
                     // 入力内容を確認
@@ -2306,7 +2306,7 @@ namespace CoRectSys
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show("プロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(ThisName + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
@@ -2367,7 +2367,7 @@ namespace CoRectSys
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             else
@@ -2405,7 +2405,7 @@ namespace CoRectSys
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             else
@@ -2811,7 +2811,7 @@ namespace CoRectSys
         }
         private bool CheckEditingContents()// 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータがあります。保存しますか？\n保存されなかったデータは削除されます。", "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 保存して編集画面を閉じる
             {
                 // 入力内容を確認
@@ -3633,7 +3633,7 @@ namespace CoRectSys
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show("プロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             try
@@ -3765,7 +3765,7 @@ namespace CoRectSys
         {
             if (TargetFolderPath.Length == 0)
             {
-                MessageBox.Show("プロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
@@ -4803,7 +4803,7 @@ namespace CoRectSys
                 AutoSearch = true;
                 RecentShownContents = false;
                 BootUpdateCheck = false;
-                CurrentLanguage = "Japanese";
+                CurrentLanguageFileName = "Japanese";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in tmp)
@@ -4835,12 +4835,10 @@ namespace CoRectSys
                             if (cols[1] == "true")
                             {
                                 ShowUserAssistToolTips = true;
-                                SetUserAssistToolTips();
                             }
                             else
                             {
                                 ShowUserAssistToolTips = false;
-                                SetUserAssistToolTips();
                             }
                             break;
                         case "AutoLoadProject":
@@ -4924,11 +4922,11 @@ namespace CoRectSys
                         case "Language":
                             if (cols[1].Length == 0)
                             {
-                                CurrentLanguage = "Japanese.xml";
+                                CurrentLanguageFileName = "Japanese.xml";
                             }
                             else
                             {
-                                CurrentLanguage = cols[1];
+                                CurrentLanguageFileName = cols[1];
                             }
                             break;
                     }
@@ -4960,7 +4958,7 @@ namespace CoRectSys
                     AutoSearch = true;
                     RecentShownContents = false;
                     BootUpdateCheck = true;
-                    CurrentLanguage = "Japanese.xml";
+                    CurrentLanguageFileName = "Japanese.xml";
                 }
                 catch (Exception ex)
                 {
@@ -5030,7 +5028,7 @@ namespace CoRectSys
                 configfile.WriteLine("BootUpdateCheck,false");
             }
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
-            configfile.WriteLine("Language,{0}", CurrentLanguage);
+            configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
             configfile.Close();
         }
         #endregion
@@ -5641,25 +5639,6 @@ namespace CoRectSys
         }
         #endregion
 
-        #region ユーザーアシストのToolTip設定
-        private void SetUserAssistToolTips()
-        {
-            if (ShowUserAssistToolTips == true)
-            {
-                UserAssistToolTip.SetToolTip(SearchFormTextBox, "検索する文字列を入力");
-                UserAssistToolTip.SetToolTip(SearchOptionComboBox, "検索内容を選択");
-                UserAssistToolTip.SetToolTip(SearchMethodComboBox, "検索方法を選択");
-                UserAssistToolTip.SetToolTip(EditIDTextBox, "システムに必要な固有値");
-                UserAssistToolTip.SetToolTip(EditMCTextBox, "JAN等の任意で管理コードを入力");
-                UserAssistToolTip.SetToolTip(EditQuantityTextBox, "数字を入力");
-            }
-            else if (ShowUserAssistToolTips == false)
-            {
-                UserAssistToolTip.RemoveAll();
-            }
-        }
-        #endregion
-
         #region DataGridView内のContextStripMenuの設定
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
@@ -5705,7 +5684,7 @@ namespace CoRectSys
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             // バックアップ場所が設定されているか確認
@@ -5745,7 +5724,7 @@ namespace CoRectSys
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             try
@@ -5927,7 +5906,7 @@ namespace CoRectSys
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show("先にプロジェクトを開いてください。", "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
                 return;
             }
             try
@@ -6326,6 +6305,7 @@ namespace CoRectSys
         {
             // 実装検討中
         }
+
         #region 言語設定
         private void LanguageSettingToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 表示言語リストを表示
         {
@@ -6356,7 +6336,7 @@ namespace CoRectSys
                             LanguageSettingToolStripMenuItems[count].ToolTipText = fileInfo.FullName;
                             LanguageSettingToolStripMenuItem.DropDownItems.Add(LanguageSettingToolStripMenuItems[count]);
                             LanguageSettingToolStripMenuItems[count].Click += new EventHandler(LanguageSettingToolStripMenuItems_Click);
-                            if (CurrentLanguage == Path.GetFileNameWithoutExtension(fileInfo.FullName))
+                            if (CurrentLanguageFileName == Path.GetFileNameWithoutExtension(fileInfo.FullName))
                             {
                                 LanguageSettingToolStripMenuItems[count].Checked = true;
                             }
@@ -6376,7 +6356,7 @@ namespace CoRectSys
         }
         private void LanguageSettingToolStripMenuItems_Click(object sender, EventArgs e)// 表示言語がクリックされた時のイベント
         {
-            CurrentLanguage = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
+            CurrentLanguageFileName = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
             SetLanguage(((ToolStripItem)sender).ToolTipText);
         }
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
@@ -6457,6 +6437,23 @@ namespace CoRectSys
                 {
                     MessageBox.Show(ex.Message);
                 }
+            }
+            SetUserAssistToolTips();
+        }
+        private void SetUserAssistToolTips()// ユーザーアシストのToolTip設定
+        {
+            if (ShowUserAssistToolTips == true)
+            {
+                UserAssistToolTip.SetToolTip(SearchFormTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("SearchFormTextBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(SearchOptionComboBox, GetMessageFromLangageFileClass.GetToolTipMessage("SearchOptionComboBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(SearchMethodComboBox, GetMessageFromLangageFileClass.GetToolTipMessage("SearchMethodComboBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(EditIDTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditIDTextBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(EditMCTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditMCTextBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(EditQuantityTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditQuantityTextBox", "mainform", CurrentLanguageFileName));
+            }
+            else if (ShowUserAssistToolTips == false)
+            {
+                UserAssistToolTip.RemoveAll();
             }
         }
         #endregion

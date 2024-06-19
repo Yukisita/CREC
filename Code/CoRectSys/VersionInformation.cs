@@ -17,14 +17,14 @@ using System.Management;
 using System.Runtime.Remoting.Messaging;
 using System.Xml.Linq;
 
-namespace CoRectSys
+namespace CREC
 {
     public partial class VersionInformation : Form
     {
         string SystemInformations;
         string ColorSetting = "Blue";
         float mainFormCurrentDPI = 0;// MainFormのDPI
-        string CurrentLanguage = "";// 言語設定
+        string CurrentLanguageFileName = "";// 言語設定
 
         // 表示関係
         double CurrentDPI = 1.0;// 現在のDPI値
@@ -33,14 +33,14 @@ namespace CoRectSys
             InitializeComponent();
             ColorSetting = colorSetting;
             mainFormCurrentDPI = (float)MainFormCurrentDPI;
-            CurrentLanguage = currentLanguage;
+            CurrentLanguageFileName = currentLanguage;
             SetColorMethod();
         }
 
         private void VersionInformation_Load(object sender, EventArgs e)
         {
             GetSystemInformation();// 下の非同期処理
-            SetLanguage("language\\" + CurrentLanguage + ".xml");
+            SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
         }
         private async void GetSystemInformation()// 非同期でシステム情報を取得し、結果を表示
         {
