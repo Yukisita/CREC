@@ -19,6 +19,10 @@
 				<itemtext>機密情報表示</itemtext>
 			</item>
 			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>機密情報非表示</itemtext>
+			</item>
+			<item>
 				<itemname>OpenDataLocation</itemname>
 				<itemtext>開く</itemtext>
 			</item>
@@ -33,6 +37,26 @@
 			<item>
 				<itemname>AddInventoryOperationButton</itemname>
 				<itemtext>追加</itemtext>
+			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>サムネイル選択</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>保存して終了</itemtext>
+			</item>
+			<item>
+				<itemname>CheckSameMCButton</itemname>
+				<itemtext>同コード検索</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>在庫数管理画面</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>在庫数管理終了</itemtext>
 			</item>
 		</Button>
 		<Label>
@@ -51,6 +75,10 @@
 			<item>
 				<itemname>DetailsLabel</itemname>
 				<itemtext>詳細情報</itemtext>
+			</item>
+			<item>
+				<itemname>ConfidentialDataLabel</itemname>
+				<itemtext>機密情報</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>
@@ -228,6 +256,18 @@
 				<itemname>UserManualToolStripMenuItem</itemname>
 				<itemtext>使用ガイド...</itemtext>
 			</item>
+			<item>
+				<itemname>AddContentsContextStripMenuItem</itemname>
+				<itemtext>新規追加...</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateContextStripMenuItem</itemname>
+				<itemtext>更新</itemtext>
+			</item>
+			<item>
+				<itemname>OpenProjectContextStripMenuItem</itemname>
+				<itemtext>別のプロジェクトを開く...</itemtext>
+			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>
@@ -267,6 +307,10 @@
 			<item>
 				<itemname>EditQuantityTextBox</itemname>
 				<itemtext>数字を入力</itemtext>
+			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>サムネイルを選択</itemtext>
 			</item>
 		</ToolTip>
 	</mainform>

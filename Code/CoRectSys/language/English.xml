@@ -19,6 +19,10 @@
 				<itemtext>Confidential Data</itemtext>
 			</item>
 			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>Hide</itemtext>
+			</item>
+			<item>
 				<itemname>OpenDataLocation</itemname>
 				<itemtext>Open</itemtext>
 			</item>
@@ -33,6 +37,26 @@
 			<item>
 				<itemname>AddInventoryOperationButton</itemname>
 				<itemtext>Register</itemtext>
+			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>Thumbnail</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>Save &amp; Exit</itemtext>
+			</item>
+			<item>
+				<itemname>CheckSameMCButton</itemname>
+				<itemtext>Check Overlap</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>Inventory</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>Close INVT.</itemtext>
 			</item>
 		</Button>
 		<Label>
@@ -51,6 +75,10 @@
 			<item>
 				<itemname>DetailsLabel</itemname>
 				<itemtext>Detail Information</itemtext>
+			</item>
+			<item>
+				<itemname>ConfidentialDataLabel</itemname>
+				<itemtext>Confidential Information</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>
@@ -226,6 +254,18 @@
 				<itemname>UserManualToolStripMenuItem</itemname>
 				<itemtext>User's Manual...</itemtext>
 			</item>
+			<item>
+				<itemname>AddContentsContextStripMenuItem</itemname>
+				<itemtext>Add...</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateContextStripMenuItem</itemname>
+				<itemtext>Update</itemtext>
+			</item>
+			<item>
+				<itemname>OpenProjectContextStripMenuItem</itemname>
+				<itemtext>Open Project...</itemtext>
+			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>
@@ -266,10 +306,13 @@
 				<itemname>EditQuantityTextBox</itemname>
 				<itemtext>Quantity</itemtext>
 			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>Select Thumbnail</itemtext>
+			</item>
 		</ToolTip>
 	</mainform>
 	<makenewproject>
-		
 	</makenewproject>
 	<VersionInformation>
 		<Label>

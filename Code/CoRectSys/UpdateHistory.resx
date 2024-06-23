@@ -386,7 +386,11 @@ masterの更新内容を反映
 前回起動時の言語設定を再起動後に復元する機能を実装
 
 ver7.09.01β2（2024/06/20)
-メッセージボックス、ToolTipの多言語対応に向けた言語ファイル規格策定、読み込み処理の追加</value>
+メッセージボックス、ToolTipの多言語対応に向けた言語ファイル規格策定、読み込み処理の追加
+
+ver7.09.01β3（2024/06/24)
+リスト内のメニューストリップの多言語対応
+多言語対応のためのコントロール整理</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

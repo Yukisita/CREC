@@ -205,6 +205,10 @@
             this.OpenPicturewithAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchButton = new System.Windows.Forms.Button();
             this.ShowPictureFileNameLabel = new System.Windows.Forms.Label();
+            this.ConfidentialDataLabel = new System.Windows.Forms.Label();
+            this.HideConfidentialDataButton = new System.Windows.Forms.Button();
+            this.SavingLabel = new System.Windows.Forms.Label();
+            this.CloseInventoryManagementModeButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -1247,6 +1251,7 @@
             this.SaveAndCloseEditButton.Size = new System.Drawing.Size(209, 50);
             this.SaveAndCloseEditButton.TabIndex = 24;
             this.SaveAndCloseEditButton.Text = "保存して終了";
+            this.SaveAndCloseEditButton.UseMnemonic = false;
             this.SaveAndCloseEditButton.UseVisualStyleBackColor = true;
             this.SaveAndCloseEditButton.Visible = false;
             this.SaveAndCloseEditButton.Click += new System.EventHandler(this.SaveAndCloseEditButton_Click);
@@ -1730,10 +1735,10 @@
             // CheckSameMCButton
             // 
             this.CheckSameMCButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CheckSameMCButton.Location = new System.Drawing.Point(1526, 166);
+            this.CheckSameMCButton.Location = new System.Drawing.Point(1508, 166);
             this.CheckSameMCButton.Margin = new System.Windows.Forms.Padding(4);
             this.CheckSameMCButton.Name = "CheckSameMCButton";
-            this.CheckSameMCButton.Size = new System.Drawing.Size(114, 31);
+            this.CheckSameMCButton.Size = new System.Drawing.Size(132, 31);
             this.CheckSameMCButton.TabIndex = 12;
             this.CheckSameMCButton.Text = "同コード検索";
             this.CheckSameMCButton.UseVisualStyleBackColor = true;
@@ -2000,12 +2005,70 @@
             this.ShowPictureFileNameLabel.TabIndex = 97;
             this.ShowPictureFileNameLabel.Visible = false;
             // 
+            // ConfidentialDataLabel
+            // 
+            this.ConfidentialDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.ConfidentialDataLabel.AutoSize = true;
+            this.ConfidentialDataLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ConfidentialDataLabel.Location = new System.Drawing.Point(1213, 586);
+            this.ConfidentialDataLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ConfidentialDataLabel.Name = "ConfidentialDataLabel";
+            this.ConfidentialDataLabel.Size = new System.Drawing.Size(137, 38);
+            this.ConfidentialDataLabel.TabIndex = 98;
+            this.ConfidentialDataLabel.Text = "機密情報";
+            this.ConfidentialDataLabel.Visible = false;
+            // 
+            // HideConfidentialDataButton
+            // 
+            this.HideConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.HideConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.HideConfidentialDataButton.Location = new System.Drawing.Point(2044, 1216);
+            this.HideConfidentialDataButton.Margin = new System.Windows.Forms.Padding(4);
+            this.HideConfidentialDataButton.Name = "HideConfidentialDataButton";
+            this.HideConfidentialDataButton.Size = new System.Drawing.Size(236, 50);
+            this.HideConfidentialDataButton.TabIndex = 99;
+            this.HideConfidentialDataButton.Text = "機密情報非表示";
+            this.HideConfidentialDataButton.UseVisualStyleBackColor = true;
+            this.HideConfidentialDataButton.Visible = false;
+            this.HideConfidentialDataButton.Click += new System.EventHandler(this.HideConfidentialDataButton_Click);
+            // 
+            // SavingLabel
+            // 
+            this.SavingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.SavingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SavingLabel.Location = new System.Drawing.Point(1379, 1228);
+            this.SavingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.SavingLabel.Name = "SavingLabel";
+            this.SavingLabel.Size = new System.Drawing.Size(206, 50);
+            this.SavingLabel.TabIndex = 100;
+            this.SavingLabel.Text = "保存中";
+            this.SavingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SavingLabel.Visible = false;
+            // 
+            // CloseInventoryManagementModeButton
+            // 
+            this.CloseInventoryManagementModeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CloseInventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CloseInventoryManagementModeButton.Location = new System.Drawing.Point(1786, 1225);
+            this.CloseInventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CloseInventoryManagementModeButton.Name = "CloseInventoryManagementModeButton";
+            this.CloseInventoryManagementModeButton.Size = new System.Drawing.Size(250, 50);
+            this.CloseInventoryManagementModeButton.TabIndex = 101;
+            this.CloseInventoryManagementModeButton.Text = "在庫数管理終了";
+            this.CloseInventoryManagementModeButton.UseVisualStyleBackColor = true;
+            this.CloseInventoryManagementModeButton.Visible = false;
+            this.CloseInventoryManagementModeButton.Click += new System.EventHandler(this.CloseInventoryManagementModeButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.CloseInventoryManagementModeButton);
+            this.Controls.Add(this.SavingLabel);
+            this.Controls.Add(this.HideConfidentialDataButton);
+            this.Controls.Add(this.ConfidentialDataLabel);
             this.Controls.Add(this.ShowPictureFileNameLabel);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
@@ -2277,6 +2340,10 @@
         private System.Windows.Forms.ContextMenuStrip PictureBox1ContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem OpenPicturewithAppToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem UserManualToolStripMenuItem;
+        private System.Windows.Forms.Label ConfidentialDataLabel;
+        private System.Windows.Forms.Button HideConfidentialDataButton;
+        private System.Windows.Forms.Label SavingLabel;
+        private System.Windows.Forms.Button CloseInventoryManagementModeButton;
     }
 }
 

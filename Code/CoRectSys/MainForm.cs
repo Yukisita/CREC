@@ -1240,7 +1240,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (TargetBackupPath.Length == 0)
@@ -1709,6 +1709,11 @@ namespace CREC
         }
         private void AddInventoryModeToolStripMenuItem_Click(object sender, EventArgs e)// 在庫数管理モードを追加
         {
+            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+            {
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             if (TargetContentsPath.Length == 0)
             {
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
@@ -1726,6 +1731,7 @@ namespace CREC
                 InventoryManagementFile.WriteLine("{0},,,", ThisID);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
+                CloseInventoryManagementModeButton.Visible = false;
             }
         }
         #region データ一覧の表示項目設定
@@ -2306,7 +2312,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(ThisName + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
@@ -2342,6 +2348,11 @@ namespace CREC
             }
             else
             {
+                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                {
+                    MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 if (TargetContentsPath.Length == 0)
                 {
                     MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
@@ -2367,7 +2378,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -2405,7 +2416,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -2776,38 +2787,41 @@ namespace CREC
                 MessageBox.Show("データのパスをクリップボードにコピーできません。\n" + ex.Message, "CREC");
             }
         }
-        private void ShowConfidentialDataButton_Click(object sender, EventArgs e)// 機密情報表示・非表示
+        private void ShowConfidentialDataButton_Click(object sender, EventArgs e)// 機密情報表示
         {
-            Size FormSize = Size;
-            if (ShowConfidentialData == false)
+            if (ShowConfidentialData == false)// 機密情報表示が禁止されている場合
             {
                 MessageBox.Show("Access Denied.", "CREC");
             }
             else if (ShowConfidentialData == true)
             {
-                if (ConfidentialDataTextBox.Visible == false)
+                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
-                    if (TargetContentsPath.Length == 0)
-                    {
-                        MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
-                        return;
-                    }
-
-                    // フォーム内で機密情報を表示
-                    DetailsTextBox.Visible = false;
-                    ConfidentialDataTextBox.Visible = true;
-                    ShowConfidentialDataButton.Text = "機密情報非表示";
-                    DetailsLabel.Text = "機密情報";
+                    MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
-                else if (ConfidentialDataTextBox.Visible == true)
+                if (TargetContentsPath.Length == 0)
                 {
-                    DetailsTextBox.Visible = true;
-                    ConfidentialDataTextBox.Visible = false;
-                    ShowConfidentialDataButton.Text = "機密情報表示";
-                    DetailsLabel.Text = "詳細情報";
-                    SetFormLayout();
+                    MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
+                    return;
                 }
+                DetailsTextBox.Visible = false;
+                ConfidentialDataTextBox.Visible = true;
+                ConfidentialDataLabel.Visible = true;
+                DetailsLabel.Visible = false;
+                HideConfidentialDataButton.Visible = true;
+                ShowConfidentialDataButton.Visible = false;
             }
+        }
+        private void HideConfidentialDataButton_Click(object sender, EventArgs e)// 機密情報非表示
+        {
+            DetailsTextBox.Visible = true;
+            ConfidentialDataTextBox.Visible = false;
+            ConfidentialDataLabel.Visible = false;
+            DetailsLabel.Visible = true;
+            HideConfidentialDataButton.Visible = false;
+            ShowConfidentialDataButton.Visible = true;
+            SetFormLayout();
         }
         private bool CheckEditingContents()// 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
         {
@@ -3022,13 +3036,17 @@ namespace CREC
             if (File.Exists(TargetContentsPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
                 InventoryManagementModeButton.Visible = true;
+                CloseInventoryManagementModeButton.Visible = false;
             }
             else
             {
                 InventoryManagementModeButton.Visible = false;
+                CloseInventoryManagementModeButton.Visible = false;
             }
-            DetailsLabel.Text = "詳細情報";
-            ShowConfidentialDataButton.Text = "機密情報表示";
+            DetailsLabel.Visible = true;
+            ConfidentialDataLabel.Visible = false;
+            ShowConfidentialDataButton.Visible = true;
+            HideConfidentialDataButton.Visible = false;
             ObjectNameLabel.Text = ShowObjectNameLabel + "：";
             ShowObjectName.Text = ThisName;
             IDLabel.Text = ShowIDLabel + "：";
@@ -3420,6 +3438,11 @@ namespace CREC
             }
             else
             {
+                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                {
+                    MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
                 if (TargetContentsPath.Length == 0)
                 {
                     MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
@@ -3570,10 +3593,9 @@ namespace CREC
         }
         private void SaveAndCloseEditButton_Click(object sender, EventArgs e)// 編集画面の終了
         {
-            // ボタンを無効化
-            SaveAndCloseEditButton.Enabled = false;
-            SaveAndCloseEditButton.Text = "保存中";
-            SaveAndCloseEditButton.Update();
+            SaveAndCloseEditButton.Visible = false;
+            SavingLabel.Visible = true;
+            Application.DoEvents();
             // 入力内容を確認
             if (CheckContent() == false)
             {
@@ -3583,10 +3605,7 @@ namespace CREC
             ShowPicturesButton.Text = "画像を表示";
             // データ保存メソッドを呼び出し
             SaveContentsMethod();
-            // ボタンを有効化
-            SaveAndCloseEditButton.Enabled = true;
-            SaveAndCloseEditButton.Text = "保存して終了";
-            SaveAndCloseEditButton.Update();
+            SavingLabel.Visible = false;
             // 通常画面に不要な物を非表示に
             EditNameTextBox.Visible = false;
             EditIDTextBox.Visible = false;
@@ -3599,7 +3618,6 @@ namespace CREC
             EditTag2TextBox.Visible = false;
             EditTag3TextBox.Visible = false;
             EditRealLocationTextBox.Visible = false;
-            SaveAndCloseEditButton.Visible = false;
             SelectThumbnailButton.Visible = false;
             // 再表示時に編集したデータを表示するための処理
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
@@ -3633,7 +3651,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -3765,7 +3783,7 @@ namespace CREC
         {
             if (TargetFolderPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
@@ -3810,10 +3828,12 @@ namespace CREC
                 InventoryManagementFile.WriteLine("{0},,,", EditIDTextBox.Text);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
+                CloseInventoryManagementModeButton.Visible = false;
             }
             else
             {
                 InventoryManagementModeButton.Visible = false;
+                CloseInventoryManagementModeButton.Visible = false;
             }
             // 新規作成タグを作成
             FileStream = File.Create(TargetContentsPath + "\\ADD");
@@ -3986,123 +4006,129 @@ namespace CREC
         int? ReorderPoint;// 発注点、未定義時はnullを使用
         int? MaximumLevel;// 最大在庫数、未定義時はnullを使用
         int inventory = 0;// 在庫数計算用
-        private void InventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード切り替え
+        private void InventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード開始
         {
             string reader;
             string row;
             string[] cols;
-            if (InventoryModeDataGridView.Visible == false)// 在庫管理モードを開始
+            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
-                if (TargetContentsPath.Length == 0)
-                {
-                    MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
-                    return;
-                }
-                //invからデータを読み込んで表示
-                try
-                {
-                    reader = File.ReadAllText(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                    rowsIM = reader.Trim().Replace("\r", "").Split('\n');
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("在庫管理データの読み込みに失敗しました。\n" + ex.Message, "CREC");
-                    return;
-                }
-                // 不要なものを非表示に
-                dataGridView1.Visible = false;
-                SearchFormTextBox.Visible = false;
-                SearchOptionComboBox.Visible = false;
-                SearchMethodComboBox.Visible = false;
-                SearchFormTextBoxClearButton.Visible = false;
-                AddContentsButton.Visible = false;
-                ListUpdateButton.Visible = false;
-                ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                // 必要なものを表示
-                InventoryLabel.Visible = true;
-                InventoryModeDataGridView.Visible = true;
-                OperationOptionComboBox.Visible = true;
-                EditQuantityTextBox.Visible = true;
-                AddInventoryOperationButton.Visible = true;
-                InventoryOperationLabel.Visible = true;
-                InputQuantitiyLabel.Visible = true;
-                InventoryOperationNoteLabel.Visible = true;
-                EditInventoryOperationNoteTextBox.Visible = true;
-                ProperInventorySettingsComboBox.Visible = true;
-                ProperInventorySettingsTextBox.Visible = true;
-                SaveProperInventorySettingsButton.Visible = true;
-                ProperInventorySettingsNotificationLabel.Visible = true;
-                InventoryManagementModeButton.Text = "在庫数管理終了";
-                // DataGridView関係
-                InventoryModeDataGridView.Rows.Clear();
-                InventoryModeDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
-                // 行数を確認
-                string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                // 1行目を読み込み
-                row = rowsIM[0];
-                cols = row.Split(',');
-                if (cols[1].Length != 0)
-                {
-                    SafetyStock = Convert.ToInt32(cols[1]);
-                }
-                if (cols[2].Length != 0)
-                {
-                    ReorderPoint = Convert.ToInt32(cols[2]);
-                }
-                if (cols[3].Length != 0)
-                {
-                    MaximumLevel = Convert.ToInt32(cols[3]);
-                }
-                inventory = 0;// 初期化
-                for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)// 2行目以降を読み込み
-                {
-                    row = rowsIM[i];
-                    cols = row.Split(',');
-                    InventoryModeDataGridView.Rows.Add(cols[0], cols[1], cols[2], cols[3]);
-                    inventory = inventory + Convert.ToInt32(cols[2]);
-                    InventoryLabel.Text = Convert.ToString("在庫数：" + inventory);
-                }
-                if (inventory < 0)
-                {
-                    MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
-                }
-                ProperInventorySettingsComboBox.SelectedIndex = 0;
-                if (SafetyStock == null)
-                {
-                    ProperInventorySettingsTextBox.TextChanged -= ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを停止
-                    ProperInventorySettingsTextBox.Text = "未定義";
-                    ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
-                }
-                else
-                {
-                    ProperInventorySettingsTextBox.Text = Convert.ToString(SafetyStock);
-                }
-                ProperInventoryNotification();// 適正在庫設定と比較
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            else if (InventoryModeDataGridView.Visible == true)// 在庫管理モードを終了
+            if (TargetContentsPath.Length == 0)
             {
-                CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
-                // 必要なものを表示
-                if (StandardDisplayModeToolStripMenuItem.Checked)
+                MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
+                return;
+            }
+            //invからデータを読み込んで表示
+            try
+            {
+                reader = File.ReadAllText(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                rowsIM = reader.Trim().Replace("\r", "").Split('\n');
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("在庫管理データの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                return;
+            }
+            // 不要なものを非表示に
+            dataGridView1.Visible = false;
+            SearchFormTextBox.Visible = false;
+            SearchOptionComboBox.Visible = false;
+            SearchMethodComboBox.Visible = false;
+            SearchFormTextBoxClearButton.Visible = false;
+            AddContentsButton.Visible = false;
+            ListUpdateButton.Visible = false;
+            InventoryManagementModeButton.Visible = false;
+            ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
+            // 必要なものを表示
+            InventoryLabel.Visible = true;
+            InventoryModeDataGridView.Visible = true;
+            OperationOptionComboBox.Visible = true;
+            EditQuantityTextBox.Visible = true;
+            AddInventoryOperationButton.Visible = true;
+            InventoryOperationLabel.Visible = true;
+            InputQuantitiyLabel.Visible = true;
+            InventoryOperationNoteLabel.Visible = true;
+            EditInventoryOperationNoteTextBox.Visible = true;
+            ProperInventorySettingsComboBox.Visible = true;
+            ProperInventorySettingsTextBox.Visible = true;
+            SaveProperInventorySettingsButton.Visible = true;
+            ProperInventorySettingsNotificationLabel.Visible = true;
+            CloseInventoryManagementModeButton.Visible = true;
+            // DataGridView関係
+            InventoryModeDataGridView.Rows.Clear();
+            InventoryModeDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            // 行数を確認
+            string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            // 1行目を読み込み
+            row = rowsIM[0];
+            cols = row.Split(',');
+            if (cols[1].Length != 0)
+            {
+                SafetyStock = Convert.ToInt32(cols[1]);
+            }
+            if (cols[2].Length != 0)
+            {
+                ReorderPoint = Convert.ToInt32(cols[2]);
+            }
+            if (cols[3].Length != 0)
+            {
+                MaximumLevel = Convert.ToInt32(cols[3]);
+            }
+            inventory = 0;// 初期化
+            for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)// 2行目以降を読み込み
+            {
+                row = rowsIM[i];
+                cols = row.Split(',');
+                InventoryModeDataGridView.Rows.Add(cols[0], cols[1], cols[2], cols[3]);
+                inventory = inventory + Convert.ToInt32(cols[2]);
+                InventoryLabel.Text = Convert.ToString("在庫数：" + inventory);
+            }
+            if (inventory < 0)
+            {
+                MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
+            }
+            ProperInventorySettingsComboBox.SelectedIndex = 0;
+            if (SafetyStock == null)
+            {
+                ProperInventorySettingsTextBox.TextChanged -= ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを停止
+                ProperInventorySettingsTextBox.Text = "未定義";
+                ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
+            }
+            else
+            {
+                ProperInventorySettingsTextBox.Text = Convert.ToString(SafetyStock);
+            }
+            ProperInventoryNotification();// 適正在庫設定と比較
+
+        }
+        private void CloseInventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード終了
+        {
+
+            CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
+            // 必要なものを表示
+            InventoryManagementModeButton.Visible = true;
+            if (StandardDisplayModeToolStripMenuItem.Checked)
+            {
+                dataGridView1.Visible = true;
+                SearchFormTextBox.Visible = true;
+                SearchOptionComboBox.Visible = true;
+                SearchMethodComboBox.Visible = true;
+                SearchFormTextBoxClearButton.Visible = true;
+                AddContentsButton.Visible = true;
+                ListUpdateButton.Visible = true;
+                if (DataLoadingStatus == "true")
                 {
-                    dataGridView1.Visible = true;
-                    SearchFormTextBox.Visible = true;
-                    SearchOptionComboBox.Visible = true;
-                    SearchMethodComboBox.Visible = true;
-                    SearchFormTextBoxClearButton.Visible = true;
-                    AddContentsButton.Visible = true;
-                    ListUpdateButton.Visible = true;
-                    if (DataLoadingStatus == "true")
-                    {
-                        DataLoadingStatus = "stop";
-                    }
-                    LoadGrid();
+                    DataLoadingStatus = "stop";
                 }
-                else if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時は写真を表示
-                {
-                    ShowPicturesMethod();
-                }
+                LoadGrid();
+            }
+            else if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時は写真を表示
+            {
+                ShowPicturesMethod();
             }
         }
         private void AddInventoryOperationButton_Click(object sender, EventArgs e)// 在庫の増減を保存
@@ -4357,6 +4383,7 @@ namespace CREC
         }
         private void CloseInventoryViewMethod()// 在庫表示モードを閉じるメソッド
         {
+            CloseInventoryManagementModeButton.Visible = false;
             InventoryLabel.Visible = false;
             InventoryModeDataGridView.Visible = false;
             OperationOptionComboBox.Visible = false;
@@ -4376,7 +4403,6 @@ namespace CREC
             SafetyStock = null;
             ReorderPoint = null;
             MaximumLevel = null;
-            InventoryManagementModeButton.Text = "在庫数管理画面";
         }
         #endregion
 
@@ -4958,7 +4984,7 @@ namespace CREC
                     AutoSearch = true;
                     RecentShownContents = false;
                     BootUpdateCheck = true;
-                    CurrentLanguageFileName = "Japanese.xml";
+                    CurrentLanguageFileName = "Japanese";
                 }
                 catch (Exception ex)
                 {
@@ -5203,16 +5229,24 @@ namespace CREC
             CopyDataLocationPath.Font = new Font(fontname, smallfontsize);
             DetailsLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Convert.ToInt32(DetailsTextBox.Location.Y - DetailsLabel.Height - 5 * DpiScale));
             DetailsLabel.Font = new Font(fontname, mainfontsize);
+            ConfidentialDataLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 5 * DpiScale), Convert.ToInt32(DetailsTextBox.Location.Y - ConfidentialDataLabel.Height - 5 * DpiScale));
+            ConfidentialDataLabel.Font = new Font(fontname, mainfontsize);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditButton.Font = new Font(fontname, mainfontsize);
             EditRequestingButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditRequestingButton.Font = new Font(fontname, mainfontsize);
             SaveAndCloseEditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             SaveAndCloseEditButton.Font = new Font(fontname, mainfontsize);
+            SavingLabel.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            SavingLabel.Font = new Font(fontname, mainfontsize);
             InventoryManagementModeButton.Location = new Point(Convert.ToInt32(FormSize.Width - 445 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             InventoryManagementModeButton.Font = new Font(fontname, mainfontsize);
+            CloseInventoryManagementModeButton.Location = new Point(Convert.ToInt32(FormSize.Width - 445 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            CloseInventoryManagementModeButton.Font = new Font(fontname, mainfontsize);
             ShowConfidentialDataButton.Location = new Point(Convert.ToInt32(FormSize.Width - 230 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             ShowConfidentialDataButton.Font = new Font(fontname, mainfontsize);
+            HideConfidentialDataButton.Location = new Point(Convert.ToInt32(FormSize.Width - 230 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            HideConfidentialDataButton.Font = new Font(fontname, mainfontsize);
             // 在庫管理モード関係
             InventoryModeDataGridView.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
             InventoryModeDataGridView.Height = Convert.ToInt32(FormSize.Height - 340 * DpiScale);
@@ -5238,7 +5272,7 @@ namespace CREC
             SaveProperInventorySettingsButton.Font = new Font(fontname, mainfontsize);
             AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
             AllowEditIDButton.Font = new Font(fontname, extrasmallfontsize);
-            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - 95 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);
+            CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - CheckSameMCButton.Width - 5 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);
             CheckSameMCButton.Font = new Font(fontname, extrasmallfontsize);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
             ShowPicturesButton.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + Thumbnail.Width * 0.5 - 85 * DpiScale), ShowPicturesButton.Location.Y);
@@ -5684,7 +5718,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // バックアップ場所が設定されているか確認
@@ -5724,7 +5758,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -5906,7 +5940,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC");
+                MessageBox.Show(GetMessageFromLangageFileClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -6316,7 +6350,7 @@ namespace CREC
                 System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
                 if (!directoryInfo.Exists)
                 {
-                    MessageBox.Show("言語フォルダが見つかりません。", "CREC");
+                    MessageBox.Show("言語フォルダが見つかりません。\nNo Language Folder.", "CREC");
                     return;
                 }
                 System.IO.FileInfo[] fileInfos = directoryInfo.GetFiles("*.xml");
@@ -6437,6 +6471,25 @@ namespace CREC
                 {
                     MessageBox.Show(ex.Message);
                 }
+
+                try
+                {
+                    foreach (var toolStripMenuItem1 in dataGridViewContextMenuStrip.Items)
+                    {
+                        if (toolStripMenuItem1 is ToolStripMenuItem)
+                        {
+                            if (((ToolStripMenuItem)toolStripMenuItem1).Name == itemData.Element("itemname").Value)
+                            {
+                                ((ToolStripMenuItem)toolStripMenuItem1).Text = itemData.Element("itemtext").Value;
+                                break;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             SetUserAssistToolTips();
         }
@@ -6450,6 +6503,7 @@ namespace CREC
                 UserAssistToolTip.SetToolTip(EditIDTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditIDTextBox", "mainform", CurrentLanguageFileName));
                 UserAssistToolTip.SetToolTip(EditMCTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditMCTextBox", "mainform", CurrentLanguageFileName));
                 UserAssistToolTip.SetToolTip(EditQuantityTextBox, GetMessageFromLangageFileClass.GetToolTipMessage("EditQuantityTextBox", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(SelectThumbnailButton, GetMessageFromLangageFileClass.GetToolTipMessage("SelectThumbnailButton", "mainform", CurrentLanguageFileName));
             }
             else if (ShowUserAssistToolTips == false)
             {
@@ -6457,5 +6511,6 @@ namespace CREC
             }
         }
         #endregion
+
     }
 }
