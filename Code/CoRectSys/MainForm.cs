@@ -33,7 +33,7 @@ namespace CREC
     {
         #region 変数の宣言
         // アップデート確認用、Release前に変更忘れずに
-        string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.09.01.zip";
+        string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.09.02.zip";
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = "";// プロジェクト名
         string TargetFolderPath = "";// データ保管場所のフォルダパス
@@ -3342,10 +3342,6 @@ namespace CREC
             SearchFormTextBox.Visible = true;
             SearchOptionComboBox.Visible = true;
             SearchMethodComboBox.Visible = true;
-            if (AutoSearch == false)
-            {
-                SearchButton.Visible = true;
-            }
             SearchFormTextBoxClearButton.Visible = true;
             AddContentsButton.Visible = true;
             ListUpdateButton.Visible = true;
@@ -3360,6 +3356,10 @@ namespace CREC
             NextPictureButton.Visible = false;
             PreviousPictureButton.Visible = false;
             NoPicturesLabel.Visible = false;
+            if (AutoSearch == false)
+            {
+                SearchButton.Visible = true;
+            }
             PicturesList.Clear();
         }
         private void NextPictreButton_Click(object sender, EventArgs e)// 次の画像を表示
@@ -4033,6 +4033,7 @@ namespace CREC
                 return;
             }
             // 不要なものを非表示に
+            ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
             dataGridView1.Visible = false;
             SearchFormTextBox.Visible = false;
             SearchOptionComboBox.Visible = false;
@@ -4041,7 +4042,7 @@ namespace CREC
             AddContentsButton.Visible = false;
             ListUpdateButton.Visible = false;
             InventoryManagementModeButton.Visible = false;
-            ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
+            SearchButton.Visible = false;
             // 必要なものを表示
             InventoryLabel.Visible = true;
             InventoryModeDataGridView.Visible = true;
@@ -4103,7 +4104,6 @@ namespace CREC
                 ProperInventorySettingsTextBox.Text = Convert.ToString(SafetyStock);
             }
             ProperInventoryNotification();// 適正在庫設定と比較
-
         }
         private void CloseInventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード終了
         {
@@ -4120,6 +4120,10 @@ namespace CREC
                 SearchFormTextBoxClearButton.Visible = true;
                 AddContentsButton.Visible = true;
                 ListUpdateButton.Visible = true;
+                if (AutoSearch == false)
+                {
+                    SearchButton.Visible = true;
+                }
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -5614,6 +5618,7 @@ namespace CREC
                                 streamWriter.Close();
                             }
                         }
+                        Directory.Delete("backuptmp", true);// 削除
                     }
                     catch (Exception ex)
                     {
@@ -5622,7 +5627,6 @@ namespace CREC
                         BackupToolStripMenuItem.Enabled = true;
                         return;
                     }
-                    Directory.Delete("backuptmp", true);// 削除
                     if (File.Exists("BackupErrorLog.txt"))
                     {
                         MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
@@ -6511,6 +6515,5 @@ namespace CREC
             }
         }
         #endregion
-
     }
 }

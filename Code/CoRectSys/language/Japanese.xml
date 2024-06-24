@@ -107,9 +107,16 @@
 				<itemtext>バックアップ場所を開く...</itemtext>
 			</item>
 			<item>
-				
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>一覧をCSV/TSV出力</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListAllContentsToolStripMenuItem</itemname>
+				<itemtext>全データ出力</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListShownContentsToolStripMenuItem</itemname>
+				<itemtext>一覧表示中のみ出力</itemtext>
 			</item>
 			<item>
 				<itemname>EditConfigSysToolStripMenuItem</itemname>

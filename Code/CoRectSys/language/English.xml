@@ -111,6 +111,14 @@
 				<itemtext>Output Contents List(TSV os CSV)</itemtext>
 			</item>
 			<item>
+				<itemname>OutputListAllContentsToolStripMenuItem</itemname>
+				<itemtext>Output All Data</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListShownContentsToolStripMenuItem</itemname>
+				<itemtext>Output Shown Data</itemtext>
+			</item>
+			<item>
 				<itemname>EditConfigSysToolStripMenuItem</itemname>
 				<itemtext>General Settings...</itemtext>
 			</item>
