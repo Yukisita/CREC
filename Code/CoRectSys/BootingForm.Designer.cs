@@ -55,7 +55,7 @@
             this.CRECVersionLabel.Name = "CRECVersionLabel";
             this.CRECVersionLabel.Size = new System.Drawing.Size(191, 36);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC v7.09.01";
+            this.CRECVersionLabel.Text = "CREC v7.09.02";
             // 
             // BootingProgressLabel
             // 
@@ -86,7 +86,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(116, 25);
             this.label2.TabIndex = 5;
-            this.label2.Text = "2024/06/07";
+            this.label2.Text = "2024/06/24";
             // 
             // BootingForm
             // 
