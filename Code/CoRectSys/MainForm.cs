@@ -59,6 +59,7 @@ namespace CoRectSys
         bool ShowIDLabelVisible = true;
         string ShowMCLabel = "管理コード";// 管理コードラベルの表示名
         bool ShowMCLabelVisible = true;
+        bool AutoMCFill = true;
         string ShowRegistrationDateLabel = "登録日";// 登録日ラベルの表示名
         bool ShowRegistrationDateLabelVisible = true;
         string ShowCategoryLabel = "カテゴリ";// カテゴリラベルの表示名
@@ -625,6 +626,23 @@ namespace CoRectSys
                             ShowRegistrationDateLabelVisible = true;
                             RegistrationDateLabel.Visible = true;
                             ShowRegistrationDate.Visible = true;
+                        }
+                        break;
+                    case "AutoMCFill":
+                        try
+                        {
+                            if (cols[1] == "f")
+                            {
+                                AutoMCFill = false;
+                            }
+                            else
+                            {
+                                AutoMCFill = true;
+                            }
+                        }
+                        catch
+                        {
+                            AutoMCFill = true;
                         }
                         break;
                     case "ShowCategoryLabel":
@@ -3774,7 +3792,10 @@ namespace CoRectSys
             ThisID = Convert.ToString(Guid.NewGuid());
             EditIDTextBox.Text = ThisID;// UUIDを入力
             DateTime DT = DateTime.Now;
-            EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
+            if(AutoMCFill == true)
+            {
+                EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
+            }
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
             TargetContentsPath = TargetFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
@@ -4651,6 +4672,14 @@ namespace CoRectSys
                     else
                     {
                         sw.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "f");
+                    }
+                    if (AutoMCFill == true)
+                    {
+                        sw.Write("AutoMCFill,t\n");
+                    }
+                    else
+                    {
+                        sw.Write("AutoMCFill,f\n");
                     }
                     if (ShowCategoryLabelVisible == true)
                     {

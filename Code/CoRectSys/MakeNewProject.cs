@@ -240,6 +240,14 @@ namespace CoRectSys
                 {
                     sw.Write("f\n");
                 }
+                if(AutoMCFillCheckBox.Checked == true)
+                {
+                    sw.Write("AutoMCFill,t\n");
+                }
+                else
+                {
+                    sw.Write("AutoMCFill,f\n");
+                }
                 if (EditShowRegistrationDateLabelTextBox.Text.Length > 0)
                 {
                     sw.Write("{0},{1},", "ShowRegistrationDateLabel", EditShowRegistrationDateLabelTextBox.Text);
@@ -615,6 +623,23 @@ namespace CoRectSys
                             catch
                             {
                                 ShowMCLabelVisibleCheckBox.Checked = true;
+                            }
+                            break;
+                        case "AutoMCFill":
+                            try
+                            {
+                                if (cols[1] == "f")
+                                {
+                                    AutoMCFillCheckBox.Checked = false;
+                                }
+                                else
+                                {
+                                    AutoMCFillCheckBox.Checked = true;
+                                }
+                            }
+                            catch
+                            {
+                                AutoMCFillCheckBox.Checked = true;
                             }
                             break;
                         case "ShowRegistrationDateLabel":
