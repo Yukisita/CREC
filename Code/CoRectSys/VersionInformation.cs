@@ -56,14 +56,18 @@ namespace CoRectSys
                 }
                 ManagementClass mcCPU = new ManagementClass("Win32_Processor");
                 ManagementObjectCollection mocCPU = mcCPU.GetInstances();
+                string CPUName = string.Empty;
                 foreach (ManagementObject m in mocCPU)
                 {
-                    temp =
-                         (temp
-                        + "CPU名：" + m["Name"].ToString() + "\n"
-                        + "表示スケール：" + Convert.ToInt32(mainFormCurrentDPI * 100).ToString() + "%\n"
-                         );
+                    CPUName = m["Name"].ToString();
                 }
+                temp =
+                    (temp
+                    + "CPU名：" + CPUName + "\n");
+                temp =
+                    (temp
+                     + "表示スケール：" + Convert.ToInt32(mainFormCurrentDPI * 100).ToString() + "%\n"
+                      );
                 return temp;
             });
             ShowSystemInformationsLabel.Text = SystemInformations;
