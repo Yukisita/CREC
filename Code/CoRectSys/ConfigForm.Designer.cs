@@ -42,7 +42,7 @@
             this.HideUserAssistRadioButton = new System.Windows.Forms.RadioButton();
             this.ShowUserAssistRadioButton = new System.Windows.Forms.RadioButton();
             this.ShowUserAssistLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.AutoLoadProjectLabel = new System.Windows.Forms.Label();
             this.SetAutoLoadProjectTextBox = new System.Windows.Forms.TextBox();
             this.OpenLastTimeProjectCheckBox = new System.Windows.Forms.CheckBox();
             this.AutoSearchPanel = new System.Windows.Forms.Panel();
@@ -69,10 +69,10 @@
             // 
             this.AllowEditLabel.AutoSize = true;
             this.AllowEditLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditLabel.Location = new System.Drawing.Point(61, 35);
-            this.AllowEditLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.AllowEditLabel.Location = new System.Drawing.Point(20, 25);
+            this.AllowEditLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.AllowEditLabel.Name = "AllowEditLabel";
-            this.AllowEditLabel.Size = new System.Drawing.Size(192, 51);
+            this.AllowEditLabel.Size = new System.Drawing.Size(135, 36);
             this.AllowEditLabel.TabIndex = 0;
             this.AllowEditLabel.Text = "データ編集";
             // 
@@ -80,10 +80,10 @@
             // 
             this.AllowConfidentialDataLabel.AutoSize = true;
             this.AllowConfidentialDataLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowConfidentialDataLabel.Location = new System.Drawing.Point(28, 140);
-            this.AllowConfidentialDataLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.AllowConfidentialDataLabel.Location = new System.Drawing.Point(20, 100);
+            this.AllowConfidentialDataLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.AllowConfidentialDataLabel.Name = "AllowConfidentialDataLabel";
-            this.AllowConfidentialDataLabel.Size = new System.Drawing.Size(260, 51);
+            this.AllowConfidentialDataLabel.Size = new System.Drawing.Size(183, 36);
             this.AllowConfidentialDataLabel.TabIndex = 4;
             this.AllowConfidentialDataLabel.Text = "機密データ表示";
             // 
@@ -91,10 +91,10 @@
             // 
             this.AllowEditRadioButton.AutoSize = true;
             this.AllowEditRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.AllowEditRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowEditRadioButton.Location = new System.Drawing.Point(2, 9);
+            this.AllowEditRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowEditRadioButton.Name = "AllowEditRadioButton";
-            this.AllowEditRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.AllowEditRadioButton.Size = new System.Drawing.Size(84, 40);
             this.AllowEditRadioButton.TabIndex = 2;
             this.AllowEditRadioButton.TabStop = true;
             this.AllowEditRadioButton.Text = "許可";
@@ -104,10 +104,10 @@
             // 
             this.DenyEditRadioButton.AutoSize = true;
             this.DenyEditRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DenyEditRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.DenyEditRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.DenyEditRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.DenyEditRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.DenyEditRadioButton.Name = "DenyEditRadioButton";
-            this.DenyEditRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.DenyEditRadioButton.Size = new System.Drawing.Size(84, 40);
             this.DenyEditRadioButton.TabIndex = 3;
             this.DenyEditRadioButton.TabStop = true;
             this.DenyEditRadioButton.Text = "拒否";
@@ -117,55 +117,55 @@
             // 
             this.AllowEditPanel.Controls.Add(this.DenyEditRadioButton);
             this.AllowEditPanel.Controls.Add(this.AllowEditRadioButton);
-            this.AllowEditPanel.Location = new System.Drawing.Point(292, 16);
-            this.AllowEditPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowEditPanel.Location = new System.Drawing.Point(253, 11);
+            this.AllowEditPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowEditPanel.Name = "AllowEditPanel";
-            this.AllowEditPanel.Size = new System.Drawing.Size(287, 84);
+            this.AllowEditPanel.Size = new System.Drawing.Size(240, 54);
             this.AllowEditPanel.TabIndex = 1;
             // 
             // AllowConfidentialDataRadioButton
             // 
             this.AllowConfidentialDataRadioButton.AutoSize = true;
             this.AllowConfidentialDataRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowConfidentialDataRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.AllowConfidentialDataRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowConfidentialDataRadioButton.Location = new System.Drawing.Point(2, 9);
+            this.AllowConfidentialDataRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowConfidentialDataRadioButton.Name = "AllowConfidentialDataRadioButton";
-            this.AllowConfidentialDataRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.AllowConfidentialDataRadioButton.Size = new System.Drawing.Size(84, 40);
             this.AllowConfidentialDataRadioButton.TabIndex = 6;
             this.AllowConfidentialDataRadioButton.TabStop = true;
-            this.AllowConfidentialDataRadioButton.Text = "有効";
+            this.AllowConfidentialDataRadioButton.Text = "許可";
             this.AllowConfidentialDataRadioButton.UseVisualStyleBackColor = true;
             // 
             // DenyConfidentialDataRadioButton
             // 
             this.DenyConfidentialDataRadioButton.AutoSize = true;
             this.DenyConfidentialDataRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DenyConfidentialDataRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.DenyConfidentialDataRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.DenyConfidentialDataRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.DenyConfidentialDataRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.DenyConfidentialDataRadioButton.Name = "DenyConfidentialDataRadioButton";
-            this.DenyConfidentialDataRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.DenyConfidentialDataRadioButton.Size = new System.Drawing.Size(84, 40);
             this.DenyConfidentialDataRadioButton.TabIndex = 7;
             this.DenyConfidentialDataRadioButton.TabStop = true;
-            this.DenyConfidentialDataRadioButton.Text = "無効";
+            this.DenyConfidentialDataRadioButton.Text = "拒否";
             this.DenyConfidentialDataRadioButton.UseVisualStyleBackColor = true;
             // 
             // AllowConfidentialDataPanel
             // 
             this.AllowConfidentialDataPanel.Controls.Add(this.DenyConfidentialDataRadioButton);
             this.AllowConfidentialDataPanel.Controls.Add(this.AllowConfidentialDataRadioButton);
-            this.AllowConfidentialDataPanel.Location = new System.Drawing.Point(292, 124);
-            this.AllowConfidentialDataPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowConfidentialDataPanel.Location = new System.Drawing.Point(253, 89);
+            this.AllowConfidentialDataPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowConfidentialDataPanel.Name = "AllowConfidentialDataPanel";
-            this.AllowConfidentialDataPanel.Size = new System.Drawing.Size(287, 75);
+            this.AllowConfidentialDataPanel.Size = new System.Drawing.Size(240, 54);
             this.AllowConfidentialDataPanel.TabIndex = 5;
             // 
             // SaveButton
             // 
             this.SaveButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveButton.Location = new System.Drawing.Point(1069, 441);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.SaveButton.Location = new System.Drawing.Point(896, 315);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(130, 65);
+            this.SaveButton.Size = new System.Drawing.Size(93, 46);
             this.SaveButton.TabIndex = 11;
             this.SaveButton.Text = "保存";
             this.SaveButton.UseVisualStyleBackColor = true;
@@ -175,20 +175,20 @@
             // 
             this.ShowUserAssistPanel.Controls.Add(this.HideUserAssistRadioButton);
             this.ShowUserAssistPanel.Controls.Add(this.ShowUserAssistRadioButton);
-            this.ShowUserAssistPanel.Location = new System.Drawing.Point(294, 222);
-            this.ShowUserAssistPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.ShowUserAssistPanel.Location = new System.Drawing.Point(253, 159);
+            this.ShowUserAssistPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.ShowUserAssistPanel.Name = "ShowUserAssistPanel";
-            this.ShowUserAssistPanel.Size = new System.Drawing.Size(287, 75);
+            this.ShowUserAssistPanel.Size = new System.Drawing.Size(240, 54);
             this.ShowUserAssistPanel.TabIndex = 8;
             // 
             // HideUserAssistRadioButton
             // 
             this.HideUserAssistRadioButton.AutoSize = true;
             this.HideUserAssistRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.HideUserAssistRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.HideUserAssistRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.HideUserAssistRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.HideUserAssistRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.HideUserAssistRadioButton.Name = "HideUserAssistRadioButton";
-            this.HideUserAssistRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.HideUserAssistRadioButton.Size = new System.Drawing.Size(84, 40);
             this.HideUserAssistRadioButton.TabIndex = 10;
             this.HideUserAssistRadioButton.TabStop = true;
             this.HideUserAssistRadioButton.Text = "無効";
@@ -198,10 +198,10 @@
             // 
             this.ShowUserAssistRadioButton.AutoSize = true;
             this.ShowUserAssistRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowUserAssistRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.ShowUserAssistRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.ShowUserAssistRadioButton.Location = new System.Drawing.Point(2, 9);
+            this.ShowUserAssistRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.ShowUserAssistRadioButton.Name = "ShowUserAssistRadioButton";
-            this.ShowUserAssistRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.ShowUserAssistRadioButton.Size = new System.Drawing.Size(84, 40);
             this.ShowUserAssistRadioButton.TabIndex = 9;
             this.ShowUserAssistRadioButton.TabStop = true;
             this.ShowUserAssistRadioButton.Text = "有効";
@@ -211,40 +211,40 @@
             // 
             this.ShowUserAssistLabel.AutoSize = true;
             this.ShowUserAssistLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowUserAssistLabel.Location = new System.Drawing.Point(28, 238);
-            this.ShowUserAssistLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.ShowUserAssistLabel.Location = new System.Drawing.Point(20, 170);
+            this.ShowUserAssistLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.ShowUserAssistLabel.Name = "ShowUserAssistLabel";
-            this.ShowUserAssistLabel.Size = new System.Drawing.Size(260, 51);
+            this.ShowUserAssistLabel.Size = new System.Drawing.Size(183, 36);
             this.ShowUserAssistLabel.TabIndex = 9;
             this.ShowUserAssistLabel.Text = "ユーザ補助表示";
             // 
-            // label1
+            // AutoLoadProjectLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(28, 334);
-            this.label1.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(430, 51);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "自動プロジェクト読み込み";
+            this.AutoLoadProjectLabel.AutoSize = true;
+            this.AutoLoadProjectLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.AutoLoadProjectLabel.Location = new System.Drawing.Point(20, 239);
+            this.AutoLoadProjectLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.AutoLoadProjectLabel.Name = "AutoLoadProjectLabel";
+            this.AutoLoadProjectLabel.Size = new System.Drawing.Size(303, 36);
+            this.AutoLoadProjectLabel.TabIndex = 13;
+            this.AutoLoadProjectLabel.Text = "自動プロジェクト読み込み";
             // 
             // SetAutoLoadProjectTextBox
             // 
             this.SetAutoLoadProjectTextBox.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SetAutoLoadProjectTextBox.Location = new System.Drawing.Point(37, 388);
-            this.SetAutoLoadProjectTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.SetAutoLoadProjectTextBox.Location = new System.Drawing.Point(26, 277);
+            this.SetAutoLoadProjectTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.SetAutoLoadProjectTextBox.Name = "SetAutoLoadProjectTextBox";
-            this.SetAutoLoadProjectTextBox.Size = new System.Drawing.Size(541, 42);
+            this.SetAutoLoadProjectTextBox.Size = new System.Drawing.Size(436, 32);
             this.SetAutoLoadProjectTextBox.TabIndex = 14;
             // 
             // OpenLastTimeProjectCheckBox
             // 
             this.OpenLastTimeProjectCheckBox.AutoSize = true;
-            this.OpenLastTimeProjectCheckBox.Location = new System.Drawing.Point(37, 446);
-            this.OpenLastTimeProjectCheckBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.OpenLastTimeProjectCheckBox.Location = new System.Drawing.Point(26, 319);
+            this.OpenLastTimeProjectCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.OpenLastTimeProjectCheckBox.Name = "OpenLastTimeProjectCheckBox";
-            this.OpenLastTimeProjectCheckBox.Size = new System.Drawing.Size(456, 55);
+            this.OpenLastTimeProjectCheckBox.Size = new System.Drawing.Size(325, 40);
             this.OpenLastTimeProjectCheckBox.TabIndex = 15;
             this.OpenLastTimeProjectCheckBox.Text = "前回のプロジェクトを開く";
             this.OpenLastTimeProjectCheckBox.UseVisualStyleBackColor = true;
@@ -254,20 +254,20 @@
             // 
             this.AutoSearchPanel.Controls.Add(this.DenyAutoSearchRadioButton);
             this.AutoSearchPanel.Controls.Add(this.AllowAutoSearchRadioButton);
-            this.AutoSearchPanel.Location = new System.Drawing.Point(912, 16);
-            this.AutoSearchPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AutoSearchPanel.Location = new System.Drawing.Point(743, 11);
+            this.AutoSearchPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AutoSearchPanel.Name = "AutoSearchPanel";
-            this.AutoSearchPanel.Size = new System.Drawing.Size(287, 84);
+            this.AutoSearchPanel.Size = new System.Drawing.Size(240, 54);
             this.AutoSearchPanel.TabIndex = 17;
             // 
             // DenyAutoSearchRadioButton
             // 
             this.DenyAutoSearchRadioButton.AutoSize = true;
             this.DenyAutoSearchRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DenyAutoSearchRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.DenyAutoSearchRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.DenyAutoSearchRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.DenyAutoSearchRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.DenyAutoSearchRadioButton.Name = "DenyAutoSearchRadioButton";
-            this.DenyAutoSearchRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.DenyAutoSearchRadioButton.Size = new System.Drawing.Size(84, 40);
             this.DenyAutoSearchRadioButton.TabIndex = 3;
             this.DenyAutoSearchRadioButton.TabStop = true;
             this.DenyAutoSearchRadioButton.Text = "無効";
@@ -277,10 +277,10 @@
             // 
             this.AllowAutoSearchRadioButton.AutoSize = true;
             this.AllowAutoSearchRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowAutoSearchRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.AllowAutoSearchRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowAutoSearchRadioButton.Location = new System.Drawing.Point(3, 9);
+            this.AllowAutoSearchRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowAutoSearchRadioButton.Name = "AllowAutoSearchRadioButton";
-            this.AllowAutoSearchRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.AllowAutoSearchRadioButton.Size = new System.Drawing.Size(84, 40);
             this.AllowAutoSearchRadioButton.TabIndex = 2;
             this.AllowAutoSearchRadioButton.TabStop = true;
             this.AllowAutoSearchRadioButton.Text = "有効";
@@ -290,10 +290,10 @@
             // 
             this.AutoSearchLabel.AutoSize = true;
             this.AutoSearchLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoSearchLabel.Location = new System.Drawing.Point(705, 35);
-            this.AutoSearchLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.AutoSearchLabel.Location = new System.Drawing.Point(559, 25);
+            this.AutoSearchLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.AutoSearchLabel.Name = "AutoSearchLabel";
-            this.AutoSearchLabel.Size = new System.Drawing.Size(158, 51);
+            this.AutoSearchLabel.Size = new System.Drawing.Size(111, 36);
             this.AutoSearchLabel.TabIndex = 16;
             this.AutoSearchLabel.Text = "自動検索";
             // 
@@ -301,10 +301,10 @@
             // 
             this.RecentShownContentsLabel.AutoSize = true;
             this.RecentShownContentsLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.RecentShownContentsLabel.Location = new System.Drawing.Point(671, 140);
-            this.RecentShownContentsLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.RecentShownContentsLabel.Location = new System.Drawing.Point(559, 100);
+            this.RecentShownContentsLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.RecentShownContentsLabel.Name = "RecentShownContentsLabel";
-            this.RecentShownContentsLabel.Size = new System.Drawing.Size(226, 51);
+            this.RecentShownContentsLabel.Size = new System.Drawing.Size(159, 36);
             this.RecentShownContentsLabel.TabIndex = 18;
             this.RecentShownContentsLabel.Text = "表示履歴保存";
             // 
@@ -312,20 +312,20 @@
             // 
             this.RecentShownContentsPanel.Controls.Add(this.DiscardRecentShownContentsRadioButton);
             this.RecentShownContentsPanel.Controls.Add(this.SaveRecentShownContentsRadioButton);
-            this.RecentShownContentsPanel.Location = new System.Drawing.Point(912, 124);
-            this.RecentShownContentsPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.RecentShownContentsPanel.Location = new System.Drawing.Point(743, 89);
+            this.RecentShownContentsPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.RecentShownContentsPanel.Name = "RecentShownContentsPanel";
-            this.RecentShownContentsPanel.Size = new System.Drawing.Size(287, 75);
+            this.RecentShownContentsPanel.Size = new System.Drawing.Size(240, 54);
             this.RecentShownContentsPanel.TabIndex = 19;
             // 
             // DiscardRecentShownContentsRadioButton
             // 
             this.DiscardRecentShownContentsRadioButton.AutoSize = true;
             this.DiscardRecentShownContentsRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DiscardRecentShownContentsRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.DiscardRecentShownContentsRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.DiscardRecentShownContentsRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.DiscardRecentShownContentsRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.DiscardRecentShownContentsRadioButton.Name = "DiscardRecentShownContentsRadioButton";
-            this.DiscardRecentShownContentsRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.DiscardRecentShownContentsRadioButton.Size = new System.Drawing.Size(84, 40);
             this.DiscardRecentShownContentsRadioButton.TabIndex = 3;
             this.DiscardRecentShownContentsRadioButton.TabStop = true;
             this.DiscardRecentShownContentsRadioButton.Text = "無効";
@@ -335,10 +335,10 @@
             // 
             this.SaveRecentShownContentsRadioButton.AutoSize = true;
             this.SaveRecentShownContentsRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveRecentShownContentsRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.SaveRecentShownContentsRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.SaveRecentShownContentsRadioButton.Location = new System.Drawing.Point(3, 9);
+            this.SaveRecentShownContentsRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.SaveRecentShownContentsRadioButton.Name = "SaveRecentShownContentsRadioButton";
-            this.SaveRecentShownContentsRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.SaveRecentShownContentsRadioButton.Size = new System.Drawing.Size(84, 40);
             this.SaveRecentShownContentsRadioButton.TabIndex = 2;
             this.SaveRecentShownContentsRadioButton.TabStop = true;
             this.SaveRecentShownContentsRadioButton.Text = "有効";
@@ -348,10 +348,10 @@
             // 
             this.BootUpdateCheckLabel.AutoSize = true;
             this.BootUpdateCheckLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.BootUpdateCheckLabel.Location = new System.Drawing.Point(654, 238);
-            this.BootUpdateCheckLabel.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            this.BootUpdateCheckLabel.Location = new System.Drawing.Point(559, 170);
+            this.BootUpdateCheckLabel.Margin = new System.Windows.Forms.Padding(7, 0, 7, 0);
             this.BootUpdateCheckLabel.Name = "BootUpdateCheckLabel";
-            this.BootUpdateCheckLabel.Size = new System.Drawing.Size(260, 51);
+            this.BootUpdateCheckLabel.Size = new System.Drawing.Size(183, 36);
             this.BootUpdateCheckLabel.TabIndex = 20;
             this.BootUpdateCheckLabel.Text = "起動時更新確認";
             // 
@@ -359,20 +359,20 @@
             // 
             this.BootUpdateCheckPanel.Controls.Add(this.DenyBootUpdateCheckRadioButton);
             this.BootUpdateCheckPanel.Controls.Add(this.AllowBootUpdateCheckRadioButton);
-            this.BootUpdateCheckPanel.Location = new System.Drawing.Point(912, 222);
-            this.BootUpdateCheckPanel.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.BootUpdateCheckPanel.Location = new System.Drawing.Point(743, 159);
+            this.BootUpdateCheckPanel.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.BootUpdateCheckPanel.Name = "BootUpdateCheckPanel";
-            this.BootUpdateCheckPanel.Size = new System.Drawing.Size(287, 75);
+            this.BootUpdateCheckPanel.Size = new System.Drawing.Size(240, 54);
             this.BootUpdateCheckPanel.TabIndex = 21;
             // 
             // DenyBootUpdateCheckRadioButton
             // 
             this.DenyBootUpdateCheckRadioButton.AutoSize = true;
             this.DenyBootUpdateCheckRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DenyBootUpdateCheckRadioButton.Location = new System.Drawing.Point(158, 12);
-            this.DenyBootUpdateCheckRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.DenyBootUpdateCheckRadioButton.Location = new System.Drawing.Point(124, 9);
+            this.DenyBootUpdateCheckRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.DenyBootUpdateCheckRadioButton.Name = "DenyBootUpdateCheckRadioButton";
-            this.DenyBootUpdateCheckRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.DenyBootUpdateCheckRadioButton.Size = new System.Drawing.Size(84, 40);
             this.DenyBootUpdateCheckRadioButton.TabIndex = 3;
             this.DenyBootUpdateCheckRadioButton.TabStop = true;
             this.DenyBootUpdateCheckRadioButton.Text = "無効";
@@ -382,10 +382,10 @@
             // 
             this.AllowBootUpdateCheckRadioButton.AutoSize = true;
             this.AllowBootUpdateCheckRadioButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowBootUpdateCheckRadioButton.Location = new System.Drawing.Point(10, 12);
-            this.AllowBootUpdateCheckRadioButton.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.AllowBootUpdateCheckRadioButton.Location = new System.Drawing.Point(3, 9);
+            this.AllowBootUpdateCheckRadioButton.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.AllowBootUpdateCheckRadioButton.Name = "AllowBootUpdateCheckRadioButton";
-            this.AllowBootUpdateCheckRadioButton.Size = new System.Drawing.Size(115, 55);
+            this.AllowBootUpdateCheckRadioButton.Size = new System.Drawing.Size(84, 40);
             this.AllowBootUpdateCheckRadioButton.TabIndex = 2;
             this.AllowBootUpdateCheckRadioButton.TabStop = true;
             this.AllowBootUpdateCheckRadioButton.Text = "有効";
@@ -393,10 +393,10 @@
             // 
             // ConfigForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(168F, 168F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(1237, 542);
+            this.ClientSize = new System.Drawing.Size(1007, 387);
             this.Controls.Add(this.BootUpdateCheckPanel);
             this.Controls.Add(this.BootUpdateCheckLabel);
             this.Controls.Add(this.RecentShownContentsPanel);
@@ -404,7 +404,7 @@
             this.Controls.Add(this.AutoSearchPanel);
             this.Controls.Add(this.AutoSearchLabel);
             this.Controls.Add(this.SetAutoLoadProjectTextBox);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.AutoLoadProjectLabel);
             this.Controls.Add(this.ShowUserAssistPanel);
             this.Controls.Add(this.ShowUserAssistLabel);
             this.Controls.Add(this.SaveButton);
@@ -415,10 +415,10 @@
             this.Controls.Add(this.OpenLastTimeProjectCheckBox);
             this.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(10, 12, 10, 12);
+            this.Margin = new System.Windows.Forms.Padding(7, 9, 7, 9);
             this.Name = "ConfigForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ConfigForm";
+            this.Text = "設定";
             this.Load += new System.EventHandler(this.ConfigForm_Load);
             this.AllowEditPanel.ResumeLayout(false);
             this.AllowEditPanel.PerformLayout();
@@ -452,7 +452,7 @@
         private System.Windows.Forms.RadioButton HideUserAssistRadioButton;
         private System.Windows.Forms.RadioButton ShowUserAssistRadioButton;
         private System.Windows.Forms.Label ShowUserAssistLabel;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label AutoLoadProjectLabel;
         private System.Windows.Forms.TextBox SetAutoLoadProjectTextBox;
         private System.Windows.Forms.CheckBox OpenLastTimeProjectCheckBox;
         private System.Windows.Forms.Panel AutoSearchPanel;

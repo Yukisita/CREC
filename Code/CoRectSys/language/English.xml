@@ -4,6 +4,106 @@
 		<name>English</name>
 		<editor>yukisita</editor>
 	</metadata>
+	<ConfigForm>
+		<Button>
+			<item>
+				<itemname>SaveButton</itemname>
+				<itemtext>Save</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>AllowEditLabel</itemname>
+				<itemtext>Edit contents</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataLabel</itemname>
+				<itemtext>Confidential data</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistLabel</itemname>
+				<itemtext>Show user assist</itemtext>
+			</item>
+			<item>
+				<itemname>AutoLoadProjectLabel</itemname>
+				<itemtext>Auto load project</itemtext>
+			</item>
+			<item>
+				<itemname>AutoSearchLabel</itemname>
+				<itemtext>Auto search</itemtext>
+			</item>
+			<item>
+				<itemname>RecentShownContentsLabel</itemname>
+				<itemtext>Browsing log</itemtext>
+			</item>
+			<item>
+				<itemname>BootUpdateCheckLabel</itemname>
+				<itemtext>Update check</itemtext>
+			</item>
+		</Label>
+		<RadioButton>
+			<item>
+				<itemname>AllowEditRadioButton</itemname>
+				<itemtext>Allow</itemtext>
+			</item>
+			<item>
+				<itemname>DenyEditRadioButton</itemname>
+				<itemtext>Deny</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataRadioButton</itemname>
+				<itemtext>Allow</itemtext>
+			</item>
+			<item>
+				<itemname>DenyConfidentialDataRadioButton</itemname>
+				<itemtext>Deny</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>HideUserAssistRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>AllowAutoSearchRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DenyAutoSearchRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>SaveRecentShownContentsRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DiscardRecentShownContentsRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>AllowBootUpdateCheckRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DenyBootUpdateCheckRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+		</RadioButton>
+		<CheckBox>
+			<item>
+				<itemname>OpenLastTimeProjectCheckBox</itemname>
+				<itemtext>Open last time project</itemtext>
+			</item>
+		</CheckBox>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>General Settings</itemtext>
+			</item>
+		</Other>
+	</ConfigForm>
 	<mainform>
 		<Button>
 			<item>
@@ -16,7 +116,7 @@
 			</item>
 			<item>
 				<itemname>ShowConfidentialDataButton</itemname>
-				<itemtext>Confidential Data</itemtext>
+				<itemtext>Restricted Data</itemtext>
 			</item>
 			<item>
 				<itemname>HideConfidentialDataButton</itemname>
@@ -57,6 +157,14 @@
 			<item>
 				<itemname>CloseInventoryManagementModeButton</itemname>
 				<itemtext>Close INVT.</itemtext>
+			</item>
+			<item>
+				<itemname>NextPictureButton</itemname>
+				<itemtext>Next</itemtext>
+			</item>
+			<item>
+				<itemname>PreviousPictureButton</itemname>
+				<itemtext>Previous</itemtext>
 			</item>
 		</Button>
 		<Label>
@@ -277,6 +385,10 @@
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>
+				<itemname>AskMakeInventoryManagementFile</itemname>
+				<itemtext>Do you want to make Inventory Management File?</itemtext>
+			</item>
+			<item>
 				<itemname>WebAccessCheck</itemname>
 				<itemtext>Do you want to allow application to access our website?</itemtext>
 			</item>
@@ -319,15 +431,75 @@
 				<itemtext>Select Thumbnail</itemtext>
 			</item>
 		</ToolTip>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>CREC</itemtext>
+			</item>
+			<item>
+				<itemname>DeleteRecentlyOpendProjectList</itemname>
+				<itemtext>Clear this list.</itemtext>
+			</item>
+			<item>
+				<itemname>NoRecentlyOpendProjectList</itemname>
+				<itemtext>No recently opend project.</itemtext>
+			</item>
+		</Other>
 	</mainform>
 	<makenewproject>
 	</makenewproject>
 	<VersionInformation>
 		<Label>
 			<item>
+				<itemname>CopyrightLabel</itemname>
+				<itemtext>© Yukisita 2024</itemtext>
+			</item>
+			<item>
 				<itemname>SystemInformationsLabel</itemname>
 				<itemtext>System Information</itemtext>
 			</item>
+			<item>
+				<itemname>ShowSystemInformationsLabel</itemname>
+				<itemtext>Getting System Informations...</itemtext>
+			</item>
+			<item>
+				<itemname>MascotNameLabel</itemname>
+				<itemtext>Setsuna YUKISITA</itemtext>
+			</item>
+			<item>
+				<itemname>MascotCommentLabel</itemname>
+				<itemtext> </itemtext>
+			</item>
 		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Version Informations</itemtext>
+			</item>
+			<item>
+				<itemname>OSEdition</itemname>
+				<itemtext>OS Edition: </itemtext>
+			</item>
+			<item>
+				<itemname>OSVersion</itemname>
+				<itemtext>OS Version: </itemtext>
+			</item>
+			<item>
+				<itemname>OSBuildNumber</itemname>
+				<itemtext>OS Build Number: </itemtext>
+			</item>
+			<item>
+				<itemname>TotalVisibleMemorySize</itemname>
+				<itemtext>Memory Size (MB): </itemtext>
+			</item>
+			<item>
+				<itemname>CPUName</itemname>
+				<itemtext>CPU Name: </itemtext>
+			</item>
+			<item>
+				<itemname>WindowScale</itemname>
+				<itemtext>Window Scale: </itemtext>
+			</item>
+		</Other>
 	</VersionInformation>
 </list>

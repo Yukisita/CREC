@@ -4,6 +4,106 @@
 		<name>日本語</name>
 		<editor>yukisita</editor>
 	</metadata>
+	<ConfigForm>
+		<Button>
+			<item>
+				<itemname>SaveButton</itemname>
+				<itemtext>保存</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>AllowEditLabel</itemname>
+				<itemtext>  データ編集</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataLabel</itemname>
+				<itemtext>機密データ表示</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistLabel</itemname>
+				<itemtext>ユーザ補助表示</itemtext>
+			</item>
+			<item>
+				<itemname>AutoLoadProjectLabel</itemname>
+				<itemtext>自動プロジェクト読み込み</itemtext>
+			</item>
+			<item>
+				<itemname>AutoSearchLabel</itemname>
+				<itemtext>  自動検索</itemtext>
+			</item>
+			<item>
+				<itemname>RecentShownContentsLabel</itemname>
+				<itemtext>表示履歴保存</itemtext>
+			</item>
+			<item>
+				<itemname>BootUpdateCheckLabel</itemname>
+				<itemtext>起動時更新確認</itemtext>
+			</item>
+		</Label>
+		<RadioButton>
+			<item>
+				<itemname>AllowEditRadioButton</itemname>
+				<itemtext>許可</itemtext>
+			</item>
+			<item>
+				<itemname>DenyEditRadioButton</itemname>
+				<itemtext>拒否</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataRadioButton</itemname>
+				<itemtext>許可</itemtext>
+			</item>
+			<item>
+				<itemname>DenyConfidentialDataRadioButton</itemname>
+				<itemtext>拒否</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistRadioButton</itemname>
+				<itemtext>有効</itemtext>
+			</item>
+			<item>
+				<itemname>HideUserAssistRadioButton</itemname>
+				<itemtext>無効</itemtext>
+			</item>
+			<item>
+				<itemname>AllowAutoSearchRadioButton</itemname>
+				<itemtext>有効</itemtext>
+			</item>
+			<item>
+				<itemname>DenyAutoSearchRadioButton</itemname>
+				<itemtext>無効</itemtext>
+			</item>
+			<item>
+				<itemname>SaveRecentShownContentsRadioButton</itemname>
+				<itemtext>有効</itemtext>
+			</item>
+			<item>
+				<itemname>DiscardRecentShownContentsRadioButton</itemname>
+				<itemtext>無効</itemtext>
+			</item>
+			<item>
+				<itemname>AllowBootUpdateCheckRadioButton</itemname>
+				<itemtext>有効</itemtext>
+			</item>
+			<item>
+				<itemname>DenyBootUpdateCheckRadioButton</itemname>
+				<itemtext>無効</itemtext>
+			</item>
+		</RadioButton>
+		<CheckBox>
+			<item>
+				<itemname>OpenLastTimeProjectCheckBox</itemname>
+				<itemtext>前回のプロジェクトを開く</itemtext>
+			</item>
+		</CheckBox>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>環境設定</itemtext>
+			</item>
+		</Other>
+	</ConfigForm>
 	<mainform>
 		<Button>
 			<item>
@@ -57,6 +157,14 @@
 			<item>
 				<itemname>CloseInventoryManagementModeButton</itemname>
 				<itemtext>在庫数管理終了</itemtext>
+			</item>
+			<item>
+				<itemname>NextPictureButton</itemname>
+				<itemtext>次の画像</itemtext>
+			</item>
+			<item>
+				<itemname>PreviousPictureButton</itemname>
+				<itemtext>前の画像</itemtext>
 			</item>
 		</Button>
 		<Label>
@@ -135,7 +243,6 @@
 				<itemtext>編集(&amp;E)</itemtext>
 			</item>
 			<item>
-				
 				<itemname>AddContentsToolStripMenuItem</itemname>
 				<itemtext>新規追加</itemtext>
 			</item>
@@ -278,6 +385,10 @@
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>
+				<itemname>AskMakeInventoryManagementFile</itemname>
+				<itemtext>在庫数管理を行いますか。</itemtext>
+			</item>
+			<item>
 				<itemname>WebAccessCheck</itemname>
 				<itemtext>Webサイトにアクセスします。&#xD;&#xA;許可しますか？</itemtext>
 			</item>
@@ -320,15 +431,75 @@
 				<itemtext>サムネイルを選択</itemtext>
 			</item>
 		</ToolTip>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>CREC</itemtext>
+			</item>
+			<item>
+				<itemname>DeleteRecentlyOpendProjectList</itemname>
+				<itemtext>履歴を削除</itemtext>
+			</item>
+			<item>
+				<itemname>NoRecentlyOpendProjectList</itemname>
+				<itemtext>履歴はありません</itemtext>
+			</item>
+		</Other>
 	</mainform>
 	<makenewproject>
 	</makenewproject>
 	<VersionInformation>
 		<Label>
 			<item>
+				<itemname>CopyrightLabel</itemname>
+				<itemtext>©　雪下 2024</itemtext>
+			</item>
+			<item>
 				<itemname>SystemInformationsLabel</itemname>
 				<itemtext>システム情報</itemtext>
 			</item>
+			<item>
+				<itemname>ShowSystemInformationsLabel</itemname>
+				<itemtext>情報取得中...</itemtext>
+			</item>
+			<item>
+				<itemname>MascotNameLabel</itemname>
+				<itemtext>雪下 せつな</itemtext>
+			</item>
+			<item>
+				<itemname>MascotCommentLabel</itemname>
+				<itemtext>猫っていいですよね。</itemtext>
+			</item>
 		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>バージョン情報</itemtext>
+			</item>
+			<item>
+				<itemname>OSEdition</itemname>
+				<itemtext>エディション：</itemtext>
+			</item>
+			<item>
+				<itemname>OSVersion</itemname>
+				<itemtext>バージョン：</itemtext>
+			</item>
+			<item>
+				<itemname>OSBuildNumber</itemname>
+				<itemtext>OSビルド：</itemtext>
+			</item>
+			<item>
+				<itemname>TotalVisibleMemorySize</itemname>
+				<itemtext>合計物理メモリ(MB)：</itemtext>
+			</item>
+			<item>
+				<itemname>CPUName</itemname>
+				<itemtext>CPU名：</itemtext>
+			</item>
+			<item>
+				<itemname>WindowScale</itemname>
+				<itemtext>表示スケール：</itemtext>
+			</item>
+		</Other>
 	</VersionInformation>
 </list>

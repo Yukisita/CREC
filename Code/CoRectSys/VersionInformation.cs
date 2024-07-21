@@ -25,6 +25,13 @@ namespace CREC
         string ColorSetting = "Blue";
         float mainFormCurrentDPI = 0;// MainFormのDPI
         string CurrentLanguageFileName = "";// 言語設定
+        // システム情報表示用の変数
+        string OSEdition = "エディション：";
+        string OSVersion = "バージョン：";
+        string OSBuildNumber = "OSビルド：";
+        string TotalVisibleMemorySize = "合計物理メモリ(MB)：";
+        string CPUName = "CPU名：";
+        string WindowScale = "表示スケール：";
 
         // 表示関係
         double CurrentDPI = 1.0;// 現在のDPI値
@@ -52,22 +59,26 @@ namespace CREC
                 foreach (ManagementObject m in mocOS)
                 {
                     temp =
-                        ("エディション：" + m["Caption"].ToString() + "\n"
-                       + "バージョン：" + m["Version"].ToString() + "\n"
-                       + "OSビルド：" + m["BuildNumber"].ToString() + "\n"
-                       + "合計物理メモリ(MB)：" + (Convert.ToInt32(m["TotalVisibleMemorySize"]) / 1024).ToString() + "\n"
+                        (OSEdition + m["Caption"].ToString() + "\n"
+                       + OSVersion + m["Version"].ToString() + "\n"
+                       + OSBuildNumber + m["BuildNumber"].ToString() + "\n"
+                       + TotalVisibleMemorySize + (Convert.ToInt32(m["TotalVisibleMemorySize"]) / 1024).ToString() + "\n"
                         );
                 }
                 ManagementClass mcCPU = new ManagementClass("Win32_Processor");
                 ManagementObjectCollection mocCPU = mcCPU.GetInstances();
+                string thisCPUName = string.Empty;
                 foreach (ManagementObject m in mocCPU)
                 {
-                    temp =
-                         (temp
-                        + "CPU名：" + m["Name"].ToString() + "\n"
-                        + "表示スケール：" + Convert.ToInt32(mainFormCurrentDPI * 100).ToString() + "%\n"
-                         );
+                    thisCPUName = m["Name"].ToString();
                 }
+                temp =
+                    (temp
+                    + CPUName + thisCPUName + "\n");
+                temp =
+                    (temp
+                     + WindowScale + Convert.ToInt32(mainFormCurrentDPI * 100).ToString() + "%\n"
+                      );
                 return temp;
             });
             ShowSystemInformationsLabel.Text = SystemInformations;
@@ -107,6 +118,7 @@ namespace CREC
         {
             try
             {
+                this.Text = LangageSettingClass.GetOtherMessage("FormName", "VersionInformation", CurrentLanguageFileName);
                 XElement xElement = XElement.Load(targetLanguageFilePath);
                 IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("VersionInformation").Elements("Button").Elements("item") select item;
                 foreach (XElement itemData in buttonItemDataList)
@@ -140,10 +152,42 @@ namespace CREC
                         MessageBox.Show(ex.Message);
                     }
                 }
+                IEnumerable<XElement> OtherItemDataList = from item in xElement.Elements("VersionInformation").Elements("Other").Elements("item") select item;
+                foreach (XElement itemData in OtherItemDataList)
+                {
+                    try
+                    {
+                        switch (itemData.Element("itemname").Value)
+                        {
+                            case "OSEdition":
+                                OSEdition = itemData.Element("itemtext").Value;
+                                break;
+                            case "OSVersion":
+                                OSVersion = itemData.Element("itemtext").Value;
+                                break;
+                            case "OSBuildNumber":
+                                OSBuildNumber = itemData.Element("itemtext").Value;
+                                break;
+                            case "TotalVisibleMemorySize":
+                                TotalVisibleMemorySize = itemData.Element("itemtext").Value;
+                                break;
+                            case "CPUName":
+                                CPUName = itemData.Element("itemtext").Value;
+                                break;
+                            case "WindowScale":
+                                WindowScale = itemData.Element("itemtext").Value;
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"CREC");
+                MessageBox.Show(ex.Message, "CREC");
             }
         }
         #endregion

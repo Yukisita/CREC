@@ -15,6 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using System.Xml.Linq;
 
 namespace CREC
 {
@@ -26,17 +27,21 @@ namespace CREC
         string row;
         string[] cols;
         string ColorSetting = "Blue";
+        string CurrentLanguageFileName = "";// 言語設定
         int ConfigNumber;
 
-        public ConfigForm(string colorSetting)
+        public ConfigForm(string colorSetting, string currentLanguage)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
+            CurrentLanguageFileName = currentLanguage;
             SetColorMethod();
         }
 
         private void ConfigForm_Load(object sender, EventArgs e)// 読み込み
         {
+            // 言語設定
+            SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
             reader = File.ReadAllText(ConfigFile, Encoding.GetEncoding("UTF-8"));
             string[] tmp = File.ReadAllLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
             rows = reader.Trim().Replace("\r", "").Split('\n');
@@ -189,10 +194,12 @@ namespace CREC
             {
                 configfile.WriteLine("BootUpdateCheck,true");
             }
-            else if(DenyBootUpdateCheckRadioButton.Checked)
+            else if (DenyBootUpdateCheckRadioButton.Checked)
             {
                 configfile.WriteLine("BootUpdateCheck,false");
             }
+            configfile.WriteLine("ColorSetting,{0}", ColorSetting);
+            configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
             configfile.Close();
             this.Close();
         }
@@ -231,5 +238,76 @@ namespace CREC
                 SetAutoLoadProjectTextBox.ReadOnly = false;
             }
         }
+        #region 言語設定
+        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            this.Text = LangageSettingClass.GetOtherMessage("FormName", "ConfigForm", CurrentLanguageFileName);
+            XElement xElement = XElement.Load(targetLanguageFilePath);
+            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("ConfigForm").Elements("Button").Elements("item") select item;
+            foreach (XElement itemData in buttonItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("ConfigForm").Elements("Label").Elements("item") select item;
+            foreach (XElement itemData in labelItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> radioButtonItemDataList = from item in xElement.Elements("ConfigForm").Elements("RadioButton").Elements("item") select item;
+            foreach (XElement itemData in radioButtonItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> checkBoxItemDataList = from item in xElement.Elements("ConfigForm").Elements("CheckBox").Elements("item") select item;
+            foreach (XElement itemData in checkBoxItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+        #endregion
     }
 }

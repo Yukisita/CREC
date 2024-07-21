@@ -32,12 +32,12 @@
             this.ProjectName = new System.Windows.Forms.Label();
             this.ReleaseDate = new System.Windows.Forms.Label();
             this.VersionName = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.CopyrightLabel = new System.Windows.Forms.Label();
             this.ShowSystemInformationsLabel = new System.Windows.Forms.Label();
             this.SystemInformationsLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.MascotCommentLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.MascotNameLabel = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/06/25";
+            this.ReleaseDate.Text = "Release: 2024/07/21";
             // 
             // VersionName
             // 
@@ -75,18 +75,18 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(167, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 7.09.02β1";
+            this.VersionName.Text = "Version 7.10.01β1";
             // 
-            // label5
+            // CopyrightLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(288, 134);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(130, 25);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "©　雪下 2024";
+            this.CopyrightLabel.AutoSize = true;
+            this.CopyrightLabel.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CopyrightLabel.Location = new System.Drawing.Point(288, 134);
+            this.CopyrightLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CopyrightLabel.Name = "CopyrightLabel";
+            this.CopyrightLabel.Size = new System.Drawing.Size(130, 25);
+            this.CopyrightLabel.TabIndex = 4;
+            this.CopyrightLabel.Text = "©　雪下 2024";
             // 
             // ShowSystemInformationsLabel
             // 
@@ -110,16 +110,16 @@
             this.SystemInformationsLabel.TabIndex = 6;
             this.SystemInformationsLabel.Text = "システム情報";
             // 
-            // label1
+            // MascotCommentLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(730, 52);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(128, 19);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "猫っていいですよね。";
+            this.MascotCommentLabel.AutoSize = true;
+            this.MascotCommentLabel.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.MascotCommentLabel.Location = new System.Drawing.Point(730, 52);
+            this.MascotCommentLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.MascotCommentLabel.Name = "MascotCommentLabel";
+            this.MascotCommentLabel.Size = new System.Drawing.Size(128, 19);
+            this.MascotCommentLabel.TabIndex = 9;
+            this.MascotCommentLabel.Text = "猫っていいですよね。";
             // 
             // label2
             // 
@@ -132,16 +132,16 @@
             this.label2.TabIndex = 10;
             this.label2.Text = "This software is released under the MIT License.";
             // 
-            // label3
+            // MascotNameLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(775, 255);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(82, 19);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "雪下 せつな";
+            this.MascotNameLabel.AutoSize = true;
+            this.MascotNameLabel.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.MascotNameLabel.Location = new System.Drawing.Point(714, 269);
+            this.MascotNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.MascotNameLabel.Name = "MascotNameLabel";
+            this.MascotNameLabel.Size = new System.Drawing.Size(82, 19);
+            this.MascotNameLabel.TabIndex = 9;
+            this.MascotNameLabel.Text = "雪下 せつな";
             // 
             // pictureBox1
             // 
@@ -170,15 +170,15 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(871, 389);
+            this.ClientSize = new System.Drawing.Size(872, 403);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.MascotNameLabel);
+            this.Controls.Add(this.MascotCommentLabel);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.SystemInformationsLabel);
             this.Controls.Add(this.ShowSystemInformationsLabel);
-            this.Controls.Add(this.label5);
+            this.Controls.Add(this.CopyrightLabel);
             this.Controls.Add(this.VersionName);
             this.Controls.Add(this.ReleaseDate);
             this.Controls.Add(this.ProjectName);
@@ -186,7 +186,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "VersionInformation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "VersionInformation";
+            this.Text = "バージョン情報";
             this.Load += new System.EventHandler(this.VersionInformation_Load);
             this.DpiChanged += new System.Windows.Forms.DpiChangedEventHandler(this.VersionInformation_DpiChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -201,13 +201,13 @@
         private System.Windows.Forms.Label ProjectName;
         private System.Windows.Forms.Label ReleaseDate;
         private System.Windows.Forms.Label VersionName;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label CopyrightLabel;
         private System.Windows.Forms.Label ShowSystemInformationsLabel;
         private System.Windows.Forms.Label SystemInformationsLabel;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label MascotCommentLabel;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label MascotNameLabel;
     }
 }

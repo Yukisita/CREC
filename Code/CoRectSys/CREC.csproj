@@ -107,7 +107,7 @@
     <Compile Include="MakeNewProject.Designer.cs">
       <DependentUpon>MakeNewProject.cs</DependentUpon>
     </Compile>
-    <Compile Include="GetMessageFromLangageFileClass.cs" />
+    <Compile Include="LangageSettingClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInfoForm.cs">
       <SubType>Form</SubType>
