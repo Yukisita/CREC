@@ -118,7 +118,7 @@ namespace CREC
         {
             try
             {
-                this.Text = LangageSettingClass.GetOtherMessage("FormName", "VersionInformation", CurrentLanguageFileName);
+                this.Text = LanguageSettingClass.GetOtherMessage("FormName", "VersionInformation", CurrentLanguageFileName);
                 XElement xElement = XElement.Load(targetLanguageFilePath);
                 IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("VersionInformation").Elements("Button").Elements("item") select item;
                 foreach (XElement itemData in buttonItemDataList)

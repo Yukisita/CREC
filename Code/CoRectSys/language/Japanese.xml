@@ -166,6 +166,14 @@
 				<itemname>PreviousPictureButton</itemname>
 				<itemtext>前の画像</itemtext>
 			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>画像を表示</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>画像保存場所</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>
@@ -187,6 +195,10 @@
 			<item>
 				<itemname>ConfidentialDataLabel</itemname>
 				<itemtext>機密情報</itemtext>
+			</item>
+			<item>
+				<itemname>DataLoadingLabel</itemname>
+				<itemtext>読み込み中</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>

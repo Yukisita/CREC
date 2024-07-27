@@ -166,6 +166,14 @@
 				<itemname>PreviousPictureButton</itemname>
 				<itemtext>Previous</itemtext>
 			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>Show picture</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>Picture folder</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>
@@ -187,6 +195,10 @@
 			<item>
 				<itemname>ConfidentialDataLabel</itemname>
 				<itemtext>Confidential Information</itemtext>
+			</item>
+			<item>
+				<itemname>DataLoadingLabel</itemname>
+				<itemtext>Loading...</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>

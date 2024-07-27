@@ -241,7 +241,7 @@ namespace CREC
         #region 言語設定
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {
-            this.Text = LangageSettingClass.GetOtherMessage("FormName", "ConfigForm", CurrentLanguageFileName);
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ConfigForm", CurrentLanguageFileName);
             XElement xElement = XElement.Load(targetLanguageFilePath);
             IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("ConfigForm").Elements("Button").Elements("item") select item;
             foreach (XElement itemData in buttonItemDataList)

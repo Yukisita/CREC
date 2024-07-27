@@ -118,10 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="UpdateHistoryTextBox.Text" xml:space="preserve">
-    <value>ver0.x
-試作＆必要な機能の策定
+    <value>ver0.x(2021～2022年？)
+バージョン管理等をしていなかったため詳細不明
+当時作成していた単語帳ソフトを元に何かしら作っていたみたい
 
-ver1.01β
+ver1.01β(2022/05/14)
 複数端末からの同時アクセス実現に向けた管理構造変更
 
 ver1.02β(2022/05/18)
@@ -387,9 +388,9 @@ ver7.10.01（2024/07/18）
 管理コード自動入力のON/OFF切り替え機能追加
 特定環境課でCPU名表示が崩れる問題を修正
 
-ver7.10.01β（2024/07/21）
-多言語対応の実装中
-言語ファイルの更新</value>
+ver7.10.01β2（2024/07/27）
+言語ファイル・フォルダ喪失時に再生成する処理を追加
+言語ファイル更新</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

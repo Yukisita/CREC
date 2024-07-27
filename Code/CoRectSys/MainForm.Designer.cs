@@ -209,6 +209,7 @@
             this.HideConfidentialDataButton = new System.Windows.Forms.Button();
             this.SavingLabel = new System.Windows.Forms.Label();
             this.CloseInventoryManagementModeButton = new System.Windows.Forms.Button();
+            this.OpenPictureFolderButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -1920,7 +1921,7 @@
             this.DataLoadingLabel.Location = new System.Drawing.Point(956, 124);
             this.DataLoadingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DataLoadingLabel.Name = "DataLoadingLabel";
-            this.DataLoadingLabel.Size = new System.Drawing.Size(181, 36);
+            this.DataLoadingLabel.Size = new System.Drawing.Size(181, 47);
             this.DataLoadingLabel.TabIndex = 94;
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2059,12 +2060,27 @@
             this.CloseInventoryManagementModeButton.Visible = false;
             this.CloseInventoryManagementModeButton.Click += new System.EventHandler(this.CloseInventoryManagementModeButton_Click);
             // 
+            // OpenPictureFolderButton
+            // 
+            this.OpenPictureFolderButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.OpenPictureFolderButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.OpenPictureFolderButton.Location = new System.Drawing.Point(1930, 494);
+            this.OpenPictureFolderButton.Margin = new System.Windows.Forms.Padding(4);
+            this.OpenPictureFolderButton.Name = "OpenPictureFolderButton";
+            this.OpenPictureFolderButton.Size = new System.Drawing.Size(226, 50);
+            this.OpenPictureFolderButton.TabIndex = 102;
+            this.OpenPictureFolderButton.Text = "画像保存場所";
+            this.OpenPictureFolderButton.UseVisualStyleBackColor = true;
+            this.OpenPictureFolderButton.Visible = false;
+            this.OpenPictureFolderButton.Click += new System.EventHandler(this.OpenPictureFolderButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.OpenPictureFolderButton);
             this.Controls.Add(this.CloseInventoryManagementModeButton);
             this.Controls.Add(this.SavingLabel);
             this.Controls.Add(this.HideConfidentialDataButton);
@@ -2344,6 +2360,7 @@
         private System.Windows.Forms.Button HideConfidentialDataButton;
         private System.Windows.Forms.Label SavingLabel;
         private System.Windows.Forms.Button CloseInventoryManagementModeButton;
+        private System.Windows.Forms.Button OpenPictureFolderButton;
     }
 }
 
