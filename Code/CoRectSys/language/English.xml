@@ -111,8 +111,20 @@
 				<itemtext>Add</itemtext>
 			</item>
 			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>Edit</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestButton</itemname>
+				<itemtext>Under edit</itemtext>
+			</item>
+			<item>
 				<itemname>ListUpdateButton</itemname>
 				<itemtext>Update</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestingButton</itemname>
+				<itemtext>Requesting</itemtext>
 			</item>
 			<item>
 				<itemname>ShowConfidentialDataButton</itemname>
@@ -174,6 +186,18 @@
 				<itemname>OpenPictureFolderButton</itemname>
 				<itemtext>Picture folder</itemtext>
 			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>Set</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>Save</itemtext>
+			</item>
+			<item>
+				<itemname>AllowEditIDButton</itemname>
+				<itemtext>Edit</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>
@@ -199,6 +223,10 @@
 			<item>
 				<itemname>DataLoadingLabel</itemname>
 				<itemtext>Loading...</itemtext>
+			</item>
+			<item>
+				<itemname>SavingLabel</itemname>
+				<itemtext>Saving...</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>
@@ -273,10 +301,6 @@
 			<item>
 				<itemname>DeleteContentToolStripMenuItem</itemname>
 				<itemtext>Delete Content</itemtext>
-			</item>
-			<item>
-				<itemname>ReissueUUIDToolStripMenuItem</itemname>
-				<itemtext>Reissue UUID</itemtext>
 			</item>
 			<item>
 				<itemname>ForceEditRequestToolStripMenuItem</itemname>
@@ -412,6 +436,26 @@
 				<itemname>NoProjectOpendError</itemname>
 				<itemtext>Open a project.</itemtext>
 			</item>
+			<item>
+				<itemname>AskStartEditWithoutCheckOtherEditing</itemname>
+				<itemtext>Can not check other editing.&#xD;&#xA;Start edit without check?</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputFinish</itemname>
+				<itemtext>Contents list(csv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputError</itemname>
+				<itemtext>Can not output contents list(csv).</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputFinish</itemname>
+				<itemtext>Contents list(tsv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputError</itemname>
+				<itemtext>Can not output contents list(tsv).</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -449,6 +493,10 @@
 				<itemtext>CREC</itemtext>
 			</item>
 			<item>
+				<itemname>ProjectNameHeader</itemname>
+				<itemtext>ProjectName: </itemtext>
+			</item>
+			<item>
 				<itemname>DeleteRecentlyOpendProjectList</itemname>
 				<itemtext>Clear this list.</itemtext>
 			</item>
@@ -456,10 +504,140 @@
 				<itemname>NoRecentlyOpendProjectList</itemname>
 				<itemtext>No recently opend project.</itemtext>
 			</item>
+			<item>
+				<itemname>SearchMethodForwardMatch</itemname>
+				<itemtext>Forward match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBroadMatch</itemname>
+				<itemtext>Broad match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBackwardMatch</itemname>
+				<itemtext>Backward match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodExactMatch</itemname>
+				<itemtext>Exact match</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderDate</itemname>
+				<itemtext>Date</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderOperation</itemname>
+				<itemtext>Operation</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderQuantity</itemname>
+				<itemtext>Quantity</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderNote</itemname>
+				<itemtext>Note</itemtext>
+			</item>
+			<item>
+				<itemname>SafetyStock</itemname>
+				<itemtext>Safety Stock</itemtext>
+			</item>
+			<item>
+				<itemname>ReorderPoint</itemname>
+				<itemtext>Reorder Point</itemtext>
+			</item>
+			<item>
+				<itemname>MaximumLevel</itemname>
+				<itemtext>Maximum Level</itemtext>
+			</item>
+			<item>
+				<itemname>EntoryOperation</itemname>
+				<itemtext>Entory</itemtext>
+			</item>
+			<item>
+				<itemname>ExitOperation</itemname>
+				<itemtext>Exit</itemtext>
+			</item>
+			<item>
+				<itemname>Stocktaking</itemname>
+				<itemtext>Stocktaking</itemtext>
+			</item>
+			<item>
+				<itemname>Inventory</itemname>
+				<itemtext>Inventory</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDNoChange</itemname>
+				<itemtext>No change</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeOK</itemname>
+				<itemtext>OK</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeNG</itemname>
+				<itemtext>NG</itemtext>
+			</item>
 		</Other>
 	</mainform>
-	<makenewproject>
-	</makenewproject>
+	<MakeNewProject>
+		<Button>
+			<item>
+				<itemname>ProjectLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>MakeNewProjectButton</itemname>
+				<itemtext>Save/Make</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>ProjectName</itemname>
+				<itemtext>Project name</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectLocation</itemname>
+				<itemtext>Project directory path</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocation</itemname>
+				<itemtext>Backup directory path</itemtext>
+			</item>
+			<item>
+				<itemname>CompressTypeLabel</itemname>
+				<itemtext>File compress type</itemtext>
+			</item>
+			<item>
+				<itemname>AutoBackUpSchedule</itemname>
+				<itemtext>Automatic backup scheduling</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocation</itemname>
+				<itemtext>Contents list output location</itemtext>
+			</item>
+			<item>
+				<itemname>AutoListOutput</itemname>
+				<itemtext>Contents list output settings</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelName</itemname>
+				<itemtext>Edit label name</itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Make/Edit project</itemtext>
+			</item>
+		</Other>
+	</MakeNewProject>
 	<VersionInformation>
 		<Label>
 			<item>

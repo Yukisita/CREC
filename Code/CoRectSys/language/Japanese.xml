@@ -111,8 +111,20 @@
 				<itemtext>新規追加</itemtext>
 			</item>
 			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>編集</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestButton</itemname>
+				<itemtext>他端末編集中</itemtext>
+			</item>
+			<item>
 				<itemname>ListUpdateButton</itemname>
 				<itemtext>一覧更新</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestingButton</itemname>
+				<itemtext>編集待機中</itemtext>
 			</item>
 			<item>
 				<itemname>ShowConfidentialDataButton</itemname>
@@ -174,6 +186,18 @@
 				<itemname>OpenPictureFolderButton</itemname>
 				<itemtext>画像保存場所</itemtext>
 			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>設定</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>保存</itemtext>
+			</item>
+			<item>
+				<itemname>AllowEditIDButton</itemname>
+				<itemtext>変　更</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>
@@ -199,6 +223,10 @@
 			<item>
 				<itemname>DataLoadingLabel</itemname>
 				<itemtext>読み込み中</itemtext>
+			</item>
+			<item>
+				<itemname>SavingLabel</itemname>
+				<itemtext>保存中</itemtext>
 			</item>
 		</Label>
 		<ToolStripMenuItem>
@@ -273,10 +301,6 @@
 			<item>
 				<itemname>DeleteContentToolStripMenuItem</itemname>
 				<itemtext>データ削除</itemtext>
-			</item>
-			<item>
-				<itemname>ReissueUUIDToolStripMenuItem</itemname>
-				<itemtext>UUID再割当て</itemtext>
 			</item>
 			<item>
 				<itemname>ForceEditRequestToolStripMenuItem</itemname>
@@ -412,6 +436,26 @@
 				<itemname>NoProjectOpendError</itemname>
 				<itemtext>プロジェクトを開いてください。</itemtext>
 			</item>
+			<item>
+				<itemname>AskStartEditWithoutCheckOtherEditing</itemname>
+				<itemtext>他端末の編集状態を取得できません。&#xD;&#xA;無視して編集を開始しますか？</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputFinish</itemname>
+				<itemtext>データ一覧を以下の場所にCSV形式で出力しました。</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputError</itemname>
+				<itemtext>一覧のCSV出力に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputFinish</itemname>
+				<itemtext>データ一覧を以下の場所にTSV形式で出力しました。</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputError</itemname>
+				<itemtext>一覧のTSV出力に失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -449,6 +493,10 @@
 				<itemtext>CREC</itemtext>
 			</item>
 			<item>
+				<itemname>ProjectNameHeader</itemname>
+				<itemtext>プロジェクト名：</itemtext>
+			</item>
+			<item>
 				<itemname>DeleteRecentlyOpendProjectList</itemname>
 				<itemtext>履歴を削除</itemtext>
 			</item>
@@ -456,10 +504,140 @@
 				<itemname>NoRecentlyOpendProjectList</itemname>
 				<itemtext>履歴はありません</itemtext>
 			</item>
+			<item>
+				<itemname>SearchMethodForwardMatch</itemname>
+				<itemtext>前方一致</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBroadMatch</itemname>
+				<itemtext>部分一致</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBackwardMatch</itemname>
+				<itemtext>後方一致</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodExactMatch</itemname>
+				<itemtext>完全一致</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderDate</itemname>
+				<itemtext>日時</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderOperation</itemname>
+				<itemtext>作業内容</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderQuantity</itemname>
+				<itemtext>数量</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderNote</itemname>
+				<itemtext>コメント</itemtext>
+			</item>
+			<item>
+				<itemname>SafetyStock</itemname>
+				<itemtext>安全在庫数</itemtext>
+			</item>
+			<item>
+				<itemname>ReorderPoint</itemname>
+				<itemtext>発注点</itemtext>
+			</item>
+			<item>
+				<itemname>MaximumLevel</itemname>
+				<itemtext>最大在庫数</itemtext>
+			</item>
+			<item>
+				<itemname>EntoryOperation</itemname>
+				<itemtext>入庫</itemtext>
+			</item>
+			<item>
+				<itemname>ExitOperation</itemname>
+				<itemtext>出庫</itemtext>
+			</item>
+			<item>
+				<itemname>Stocktaking</itemname>
+				<itemtext>棚卸</itemtext>
+			</item>
+			<item>
+				<itemname>Inventory</itemname>
+				<itemtext>在庫数</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDNoChange</itemname>
+				<itemtext>変更なし</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeOK</itemname>
+				<itemtext>変更可能</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeNG</itemname>
+				<itemtext>変更不可</itemtext>
+			</item>
 		</Other>
 	</mainform>
-	<makenewproject>
-	</makenewproject>
+	<MakeNewProject>
+		<Button>
+			<item>
+				<itemname>ProjectLocationReferenceButton</itemname>
+				<itemtext>参　照</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationReferenceButton</itemname>
+				<itemtext>参　照</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocationReferenceButton</itemname>
+				<itemtext>参　照</itemtext>
+			</item>
+			<item>
+				<itemname>MakeNewProjectButton</itemname>
+				<itemtext>保存/作成</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>ProjectName</itemname>
+				<itemtext>プロジェクト名</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectLocation</itemname>
+				<itemtext>場所</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocation</itemname>
+				<itemtext>バックアップ場所</itemtext>
+			</item>
+			<item>
+				<itemname>CompressTypeLabel</itemname>
+				<itemtext>ファイル圧縮方法</itemtext>
+			</item>
+			<item>
+				<itemname>AutoBackUpSchedule</itemname>
+				<itemtext>自動バックアップのスケジュール</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocation</itemname>
+				<itemtext>データ一覧作成場所</itemtext>
+			</item>
+			<item>
+				<itemname>AutoListOutput</itemname>
+				<itemtext>自動データ一覧作成の設定</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelName</itemname>
+				<itemtext>ラベル名編集</itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>プロジェクト作成/編集</itemtext>
+			</item>
+		</Other>
+	</MakeNewProject>
 	<VersionInformation>
 		<Label>
 			<item>

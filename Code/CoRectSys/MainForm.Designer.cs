@@ -65,7 +65,6 @@
             this.AddInventoryModeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AdvancedFeaturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ReissueUUIDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ForceEditRequestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.データ非表示仮削除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -147,10 +146,6 @@
             this.ConfidentialDataTextBox = new System.Windows.Forms.TextBox();
             this.InventoryManagementModeButton = new System.Windows.Forms.Button();
             this.InventoryModeDataGridView = new System.Windows.Forms.DataGridView();
-            this.date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.specific = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.note = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InventoryLabel = new System.Windows.Forms.Label();
             this.OperationOptionComboBox = new System.Windows.Forms.ComboBox();
             this.AddInventoryOperationButton = new System.Windows.Forms.Button();
@@ -210,6 +205,14 @@
             this.SavingLabel = new System.Windows.Forms.Label();
             this.CloseInventoryManagementModeButton = new System.Windows.Forms.Button();
             this.OpenPictureFolderButton = new System.Windows.Forms.Button();
+            this.SetProperInventorySettingsButton = new System.Windows.Forms.Button();
+            this.EditRequestButton = new System.Windows.Forms.Button();
+            this.ReadOnlyButton = new System.Windows.Forms.Button();
+            this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
+            this.date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.operation = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.note = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -404,7 +407,6 @@
             // 
             this.AdvancedFeaturesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DeleteContentToolStripMenuItem,
-            this.ReissueUUIDToolStripMenuItem,
             this.ForceEditRequestToolStripMenuItem,
             this.データ非表示仮削除ToolStripMenuItem});
             this.AdvancedFeaturesToolStripMenuItem.Name = "AdvancedFeaturesToolStripMenuItem";
@@ -417,14 +419,6 @@
             this.DeleteContentToolStripMenuItem.Size = new System.Drawing.Size(349, 34);
             this.DeleteContentToolStripMenuItem.Text = "データ削除";
             this.DeleteContentToolStripMenuItem.Click += new System.EventHandler(this.DeleteContentToolStripMenuItem_Click);
-            // 
-            // ReissueUUIDToolStripMenuItem
-            // 
-            this.ReissueUUIDToolStripMenuItem.Enabled = false;
-            this.ReissueUUIDToolStripMenuItem.Name = "ReissueUUIDToolStripMenuItem";
-            this.ReissueUUIDToolStripMenuItem.Size = new System.Drawing.Size(349, 34);
-            this.ReissueUUIDToolStripMenuItem.Text = "UUID再割当て";
-            this.ReissueUUIDToolStripMenuItem.Click += new System.EventHandler(this.ReissueUUIDToolStripMenuItem_Click);
             // 
             // ForceEditRequestToolStripMenuItem
             // 
@@ -1296,7 +1290,7 @@
             this.InventoryModeDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.InventoryModeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.date,
-            this.specific,
+            this.operation,
             this.quantity,
             this.note});
             this.InventoryModeDataGridView.Font = new System.Drawing.Font("メイリオ", 16F);
@@ -1310,34 +1304,6 @@
             this.InventoryModeDataGridView.Size = new System.Drawing.Size(1125, 925);
             this.InventoryModeDataGridView.TabIndex = 48;
             this.InventoryModeDataGridView.Visible = false;
-            // 
-            // date
-            // 
-            this.date.HeaderText = "日付";
-            this.date.MinimumWidth = 6;
-            this.date.Name = "date";
-            this.date.Width = 180;
-            // 
-            // specific
-            // 
-            this.specific.HeaderText = "詳細";
-            this.specific.MinimumWidth = 6;
-            this.specific.Name = "specific";
-            this.specific.Width = 125;
-            // 
-            // quantity
-            // 
-            this.quantity.HeaderText = "数量";
-            this.quantity.MinimumWidth = 6;
-            this.quantity.Name = "quantity";
-            this.quantity.Width = 125;
-            // 
-            // note
-            // 
-            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.note.HeaderText = "コメント";
-            this.note.MinimumWidth = 6;
-            this.note.Name = "note";
             // 
             // InventoryLabel
             // 
@@ -1362,7 +1328,7 @@
             this.OperationOptionComboBox.Location = new System.Drawing.Point(36, 1150);
             this.OperationOptionComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.OperationOptionComboBox.Name = "OperationOptionComboBox";
-            this.OperationOptionComboBox.Size = new System.Drawing.Size(185, 47);
+            this.OperationOptionComboBox.Size = new System.Drawing.Size(203, 47);
             this.OperationOptionComboBox.TabIndex = 41;
             this.OperationOptionComboBox.Visible = false;
             // 
@@ -1467,10 +1433,10 @@
             "部分一致",
             "後方一致",
             "完全一致"});
-            this.SearchMethodComboBox.Location = new System.Drawing.Point(950, 64);
+            this.SearchMethodComboBox.Location = new System.Drawing.Point(941, 64);
             this.SearchMethodComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.SearchMethodComboBox.Name = "SearchMethodComboBox";
-            this.SearchMethodComboBox.Size = new System.Drawing.Size(185, 47);
+            this.SearchMethodComboBox.Size = new System.Drawing.Size(230, 47);
             this.SearchMethodComboBox.TabIndex = 4;
             this.SearchMethodComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchMethodComboBox_SelectedIndexChanged);
             // 
@@ -1508,10 +1474,10 @@
             "安全在庫数",
             "発注点",
             "最大在庫数"});
-            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(36, 120);
+            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(15, 120);
             this.ProperInventorySettingsComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.ProperInventorySettingsComboBox.Name = "ProperInventorySettingsComboBox";
-            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(185, 47);
+            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(300, 47);
             this.ProperInventorySettingsComboBox.TabIndex = 45;
             this.ProperInventorySettingsComboBox.Visible = false;
             this.ProperInventorySettingsComboBox.SelectedIndexChanged += new System.EventHandler(this.ProperInventorySettingsComboBox_SelectedIndexChanged);
@@ -1521,7 +1487,7 @@
             this.ProperInventorySettingsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ProperInventorySettingsTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ProperInventorySettingsTextBox.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(241, 121);
+            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(321, 121);
             this.ProperInventorySettingsTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.ProperInventorySettingsTextBox.Name = "ProperInventorySettingsTextBox";
             this.ProperInventorySettingsTextBox.ReadOnly = true;
@@ -1534,12 +1500,12 @@
             // SaveProperInventorySettingsButton
             // 
             this.SaveProperInventorySettingsButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(449, 120);
+            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(461, 121);
             this.SaveProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(4);
             this.SaveProperInventorySettingsButton.Name = "SaveProperInventorySettingsButton";
-            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(94, 45);
+            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(135, 45);
             this.SaveProperInventorySettingsButton.TabIndex = 47;
-            this.SaveProperInventorySettingsButton.Text = "変更";
+            this.SaveProperInventorySettingsButton.Text = "保存";
             this.SaveProperInventorySettingsButton.UseVisualStyleBackColor = true;
             this.SaveProperInventorySettingsButton.Visible = false;
             this.SaveProperInventorySettingsButton.Click += new System.EventHandler(this.SaveProperInventorySettingsButton_Click);
@@ -1701,7 +1667,7 @@
             this.AllowEditIDButton.Name = "AllowEditIDButton";
             this.AllowEditIDButton.Size = new System.Drawing.Size(81, 31);
             this.AllowEditIDButton.TabIndex = 73;
-            this.AllowEditIDButton.Text = "編集不可";
+            this.AllowEditIDButton.Text = "変　更";
             this.AllowEditIDButton.UseVisualStyleBackColor = true;
             this.AllowEditIDButton.Visible = false;
             this.AllowEditIDButton.Click += new System.EventHandler(this.AllowEditIDButton_Click);
@@ -2023,7 +1989,7 @@
             // 
             this.HideConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.HideConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.HideConfidentialDataButton.Location = new System.Drawing.Point(2044, 1216);
+            this.HideConfidentialDataButton.Location = new System.Drawing.Point(2014, 1237);
             this.HideConfidentialDataButton.Margin = new System.Windows.Forms.Padding(4);
             this.HideConfidentialDataButton.Name = "HideConfidentialDataButton";
             this.HideConfidentialDataButton.Size = new System.Drawing.Size(236, 50);
@@ -2037,7 +2003,7 @@
             // 
             this.SavingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.SavingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SavingLabel.Location = new System.Drawing.Point(1379, 1228);
+            this.SavingLabel.Location = new System.Drawing.Point(1260, 1236);
             this.SavingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.SavingLabel.Name = "SavingLabel";
             this.SavingLabel.Size = new System.Drawing.Size(206, 50);
@@ -2050,7 +2016,7 @@
             // 
             this.CloseInventoryManagementModeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CloseInventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseInventoryManagementModeButton.Location = new System.Drawing.Point(1786, 1225);
+            this.CloseInventoryManagementModeButton.Location = new System.Drawing.Point(1744, 1237);
             this.CloseInventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(4);
             this.CloseInventoryManagementModeButton.Name = "CloseInventoryManagementModeButton";
             this.CloseInventoryManagementModeButton.Size = new System.Drawing.Size(250, 50);
@@ -2074,12 +2040,97 @@
             this.OpenPictureFolderButton.Visible = false;
             this.OpenPictureFolderButton.Click += new System.EventHandler(this.OpenPictureFolderButton_Click);
             // 
+            // SetProperInventorySettingsButton
+            // 
+            this.SetProperInventorySettingsButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SetProperInventorySettingsButton.Location = new System.Drawing.Point(518, 121);
+            this.SetProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SetProperInventorySettingsButton.Name = "SetProperInventorySettingsButton";
+            this.SetProperInventorySettingsButton.Size = new System.Drawing.Size(135, 45);
+            this.SetProperInventorySettingsButton.TabIndex = 103;
+            this.SetProperInventorySettingsButton.Text = "設定";
+            this.SetProperInventorySettingsButton.UseVisualStyleBackColor = true;
+            this.SetProperInventorySettingsButton.Visible = false;
+            this.SetProperInventorySettingsButton.Click += new System.EventHandler(this.SetProperInventorySettingsButton_Click);
+            // 
+            // EditRequestButton
+            // 
+            this.EditRequestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.EditRequestButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditRequestButton.Location = new System.Drawing.Point(1508, 1237);
+            this.EditRequestButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRequestButton.Name = "EditRequestButton";
+            this.EditRequestButton.Size = new System.Drawing.Size(218, 50);
+            this.EditRequestButton.TabIndex = 105;
+            this.EditRequestButton.Text = "他端末編集中";
+            this.EditRequestButton.UseVisualStyleBackColor = true;
+            this.EditRequestButton.Click += new System.EventHandler(this.EditRequestButton_Click);
+            // 
+            // ReadOnlyButton
+            // 
+            this.ReadOnlyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReadOnlyButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ReadOnlyButton.Location = new System.Drawing.Point(1531, 1236);
+            this.ReadOnlyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ReadOnlyButton.Name = "ReadOnlyButton";
+            this.ReadOnlyButton.Size = new System.Drawing.Size(186, 50);
+            this.ReadOnlyButton.TabIndex = 106;
+            this.ReadOnlyButton.Text = "閲覧のみ";
+            this.ReadOnlyButton.UseVisualStyleBackColor = true;
+            this.ReadOnlyButton.Click += new System.EventHandler(this.ReadOnlyButton_Click);
+            // 
+            // UUIDEditStatusLabel
+            // 
+            this.UUIDEditStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.UUIDEditStatusLabel.BackColor = System.Drawing.Color.White;
+            this.UUIDEditStatusLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.UUIDEditStatusLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.UUIDEditStatusLabel.Location = new System.Drawing.Point(1523, 112);
+            this.UUIDEditStatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UUIDEditStatusLabel.Name = "UUIDEditStatusLabel";
+            this.UUIDEditStatusLabel.Size = new System.Drawing.Size(90, 25);
+            this.UUIDEditStatusLabel.TabIndex = 107;
+            this.UUIDEditStatusLabel.Text = "読み込み中";
+            this.UUIDEditStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.UUIDEditStatusLabel.Visible = false;
+            // 
+            // date
+            // 
+            this.date.HeaderText = "日付";
+            this.date.MinimumWidth = 6;
+            this.date.Name = "date";
+            this.date.Width = 180;
+            // 
+            // operation
+            // 
+            this.operation.HeaderText = "詳細";
+            this.operation.MinimumWidth = 6;
+            this.operation.Name = "operation";
+            this.operation.Width = 180;
+            // 
+            // quantity
+            // 
+            this.quantity.HeaderText = "数量";
+            this.quantity.MinimumWidth = 6;
+            this.quantity.Name = "quantity";
+            this.quantity.Width = 180;
+            // 
+            // note
+            // 
+            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.note.HeaderText = "コメント";
+            this.note.MinimumWidth = 6;
+            this.note.Name = "note";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.UUIDEditStatusLabel);
+            this.Controls.Add(this.EditRequestButton);
+            this.Controls.Add(this.SetProperInventorySettingsButton);
             this.Controls.Add(this.OpenPictureFolderButton);
             this.Controls.Add(this.CloseInventoryManagementModeButton);
             this.Controls.Add(this.SavingLabel);
@@ -2143,9 +2194,6 @@
             this.Controls.Add(this.ConfidentialDataTextBox);
             this.Controls.Add(this.InventoryModeDataGridView);
             this.Controls.Add(this.PictureBox1);
-            this.Controls.Add(this.EditRequestingButton);
-            this.Controls.Add(this.EditButton);
-            this.Controls.Add(this.SaveAndCloseEditButton);
             this.Controls.Add(this.CopyDataLocationPath);
             this.Controls.Add(this.ShowRealLocation);
             this.Controls.Add(this.ObjectNameLabel);
@@ -2161,6 +2209,10 @@
             this.Controls.Add(this.MCLabel);
             this.Controls.Add(this.RegistrationDateLabel);
             this.Controls.Add(this.IDLabel);
+            this.Controls.Add(this.EditButton);
+            this.Controls.Add(this.SaveAndCloseEditButton);
+            this.Controls.Add(this.EditRequestingButton);
+            this.Controls.Add(this.ReadOnlyButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
@@ -2257,10 +2309,6 @@
         private System.Windows.Forms.TextBox EditTag2TextBox;
         private System.Windows.Forms.TextBox EditTag3TextBox;
         private System.Windows.Forms.TextBox EditRealLocationTextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn specific;
-        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.Button SearchFormTextBoxClearButton;
         private System.Windows.Forms.Label NoImageLabel;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -2337,7 +2385,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
         private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
-        private System.Windows.Forms.ToolStripMenuItem ReissueUUIDToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ProjectInformationToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
@@ -2347,7 +2394,6 @@
         private System.Windows.Forms.ToolStripMenuItem RecentShownContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenRecentlyOpendProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LanguageSettingToolStripMenuItem;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ToolStripMenuItem FontSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZoomInFontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZoomOutFontToolStripMenuItem;
@@ -2361,6 +2407,14 @@
         private System.Windows.Forms.Label SavingLabel;
         private System.Windows.Forms.Button CloseInventoryManagementModeButton;
         private System.Windows.Forms.Button OpenPictureFolderButton;
+        private System.Windows.Forms.Button SetProperInventorySettingsButton;
+        private System.Windows.Forms.Button EditRequestButton;
+        private System.Windows.Forms.Button ReadOnlyButton;
+        private System.Windows.Forms.Label UUIDEditStatusLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn operation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn note;
     }
 }
 

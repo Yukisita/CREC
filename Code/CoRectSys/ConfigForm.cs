@@ -29,6 +29,7 @@ namespace CREC
         string ColorSetting = "Blue";
         string CurrentLanguageFileName = "";// 言語設定
         int ConfigNumber;
+        public bool ReturnConfigSaved { get; private set; } = false;// 保存されて終了した場合はTrue
 
         public ConfigForm(string colorSetting, string currentLanguage)
         {
@@ -201,6 +202,7 @@ namespace CREC
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
             configfile.Close();
+            ReturnConfigSaved = true;
             this.Close();
         }
 
@@ -238,6 +240,7 @@ namespace CREC
                 SetAutoLoadProjectTextBox.ReadOnly = false;
             }
         }
+        
         #region 言語設定
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {

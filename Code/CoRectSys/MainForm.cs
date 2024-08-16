@@ -84,7 +84,7 @@ namespace CREC
         string CurrentLanguageFileName = "";
         // config.sys読み込み用変数
         bool AllowEdit;// 編集可否を設定
-        bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止
+        bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止<-使わなくなった、今後のために残す
         bool ShowConfidentialData;// 機密情報表示の可否を設定
         bool ShowUserAssistToolTips;// ユーザー補助のポップアップの表示・非表示を設定
         bool AutoSearch;// 検索窓に入力された内容を自動で検索するか設定
@@ -281,7 +281,7 @@ namespace CREC
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
                 {
-                    MakeNewProject makenewproject = new MakeNewProject("", ColorSetting);
+                    MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, CurrentLanguageFileName);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                     {
@@ -296,7 +296,7 @@ namespace CREC
             }
             else// 編集中データがなかった場合
             {
-                MakeNewProject makenewproject = new MakeNewProject("", ColorSetting);
+                MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, CurrentLanguageFileName);
                 makenewproject.ShowDialog();
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
@@ -432,7 +432,7 @@ namespace CREC
                 {
                     case "projectname":
                         TargetProjectName = cols[1];
-                        ShowProjcetNameTextBox.Text = "プロジェクト名：" + cols[1];
+                        ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", CurrentLanguageFileName) + cols[1];
                         break;
                     case "projectlocation":
                         TargetFolderPath = cols[1];
@@ -1467,11 +1467,11 @@ namespace CREC
                             streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
                         streamWriter.Close();
-                        MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                     }
                     catch (Exception ex)
                     {
-
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     if (OpenListAfterOutput == true)
                     {
@@ -1617,11 +1617,11 @@ namespace CREC
                             streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
                         streamWriter.Close();
-                        MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                     }
                     catch (Exception ex)
                     {
-
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     if (OpenListAfterOutput == true)
                     {
@@ -1633,13 +1633,26 @@ namespace CREC
                     MessageBox.Show("値が不正です。", "CREC");
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                if (ListOutputFormat == "CSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
             ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName);
             configform.ShowDialog();
-            ImportConfig();// 更新したconfigファイルを読み込み
+            if (configform.ReturnConfigSaved)// configが保存された場合
+            {
+                ImportConfig();// 更新したconfigファイルを読み込み
+            }
         }
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)// プログラム終了
         {
@@ -1661,22 +1674,28 @@ namespace CREC
                 }
                 else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                 {
-                    // 編集中タグを削除
-                    File.Delete(TargetContentsPath + "\\DED");
-                    File.Delete(TargetContentsPath + "\\RED");
+                    // 編集中タグを削除・解放をマーク
+                    if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                    {
+                        Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                    }
+                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
+                    FileStream.Close();
+                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
+                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
                     // サムネ画像が更新されていた場合は一時データをを削除
                     if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                     {
                         File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                     }
                     // 新規作成の場合はデータを削除
-                    if (File.Exists(TargetContentsPath + "\\ADD"))
+                    if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
                     {
                         DeleteContent();
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\ADD");
+                        File.Delete(TargetContentsPath + "\\SystemData\\ADD");
                     }
                 }
                 else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ再起動をキャンセル
@@ -1730,8 +1749,8 @@ namespace CREC
                     EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                     EditIDTextBox.Text = ThisID;
                     EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                    AllowEditIDButton.Text = "編集不可";
-                    ReissueUUIDToolStripMenuItem.Enabled = false;
+                    AllowEditIDButton.Visible = true;
+                    UUIDEditStatusLabel.Visible = false;
                     EditMCTextBox.Text = ThisMC;
                     EditRegistrationDateTextBox.Text = ThisRegistrationDate;
                     EditCategoryTextBox.Text = ThisCategory;
@@ -2166,21 +2185,27 @@ namespace CREC
                 }
                 else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                 {
-                    // 編集中タグを削除
-                    File.Delete(TargetContentsPath + "\\RED");
-                    File.Delete(TargetContentsPath + "\\DED");
+                    // 編集中タグを削除・解放をマーク
+                    if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                    {
+                        Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                    }
+                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
+                    FileStream.Close();
+                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
+                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
                     // サムネ画像が更新されていた場合は一時データをを削除
                     if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                     {
                         File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                     }
-                    if (File.Exists(TargetContentsPath + "\\ADD"))
+                    if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
                     {
                         DeleteContent();
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\ADD");
+                        File.Delete(TargetContentsPath + "\\SystemData\\ADD");
                     }
                     if (CloseListOutput == true)
                     {
@@ -2364,25 +2389,27 @@ namespace CREC
                 DeleteContent();
             }
         }
-        private void ReissueUUIDToolStripMenuItem_Click(object sender, EventArgs e)// UUID再割当て
-        {
-            EditIDTextBox.Text = Convert.ToString(Guid.NewGuid());// UUIDを入力
-        }
         private void ForceEditRequestToolStripMenuItem_Click(object sender, EventArgs e)// 編集権限強制取得
         {
             if (AllowEdit == false)
             {
                 MessageBox.Show("設定により編集が禁止されています。", "CREC");
             }
-            else if (File.Exists(TargetContentsPath + "\\DED"))
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中の可能性があります。\n編集権限を強制的に取得しますか？\nなお、本操作によりデータ破損する可能性があります。", "CREC", System.Windows.MessageBoxButton.YesNo);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
-                    // 編集リクエストタグを削除
-                    File.Delete(TargetContentsPath + "\\RED");
-                    File.Delete(TargetContentsPath + "\\DED");
-                    File.Delete(TargetContentsPath + "\\ADD");
+                    // 編集リクエストタグを削除・解放を宣言
+                    if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                    {
+                        Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                    }
+                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
+                    FileStream.Close();
+                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
+                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
+                    File.Delete(TargetContentsPath + "\\SystemData\\ADD");
                 }
                 else
                 {
@@ -2430,7 +2457,7 @@ namespace CREC
                 {
                     if (CheckEditingContents() == true)
                     {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, CurrentLanguageFileName);
                         makenewproject.ShowDialog();
                         if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                         {
@@ -2445,7 +2472,7 @@ namespace CREC
                 }
                 else
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting);
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, CurrentLanguageFileName);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                     {
@@ -2753,9 +2780,9 @@ namespace CREC
                     try
                     {
                         dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
-                        dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[dataGridView1.CurrentCell.ColumnIndex];
+                        dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[0];
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         DataLoadingLabel.Visible = false;
                         this.Cursor = Cursors.Default;
@@ -2907,8 +2934,8 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
-                AllowEditIDButton.Text = "編集不可";
-                ReissueUUIDToolStripMenuItem.Enabled = false;
+                AllowEditIDButton.Visible = true;
+                UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -2919,20 +2946,26 @@ namespace CREC
             else if (result == System.Windows.MessageBoxResult.No)// 保存せず編集画面を閉じる
             {
                 // 編集中タグを削除
-                File.Delete(TargetContentsPath + "\\RED");
-                File.Delete(TargetContentsPath + "\\DED");
+                if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                {
+                    Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                }
+                FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
+                FileStream.Close();
+                File.Delete(TargetContentsPath + "\\SystemData\\RED");
+                File.Delete(TargetContentsPath + "\\SystemData\\DED");
                 // サムネ画像が更新されていた場合は一時データをを削除
                 if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                 {
                     File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                 }
-                if (File.Exists(TargetContentsPath + "\\ADD"))// データ追加時は削除
+                if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))// データ追加時は削除
                 {
                     DeleteContent();
                 }
                 else
                 {
-                    File.Delete(TargetContentsPath + "\\ADD");
+                    File.Delete(TargetContentsPath + "\\SystemData\\ADD");
                 }
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
@@ -2963,8 +2996,8 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
-                AllowEditIDButton.Text = "編集不可";
-                ReissueUUIDToolStripMenuItem.Enabled = false;
+                AllowEditIDButton.Visible = true;
+                UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -3132,7 +3165,7 @@ namespace CREC
             {
                 sr1 = new StreamReader(TargetDetailsPath);
             }
-            catch (Exception ex)
+            catch
             {
                 DetailsTextBox.Text = "No Data.";
             }
@@ -3156,22 +3189,30 @@ namespace CREC
                 MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
             }
             // 編集ボタンの表示内容設定
-            if (AllowEdit == false)
+            if (AllowEdit == false || File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                EditButton.Text = "編集禁止";
-                EditButton.ForeColor = Color.Red;
+                //EditButton.Text = "編集禁止";
+                ReadOnlyButton.Visible = true;
+                ReadOnlyButton.ForeColor = Color.Red;
+                EditButton.Visible = false;
+                EditRequestButton.Visible = false;
             }
             else
             {
-                if (File.Exists(TargetContentsPath + "\\DED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
                 {
-                    EditButton.Text = "他端末編集中";
-                    EditButton.ForeColor = Color.Blue;
+                    //EditButton.Text = "他端末編集中";
+                    EditRequestButton.Visible = true;
+                    EditRequestButton.ForeColor = Color.Blue;
+                    ReadOnlyButton.Visible = false;
+                    EditButton.Visible = false;
                 }
                 else
                 {
-                    EditButton.Text = "編集";
-                    EditButton.ForeColor = Color.Black;
+                    //EditButton.Text = "編集";
+                    EditButton.Visible = true;
+                    ReadOnlyButton.Visible = false;
+                    EditRequestButton.Visible = false;
                 }
             }
             // 最近表示した項目としてUUID、名称を保存<- 未実装項目
@@ -3450,94 +3491,118 @@ namespace CREC
         #region 編集・データ追加・データ削除関係
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
+            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (TargetContentsPath.Length == 0)
+            {
+                MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
+                return;
+            }
+            StartEditForm();
+            // 詳細情報読み込み＆表示
+            StreamReader sr1 = null;
+            try
+            {
+                sr1 = new StreamReader(TargetDetailsPath);
+            }
+            catch
+            {
+                DetailsTextBox.Text = "No Data.";
+            }
+            finally
+            {
+                if (sr1 != null)
+                {
+                    DetailsTextBox.Text = sr1.ReadToEnd();
+                    sr1.Close();
+                }
+            }
+            // 機密情報を読み込み
+            try
+            {
+                StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                ConfidentialDataTextBox.Text = sr2.ReadToEnd();
+                sr2.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+            }
+            EditNameTextBox.Text = ThisName;
+            EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
+            EditIDTextBox.Text = ThisID;
+            EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
+            AllowEditIDButton.Visible = true;
+            UUIDEditStatusLabel.Visible = false;
+            EditMCTextBox.Text = ThisMC;
+            EditRegistrationDateTextBox.Text = ThisRegistrationDate;
+            EditCategoryTextBox.Text = ThisCategory;
+            EditTag1TextBox.Text = ThisTag1;
+            EditTag2TextBox.Text = ThisTag2;
+            EditTag3TextBox.Text = ThisTag3;
+            EditRealLocationTextBox.Text = ThisRealLocation;
+        }
+        private void EditRequestButton_Click(object sender, EventArgs e)// 編集権限リクエスト
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中のため、ロックされています。\n編集権限をリクエストしますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
+            if (result == System.Windows.MessageBoxResult.Yes)
+            {
+                // 編集リクエストタグを作成
+                if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                {
+                    Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                }
+                FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\RED");
+                FileStream.Close();
+                EditRequestButton.Visible = false;
+                EditRequestingButton.Visible = true;
+                AwaitEdit();
+            }
+            else
+            {
+                return;
+            }
+        }
+        private void ReadOnlyButton_Click(object sender, EventArgs e)// 編集不可
+        {
             if (AllowEdit == false)
             {
                 MessageBox.Show("設定により編集が禁止されています。", "CREC");
                 return;
             }
-            else if (File.Exists(TargetContentsPath + "\\DED"))
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
             {
-                if (File.Exists(TargetContentsPath + "\\RED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                 {
                     MessageBox.Show("編集中、編集待機中の端末があります。\n閲覧のみ可能です。", "CREC");
                     return;
                 }
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中のため、ロックされています。\n編集権限をリクエストしますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
-                if (result == System.Windows.MessageBoxResult.Yes)
-                {
-                    // 編集リクエストタグを作成
-                    FileStream FileStream = File.Create(TargetContentsPath + "\\RED");
-                    FileStream.Close();
-                    EditButton.Visible = false;
-                    EditRequestingButton.Visible = true;
-                    AwaitEdit();
-                }
-                else
+            }
+        }
+        private void StartEditForm()// 編集画面に切り替え
+        {
+            // 編集中の端末がいないか確認
+            if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE"))
+            {
+                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
                 {
                     return;
                 }
             }
             else
             {
-                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
-                {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-                if (TargetContentsPath.Length == 0)
-                {
-                    MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
-                    return;
-                }
-                StartEditForm();
-                // 詳細情報読み込み＆表示
-                StreamReader sr1 = null;
-                try
-                {
-                    sr1 = new StreamReader(TargetDetailsPath);
-                }
-                catch (Exception ex)
-                {
-                    DetailsTextBox.Text = "No Data.";
-                }
-                finally
-                {
-                    if (sr1 != null)
-                    {
-                        DetailsTextBox.Text = sr1.ReadToEnd();
-                        sr1.Close();
-                    }
-                }
-                // 機密情報を読み込み
-                try
-                {
-                    StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                    ConfidentialDataTextBox.Text = sr2.ReadToEnd();
-                    sr2.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
-                }
-                EditNameTextBox.Text = ThisName;
-                EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = ThisID;
-                EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                AllowEditIDButton.Text = "編集不可";
-                ReissueUUIDToolStripMenuItem.Enabled = false;
-                EditMCTextBox.Text = ThisMC;
-                EditRegistrationDateTextBox.Text = ThisRegistrationDate;
-                EditCategoryTextBox.Text = ThisCategory;
-                EditTag1TextBox.Text = ThisTag1;
-                EditTag2TextBox.Text = ThisTag2;
-                EditTag3TextBox.Text = ThisTag3;
-                EditRealLocationTextBox.Text = ThisRealLocation;
+                File.Delete(TargetContentsPath + "\\SystemData\\FREE");
             }
-        }
-        private void StartEditForm()// 編集画面に切り替え
-        {
             // 編集中タグを作成
-            FileStream FileStream = File.Create(TargetContentsPath + "\\DED");
+            if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+            {
+                Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+            }
+            FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\DED");
             FileStream.Close();
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
             // サムネ用画像変更用データが残っていた場合削除
@@ -3604,8 +3669,8 @@ namespace CREC
             ShowPicturesButton.Visible = false;
 
             // 各ラベルの表示内容を編集用に変更
-            AllowEditIDButton.Text = "編集不可";
-            ReissueUUIDToolStripMenuItem.Enabled = false;
+            AllowEditIDButton.Visible = true;
+            UUIDEditStatusLabel.Visible = false;
             // 詳細データおよび機密データを編集可能に変更
             DetailsTextBox.ReadOnly = false;
             ConfidentialDataTextBox.ReadOnly = false;
@@ -3678,8 +3743,8 @@ namespace CREC
             // ID手動設定を不可に変更
             EditIDTextBox.ReadOnly = true;
             AllowEditID = false;
-            AllowEditIDButton.Text = "編集不可";
-            ReissueUUIDToolStripMenuItem.Enabled = false;
+            AllowEditIDButton.Visible = true;
+            UUIDEditStatusLabel.Visible = false;
             // 再度詳細情報を表示
             if (DataLoadingStatus == "true")
             {
@@ -3740,8 +3805,8 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 AllowEditID = false;
-                AllowEditIDButton.Text = "編集不可";
-                ReissueUUIDToolStripMenuItem.Enabled = false;
+                AllowEditIDButton.Visible = true;
+                UUIDEditStatusLabel.Visible = false;
                 // 再度詳細情報を表示
                 if (DataLoadingStatus == "true")
                 {
@@ -3761,9 +3826,8 @@ namespace CREC
             {
                 if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
                 {
-                    AllowEditIDButton.Text = "設定不可";
-                    ReissueUUIDToolStripMenuItem.Enabled = false;
-                    AllowEditIDButton.ForeColor = Color.Red;
+                    UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", CurrentLanguageFileName);
+                    UUIDEditStatusLabel.ForeColor = Color.Red;
                     MessageBox.Show("入力されたIDは使用済みです。", "CREC");
                     return false;
                 }
@@ -3772,37 +3836,29 @@ namespace CREC
         }
         private void AllowEditIDButton_Click(object sender, EventArgs e)// ID手動設定の可否
         {
-            if (AllowEditID == false)
-            {
-                AllowEditID = true;
-                AllowEditIDButton.Text = "編集可";
-                EditIDTextBox.ReadOnly = false;
-                ReissueUUIDToolStripMenuItem.Enabled = true;
-            }
-            else if (AllowEditID == true)
-            {
-                AllowEditID = false;
-                AllowEditIDButton.Text = "編集不可";
-                EditIDTextBox.ReadOnly = true;
-                ReissueUUIDToolStripMenuItem.Enabled = false;
-            }
+            AllowEditID = true;
+            AllowEditIDButton.Visible = false;
+            UUIDEditStatusLabel.Visible = true;
+            UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", CurrentLanguageFileName);
+            UUIDEditStatusLabel.ForeColor = Color.Black;
+            EditIDTextBox.ReadOnly = false;
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
             if (ThisID == EditIDTextBox.Text)
             {
-                AllowEditIDButton.Text = "変更なし";
-                AllowEditIDButton.ForeColor = Color.Black;
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.ForeColor = Color.Black;
             }
             else if (System.IO.Directory.Exists(TargetFolderPath + "\\" + EditIDTextBox.Text))
             {
-                AllowEditIDButton.Text = "設定不可";
-                AllowEditIDButton.ForeColor = Color.Red;
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.ForeColor = Color.Red;
             }
             else
             {
-                AllowEditIDButton.Text = "設定可";
-                AllowEditIDButton.ForeColor = Color.Black;
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeOK", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.ForeColor = Color.Blue;
             }
         }
         private void CheckSameMCButton_Click(object sender, EventArgs e)// 同一コードを検索
@@ -3854,6 +3910,7 @@ namespace CREC
             Directory.CreateDirectory(TargetContentsPath);
             Directory.CreateDirectory(TargetContentsPath + "\\data");
             Directory.CreateDirectory(TargetContentsPath + "\\pictures");
+            Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
             FileStream FileStream = File.Create(TargetContentsPath + "\\index.txt");
             StreamWriter streamWriter = new StreamWriter(FileStream);
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
@@ -3881,7 +3938,8 @@ namespace CREC
                 CloseInventoryManagementModeButton.Visible = false;
             }
             // 新規作成タグを作成
-            FileStream = File.Create(TargetContentsPath + "\\ADD");
+            FileStream = File.Create(TargetContentsPath + "\\SystemData\\ADD");
+            FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
             FileStream.Close();
             // 表示中の内容をクリア
             DetailsTextBox.Text = "";
@@ -4001,10 +4059,17 @@ namespace CREC
             {
                 ShowPicturesMethod();
             }
-            // 編集中タグを削除
-            File.Delete(TargetContentsPath + "\\DED");
-            File.Delete(TargetContentsPath + "\\RED");
-            File.Delete(TargetContentsPath + "\\ADD");
+            // 編集中タグを削除・解放をマーク
+            if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+            {
+                Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+            }
+            FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
+            FileStream.Close();
+            File.Delete(TargetContentsPath + "\\SystemData\\DED");
+            File.Delete(TargetContentsPath + "\\SystemData\\RED");
+            File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+
             // ID変更処理
             if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
             {
@@ -4100,7 +4165,7 @@ namespace CREC
             EditInventoryOperationNoteTextBox.Visible = true;
             ProperInventorySettingsComboBox.Visible = true;
             ProperInventorySettingsTextBox.Visible = true;
-            SaveProperInventorySettingsButton.Visible = true;
+            SetProperInventorySettingsButton.Visible = true;
             ProperInventorySettingsNotificationLabel.Visible = true;
             CloseInventoryManagementModeButton.Visible = true;
             // DataGridView関係
@@ -4129,9 +4194,25 @@ namespace CREC
             {
                 row = rowsIM[i];
                 cols = row.Split(',');
-                InventoryModeDataGridView.Rows.Add(cols[0], cols[1], cols[2], cols[3]);
+                string InventoryOperation = "";
+                switch (cols[1])
+                {
+                    case "EntoryOperation":
+                    case "入庫"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName);
+                        break;
+                    case "ExitOperation":
+                    case "出庫"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName);
+                        break;
+                    case "Stocktaking":
+                    case "棚卸"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName);
+                        break;
+                }
+                InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
                 inventory = inventory + Convert.ToInt32(cols[2]);
-                InventoryLabel.Text = Convert.ToString("在庫数：" + inventory);
+                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName) + " : " + inventory);
             }
             if (inventory < 0)
             {
@@ -4141,7 +4222,7 @@ namespace CREC
             if (SafetyStock == null)
             {
                 ProperInventorySettingsTextBox.TextChanged -= ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを停止
-                ProperInventorySettingsTextBox.Text = "未定義";
+                ProperInventorySettingsTextBox.Text = " - ";
                 ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
             }
             else
@@ -4173,7 +4254,6 @@ namespace CREC
                 {
                     DataLoadingStatus = "stop";
                 }
-                LoadGrid();
             }
             else if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時は写真を表示
             {
@@ -4182,86 +4262,110 @@ namespace CREC
         }
         private void AddInventoryOperationButton_Click(object sender, EventArgs e)// 在庫の増減を保存
         {
+            if (EditQuantityTextBox.Text.Length < 1 || EditQuantityTextBox.Text == "-")// 数量が未入力の場合
+            {
+                MessageBox.Show("数量が入力されていません。", "CREC");
+                return;
+            }
+            if (OperationOptionComboBox.SelectedIndex == -1)// 操作内容が未選択の場合
+            {
+                MessageBox.Show("作業内容が入力されていません。", "CREC");
+                return;
+            }
             // 行数を確認
             string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            int error = 1;// 入力内容に不備がない場合は0に変更
+            string InventoryOperation = "";
             switch (OperationOptionComboBox.SelectedIndex)// 入力されたデータの整合性チェック
             {
                 case 0:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) > 0)
                     {
-                        error = 0;
+                        InventoryOperation = "EntoryOperation";
                     }
                     else
                     {
                         MessageBox.Show("入庫が選択されています。\n0より大きい値を入力してください", "CREC");
+                        return;
                     }
                     break;
                 case 1:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) < 0)
                     {
-                        error = 0;
+                        InventoryOperation = "ExitOperation";
                     }
                     else
                     {
                         MessageBox.Show("出庫が選択されています\n0より小さい値を入力してください", "CREC");
+                        return;
                     }
                     break;
                 case 2:
-                    error = 0;
+                    InventoryOperation = "Stocktaking";
                     break;
             }
-            if (error == 0)// エラーがなかった場合書き込み
+            StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+            for (int i = 0; i <= Convert.ToInt32(tmp.Length); i++)
             {
-                StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
-                for (int i = 0; i <= Convert.ToInt32(tmp.Length); i++)
+                if (i == 0)// .invのヘッダをコピー
                 {
-                    if (i == 0)// .invのヘッダをコピー
-                    {
-                        sw.WriteLine(rowsIM[0]);
-                    }
-                    else if (i == 1)// 追加されたデータを先頭に追加
-                    {
-                        // 現在時刻を取得 
-                        DateTime DT = DateTime.Now;
-                        sw.WriteLine("{0},{1},{2},{3}", DT.ToString("yyyy/MM/dd hh:mm:ss"), OperationOptionComboBox.Text, EditQuantityTextBox.Text, EditInventoryOperationNoteTextBox.Text);
-                    }
-                    else// 既存のデータを順に書き込み
-                    {
-                        sw.WriteLine(rowsIM[i - 1]);
-                    }
+                    sw.WriteLine(rowsIM[0]);
                 }
-                sw.Close();
-                OperationOptionComboBox.Refresh();
-                EditQuantityTextBox.ResetText();
-                EditInventoryOperationNoteTextBox.ResetText();
-                //invからデータを読み込んで再表示
-                InventoryModeDataGridView.Rows.Clear();
-                string reader;
-                string row;
-                string[] cols;
-                reader = File.ReadAllText(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                rowsIM = reader.Trim().Replace("\r", "").Split('\n');
-                // 行数を確認
-                tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                // 1行目を読み込み
-                row = rowsIM[0];
-                inventory = 0;
-                for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)
+                else if (i == 1)// 追加されたデータを先頭に追加
                 {
-                    row = rowsIM[i];
-                    cols = row.Split(',');
-                    InventoryModeDataGridView.Rows.Add(cols[0], cols[1], cols[2], cols[3]);
-                    inventory = inventory + Convert.ToInt32(cols[2]);
-                    InventoryLabel.Text = Convert.ToString("在庫数：" + inventory);
+                    // 現在時刻を取得 
+                    DateTime DT = DateTime.Now;
+                    sw.WriteLine("{0},{1},{2},{3}", DT.ToString("yyyy/MM/dd hh:mm:ss"), InventoryOperation, EditQuantityTextBox.Text, EditInventoryOperationNoteTextBox.Text);
                 }
-                if (inventory < 0)
+                else// 既存のデータを順に書き込み
                 {
-                    MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
+                    sw.WriteLine(rowsIM[i - 1]);
                 }
-                TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                ProperInventoryNotification();// 適正在庫設定と比較
             }
+            sw.Close();
+            OperationOptionComboBox.Refresh();
+            EditQuantityTextBox.ResetText();
+            EditInventoryOperationNoteTextBox.ResetText();
+            //invからデータを読み込んで再表示
+            InventoryModeDataGridView.Rows.Clear();
+            string reader;
+            string row;
+            string[] cols;
+            reader = File.ReadAllText(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            rowsIM = reader.Trim().Replace("\r", "").Split('\n');
+            // 行数を確認
+            tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            // 1行目を読み込み
+            row = rowsIM[0];
+            inventory = 0;
+            for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)
+            {
+                row = rowsIM[i];
+                cols = row.Split(',');
+                switch (cols[1])
+                {
+                    case "EntoryOperation":
+                    case "入庫"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName);
+                        break;
+                    case "ExitOperation":
+                    case "出庫"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName);
+                        break;
+                    case "Stocktaking":
+                    case "棚卸"://後方互換用
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName);
+                        break;
+                }
+                InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
+                inventory = inventory + Convert.ToInt32(cols[2]);
+                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName) + " : " + inventory);
+            }
+            if (inventory < 0)
+            {
+                MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
+            }
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            ProperInventoryNotification();// 適正在庫設定と比較
         }
         private void ProperInventorySettingsComboBox_SelectedIndexChanged(object sender, EventArgs e)// 適正在庫の表示項目を選択および表示
         {
@@ -4273,7 +4377,7 @@ namespace CREC
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
-                            ProperInventorySettingsTextBox.Text = "未定義";
+                            ProperInventorySettingsTextBox.Text = " - ";
                         }
                         else if (ProperInventorySettingsTextBox.ReadOnly == false)
                         {
@@ -4290,7 +4394,7 @@ namespace CREC
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
-                            ProperInventorySettingsTextBox.Text = "未定義";
+                            ProperInventorySettingsTextBox.Text = " - ";
                         }
                         else if (ProperInventorySettingsTextBox.ReadOnly == false)
                         {
@@ -4307,7 +4411,7 @@ namespace CREC
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
-                            ProperInventorySettingsTextBox.Text = "未定義";
+                            ProperInventorySettingsTextBox.Text = " - ";
                         }
                         else if (ProperInventorySettingsTextBox.ReadOnly == false)
                         {
@@ -4323,41 +4427,40 @@ namespace CREC
             ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
             TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
-        private void SaveProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更および保存
+        private void SaveProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定保存
         {
-            if (ProperInventorySettingsTextBox.ReadOnly == true)
+            ProperInventorySettingsTextBox.ReadOnly = true;
+            SaveProperInventorySettingsButton.Visible = false;
+            SetProperInventorySettingsButton.Visible = true;
+            // 行数を確認
+            string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+            for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
             {
-                ProperInventorySettingsTextBox.ReadOnly = false;
-                SaveProperInventorySettingsButton.Text = "保存";
-                if (ProperInventorySettingsTextBox.Text == "未定義")
+                if (i == 0)// .invのヘッダをコピー
                 {
-                    ProperInventorySettingsTextBox.Text = "";
+                    string row;
+                    row = rowsIM[i];
+                    cols = row.Split(',');
+                    sw.WriteLine("{0},{1},{2},{3}", cols[0], SafetyStock, ReorderPoint, MaximumLevel);
+                }
+                else// 既存のデータを順に書き込み
+                {
+                    sw.WriteLine(rowsIM[i]);
                 }
             }
-            else if (ProperInventorySettingsTextBox.ReadOnly == false)
+            sw.Close();
+            ProperInventoryNotification();
+            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+        }
+        private void SetProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更モード開始
+        {
+            ProperInventorySettingsTextBox.ReadOnly = false;
+            SaveProperInventorySettingsButton.Visible = true;
+            SetProperInventorySettingsButton.Visible = false;
+            if (ProperInventorySettingsTextBox.Text == "未定義" || ProperInventorySettingsTextBox.Text == " - ")// 未定義は多言語対応前の後方互換用
             {
-                ProperInventorySettingsTextBox.ReadOnly = true;
-                SaveProperInventorySettingsButton.Text = "変更";
-                // 行数を確認
-                string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                int error = 1;// 入力内容に不備がない場合は0に変更
-                StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
-                for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
-                {
-                    if (i == 0)// .invのヘッダをコピー
-                    {
-                        string row;
-                        row = rowsIM[i];
-                        cols = row.Split(',');
-                        sw.WriteLine("{0},{1},{2},{3}", cols[0], SafetyStock, ReorderPoint, MaximumLevel);
-                    }
-                    else// 既存のデータを順に書き込み
-                    {
-                        sw.WriteLine(rowsIM[i]);
-                    }
-                }
-                sw.Close();
-                ProperInventoryNotification();
+                ProperInventorySettingsTextBox.Text = "";
             }
             TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
@@ -4445,6 +4548,7 @@ namespace CREC
             ProperInventorySettingsComboBox.Visible = false;
             ProperInventorySettingsTextBox.Visible = false;
             SaveProperInventorySettingsButton.Visible = false;
+            SetProperInventorySettingsButton.Visible = false;
             ProperInventorySettingsNotificationLabel.Visible = false;
             // 表示内容・変数をリセット
             InventoryLabel.ResetText();
@@ -4490,10 +4594,10 @@ namespace CREC
             }
             else
             {
-                SearchMethodComboBox.Items.Add("前方一致");
-                SearchMethodComboBox.Items.Add("部分一致");
-                SearchMethodComboBox.Items.Add("後方一致");
-                SearchMethodComboBox.Items.Add("完全一致");
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
             }
             SearchMethodComboBox.SelectedIndex = 0;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
@@ -4867,7 +4971,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("プロジェクトファイルの更新に失敗しました。", "CREC");
+                MessageBox.Show("プロジェクトファイルの更新に失敗しました。\n" + ex.Message, "CREC");
             }
         }
         #endregion
@@ -5182,8 +5286,8 @@ namespace CREC
             dataGridView1.Font = new Font(fontname, mainfontsize);
             dataGridView1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             dataGridView1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(140 * DpiScale));
-            SearchOptionComboBox.Font = new Font(fontname, mainfontsize);
-            SearchOptionComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 320 * DpiScale), SearchOptionComboBox.Location.Y);
+            SearchOptionComboBox.Font = new Font(fontname, smallfontsize);
+            SearchOptionComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 365 * DpiScale), SearchOptionComboBox.Location.Y);
             PictureBox1.Width = Convert.ToInt32(FormSize.Width * 0.5 - 20 * DpiScale);
             PictureBox1.Height = Convert.ToInt32(FormSize.Height - 200 * DpiScale);
             PictureBox1.Location = new Point(Convert.ToInt32(10 * DpiScale), Convert.ToInt32(70 * DpiScale));
@@ -5193,10 +5297,10 @@ namespace CREC
             NoPicturesLabel.Location = new Point(Convert.ToInt32(FormSize.Width * 0.25 - 92 * DpiScale), Convert.ToInt32(FormSize.Height * 0.5));
             ClosePicturesButton.Font = new Font(fontname, mainfontsize);
             ClosePicturesButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 190 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
-            SearchMethodComboBox.Font = new Font(fontname, mainfontsize);
-            SearchMethodComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 160 * DpiScale), SearchOptionComboBox.Location.Y);
+            SearchMethodComboBox.Font = new Font(fontname, smallfontsize);
+            SearchMethodComboBox.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 205 * DpiScale), SearchOptionComboBox.Location.Y);
             SearchFormTextBox.Font = new Font(fontname, mainfontsize);
-            SearchFormTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 340 * DpiScale);
+            SearchFormTextBox.Width = Convert.ToInt32(FormSize.Width * 0.5 - 385 * DpiScale);
             SearchButton.Font = new Font(fontname, mainfontsize);
             SearchButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5 - 40 * DpiScale), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
             SearchFormTextBoxClearButton.Font = new Font(fontname, mainfontsize);
@@ -5290,6 +5394,10 @@ namespace CREC
             ConfidentialDataLabel.Font = new Font(fontname, mainfontsize);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditButton.Font = new Font(fontname, mainfontsize);
+            EditRequestButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            EditRequestButton.Font = new Font(fontname, mainfontsize);
+            ReadOnlyButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            ReadOnlyButton.Font = new Font(fontname, mainfontsize);
             EditRequestingButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditRequestingButton.Font = new Font(fontname, mainfontsize);
             SaveAndCloseEditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 620 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
@@ -5325,10 +5433,16 @@ namespace CREC
             EditInventoryOperationNoteTextBox.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditInventoryOperationNoteTextBox.Font = new Font(fontname, mainfontsize);
             ProperInventorySettingsComboBox.Font = new Font(fontname, mainfontsize);
+            ProperInventorySettingsTextBox.Location = new Point(Convert.ToInt32(ProperInventorySettingsComboBox.Location.X + ProperInventorySettingsComboBox.Width + 15 * DpiScale), ProperInventorySettingsTextBox.Location.Y);
             ProperInventorySettingsTextBox.Font = new Font(fontname, mainfontsize);
+            SetProperInventorySettingsButton.Location = new Point(Convert.ToInt32(ProperInventorySettingsTextBox.Location.X + ProperInventorySettingsTextBox.Width + 15 * DpiScale), SetProperInventorySettingsButton.Location.Y);
+            SetProperInventorySettingsButton.Font = new Font(fontname, mainfontsize);
+            SaveProperInventorySettingsButton.Location = new Point(Convert.ToInt32(ProperInventorySettingsTextBox.Location.X + ProperInventorySettingsTextBox.Width + 15 * DpiScale), SaveProperInventorySettingsButton.Location.Y);
             SaveProperInventorySettingsButton.Font = new Font(fontname, mainfontsize);
-            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - 70 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
+            AllowEditIDButton.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - AllowEditIDButton.Width - 10 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - AllowEditIDButton.Height) / 2);
             AllowEditIDButton.Font = new Font(fontname, extrasmallfontsize);
+            UUIDEditStatusLabel.Location = new Point(Convert.ToInt32(EditIDTextBox.Location.X + EditIDTextBox.Width - UUIDEditStatusLabel.Width - 10 * DpiScale), EditIDTextBox.Location.Y + (EditIDTextBox.Height - UUIDEditStatusLabel.Height) / 2);
+            UUIDEditStatusLabel.Font = new Font(fontname, extrasmallfontsize);
             CheckSameMCButton.Location = new Point(Convert.ToInt32(EditMCTextBox.Location.X + EditMCTextBox.Width - CheckSameMCButton.Width - 5 * DpiScale), EditMCTextBox.Location.Y + (EditMCTextBox.Height - CheckSameMCButton.Height) / 2);
             CheckSameMCButton.Font = new Font(fontname, extrasmallfontsize);
             NoImageLabel.Location = new Point(Convert.ToInt32(Thumbnail.Location.X + (Thumbnail.Width - NoImageLabel.Width) * 0.5), Convert.ToInt32(Thumbnail.Location.Y + (Thumbnail.Height - NoImageLabel.Height) * 0.5));
@@ -5397,23 +5511,26 @@ namespace CREC
                     MessageBox.Show("IDが変更されました。\n再度読み込みを行ってください。", "CREC");
                     break;
                 }
-                if (File.Exists(TargetContentsPath + "\\RED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                 {
                 }
                 else
                 {
-                    if (File.Exists(TargetContentsPath + "\\DED"))
+                    if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
                     {
                         EditRequestingButton.Visible = false;
                         EditButton.Visible = true;
                         MessageBox.Show("拒否されました", "CREC");
                         return;
                     }
-                    else
+                    else if (File.Exists(TargetContentsPath + "\\SystemData\\FREE"))
                     {
+                        EditRequestButton.Visible = false;
                         EditRequestingButton.Visible = false;
-                        EditButton.Visible = true;
-                        EditButton.Text = "編集";
+                        EditButton.Visible = false;
+                        ReadOnlyButton.Visible = false;
+                        EditRequestButton.Visible = false;
+                        //EditButton.Text = "編集";
                         StartEditForm();
                         // 現時点でのデータを読み込んで表示
                         LoadDetails();
@@ -5423,7 +5540,7 @@ namespace CREC
                         {
                             sr1 = new StreamReader(TargetDetailsPath);
                         }
-                        catch (Exception ex)
+                        catch
                         {
                             DetailsTextBox.Text = "No Data.";
                         }
@@ -5450,8 +5567,8 @@ namespace CREC
                         EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                         EditIDTextBox.Text = ThisID;
                         EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                        AllowEditIDButton.Text = "編集不可";
-                        ReissueUUIDToolStripMenuItem.Enabled = false;
+                        AllowEditIDButton.Visible = true;
+                        UUIDEditStatusLabel.Visible = false;
                         EditMCTextBox.Text = ThisMC;
                         EditRegistrationDateTextBox.Text = ThisRegistrationDate;
                         EditCategoryTextBox.Text = ThisCategory;
@@ -5467,10 +5584,10 @@ namespace CREC
         }
         private async void AwaitEditRequest()// 編集リクエストを待機
         {
-            while (File.Exists(TargetContentsPath + "\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
+            while (File.Exists(TargetContentsPath + "\\SystemData\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
             {
                 await Task.Delay(1);
-                if (File.Exists(TargetContentsPath + "\\RED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末から編集権限をリクエストされました。\nリクエストを許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
                     if (result == System.Windows.MessageBoxResult.Yes)// 編集を権限を譲渡
@@ -5548,7 +5665,7 @@ namespace CREC
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\RED");
+                        File.Delete(TargetContentsPath + "\\SystemData\\RED");
                         break;
                     }
                 }
@@ -5593,26 +5710,40 @@ namespace CREC
             while (true)
             {
                 await Task.Delay(1);
-                if (File.Exists(TargetContentsPath + "\\DED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
                 {
-                    if (File.Exists(TargetContentsPath + "\\RED"))
+                    if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                     {
-                        EditButton.Text = "閲覧のみ可能";
-                        EditButton.ForeColor = Color.Red;
+                        if (EditRequestingButton.Visible == false)
+                        {
+                            ReadOnlyButton.Visible = true;
+                            ReadOnlyButton.ForeColor = Color.Red;
+                        }
+                        else
+                        {
+                            ReadOnlyButton.Visible = false;
+                        }
+                        EditButton.Visible = false;
+                        EditRequestButton.Visible = false;
                     }
                     else
                     {
                         if (SaveAndCloseEditButton.Visible == false)
                         {
-                            EditButton.Text = "他端末編集中";
-                            EditButton.ForeColor = Color.Blue;
+                            //EditButton.Text = "他端末編集中";
+                            EditRequestButton.Visible = true;
+                            EditRequestButton.ForeColor = Color.Blue;
+                            EditButton.Visible = false;
+                            ReadOnlyButton.Visible = false;
                         }
                     }
                 }
                 else
                 {
-                    EditButton.Text = "編集";
-                    EditButton.ForeColor = Color.Black;
+                    //EditButton.Text = "編集";
+                    EditButton.Visible = true;
+                    ReadOnlyButton.Visible = false;
+                    EditRequestButton.Visible = false;
                 }
             }
         }
@@ -5966,11 +6097,11 @@ namespace CREC
                         streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
                     streamWriter.Close();
-                    MessageBox.Show("データ一覧を以下の場所にCSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 if (OpenListAfterOutput == true)
                 {
@@ -5990,7 +6121,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void TSVListOutputMethod()// TSV形式で一覧を出力
@@ -6148,11 +6279,11 @@ namespace CREC
                         streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
                     streamWriter.Close();
-                    MessageBox.Show("データ一覧を以下の場所にTSV形式で出力しました。\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 if (OpenListAfterOutput == true)
                 {
@@ -6172,7 +6303,14 @@ namespace CREC
             }
             catch (Exception ex)
             {
-
+                if (ListOutputFormat == "CSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if (ListOutputFormat == "TSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
         #endregion
@@ -6465,8 +6603,33 @@ namespace CREC
         }
         private void LanguageSettingToolStripMenuItems_Click(object sender, EventArgs e)// 表示言語がクリックされた時のイベント
         {
+            int? SelectedRow = null;
+            if (dataGridView1.RowCount > 0)// リストにコンテンツが表示されているか確認
+            {
+                SelectedRow = dataGridView1.SelectedRows[0].Index;// 表示中のコンテンツのIDを取得
+            }
             CurrentLanguageFileName = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
             SetLanguage(((ToolStripItem)sender).ToolTipText);
+            int TargetColumn = 1;
+            if (IDListVisibleToolStripMenuItem.Checked) { TargetColumn = 1; }
+            else if (MCListVisibleToolStripMenuItem.Checked) { TargetColumn = 2; }
+            else if (NameListVisibleToolStripMenuItem.Checked) { TargetColumn = 3; }
+            else if (RegistrationDateListVisibleToolStripMenuItem.Checked) { TargetColumn = 4; }
+            else if (CategoryListVisibleToolStripMenuItem.Checked) { TargetColumn = 5; }
+            else if (Tag1ListVisibleToolStripMenuItem.Checked) { TargetColumn = 6; }
+            else if (Tag2ListVisibleToolStripMenuItem.Checked) { TargetColumn = 7; }
+            else if (Tag3ListVisibleToolStripMenuItem.Checked) { TargetColumn = 8; }
+            else if (InventoryInformationListToolStripMenuItem.Checked) { TargetColumn = 9; }
+            if (SelectedRow != null)
+            {
+                dataGridView1.CurrentCell = dataGridView1[TargetColumn, (int)SelectedRow];// 言語設定前に表示されている項目を復元
+            }
+            ShowDetails();
+            if (AddInventoryOperationButton.Visible)// 在庫管理モードだった場合はボタンを変更
+            {
+                InventoryManagementModeButton.Visible = false;
+                CloseInventoryManagementModeButton.Visible = true;
+            }
         }
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {
@@ -6568,6 +6731,65 @@ namespace CREC
                 }
             }
             SetUserAssistToolTips();
+            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", CurrentLanguageFileName) + TargetProjectName;
+            // 検索方法の表示更新
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
+            int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
+            SearchMethodComboBox.Items.Clear();
+            if (SearchOptionComboBox.SelectedIndex == 7)
+            {
+                SearchMethodComboBox.Items.Add("欠品");
+                SearchMethodComboBox.Items.Add("不足");
+                SearchMethodComboBox.Items.Add("適正");
+                SearchMethodComboBox.Items.Add("過剰");
+                SearchFormTextBox.Clear();
+            }
+            else
+            {
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
+            }
+            if (CurrentSelectedIndex != -1)// 表示中の項目を変更
+            {
+                switch (CurrentSelectedIndex)
+                {
+                    case 0:
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
+                        break;
+                    case 1:
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
+                        break;
+                    case 2:
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
+                        break;
+                    case 3:
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
+                        break;
+                }
+            }
+            SearchMethodComboBox.SelectedIndex = CurrentSelectedIndex;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
+            // 在庫管理モード
+            int CurrentSelectedProperInventorySettingsComboBox = (int)ProperInventorySettingsComboBox.SelectedIndex;
+            ProperInventorySettingsComboBox.Items.Clear();
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SafetyStock", "mainform", CurrentLanguageFileName));
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ReorderPoint", "mainform", CurrentLanguageFileName));
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("MaximumLevel", "mainform", CurrentLanguageFileName));
+            ProperInventorySettingsComboBox.SelectedIndex = CurrentSelectedProperInventorySettingsComboBox;
+            int CurrentSelectedOperationOptionComboBox = (int)OperationOptionComboBox.SelectedIndex;
+            OperationOptionComboBox.Items.Clear();
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName));
+            OperationOptionComboBox.SelectedIndex = CurrentSelectedOperationOptionComboBox;
+            InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName)
+                + " : " + InventoryLabel.Text.Split(new string[] { " : " }, StringSplitOptions.None).Last());
+            InventoryModeDataGridView.Columns["date"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderDate", "mainform", CurrentLanguageFileName);
+            InventoryModeDataGridView.Columns["operation"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderOperation", "mainform", CurrentLanguageFileName);
+            InventoryModeDataGridView.Columns["quantity"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderQuantity", "mainform", CurrentLanguageFileName);
+            InventoryModeDataGridView.Columns["note"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderNote", "mainform", CurrentLanguageFileName);
         }
         private void SetUserAssistToolTips()// ユーザーアシストのToolTip設定
         {
@@ -6587,5 +6809,6 @@ namespace CREC
             }
         }
         #endregion
+
     }
 }

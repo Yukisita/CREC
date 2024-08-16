@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace CREC
 {
@@ -22,12 +23,14 @@ namespace CREC
         string TargetCRECPath = "";//管理ファイル（.crec）のファイルパス
         string[] cols;// List等読み込み用
         string ColorSetting = "Blue";
+        string CurrentLanguageFileName = "";// 言語設定
         public string ReturnTargetProject { get; private set; } = "";
-        public MakeNewProject(string tmp, string colorSetting)
+        public MakeNewProject(string tmp, string colorSetting, string currentLanguage)
         {
             InitializeComponent();
             TargetCRECPath = tmp;
             ColorSetting = colorSetting;
+            CurrentLanguageFileName = currentLanguage;
             SetColorMethod();
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
@@ -240,7 +243,7 @@ namespace CREC
                 {
                     sw.Write("f\n");
                 }
-                if(AutoMCFillCheckBox.Checked == true)
+                if (AutoMCFillCheckBox.Checked == true)
                 {
                     sw.Write("AutoMCFill,t\n");
                 }
@@ -420,13 +423,28 @@ namespace CREC
                 EditBackupLocationTextBox.ResetText();
             }
         }
+        private void ListOutputLocationReferenceButton_Click(object sender, EventArgs e)// データ一覧作成先を参照
+        {
+            OpenFileDialog openFolderDialog = new OpenFileDialog();
+            openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            openFolderDialog.Title = "フォルダを選択してください";
+            openFolderDialog.Filter = "Folder|.";
+            openFolderDialog.FileName = "SelectFolder";
+            openFolderDialog.CheckFileExists = false;
+            if (openFolderDialog.ShowDialog() == DialogResult.OK)// フォルダ読み込み成功
+            {
+                EditListOutputLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName);
+                openFolderDialog.Dispose();
+            }
+        }
         private void MakeNewProject_Load(object sender, EventArgs e)// 既存の.crecを読み込み
         {
+            // 言語設定
+            SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
             // 必要な項目を初期化
             CompressTypeComboBox.SelectedIndex = 0;
             if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
-                MakeNewProjectButton.Text = "保存";
                 label1.Text = "入力されたパスをプロジェクトフォルダとして設定します。";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
@@ -844,19 +862,77 @@ namespace CREC
                     break;
             }
         }
-        private void ListOutputLocationReferenceButton_Click(object sender, EventArgs e)
+
+        #region 言語設定
+        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {
-            OpenFileDialog openFolderDialog = new OpenFileDialog();
-            openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            openFolderDialog.Title = "フォルダを選択してください";
-            openFolderDialog.Filter = "Folder|.";
-            openFolderDialog.FileName = "SelectFolder";
-            openFolderDialog.CheckFileExists = false;
-            if (openFolderDialog.ShowDialog() == DialogResult.OK)// フォルダ読み込み成功
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "MakeNewProject", CurrentLanguageFileName);
+            XElement xElement = XElement.Load(targetLanguageFilePath);
+            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("MakeNewProject").Elements("Button").Elements("item") select item;
+            foreach (XElement itemData in buttonItemDataList)
             {
-                EditListOutputLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName);
-                openFolderDialog.Dispose();
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("MakeNewProject").Elements("Label").Elements("item") select item;
+            foreach (XElement itemData in labelItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> radioButtonItemDataList = from item in xElement.Elements("MakeNewProject").Elements("RadioButton").Elements("item") select item;
+            foreach (XElement itemData in radioButtonItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> checkBoxItemDataList = from item in xElement.Elements("MakeNewProject").Elements("CheckBox").Elements("item") select item;
+            foreach (XElement itemData in checkBoxItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
+        #endregion
     }
 }
