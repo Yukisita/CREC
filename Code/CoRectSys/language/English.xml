@@ -630,7 +630,103 @@
 				<itemname>EditLabelName</itemname>
 				<itemtext>Edit label name</itemtext>
 			</item>
+			<item>
+				<itemname>DefaultValueLabel</itemname>
+				<itemtext>Default value</itemtext>
+			</item>
+			<item>
+				<itemname>UserValueLabel</itemname>
+				<itemtext>User value</itemtext>
+			</item>
+			<item>
+				<itemname>VisibleUnvisibleLabel</itemname>
+				<itemtext>Visible</itemtext>
+			</item>
+			<item>
+				<itemname>OtherSettingsLabel</itemname>
+				<itemtext>Other</itemtext>
+			</item>
+			<item>
+				<itemname>ObjectNameLabel</itemname>
+				<itemtext>Name</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDLabel</itemname>
+				<itemtext>UUID</itemtext>
+			</item>
+			<item>
+				<itemname>MCLabel</itemname>
+				<itemtext>Mgmt. code</itemtext>
+			</item>
+			<item>
+				<itemname>AutoMCFillCheckBoxLabel</itemname>
+				<itemtext>Auto fill</itemtext>
+			</item>
+			<item>
+				<itemname>RegistrationDateLabel</itemname>
+				<itemtext>Registration</itemtext>
+			</item>
+			<item>
+				<itemname>CategoryLabel</itemname>
+				<itemtext>Category</itemtext>
+			</item>
+			<item>
+				<itemname>Tag1NameLabel</itemname>
+				<itemtext>Tag 1</itemtext>
+			</item>
+			<item>
+				<itemname>Tag2NameLabel</itemname>
+				<itemtext>Tag 2</itemtext>
+			</item>
+			<item>
+				<itemname>Tag3NameLabel</itemname>
+				<itemtext>Tag 3</itemtext>
+			</item>
+			<item>
+				<itemname>RealLocationLabel</itemname>
+				<itemtext>Real location</itemtext>
+			</item>
+			<item>
+				<itemname>DataLocationLabel</itemname>
+				<itemtext>Data location</itemtext>
+			</item>
 		</Label>
+		<CheckBox>
+			<item>
+				<itemname>StartUpBackUpCheckBox</itemname>
+				<itemtext>StartUp</itemtext>
+			</item>
+			<item>
+				<itemname>CloseBackUpCheckBox</itemname>
+				<itemtext>Close</itemtext>
+			</item>
+			<item>
+				<itemname>EditedBackUpCheckBox</itemname>
+				<itemtext>After data added</itemtext>
+			</item>
+			<item>
+				<itemname>StartUpListOutputCheckBox</itemname>
+				<itemtext>StartUp</itemtext>
+			</item>
+			<item>
+				<itemname>CloseListOutputCheckBox</itemname>
+				<itemtext>Close</itemtext>
+			</item>
+			<item>
+				<itemname>EditedListOutputCheckBox</itemname>
+				<itemtext>After data added</itemtext>
+			</item>
+			<item>
+				<itemname>OpenListAfterOutputCheckBox</itemname>
+				<itemtext>Open file after output</itemtext>
+			</item>
+		</CheckBox>
+		<MessageBox>
+			<item>
+				<itemname>AskChangeUUIDLabel</itemname>
+				<itemtext>UUID is the value used by the system.&#xD;&#xA;This operation may cause system malfunction.&#xD;&#xA;Do you want to change this?</itemtext>
+			</item>
+		</MessageBox>
 		<Other>
 			<item>
 				<itemname>FormName</itemname>

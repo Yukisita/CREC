@@ -32,9 +32,9 @@
             this.ProjectName = new System.Windows.Forms.Label();
             this.ProjectLocation = new System.Windows.Forms.Label();
             this.BackupLocation = new System.Windows.Forms.Label();
-            this.Tag1Name = new System.Windows.Forms.Label();
-            this.Tag3Name = new System.Windows.Forms.Label();
-            this.Tag2Name = new System.Windows.Forms.Label();
+            this.Tag1NameLabel = new System.Windows.Forms.Label();
+            this.Tag3NameLabel = new System.Windows.Forms.Label();
+            this.Tag2NameLabel = new System.Windows.Forms.Label();
             this.MakeNewProjectButton = new System.Windows.Forms.Button();
             this.EditProjectNameTextBox = new System.Windows.Forms.TextBox();
             this.EditProjectLocationTextBox = new System.Windows.Forms.TextBox();
@@ -57,26 +57,26 @@
             this.EditListOutputLocationTextBox = new System.Windows.Forms.TextBox();
             this.ListOutputLocation = new System.Windows.Forms.Label();
             this.OpenListAfterOutputCheckBox = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.EditShowObjectNameLabelTextBox = new System.Windows.Forms.TextBox();
-            this.EditShowIDLabelTextBox = new System.Windows.Forms.TextBox();
-            this.EditShowMCLabelTextBox = new System.Windows.Forms.TextBox();
+            this.ObjectNameLabel = new System.Windows.Forms.Label();
+            this.MCLabel = new System.Windows.Forms.Label();
+            this.UUIDLabel = new System.Windows.Forms.Label();
+            this.EditObjectNameLabelTextBox = new System.Windows.Forms.TextBox();
+            this.EditUUIDLabelTextBox = new System.Windows.Forms.TextBox();
+            this.EditMCLabelTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.EditLabelName = new System.Windows.Forms.Label();
-            this.EditShowCategoryLabelTextBox = new System.Windows.Forms.TextBox();
-            this.EditShowRegistrationDateLabelTextBox = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.EditShowDataLocationLabelTextBox = new System.Windows.Forms.TextBox();
-            this.EditShowRealLocationLabelTextBox = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
+            this.EditCategoryLabelTextBox = new System.Windows.Forms.TextBox();
+            this.EditRegistrationDateLabelTextBox = new System.Windows.Forms.TextBox();
+            this.CategoryLabel = new System.Windows.Forms.Label();
+            this.RegistrationDateLabel = new System.Windows.Forms.Label();
+            this.EditDataLocationLabelTextBox = new System.Windows.Forms.TextBox();
+            this.EditRealLocationLabelTextBox = new System.Windows.Forms.TextBox();
+            this.DataLocationLabel = new System.Windows.Forms.Label();
+            this.DefaultValueLabel = new System.Windows.Forms.Label();
+            this.RealLocationLabel = new System.Windows.Forms.Label();
             this.CenterLine = new System.Windows.Forms.Label();
             this.ShowObjectNameLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
-            this.label14 = new System.Windows.Forms.Label();
+            this.VisibleUnvisibleLabel = new System.Windows.Forms.Label();
             this.ShowIDLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowMCLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowRegistrationDateLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
@@ -91,11 +91,12 @@
             this.CSVOutputRadioButton = new System.Windows.Forms.RadioButton();
             this.CompressTypeLabel = new System.Windows.Forms.Label();
             this.CompressTypeComboBox = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
+            this.OtherSettingsLabel = new System.Windows.Forms.Label();
             this.AutoMCFillCheckBox = new System.Windows.Forms.CheckBox();
-            this.label16 = new System.Windows.Forms.Label();
+            this.AutoMCFillCheckBoxLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.UserValueLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -129,38 +130,35 @@
             this.BackupLocation.TabIndex = 2;
             this.BackupLocation.Text = "バックアップ場所";
             // 
-            // Tag1Name
+            // Tag1NameLabel
             // 
-            this.Tag1Name.AutoSize = true;
-            this.Tag1Name.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag1Name.Location = new System.Drawing.Point(1008, 467);
-            this.Tag1Name.Name = "Tag1Name";
-            this.Tag1Name.Size = new System.Drawing.Size(145, 51);
-            this.Tag1Name.TabIndex = 3;
-            this.Tag1Name.Text = "タグ1⇒";
-            this.Tag1Name.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Tag1NameLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag1NameLabel.Location = new System.Drawing.Point(846, 486);
+            this.Tag1NameLabel.Name = "Tag1NameLabel";
+            this.Tag1NameLabel.Size = new System.Drawing.Size(290, 50);
+            this.Tag1NameLabel.TabIndex = 3;
+            this.Tag1NameLabel.Text = "タグ1";
+            this.Tag1NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Tag3Name
+            // Tag3NameLabel
             // 
-            this.Tag3Name.AutoSize = true;
-            this.Tag3Name.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag3Name.Location = new System.Drawing.Point(1008, 589);
-            this.Tag3Name.Name = "Tag3Name";
-            this.Tag3Name.Size = new System.Drawing.Size(145, 51);
-            this.Tag3Name.TabIndex = 4;
-            this.Tag3Name.Text = "タグ3⇒";
-            this.Tag3Name.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Tag3NameLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag3NameLabel.Location = new System.Drawing.Point(846, 614);
+            this.Tag3NameLabel.Name = "Tag3NameLabel";
+            this.Tag3NameLabel.Size = new System.Drawing.Size(290, 50);
+            this.Tag3NameLabel.TabIndex = 4;
+            this.Tag3NameLabel.Text = "タグ3";
+            this.Tag3NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // Tag2Name
+            // Tag2NameLabel
             // 
-            this.Tag2Name.AutoSize = true;
-            this.Tag2Name.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag2Name.Location = new System.Drawing.Point(1008, 528);
-            this.Tag2Name.Name = "Tag2Name";
-            this.Tag2Name.Size = new System.Drawing.Size(145, 51);
-            this.Tag2Name.TabIndex = 5;
-            this.Tag2Name.Text = "タグ2⇒";
-            this.Tag2Name.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.Tag2NameLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Tag2NameLabel.Location = new System.Drawing.Point(846, 550);
+            this.Tag2NameLabel.Name = "Tag2NameLabel";
+            this.Tag2NameLabel.Size = new System.Drawing.Size(290, 50);
+            this.Tag2NameLabel.TabIndex = 5;
+            this.Tag2NameLabel.Text = "タグ2";
+            this.Tag2NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // MakeNewProjectButton
             // 
@@ -198,13 +196,13 @@
             this.EditBackupLocationTextBox.Location = new System.Drawing.Point(7, 372);
             this.EditBackupLocationTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditBackupLocationTextBox.Name = "EditBackupLocationTextBox";
-            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(787, 35);
+            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(787, 43);
             this.EditBackupLocationTextBox.TabIndex = 5;
             // 
             // EditTag1NameTextBox
             // 
             this.EditTag1NameTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag1NameTextBox.Location = new System.Drawing.Point(1145, 475);
+            this.EditTag1NameTextBox.Location = new System.Drawing.Point(1145, 490);
             this.EditTag1NameTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditTag1NameTextBox.Name = "EditTag1NameTextBox";
             this.EditTag1NameTextBox.Size = new System.Drawing.Size(387, 43);
@@ -214,7 +212,7 @@
             // EditTag2NameTextBox
             // 
             this.EditTag2NameTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag2NameTextBox.Location = new System.Drawing.Point(1145, 536);
+            this.EditTag2NameTextBox.Location = new System.Drawing.Point(1145, 554);
             this.EditTag2NameTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditTag2NameTextBox.Name = "EditTag2NameTextBox";
             this.EditTag2NameTextBox.Size = new System.Drawing.Size(387, 43);
@@ -224,7 +222,7 @@
             // EditTag3NameTextBox
             // 
             this.EditTag3NameTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag3NameTextBox.Location = new System.Drawing.Point(1145, 597);
+            this.EditTag3NameTextBox.Location = new System.Drawing.Point(1145, 618);
             this.EditTag3NameTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditTag3NameTextBox.Name = "EditTag3NameTextBox";
             this.EditTag3NameTextBox.Size = new System.Drawing.Size(387, 43);
@@ -278,7 +276,7 @@
             // 
             this.CloseBackUpCheckBox.AutoSize = true;
             this.CloseBackUpCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseBackUpCheckBox.Location = new System.Drawing.Point(132, 537);
+            this.CloseBackUpCheckBox.Location = new System.Drawing.Point(178, 537);
             this.CloseBackUpCheckBox.Name = "CloseBackUpCheckBox";
             this.CloseBackUpCheckBox.Size = new System.Drawing.Size(109, 40);
             this.CloseBackUpCheckBox.TabIndex = 45;
@@ -289,7 +287,7 @@
             // 
             this.EditedBackUpCheckBox.AutoSize = true;
             this.EditedBackUpCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedBackUpCheckBox.Location = new System.Drawing.Point(250, 537);
+            this.EditedBackUpCheckBox.Location = new System.Drawing.Point(341, 537);
             this.EditedBackUpCheckBox.Name = "EditedBackUpCheckBox";
             this.EditedBackUpCheckBox.Size = new System.Drawing.Size(181, 40);
             this.EditedBackUpCheckBox.TabIndex = 46;
@@ -300,7 +298,7 @@
             // 
             this.EditedListOutputCheckBox.AutoSize = true;
             this.EditedListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(250, 809);
+            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(341, 809);
             this.EditedListOutputCheckBox.Name = "EditedListOutputCheckBox";
             this.EditedListOutputCheckBox.Size = new System.Drawing.Size(181, 40);
             this.EditedListOutputCheckBox.TabIndex = 54;
@@ -311,7 +309,7 @@
             // 
             this.CloseListOutputCheckBox.AutoSize = true;
             this.CloseListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(132, 809);
+            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(178, 809);
             this.CloseListOutputCheckBox.Name = "CloseListOutputCheckBox";
             this.CloseListOutputCheckBox.Size = new System.Drawing.Size(109, 40);
             this.CloseListOutputCheckBox.TabIndex = 53;
@@ -366,7 +364,7 @@
             this.EditListOutputLocationTextBox.Location = new System.Drawing.Point(7, 706);
             this.EditListOutputLocationTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditListOutputLocationTextBox.Name = "EditListOutputLocationTextBox";
-            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(787, 35);
+            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(787, 43);
             this.EditListOutputLocationTextBox.TabIndex = 7;
             // 
             // ListOutputLocation
@@ -390,68 +388,67 @@
             this.OpenListAfterOutputCheckBox.Text = "出力後に開く";
             this.OpenListAfterOutputCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label3
+            // ObjectNameLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(1028, 162);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(124, 51);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "名称⇒";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.ObjectNameLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ObjectNameLabel.Location = new System.Drawing.Point(846, 166);
+            this.ObjectNameLabel.Name = "ObjectNameLabel";
+            this.ObjectNameLabel.Size = new System.Drawing.Size(290, 50);
+            this.ObjectNameLabel.TabIndex = 3;
+            this.ObjectNameLabel.Text = "名称";
+            this.ObjectNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label5
+            // MCLabel
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(928, 284);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(226, 51);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "管理コード⇒";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.MCLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.MCLabel.Location = new System.Drawing.Point(846, 294);
+            this.MCLabel.Name = "MCLabel";
+            this.MCLabel.Size = new System.Drawing.Size(290, 50);
+            this.MCLabel.TabIndex = 4;
+            this.MCLabel.Text = "管理コード";
+            this.MCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label6
+            // UUIDLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label6.Location = new System.Drawing.Point(1008, 223);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(145, 51);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "UUID⇒";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.UUIDLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.UUIDLabel.Location = new System.Drawing.Point(846, 230);
+            this.UUIDLabel.Name = "UUIDLabel";
+            this.UUIDLabel.Size = new System.Drawing.Size(290, 50);
+            this.UUIDLabel.TabIndex = 5;
+            this.UUIDLabel.Text = "UUID";
+            this.UUIDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // EditShowObjectNameLabelTextBox
+            // EditObjectNameLabelTextBox
             // 
-            this.EditShowObjectNameLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowObjectNameLabelTextBox.Location = new System.Drawing.Point(1145, 170);
-            this.EditShowObjectNameLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowObjectNameLabelTextBox.Name = "EditShowObjectNameLabelTextBox";
-            this.EditShowObjectNameLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowObjectNameLabelTextBox.TabIndex = 8;
-            this.EditShowObjectNameLabelTextBox.Text = "名称";
+            this.EditObjectNameLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditObjectNameLabelTextBox.Location = new System.Drawing.Point(1145, 170);
+            this.EditObjectNameLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditObjectNameLabelTextBox.Name = "EditObjectNameLabelTextBox";
+            this.EditObjectNameLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditObjectNameLabelTextBox.TabIndex = 8;
+            this.EditObjectNameLabelTextBox.Text = "名称";
             // 
-            // EditShowIDLabelTextBox
+            // EditUUIDLabelTextBox
             // 
-            this.EditShowIDLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowIDLabelTextBox.Location = new System.Drawing.Point(1145, 231);
-            this.EditShowIDLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowIDLabelTextBox.Name = "EditShowIDLabelTextBox";
-            this.EditShowIDLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowIDLabelTextBox.TabIndex = 9;
-            this.EditShowIDLabelTextBox.Text = "UUID";
+            this.EditUUIDLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditUUIDLabelTextBox.Location = new System.Drawing.Point(1145, 234);
+            this.EditUUIDLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditUUIDLabelTextBox.Name = "EditUUIDLabelTextBox";
+            this.EditUUIDLabelTextBox.ReadOnly = true;
+            this.EditUUIDLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditUUIDLabelTextBox.TabIndex = 9;
+            this.EditUUIDLabelTextBox.Text = "UUID";
+            this.EditUUIDLabelTextBox.Click += new System.EventHandler(this.EditUUIDLabelTextBox_Click);
             // 
-            // EditShowMCLabelTextBox
+            // EditMCLabelTextBox
             // 
-            this.EditShowMCLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowMCLabelTextBox.Location = new System.Drawing.Point(1145, 292);
-            this.EditShowMCLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowMCLabelTextBox.Name = "EditShowMCLabelTextBox";
-            this.EditShowMCLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowMCLabelTextBox.TabIndex = 10;
-            this.EditShowMCLabelTextBox.Text = "管理コード";
+            this.EditMCLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditMCLabelTextBox.Location = new System.Drawing.Point(1145, 298);
+            this.EditMCLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditMCLabelTextBox.Name = "EditMCLabelTextBox";
+            this.EditMCLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditMCLabelTextBox.TabIndex = 10;
+            this.EditMCLabelTextBox.Text = "管理コード";
             // 
             // label7
             // 
@@ -473,100 +470,95 @@
             this.EditLabelName.TabIndex = 56;
             this.EditLabelName.Text = "ラベル名編集";
             // 
-            // EditShowCategoryLabelTextBox
+            // EditCategoryLabelTextBox
             // 
-            this.EditShowCategoryLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowCategoryLabelTextBox.Location = new System.Drawing.Point(1145, 411);
-            this.EditShowCategoryLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowCategoryLabelTextBox.Name = "EditShowCategoryLabelTextBox";
-            this.EditShowCategoryLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowCategoryLabelTextBox.TabIndex = 12;
-            this.EditShowCategoryLabelTextBox.Text = "カテゴリ";
+            this.EditCategoryLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditCategoryLabelTextBox.Location = new System.Drawing.Point(1145, 423);
+            this.EditCategoryLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditCategoryLabelTextBox.Name = "EditCategoryLabelTextBox";
+            this.EditCategoryLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditCategoryLabelTextBox.TabIndex = 12;
+            this.EditCategoryLabelTextBox.Text = "カテゴリ";
             // 
-            // EditShowRegistrationDateLabelTextBox
+            // EditRegistrationDateLabelTextBox
             // 
-            this.EditShowRegistrationDateLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowRegistrationDateLabelTextBox.Location = new System.Drawing.Point(1145, 353);
-            this.EditShowRegistrationDateLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowRegistrationDateLabelTextBox.Name = "EditShowRegistrationDateLabelTextBox";
-            this.EditShowRegistrationDateLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowRegistrationDateLabelTextBox.TabIndex = 11;
-            this.EditShowRegistrationDateLabelTextBox.Text = "登録日";
+            this.EditRegistrationDateLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditRegistrationDateLabelTextBox.Location = new System.Drawing.Point(1145, 362);
+            this.EditRegistrationDateLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditRegistrationDateLabelTextBox.Name = "EditRegistrationDateLabelTextBox";
+            this.EditRegistrationDateLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditRegistrationDateLabelTextBox.TabIndex = 11;
+            this.EditRegistrationDateLabelTextBox.Text = "登録日";
             // 
-            // label9
+            // CategoryLabel
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label9.Location = new System.Drawing.Point(962, 406);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(192, 51);
-            this.label9.TabIndex = 60;
-            this.label9.Text = "カテゴリ⇒";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.CategoryLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CategoryLabel.Location = new System.Drawing.Point(846, 419);
+            this.CategoryLabel.Name = "CategoryLabel";
+            this.CategoryLabel.Size = new System.Drawing.Size(290, 50);
+            this.CategoryLabel.TabIndex = 60;
+            this.CategoryLabel.Text = "カテゴリ";
+            this.CategoryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label11
+            // RegistrationDateLabel
             // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label11.Location = new System.Drawing.Point(995, 345);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(158, 51);
-            this.label11.TabIndex = 58;
-            this.label11.Text = "登録日⇒";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.RegistrationDateLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.RegistrationDateLabel.Location = new System.Drawing.Point(846, 358);
+            this.RegistrationDateLabel.Name = "RegistrationDateLabel";
+            this.RegistrationDateLabel.Size = new System.Drawing.Size(290, 50);
+            this.RegistrationDateLabel.TabIndex = 58;
+            this.RegistrationDateLabel.Text = "登録日";
+            this.RegistrationDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // EditShowDataLocationLabelTextBox
+            // EditDataLocationLabelTextBox
             // 
-            this.EditShowDataLocationLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowDataLocationLabelTextBox.Location = new System.Drawing.Point(1145, 719);
-            this.EditShowDataLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowDataLocationLabelTextBox.Name = "EditShowDataLocationLabelTextBox";
-            this.EditShowDataLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowDataLocationLabelTextBox.TabIndex = 17;
-            this.EditShowDataLocationLabelTextBox.Text = "データ保管場所";
+            this.EditDataLocationLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditDataLocationLabelTextBox.Location = new System.Drawing.Point(1145, 746);
+            this.EditDataLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditDataLocationLabelTextBox.Name = "EditDataLocationLabelTextBox";
+            this.EditDataLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditDataLocationLabelTextBox.TabIndex = 17;
+            this.EditDataLocationLabelTextBox.Text = "データ保管場所";
             // 
-            // EditShowRealLocationLabelTextBox
+            // EditRealLocationLabelTextBox
             // 
-            this.EditShowRealLocationLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditShowRealLocationLabelTextBox.Location = new System.Drawing.Point(1145, 658);
-            this.EditShowRealLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
-            this.EditShowRealLocationLabelTextBox.Name = "EditShowRealLocationLabelTextBox";
-            this.EditShowRealLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
-            this.EditShowRealLocationLabelTextBox.TabIndex = 16;
-            this.EditShowRealLocationLabelTextBox.Text = "現物保管場所";
+            this.EditRealLocationLabelTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditRealLocationLabelTextBox.Location = new System.Drawing.Point(1145, 682);
+            this.EditRealLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
+            this.EditRealLocationLabelTextBox.Name = "EditRealLocationLabelTextBox";
+            this.EditRealLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
+            this.EditRealLocationLabelTextBox.TabIndex = 16;
+            this.EditRealLocationLabelTextBox.Text = "現物保管場所";
             // 
-            // label10
+            // DataLocationLabel
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label10.Location = new System.Drawing.Point(858, 711);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(294, 51);
-            this.label10.TabIndex = 65;
-            this.label10.Text = "データ保管場所⇒";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.DataLocationLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.DataLocationLabel.Location = new System.Drawing.Point(846, 742);
+            this.DataLocationLabel.Name = "DataLocationLabel";
+            this.DataLocationLabel.Size = new System.Drawing.Size(290, 50);
+            this.DataLocationLabel.TabIndex = 65;
+            this.DataLocationLabel.Text = "データ保管場所";
+            this.DataLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label12
+            // DefaultValueLabel
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label12.Location = new System.Drawing.Point(961, 110);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(464, 51);
-            this.label12.TabIndex = 64;
-            this.label12.Text = "既定値　⇒　ユーザー設定値";
-            this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.DefaultValueLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.DefaultValueLabel.Location = new System.Drawing.Point(855, 110);
+            this.DefaultValueLabel.Name = "DefaultValueLabel";
+            this.DefaultValueLabel.Size = new System.Drawing.Size(281, 51);
+            this.DefaultValueLabel.TabIndex = 64;
+            this.DefaultValueLabel.Text = "既定値";
+            this.DefaultValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label13
+            // RealLocationLabel
             // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label13.Location = new System.Drawing.Point(893, 650);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(260, 51);
-            this.label13.TabIndex = 63;
-            this.label13.Text = "現物保管場所⇒";
-            this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.RealLocationLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.RealLocationLabel.Location = new System.Drawing.Point(846, 678);
+            this.RealLocationLabel.Name = "RealLocationLabel";
+            this.RealLocationLabel.Size = new System.Drawing.Size(290, 50);
+            this.RealLocationLabel.TabIndex = 63;
+            this.RealLocationLabel.Text = "現物保管場所";
+            this.RealLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // CenterLine
             // 
@@ -592,16 +584,16 @@
             this.ShowObjectNameLabelVisibleCheckBox.TabIndex = 69;
             this.ShowObjectNameLabelVisibleCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label14
+            // VisibleUnvisibleLabel
             // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label14.Location = new System.Drawing.Point(1452, 110);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(90, 51);
-            this.label14.TabIndex = 70;
-            this.label14.Text = "表示";
-            this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.VisibleUnvisibleLabel.AutoSize = true;
+            this.VisibleUnvisibleLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.VisibleUnvisibleLabel.Location = new System.Drawing.Point(1437, 110);
+            this.VisibleUnvisibleLabel.Name = "VisibleUnvisibleLabel";
+            this.VisibleUnvisibleLabel.Size = new System.Drawing.Size(90, 51);
+            this.VisibleUnvisibleLabel.TabIndex = 70;
+            this.VisibleUnvisibleLabel.Text = "表示";
+            this.VisibleUnvisibleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // ShowIDLabelVisibleCheckBox
             // 
@@ -609,7 +601,7 @@
             this.ShowIDLabelVisibleCheckBox.Checked = true;
             this.ShowIDLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowIDLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowIDLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 241);
+            this.ShowIDLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 244);
             this.ShowIDLabelVisibleCheckBox.Name = "ShowIDLabelVisibleCheckBox";
             this.ShowIDLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowIDLabelVisibleCheckBox.TabIndex = 71;
@@ -621,7 +613,7 @@
             this.ShowMCLabelVisibleCheckBox.Checked = true;
             this.ShowMCLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowMCLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowMCLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 301);
+            this.ShowMCLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 307);
             this.ShowMCLabelVisibleCheckBox.Name = "ShowMCLabelVisibleCheckBox";
             this.ShowMCLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowMCLabelVisibleCheckBox.TabIndex = 72;
@@ -633,7 +625,7 @@
             this.ShowRegistrationDateLabelVisibleCheckBox.Checked = true;
             this.ShowRegistrationDateLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowRegistrationDateLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRegistrationDateLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 363);
+            this.ShowRegistrationDateLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 372);
             this.ShowRegistrationDateLabelVisibleCheckBox.Name = "ShowRegistrationDateLabelVisibleCheckBox";
             this.ShowRegistrationDateLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowRegistrationDateLabelVisibleCheckBox.TabIndex = 73;
@@ -645,7 +637,7 @@
             this.ShowCategoryLabelVisibleCheckBox.Checked = true;
             this.ShowCategoryLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowCategoryLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowCategoryLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 421);
+            this.ShowCategoryLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 433);
             this.ShowCategoryLabelVisibleCheckBox.Name = "ShowCategoryLabelVisibleCheckBox";
             this.ShowCategoryLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowCategoryLabelVisibleCheckBox.TabIndex = 74;
@@ -657,7 +649,7 @@
             this.Tag1NameVisibleCheckBox.Checked = true;
             this.Tag1NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Tag1NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag1NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 485);
+            this.Tag1NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 500);
             this.Tag1NameVisibleCheckBox.Name = "Tag1NameVisibleCheckBox";
             this.Tag1NameVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.Tag1NameVisibleCheckBox.TabIndex = 75;
@@ -669,7 +661,7 @@
             this.Tag2NameVisibleCheckBox.Checked = true;
             this.Tag2NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Tag2NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag2NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 546);
+            this.Tag2NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 564);
             this.Tag2NameVisibleCheckBox.Name = "Tag2NameVisibleCheckBox";
             this.Tag2NameVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.Tag2NameVisibleCheckBox.TabIndex = 76;
@@ -681,7 +673,7 @@
             this.Tag3NameVisibleCheckBox.Checked = true;
             this.Tag3NameVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.Tag3NameVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag3NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 607);
+            this.Tag3NameVisibleCheckBox.Location = new System.Drawing.Point(1485, 628);
             this.Tag3NameVisibleCheckBox.Name = "Tag3NameVisibleCheckBox";
             this.Tag3NameVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.Tag3NameVisibleCheckBox.TabIndex = 77;
@@ -693,7 +685,7 @@
             this.ShowRealLocationLabelVisibleCheckBox.Checked = true;
             this.ShowRealLocationLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowRealLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRealLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 668);
+            this.ShowRealLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 692);
             this.ShowRealLocationLabelVisibleCheckBox.Name = "ShowRealLocationLabelVisibleCheckBox";
             this.ShowRealLocationLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowRealLocationLabelVisibleCheckBox.TabIndex = 78;
@@ -705,7 +697,7 @@
             this.ShowDataLocationLabelVisibleCheckBox.Checked = true;
             this.ShowDataLocationLabelVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ShowDataLocationLabelVisibleCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowDataLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 729);
+            this.ShowDataLocationLabelVisibleCheckBox.Location = new System.Drawing.Point(1485, 756);
             this.ShowDataLocationLabelVisibleCheckBox.Name = "ShowDataLocationLabelVisibleCheckBox";
             this.ShowDataLocationLabelVisibleCheckBox.Size = new System.Drawing.Size(18, 17);
             this.ShowDataLocationLabelVisibleCheckBox.TabIndex = 79;
@@ -768,16 +760,16 @@
             this.CompressTypeComboBox.Size = new System.Drawing.Size(272, 44);
             this.CompressTypeComboBox.TabIndex = 82;
             // 
-            // label15
+            // OtherSettingsLabel
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label15.Location = new System.Drawing.Point(1548, 110);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(192, 51);
-            this.label15.TabIndex = 83;
-            this.label15.Text = "その他設定";
-            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.OtherSettingsLabel.AutoSize = true;
+            this.OtherSettingsLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.OtherSettingsLabel.Location = new System.Drawing.Point(1568, 110);
+            this.OtherSettingsLabel.Name = "OtherSettingsLabel";
+            this.OtherSettingsLabel.Size = new System.Drawing.Size(192, 51);
+            this.OtherSettingsLabel.TabIndex = 83;
+            this.OtherSettingsLabel.Text = "その他設定";
+            this.OtherSettingsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // AutoMCFillCheckBox
             // 
@@ -785,22 +777,22 @@
             this.AutoMCFillCheckBox.Checked = true;
             this.AutoMCFillCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AutoMCFillCheckBox.Font = new System.Drawing.Font("MS UI Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoMCFillCheckBox.Location = new System.Drawing.Point(1681, 301);
+            this.AutoMCFillCheckBox.Location = new System.Drawing.Point(1681, 307);
             this.AutoMCFillCheckBox.Name = "AutoMCFillCheckBox";
             this.AutoMCFillCheckBox.Size = new System.Drawing.Size(18, 17);
             this.AutoMCFillCheckBox.TabIndex = 85;
             this.AutoMCFillCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label16
+            // AutoMCFillCheckBoxLabel
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label16.Location = new System.Drawing.Point(1568, 292);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(107, 34);
-            this.label16.TabIndex = 84;
-            this.label16.Text = "自動入力";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.AutoMCFillCheckBoxLabel.AutoSize = true;
+            this.AutoMCFillCheckBoxLabel.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.AutoMCFillCheckBoxLabel.Location = new System.Drawing.Point(1568, 298);
+            this.AutoMCFillCheckBoxLabel.Name = "AutoMCFillCheckBoxLabel";
+            this.AutoMCFillCheckBoxLabel.Size = new System.Drawing.Size(107, 34);
+            this.AutoMCFillCheckBoxLabel.TabIndex = 84;
+            this.AutoMCFillCheckBoxLabel.Text = "自動入力";
+            this.AutoMCFillCheckBoxLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
@@ -822,15 +814,27 @@
             this.label1.TabIndex = 42;
             this.label1.Text = "選択したフォルダ内にプロジェクトフォルダが作成されます。";
             // 
+            // UserValueLabel
+            // 
+            this.UserValueLabel.AutoSize = true;
+            this.UserValueLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.UserValueLabel.Location = new System.Drawing.Point(1145, 110);
+            this.UserValueLabel.Name = "UserValueLabel";
+            this.UserValueLabel.Size = new System.Drawing.Size(260, 51);
+            this.UserValueLabel.TabIndex = 86;
+            this.UserValueLabel.Text = "ユーザー設定値";
+            this.UserValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // MakeNewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1774, 914);
+            this.Controls.Add(this.UserValueLabel);
             this.Controls.Add(this.AutoMCFillCheckBox);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.label15);
+            this.Controls.Add(this.AutoMCFillCheckBoxLabel);
+            this.Controls.Add(this.OtherSettingsLabel);
             this.Controls.Add(this.CompressTypeComboBox);
             this.Controls.Add(this.CompressTypeLabel);
             this.Controls.Add(this.groupBox1);
@@ -843,18 +847,18 @@
             this.Controls.Add(this.ShowRegistrationDateLabelVisibleCheckBox);
             this.Controls.Add(this.ShowMCLabelVisibleCheckBox);
             this.Controls.Add(this.ShowIDLabelVisibleCheckBox);
-            this.Controls.Add(this.label14);
+            this.Controls.Add(this.VisibleUnvisibleLabel);
             this.Controls.Add(this.ShowObjectNameLabelVisibleCheckBox);
             this.Controls.Add(this.CenterLine);
-            this.Controls.Add(this.EditShowDataLocationLabelTextBox);
-            this.Controls.Add(this.EditShowRealLocationLabelTextBox);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.EditShowCategoryLabelTextBox);
-            this.Controls.Add(this.EditShowRegistrationDateLabelTextBox);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label11);
+            this.Controls.Add(this.EditDataLocationLabelTextBox);
+            this.Controls.Add(this.EditRealLocationLabelTextBox);
+            this.Controls.Add(this.DataLocationLabel);
+            this.Controls.Add(this.DefaultValueLabel);
+            this.Controls.Add(this.RealLocationLabel);
+            this.Controls.Add(this.EditCategoryLabelTextBox);
+            this.Controls.Add(this.EditRegistrationDateLabelTextBox);
+            this.Controls.Add(this.CategoryLabel);
+            this.Controls.Add(this.RegistrationDateLabel);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.EditLabelName);
             this.Controls.Add(this.OpenListAfterOutputCheckBox);
@@ -873,22 +877,22 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.BackupLocationReferenceButton);
             this.Controls.Add(this.ProjectLocationReferenceButton);
-            this.Controls.Add(this.EditShowMCLabelTextBox);
+            this.Controls.Add(this.EditMCLabelTextBox);
             this.Controls.Add(this.EditTag3NameTextBox);
-            this.Controls.Add(this.EditShowIDLabelTextBox);
+            this.Controls.Add(this.EditUUIDLabelTextBox);
             this.Controls.Add(this.EditTag2NameTextBox);
-            this.Controls.Add(this.EditShowObjectNameLabelTextBox);
+            this.Controls.Add(this.EditObjectNameLabelTextBox);
             this.Controls.Add(this.EditTag1NameTextBox);
             this.Controls.Add(this.EditBackupLocationTextBox);
             this.Controls.Add(this.EditProjectLocationTextBox);
             this.Controls.Add(this.EditProjectNameTextBox);
             this.Controls.Add(this.MakeNewProjectButton);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.Tag2Name);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.Tag3Name);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.Tag1Name);
+            this.Controls.Add(this.UUIDLabel);
+            this.Controls.Add(this.Tag2NameLabel);
+            this.Controls.Add(this.MCLabel);
+            this.Controls.Add(this.Tag3NameLabel);
+            this.Controls.Add(this.ObjectNameLabel);
+            this.Controls.Add(this.Tag1NameLabel);
             this.Controls.Add(this.BackupLocation);
             this.Controls.Add(this.ProjectLocation);
             this.Controls.Add(this.ProjectName);
@@ -910,9 +914,9 @@
         private System.Windows.Forms.Label ProjectName;
         private System.Windows.Forms.Label ProjectLocation;
         private System.Windows.Forms.Label BackupLocation;
-        private System.Windows.Forms.Label Tag1Name;
-        private System.Windows.Forms.Label Tag3Name;
-        private System.Windows.Forms.Label Tag2Name;
+        private System.Windows.Forms.Label Tag1NameLabel;
+        private System.Windows.Forms.Label Tag3NameLabel;
+        private System.Windows.Forms.Label Tag2NameLabel;
         private System.Windows.Forms.Button MakeNewProjectButton;
         private System.Windows.Forms.TextBox EditProjectNameTextBox;
         private System.Windows.Forms.TextBox EditProjectLocationTextBox;
@@ -935,26 +939,26 @@
         private System.Windows.Forms.TextBox EditListOutputLocationTextBox;
         private System.Windows.Forms.Label ListOutputLocation;
         private System.Windows.Forms.CheckBox OpenListAfterOutputCheckBox;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox EditShowObjectNameLabelTextBox;
-        private System.Windows.Forms.TextBox EditShowIDLabelTextBox;
-        private System.Windows.Forms.TextBox EditShowMCLabelTextBox;
+        private System.Windows.Forms.Label ObjectNameLabel;
+        private System.Windows.Forms.Label MCLabel;
+        private System.Windows.Forms.Label UUIDLabel;
+        private System.Windows.Forms.TextBox EditObjectNameLabelTextBox;
+        private System.Windows.Forms.TextBox EditUUIDLabelTextBox;
+        private System.Windows.Forms.TextBox EditMCLabelTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label EditLabelName;
-        private System.Windows.Forms.TextBox EditShowCategoryLabelTextBox;
-        private System.Windows.Forms.TextBox EditShowRegistrationDateLabelTextBox;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox EditShowDataLocationLabelTextBox;
-        private System.Windows.Forms.TextBox EditShowRealLocationLabelTextBox;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox EditCategoryLabelTextBox;
+        private System.Windows.Forms.TextBox EditRegistrationDateLabelTextBox;
+        private System.Windows.Forms.Label CategoryLabel;
+        private System.Windows.Forms.Label RegistrationDateLabel;
+        private System.Windows.Forms.TextBox EditDataLocationLabelTextBox;
+        private System.Windows.Forms.TextBox EditRealLocationLabelTextBox;
+        private System.Windows.Forms.Label DataLocationLabel;
+        private System.Windows.Forms.Label DefaultValueLabel;
+        private System.Windows.Forms.Label RealLocationLabel;
         private System.Windows.Forms.Label CenterLine;
         private System.Windows.Forms.CheckBox ShowObjectNameLabelVisibleCheckBox;
-        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label VisibleUnvisibleLabel;
         private System.Windows.Forms.CheckBox ShowIDLabelVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowMCLabelVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowRegistrationDateLabelVisibleCheckBox;
@@ -969,10 +973,11 @@
         private System.Windows.Forms.RadioButton CSVOutputRadioButton;
         private System.Windows.Forms.Label CompressTypeLabel;
         private System.Windows.Forms.ComboBox CompressTypeComboBox;
-        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label OtherSettingsLabel;
         private System.Windows.Forms.CheckBox AutoMCFillCheckBox;
-        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label AutoMCFillCheckBoxLabel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label UserValueLabel;
     }
 }
