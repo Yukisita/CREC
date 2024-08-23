@@ -116,6 +116,8 @@ namespace CREC
         float smallfontsize = (float)(14.25);// 小フォントのサイズ
         float mainfontsize = (float)(18.0);// 標準フォントのサイズ
         float bigfontsize = (float)(20.25);// 大フォントのサイズ
+
+        XElement LanguageFile;// 言語ファイル
         #endregion
 
         public MainForm()
@@ -165,6 +167,39 @@ namespace CREC
             bootingForm.BootingProgressLabel.Text = "設定ファイル読み込み中";
             Application.DoEvents();
             ImportConfig();// configファイルの読み込み・自動生成
+            // 言語ファイル読み込み
+            System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
+            if (!directoryInfo.Exists)// 言語フォルダの存在確認
+            {
+                MessageBox.Show("言語フォルダが見つかりません。デフォルトの言語ファイルを作成します。\nNo Language Folder.", "CREC");
+                Directory.CreateDirectory("language");
+                if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
+                {
+                    MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
+                    Environment.FailFast("Default language file can't find.");
+                }
+                CurrentLanguageFileName = "Japanese";
+                SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                LanguageSettingClass.MakeDefaultLanguageFileEN();
+            }
+            else
+            {
+                try
+                {
+                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("言語の設定に失敗しました。\n" + ex.Message + "\n言語ファイル（日本語）を作成し、起動します。", "CREC");
+                    if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
+                    {
+                        MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
+                        Environment.FailFast("Default language file can't find.");
+                    }
+                    CurrentLanguageFileName = "Japanese";
+                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                }
+            }
             SetColorMethod();// 色設定を反映
             SetTagNameToolTips();// ToolTipsの設定
             bootingForm.BootingProgressLabel.Text = "ウインドウレイアウト調整中";
@@ -232,39 +267,6 @@ namespace CREC
 
         private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
         {
-            System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
-            if (!directoryInfo.Exists)// 言語フォルダの存在確認
-            {
-                MessageBox.Show("言語フォルダが見つかりません。デフォルトの言語ファイルを作成します。\nNo Language Folder.", "CREC");
-                Directory.CreateDirectory("language");
-                if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
-                {
-                    MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
-                    Environment.FailFast("Default language file can't find.");
-                }
-                CurrentLanguageFileName = "Japanese";
-                SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
-                LanguageSettingClass.MakeDefaultLanguageFileEN();
-            }
-            else
-            {
-                try
-                {
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("言語の設定に失敗しました。\n" + ex.Message + "\n言語ファイル（日本語）を作成し、起動します。", "CREC");
-                    if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
-                    {
-                        MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
-                        Environment.FailFast("Default language file can't find.");
-                    }
-                    CurrentLanguageFileName = "Japanese";
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
-                }
-            }
-
             SetFormLayout();// レイアウト初期化、DPI反映
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
@@ -281,7 +283,7 @@ namespace CREC
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
                 {
-                    MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, CurrentLanguageFileName);
+                    MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                     {
@@ -296,7 +298,7 @@ namespace CREC
             }
             else// 編集中データがなかった場合
             {
-                MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, CurrentLanguageFileName);
+                MakeNewProject makenewproject = new MakeNewProject("", ColorSetting, LanguageFile);
                 makenewproject.ShowDialog();
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
@@ -432,7 +434,7 @@ namespace CREC
                 {
                     case "projectname":
                         TargetProjectName = cols[1];
-                        ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", CurrentLanguageFileName) + cols[1];
+                        ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + cols[1];
                         break;
                     case "projectlocation":
                         TargetFolderPath = cols[1];
@@ -1178,13 +1180,13 @@ namespace CREC
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItemDropDownItemsSeparator);
                 ToolStripItem DeleteRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Click += DeleteRecentlyOpendProjectListToolStripMenuItem_Click;
-                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteRecentlyOpendProjectList", "mainform", CurrentLanguageFileName);
+                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteRecentlyOpendProjectList", "mainform", LanguageFile);
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
             }
             else
             {
                 ToolStripItem NoRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
-                NoRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("NoRecentlyOpendProjectList", "mainform", CurrentLanguageFileName);
+                NoRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("NoRecentlyOpendProjectList", "mainform", LanguageFile);
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(NoRecentlyOpendProjectListToolStripMenuItem);
             }
         }
@@ -1283,7 +1285,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (TargetBackupPath.Length == 0)
@@ -1467,11 +1469,11 @@ namespace CREC
                             streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
                         streamWriter.Close();
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     if (OpenListAfterOutput == true)
                     {
@@ -1617,11 +1619,11 @@ namespace CREC
                             streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
                         streamWriter.Close();
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     if (OpenListAfterOutput == true)
                     {
@@ -1637,17 +1639,17 @@ namespace CREC
             {
                 if (ListOutputFormat == "CSV")
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (ListOutputFormat == "TSV")
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName);
+            ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName, LanguageFile);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -1662,7 +1664,7 @@ namespace CREC
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
             {
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
                 {
                     // 保存関係の処理、入力内容を確認
@@ -1773,7 +1775,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (TargetContentsPath.Length == 0)
@@ -2059,7 +2061,7 @@ namespace CREC
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI, CurrentLanguageFileName);
+            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI, LanguageFile);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -2074,7 +2076,7 @@ namespace CREC
         }
         private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("WebAccessCheck", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("WebAccessCheck", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
@@ -2082,7 +2084,7 @@ namespace CREC
         }
         private void UserManualToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("WebAccessCheck", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("WebAccessCheck", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
                 System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95");
@@ -2094,7 +2096,7 @@ namespace CREC
             SaveConfig();
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
             {
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
                 {
                     // 入力内容を確認
@@ -2130,13 +2132,13 @@ namespace CREC
                         {
                             try
                             {
-                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
 
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
@@ -2145,8 +2147,8 @@ namespace CREC
                         else if (CompressType == 1)
                         {
                             // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
-                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                             try
                             {
                                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
@@ -2157,7 +2159,7 @@ namespace CREC
                                     {
                                         FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                         ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                         Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                     }
                                     catch// バックアップ失敗時はログに書き込み
@@ -2171,7 +2173,7 @@ namespace CREC
                             catch (Exception ex)
                             {
                                 MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
@@ -2234,13 +2236,13 @@ namespace CREC
                         {
                             try
                             {
-                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
 
                             }
                             catch (Exception ex)
                             {
                                 MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
@@ -2249,8 +2251,8 @@ namespace CREC
                         else if (CompressType == 1)
                         {
                             // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
-                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                             try
                             {
                                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
@@ -2261,7 +2263,7 @@ namespace CREC
                                     {
                                         FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                         ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                         Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                     }
                                     catch// バックアップ失敗時はログに書き込み
@@ -2275,7 +2277,7 @@ namespace CREC
                             catch (Exception ex)
                             {
                                 MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = "バックアップ作成";
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
@@ -2322,13 +2324,13 @@ namespace CREC
                     {
                         try
                         {
-                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
 
                         }
                         catch (Exception ex)
                         {
                             MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = "バックアップ作成";
+                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                             BackupToolStripMenuItem.Enabled = true;
                             return;
                         }
@@ -2337,8 +2339,8 @@ namespace CREC
                     else if (CompressType == 1)
                     {
                         // バックアップ用フォルダ作成
-                        Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
-                        File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                        Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                        File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                         try
                         {
                             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
@@ -2349,7 +2351,7 @@ namespace CREC
                                 {
                                     FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                     ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                     Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 }
                                 catch// バックアップ失敗時はログに書き込み
@@ -2363,7 +2365,7 @@ namespace CREC
                         catch (Exception ex)
                         {
                             MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = "バックアップ作成";
+                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                             BackupToolStripMenuItem.Enabled = true;
                             return;
                         }
@@ -2380,7 +2382,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(ThisName + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
@@ -2420,7 +2422,7 @@ namespace CREC
             {
                 if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 if (TargetContentsPath.Length == 0)
@@ -2448,7 +2450,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -2457,7 +2459,7 @@ namespace CREC
                 {
                     if (CheckEditingContents() == true)
                     {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, CurrentLanguageFileName);
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, LanguageFile);
                         makenewproject.ShowDialog();
                         if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                         {
@@ -2472,7 +2474,7 @@ namespace CREC
                 }
                 else
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, CurrentLanguageFileName);
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                     {
@@ -2486,7 +2488,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             else
@@ -2867,7 +2869,7 @@ namespace CREC
             {
                 if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
                 if (TargetContentsPath.Length == 0)
@@ -2895,7 +2897,7 @@ namespace CREC
         }
         private bool CheckEditingContents()// 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 保存して編集画面を閉じる
             {
                 // 入力内容を確認
@@ -3493,7 +3495,7 @@ namespace CREC
         {
             if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (TargetContentsPath.Length == 0)
@@ -3587,7 +3589,7 @@ namespace CREC
             // 編集中の端末がいないか確認
             if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE"))
             {
-                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
                 {
                     return;
@@ -3758,7 +3760,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -3826,7 +3828,7 @@ namespace CREC
             {
                 if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
                 {
-                    UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", CurrentLanguageFileName);
+                    UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
                     UUIDEditStatusLabel.ForeColor = Color.Red;
                     MessageBox.Show("入力されたIDは使用済みです。", "CREC");
                     return false;
@@ -3839,7 +3841,7 @@ namespace CREC
             AllowEditID = true;
             AllowEditIDButton.Visible = false;
             UUIDEditStatusLabel.Visible = true;
-            UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", CurrentLanguageFileName);
+            UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
             UUIDEditStatusLabel.ForeColor = Color.Black;
             EditIDTextBox.ReadOnly = false;
         }
@@ -3847,17 +3849,17 @@ namespace CREC
         {
             if (ThisID == EditIDTextBox.Text)
             {
-                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Black;
             }
             else if (System.IO.Directory.Exists(TargetFolderPath + "\\" + EditIDTextBox.Text))
             {
-                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Red;
             }
             else
             {
-                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeOK", "mainform", CurrentLanguageFileName);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeOK", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Blue;
             }
         }
@@ -3881,7 +3883,7 @@ namespace CREC
         {
             if (TargetFolderPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
@@ -3921,7 +3923,7 @@ namespace CREC
             FileStream = File.Create(TargetContentsPath + "\\confidentialdata.txt");
             FileStream.Close();
             // 在庫管理を行うか確認
-            DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
                 FileStream = File.Create(TargetContentsPath + "\\inventory.inv");
@@ -4123,7 +4125,7 @@ namespace CREC
             string[] cols;
             if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (TargetContentsPath.Length == 0)
@@ -4199,20 +4201,20 @@ namespace CREC
                 {
                     case "EntoryOperation":
                     case "入庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
                         break;
                     case "ExitOperation":
                     case "出庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
                         break;
                     case "Stocktaking":
                     case "棚卸"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                         break;
                 }
                 InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
                 inventory = inventory + Convert.ToInt32(cols[2]);
-                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName) + " : " + inventory);
+                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
             if (inventory < 0)
             {
@@ -4345,20 +4347,20 @@ namespace CREC
                 {
                     case "EntoryOperation":
                     case "入庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
                         break;
                     case "ExitOperation":
                     case "出庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
                         break;
                     case "Stocktaking":
                     case "棚卸"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName);
+                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                         break;
                 }
                 InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
                 inventory = inventory + Convert.ToInt32(cols[2]);
-                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName) + " : " + inventory);
+                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
             if (inventory < 0)
             {
@@ -4594,10 +4596,10 @@ namespace CREC
             }
             else
             {
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", LanguageFile));
             }
             SearchMethodComboBox.SelectedIndex = 0;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
@@ -5750,7 +5752,7 @@ namespace CREC
         private async void MakeBackUpZip()// バックアップ処理のうちZIP圧縮の部分
         {
             DateTime DT = DateTime.Now;
-            BackupToolStripMenuItem.Text = "バックアップ作成中";
+            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile);
             BackupToolStripMenuItem.Enabled = false;
             // バックアップ作成
             if (CompressType == 0)// 単一ZIPに圧縮
@@ -5759,12 +5761,12 @@ namespace CREC
                 {
                     try
                     {
-                        ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + ".zip");
+                        ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                        BackupToolStripMenuItem.Text = "バックアップ作成";
+                        BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                         BackupToolStripMenuItem.Enabled = true;
                         return;
                     }
@@ -5776,8 +5778,8 @@ namespace CREC
                 await Task.Run(() =>
                 {
                     // バックアップ用フォルダ作成
-                    Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"));
-                    File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);// crecファイルをバックアップ
+                    Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                    File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                     try
                     {
                         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
@@ -5790,10 +5792,10 @@ namespace CREC
                             {
                                 FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 CountBackupedData += 1;
-                                BackupToolStripMenuItem.Text = "バックアップ作成中：" + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile) + " : " + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
                                 Application.DoEvents();
                             }
                             catch// バックアップ失敗時はログに書き込み
@@ -5808,7 +5810,7 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-                        BackupToolStripMenuItem.Text = "バックアップ作成";
+                        BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                         BackupToolStripMenuItem.Enabled = true;
                         return;
                     }
@@ -5819,7 +5821,7 @@ namespace CREC
                 });
             }
 
-            BackupToolStripMenuItem.Text = "バックアップ作成";
+            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show("バックアップ作成が完了しました。", "CREC");
         }
@@ -5907,7 +5909,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             // バックアップ場所が設定されているか確認
@@ -5926,7 +5928,7 @@ namespace CREC
                 MessageBox.Show("バックアップフォルダが見つかりませんでした", "CREC");
                 return;
             }
-            BackupToolStripMenuItem.Text = "バックアップ作成中";
+            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile);
             if (CompressType == 0)
             {
                 FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
@@ -5935,8 +5937,8 @@ namespace CREC
             else if (CompressType == 2)
             {
                 DateTime DT = DateTime.Now;
-                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup-" + DT.ToString("yyyy年MM月dd日HH時mm分ss秒") + "\\backup.crec", true);
+                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);
             }
         }
         #endregion
@@ -5947,7 +5949,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -6097,11 +6099,11 @@ namespace CREC
                         streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
                     streamWriter.Close();
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 if (OpenListAfterOutput == true)
                 {
@@ -6121,7 +6123,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void TSVListOutputMethod()// TSV形式で一覧を出力
@@ -6129,7 +6131,7 @@ namespace CREC
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", CurrentLanguageFileName), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
@@ -6279,11 +6281,11 @@ namespace CREC
                         streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                     }
                     streamWriter.Close();
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", CurrentLanguageFileName) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 if (OpenListAfterOutput == true)
                 {
@@ -6305,11 +6307,11 @@ namespace CREC
             {
                 if (ListOutputFormat == "CSV")
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else if (ListOutputFormat == "TSV")
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", CurrentLanguageFileName) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -6567,8 +6569,8 @@ namespace CREC
                         LanguageSettingToolStripMenuItem.Enabled = true;
                         count++;
                         LanguageSettingToolStripMenuItems[count] = new ToolStripMenuItem();
-                        XElement xElement = XElement.Load(fileInfo.FullName);
-                        IEnumerable<string> strings = from item in xElement.Elements("metadata").Elements("name") select item.Value;
+                        LanguageFile = XElement.Load(fileInfo.FullName);
+                        IEnumerable<string> strings = from item in LanguageFile.Elements("metadata").Elements("name") select item.Value;
                         foreach (string s in strings)
                         {
                             LanguageSettingToolStripMenuItems[count].Text = s;
@@ -6633,9 +6635,9 @@ namespace CREC
         }
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
         {
-            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "mainform", CurrentLanguageFileName);
-            XElement xElement = XElement.Load(targetLanguageFilePath);
-            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("mainform").Elements("Button").Elements("item") select item;
+            LanguageFile = XElement.Load(targetLanguageFilePath);
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "mainform", LanguageFile);
+            IEnumerable<XElement> buttonItemDataList = from item in LanguageFile.Elements("mainform").Elements("Button").Elements("item") select item;
             foreach (XElement itemData in buttonItemDataList)
             {
                 try
@@ -6651,7 +6653,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("mainform").Elements("Label").Elements("item") select item;
+            IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("mainform").Elements("Label").Elements("item") select item;
             foreach (XElement itemData in labelItemDataList)
             {
                 try
@@ -6667,7 +6669,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> toolStripMenuItemItemDataList = from item in xElement.Elements("mainform").Elements("ToolStripMenuItem").Elements("item") select item;
+            IEnumerable<XElement> toolStripMenuItemItemDataList = from item in LanguageFile.Elements("mainform").Elements("ToolStripMenuItem").Elements("item") select item;
             foreach (XElement itemData in toolStripMenuItemItemDataList)
             {
                 try
@@ -6731,7 +6733,7 @@ namespace CREC
                 }
             }
             SetUserAssistToolTips();
-            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", CurrentLanguageFileName) + TargetProjectName;
+            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + TargetProjectName;
             // 検索方法の表示更新
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
@@ -6746,26 +6748,26 @@ namespace CREC
             }
             else
             {
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
-                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", LanguageFile));
+                SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", LanguageFile));
             }
             if (CurrentSelectedIndex != -1)// 表示中の項目を変更
             {
                 switch (CurrentSelectedIndex)
                 {
                     case 0:
-                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", CurrentLanguageFileName));
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodForwardMatch", "mainform", LanguageFile));
                         break;
                     case 1:
-                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", CurrentLanguageFileName));
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBroadMatch", "mainform", LanguageFile));
                         break;
                     case 2:
-                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", CurrentLanguageFileName));
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodBackwardMatch", "mainform", LanguageFile));
                         break;
                     case 3:
-                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", CurrentLanguageFileName));
+                        SearchMethodComboBox.Text = (LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", LanguageFile));
                         break;
                 }
             }
@@ -6774,34 +6776,34 @@ namespace CREC
             // 在庫管理モード
             int CurrentSelectedProperInventorySettingsComboBox = (int)ProperInventorySettingsComboBox.SelectedIndex;
             ProperInventorySettingsComboBox.Items.Clear();
-            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SafetyStock", "mainform", CurrentLanguageFileName));
-            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ReorderPoint", "mainform", CurrentLanguageFileName));
-            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("MaximumLevel", "mainform", CurrentLanguageFileName));
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SafetyStock", "mainform", LanguageFile));
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ReorderPoint", "mainform", LanguageFile));
+            ProperInventorySettingsComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("MaximumLevel", "mainform", LanguageFile));
             ProperInventorySettingsComboBox.SelectedIndex = CurrentSelectedProperInventorySettingsComboBox;
             int CurrentSelectedOperationOptionComboBox = (int)OperationOptionComboBox.SelectedIndex;
             OperationOptionComboBox.Items.Clear();
-            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", CurrentLanguageFileName));
-            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", CurrentLanguageFileName));
-            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", CurrentLanguageFileName));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile));
             OperationOptionComboBox.SelectedIndex = CurrentSelectedOperationOptionComboBox;
-            InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", CurrentLanguageFileName)
+            InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile)
                 + " : " + InventoryLabel.Text.Split(new string[] { " : " }, StringSplitOptions.None).Last());
-            InventoryModeDataGridView.Columns["date"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderDate", "mainform", CurrentLanguageFileName);
-            InventoryModeDataGridView.Columns["operation"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderOperation", "mainform", CurrentLanguageFileName);
-            InventoryModeDataGridView.Columns["quantity"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderQuantity", "mainform", CurrentLanguageFileName);
-            InventoryModeDataGridView.Columns["note"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderNote", "mainform", CurrentLanguageFileName);
+            InventoryModeDataGridView.Columns["date"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderDate", "mainform", LanguageFile);
+            InventoryModeDataGridView.Columns["operation"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderOperation", "mainform", LanguageFile);
+            InventoryModeDataGridView.Columns["quantity"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderQuantity", "mainform", LanguageFile);
+            InventoryModeDataGridView.Columns["note"].HeaderText = LanguageSettingClass.GetOtherMessage("InventoryListColumsHeaderNote", "mainform", LanguageFile);
         }
         private void SetUserAssistToolTips()// ユーザーアシストのToolTip設定
         {
             if (ShowUserAssistToolTips == true)
             {
-                UserAssistToolTip.SetToolTip(SearchFormTextBox, LanguageSettingClass.GetToolTipMessage("SearchFormTextBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(SearchOptionComboBox, LanguageSettingClass.GetToolTipMessage("SearchOptionComboBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(SearchMethodComboBox, LanguageSettingClass.GetToolTipMessage("SearchMethodComboBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(EditIDTextBox, LanguageSettingClass.GetToolTipMessage("EditIDTextBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(EditMCTextBox, LanguageSettingClass.GetToolTipMessage("EditMCTextBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(EditQuantityTextBox, LanguageSettingClass.GetToolTipMessage("EditQuantityTextBox", "mainform", CurrentLanguageFileName));
-                UserAssistToolTip.SetToolTip(SelectThumbnailButton, LanguageSettingClass.GetToolTipMessage("SelectThumbnailButton", "mainform", CurrentLanguageFileName));
+                UserAssistToolTip.SetToolTip(SearchFormTextBox, LanguageSettingClass.GetToolTipMessage("SearchFormTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SearchOptionComboBox, LanguageSettingClass.GetToolTipMessage("SearchOptionComboBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SearchMethodComboBox, LanguageSettingClass.GetToolTipMessage("SearchMethodComboBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditIDTextBox, LanguageSettingClass.GetToolTipMessage("EditIDTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditMCTextBox, LanguageSettingClass.GetToolTipMessage("EditMCTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditQuantityTextBox, LanguageSettingClass.GetToolTipMessage("EditQuantityTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SelectThumbnailButton, LanguageSettingClass.GetToolTipMessage("SelectThumbnailButton", "mainform", LanguageFile));
             }
             else if (ShowUserAssistToolTips == false)
             {

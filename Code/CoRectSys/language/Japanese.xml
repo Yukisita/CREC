@@ -576,6 +576,10 @@
 				<itemname>UUIDChangeNG</itemname>
 				<itemtext>変更不可</itemtext>
 			</item>
+			<item>
+				<itemname>BackupToolStripMenuItemBackupInProgressMessage</itemname>
+				<itemtext>バックアップ作成中</itemtext>
+			</item>
 		</Other>
 	</mainform>
 	<MakeNewProject>
@@ -607,8 +611,16 @@
 				<itemtext>場所</itemtext>
 			</item>
 			<item>
+				<itemname>ProjectLocationExplanationLabel</itemname>
+				<itemtext>入力されたパスをプロジェクトフォルダとして設定します。</itemtext>
+			</item>
+			<item>
 				<itemname>BackupLocation</itemname>
 				<itemtext>バックアップ場所</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationLabel</itemname>
+				<itemtext>選択したフォルダ内にバックアップフォルダが作成されます。</itemtext>
 			</item>
 			<item>
 				<itemname>CompressTypeLabel</itemname>
@@ -623,12 +635,24 @@
 				<itemtext>データ一覧作成場所</itemtext>
 			</item>
 			<item>
+				<itemname>ListOutputExplanationLabel</itemname>
+				<itemtext>選択したフォルダ内にデータ一覧が作成されます。</itemtext>
+			</item>
+			<item>
+				<itemname>FileFormatLabel</itemname>
+				<itemtext>ファイル形式</itemtext>
+			</item>
+			<item>
 				<itemname>AutoListOutput</itemname>
 				<itemtext>自動データ一覧作成の設定</itemtext>
 			</item>
 			<item>
 				<itemname>EditLabelName</itemname>
 				<itemtext>ラベル名編集</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelExplanationLabel</itemname>
+				<itemtext>各ラベルの名称を変更できます。</itemtext>
 			</item>
 			<item>
 				<itemname>DefaultValueLabel</itemname>
@@ -731,6 +755,18 @@
 			<item>
 				<itemname>FormName</itemname>
 				<itemtext>プロジェクト作成/編集</itemtext>
+			</item>
+			<item>
+				<itemname>SingleFile</itemname>
+				<itemtext>単一ファイルに圧縮</itemtext>
+			</item>
+			<item>
+				<itemname>ParData</itemname>
+				<itemtext>項目ごとに圧縮</itemtext>
+			</item>
+			<item>
+				<itemname>NoCompress</itemname>
+				<itemtext>圧縮なし</itemtext>
 			</item>
 		</Other>
 	</MakeNewProject>

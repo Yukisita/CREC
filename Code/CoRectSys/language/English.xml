@@ -576,6 +576,10 @@
 				<itemname>UUIDChangeNG</itemname>
 				<itemtext>NG</itemtext>
 			</item>
+			<item>
+				<itemname>BackupToolStripMenuItemBackupInProgressMessage</itemname>
+				<itemtext>Backup in progress</itemtext>
+			</item>
 		</Other>
 	</mainform>
 	<MakeNewProject>
@@ -607,8 +611,16 @@
 				<itemtext>Project directory path</itemtext>
 			</item>
 			<item>
+				<itemname>ProjectLocationExplanationLabel</itemname>
+				<itemtext>The project data will be created in the selected folder.</itemtext>
+			</item>
+			<item>
 				<itemname>BackupLocation</itemname>
 				<itemtext>Backup directory path</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationLabel</itemname>
+				<itemtext>The backup data will be created in the selected folder.</itemtext>
 			</item>
 			<item>
 				<itemname>CompressTypeLabel</itemname>
@@ -623,12 +635,24 @@
 				<itemtext>Contents list output location</itemtext>
 			</item>
 			<item>
+				<itemname>ListOutputExplanationLabel</itemname>
+				<itemtext>The data list will be created in the selected folder.</itemtext>
+			</item>
+			<item>
+				<itemname>FileFormatLabel</itemname>
+				<itemtext>File format</itemtext>
+			</item>
+			<item>
 				<itemname>AutoListOutput</itemname>
 				<itemtext>Contents list output settings</itemtext>
 			</item>
 			<item>
 				<itemname>EditLabelName</itemname>
 				<itemtext>Edit label name</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelExplanationLabel</itemname>
+				<itemtext>You can change the name of each label.</itemtext>
 			</item>
 			<item>
 				<itemname>DefaultValueLabel</itemname>
@@ -731,6 +755,18 @@
 			<item>
 				<itemname>FormName</itemname>
 				<itemtext>Make/Edit project</itemtext>
+			</item>
+			<item>
+				<itemname>SingleFile</itemname>
+				<itemtext>Single file</itemtext>
+			</item>
+			<item>
+				<itemname>ParData</itemname>
+				<itemtext>Par data</itemtext>
+			</item>
+			<item>
+				<itemname>NoCompress</itemname>
+				<itemtext>No compress</itemtext>
 			</item>
 		</Other>
 	</MakeNewProject>

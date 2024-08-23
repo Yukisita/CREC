@@ -23,25 +23,25 @@ namespace CREC
         string TargetCRECPath = "";//管理ファイル（.crec）のファイルパス
         string[] cols;// List等読み込み用
         string ColorSetting = "Blue";
-        string CurrentLanguageFileName = "";// 言語設定
+        readonly XElement LanguageFile;// 言語ファイル
         public string ReturnTargetProject { get; private set; } = "";
-        public MakeNewProject(string tmp, string colorSetting, string currentLanguage)
+        public MakeNewProject(string tmp, string colorSetting, XElement languageFile)
         {
             InitializeComponent();
             TargetCRECPath = tmp;
             ColorSetting = colorSetting;
-            CurrentLanguageFileName = currentLanguage;
             SetColorMethod();
+            LanguageFile = languageFile;
         }
         private void MakeNewProject_Load(object sender, EventArgs e)// 既存の.crecを読み込み or 新規作成
         {
             // 言語設定
-            SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+            SetLanguage();
             // 必要な項目を初期化
             CompressTypeComboBox.SelectedIndex = 0;
+            FileFormatComboBox.SelectedIndex = 0;
             if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
-                label1.Text = "入力されたパスをプロジェクトフォルダとして設定します。";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in tmp)
@@ -151,11 +151,15 @@ namespace CREC
                         case "ListOutputFormat":
                             if (cols[1] == "CSV")
                             {
-                                CSVOutputRadioButton.Checked = true;
+                                FileFormatComboBox.SelectedIndex = 0;
                             }
                             else if (cols[1] == "TSV")
                             {
-                                TSVOutputRadioButton.Checked = true;
+                                FileFormatComboBox.SelectedIndex = 1;
+                            }
+                            else
+                            {
+                                FileFormatComboBox.SelectedIndex = 0;
                             }
                             break;
                         case "created":
@@ -598,14 +602,7 @@ namespace CREC
                 }
                 sw.Write('\n');
                 sw.Write("ListOutputFormat,");
-                if (CSVOutputRadioButton.Checked)
-                {
-                    sw.Write("CSV");
-                }
-                else if (TSVOutputRadioButton.Checked)
-                {
-                    sw.Write("TSV");
-                }
+                sw.Write(Convert.ToString(FileFormatComboBox.SelectedItem));
                 sw.Write('\n');
                 // 現在時刻を取得 
                 DateTime DT = DateTime.Now;
@@ -877,11 +874,10 @@ namespace CREC
         }
 
         #region 言語設定
-        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
+        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
         {
-            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "MakeNewProject", CurrentLanguageFileName);
-            XElement xElement = XElement.Load(targetLanguageFilePath);
-            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("MakeNewProject").Elements("Button").Elements("item") select item;
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "MakeNewProject", LanguageFile);
+            IEnumerable<XElement> buttonItemDataList = from item in LanguageFile.Elements("MakeNewProject").Elements("Button").Elements("item") select item;
             foreach (XElement itemData in buttonItemDataList)
             {
                 try
@@ -897,7 +893,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("MakeNewProject").Elements("Label").Elements("item") select item;
+            IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("MakeNewProject").Elements("Label").Elements("item") select item;
             foreach (XElement itemData in labelItemDataList)
             {
                 try
@@ -913,7 +909,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> radioButtonItemDataList = from item in xElement.Elements("MakeNewProject").Elements("RadioButton").Elements("item") select item;
+            IEnumerable<XElement> radioButtonItemDataList = from item in LanguageFile.Elements("MakeNewProject").Elements("RadioButton").Elements("item") select item;
             foreach (XElement itemData in radioButtonItemDataList)
             {
                 try
@@ -929,7 +925,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> checkBoxItemDataList = from item in xElement.Elements("MakeNewProject").Elements("CheckBox").Elements("item") select item;
+            IEnumerable<XElement> checkBoxItemDataList = from item in LanguageFile.Elements("MakeNewProject").Elements("CheckBox").Elements("item") select item;
             foreach (XElement itemData in checkBoxItemDataList)
             {
                 try
@@ -945,12 +941,17 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
+            // CompressTypeComboBoxの内容を読み込み
+            CompressTypeComboBox.Items.Clear();
+            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SingleFile", "MakeNewProject", LanguageFile));
+            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ParData", "MakeNewProject", LanguageFile));
+            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("NoCompress", "MakeNewProject", LanguageFile));
         }
         #endregion
 
         private void EditUUIDLabelTextBox_Click(object sender, EventArgs e)// UUIDのラベルを変更可能に切り替える
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskChangeUUIDLabel", "MakeNewProject", CurrentLanguageFileName), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskChangeUUIDLabel", "MakeNewProject", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 注意事項を確認してOKだった場合は、編集を許可する
             {
                 EditUUIDLabelTextBox.ReadOnly = false;

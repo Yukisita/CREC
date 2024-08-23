@@ -21,7 +21,7 @@ namespace CREC
 {
     public partial class ConfigForm : Form
     {
-        string ConfigFile = "config.sys";
+        readonly string ConfigFile = "config.sys";
         string reader;
         string[] rows;
         string row;
@@ -29,20 +29,22 @@ namespace CREC
         string ColorSetting = "Blue";
         string CurrentLanguageFileName = "";// 言語設定
         int ConfigNumber;
+        readonly XElement LanguageFile;// 言語ファイル
         public bool ReturnConfigSaved { get; private set; } = false;// 保存されて終了した場合はTrue
 
-        public ConfigForm(string colorSetting, string currentLanguage)
+        public ConfigForm(string colorSetting, string currentLanguage, XElement languageFile)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
             CurrentLanguageFileName = currentLanguage;
             SetColorMethod();
+            LanguageFile = languageFile;
         }
 
         private void ConfigForm_Load(object sender, EventArgs e)// 読み込み
         {
             // 言語設定
-            SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+            SetLanguage();
             reader = File.ReadAllText(ConfigFile, Encoding.GetEncoding("UTF-8"));
             string[] tmp = File.ReadAllLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
             rows = reader.Trim().Replace("\r", "").Split('\n');
@@ -240,13 +242,12 @@ namespace CREC
                 SetAutoLoadProjectTextBox.ReadOnly = false;
             }
         }
-        
+
         #region 言語設定
-        private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
+        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
         {
-            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ConfigForm", CurrentLanguageFileName);
-            XElement xElement = XElement.Load(targetLanguageFilePath);
-            IEnumerable<XElement> buttonItemDataList = from item in xElement.Elements("ConfigForm").Elements("Button").Elements("item") select item;
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ConfigForm", LanguageFile);
+            IEnumerable<XElement> buttonItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("Button").Elements("item") select item;
             foreach (XElement itemData in buttonItemDataList)
             {
                 try
@@ -262,7 +263,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> labelItemDataList = from item in xElement.Elements("ConfigForm").Elements("Label").Elements("item") select item;
+            IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("Label").Elements("item") select item;
             foreach (XElement itemData in labelItemDataList)
             {
                 try
@@ -278,7 +279,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> radioButtonItemDataList = from item in xElement.Elements("ConfigForm").Elements("RadioButton").Elements("item") select item;
+            IEnumerable<XElement> radioButtonItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("RadioButton").Elements("item") select item;
             foreach (XElement itemData in radioButtonItemDataList)
             {
                 try
@@ -294,7 +295,7 @@ namespace CREC
                     MessageBox.Show(ex.Message);
                 }
             }
-            IEnumerable<XElement> checkBoxItemDataList = from item in xElement.Elements("ConfigForm").Elements("CheckBox").Elements("item") select item;
+            IEnumerable<XElement> checkBoxItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("CheckBox").Elements("item") select item;
             foreach (XElement itemData in checkBoxItemDataList)
             {
                 try

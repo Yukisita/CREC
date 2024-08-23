@@ -52,7 +52,7 @@
             this.CloseListOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.StartUpListOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.AutoListOutput = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.ListOutputExplanationLabel = new System.Windows.Forms.Label();
             this.ListOutputLocationReferenceButton = new System.Windows.Forms.Button();
             this.EditListOutputLocationTextBox = new System.Windows.Forms.TextBox();
             this.ListOutputLocation = new System.Windows.Forms.Label();
@@ -63,7 +63,7 @@
             this.EditObjectNameLabelTextBox = new System.Windows.Forms.TextBox();
             this.EditUUIDLabelTextBox = new System.Windows.Forms.TextBox();
             this.EditMCLabelTextBox = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
+            this.EditLabelExplanationLabel = new System.Windows.Forms.Label();
             this.EditLabelName = new System.Windows.Forms.Label();
             this.EditCategoryLabelTextBox = new System.Windows.Forms.TextBox();
             this.EditRegistrationDateLabelTextBox = new System.Windows.Forms.TextBox();
@@ -86,18 +86,16 @@
             this.Tag3NameVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowRealLocationLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.ShowDataLocationLabelVisibleCheckBox = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.TSVOutputRadioButton = new System.Windows.Forms.RadioButton();
-            this.CSVOutputRadioButton = new System.Windows.Forms.RadioButton();
             this.CompressTypeLabel = new System.Windows.Forms.Label();
             this.CompressTypeComboBox = new System.Windows.Forms.ComboBox();
             this.OtherSettingsLabel = new System.Windows.Forms.Label();
             this.AutoMCFillCheckBox = new System.Windows.Forms.CheckBox();
             this.AutoMCFillCheckBoxLabel = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.BackupLocationLabel = new System.Windows.Forms.Label();
+            this.ProjectLocationExplanationLabel = new System.Windows.Forms.Label();
             this.UserValueLabel = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
+            this.FileFormatLabel = new System.Windows.Forms.Label();
+            this.FileFormatComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // ProjectName
@@ -164,7 +162,7 @@
             // 
             this.MakeNewProjectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.MakeNewProjectButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.MakeNewProjectButton.Location = new System.Drawing.Point(1574, 852);
+            this.MakeNewProjectButton.Location = new System.Drawing.Point(1574, 914);
             this.MakeNewProjectButton.Name = "MakeNewProjectButton";
             this.MakeNewProjectButton.Size = new System.Drawing.Size(188, 50);
             this.MakeNewProjectButton.TabIndex = 18;
@@ -298,7 +296,7 @@
             // 
             this.EditedListOutputCheckBox.AutoSize = true;
             this.EditedListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(341, 809);
+            this.EditedListOutputCheckBox.Location = new System.Drawing.Point(341, 869);
             this.EditedListOutputCheckBox.Name = "EditedListOutputCheckBox";
             this.EditedListOutputCheckBox.Size = new System.Drawing.Size(181, 40);
             this.EditedListOutputCheckBox.TabIndex = 54;
@@ -309,7 +307,7 @@
             // 
             this.CloseListOutputCheckBox.AutoSize = true;
             this.CloseListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(178, 809);
+            this.CloseListOutputCheckBox.Location = new System.Drawing.Point(178, 869);
             this.CloseListOutputCheckBox.Name = "CloseListOutputCheckBox";
             this.CloseListOutputCheckBox.Size = new System.Drawing.Size(109, 40);
             this.CloseListOutputCheckBox.TabIndex = 53;
@@ -320,7 +318,7 @@
             // 
             this.StartUpListOutputCheckBox.AutoSize = true;
             this.StartUpListOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.StartUpListOutputCheckBox.Location = new System.Drawing.Point(15, 809);
+            this.StartUpListOutputCheckBox.Location = new System.Drawing.Point(15, 869);
             this.StartUpListOutputCheckBox.Name = "StartUpListOutputCheckBox";
             this.StartUpListOutputCheckBox.Size = new System.Drawing.Size(109, 40);
             this.StartUpListOutputCheckBox.TabIndex = 52;
@@ -331,21 +329,21 @@
             // 
             this.AutoListOutput.AutoSize = true;
             this.AutoListOutput.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AutoListOutput.Location = new System.Drawing.Point(7, 754);
+            this.AutoListOutput.Location = new System.Drawing.Point(7, 814);
             this.AutoListOutput.Name = "AutoListOutput";
             this.AutoListOutput.Size = new System.Drawing.Size(430, 51);
             this.AutoListOutput.TabIndex = 51;
             this.AutoListOutput.Text = "自動データ一覧作成の設定";
             // 
-            // label4
+            // ListOutputExplanationLabel
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label4.Location = new System.Drawing.Point(10, 676);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(582, 30);
-            this.label4.TabIndex = 50;
-            this.label4.Text = "選択したフォルダ内にCSV/TSVでデータ一覧が作成されます。";
+            this.ListOutputExplanationLabel.AutoSize = true;
+            this.ListOutputExplanationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ListOutputExplanationLabel.Location = new System.Drawing.Point(10, 676);
+            this.ListOutputExplanationLabel.Name = "ListOutputExplanationLabel";
+            this.ListOutputExplanationLabel.Size = new System.Drawing.Size(473, 30);
+            this.ListOutputExplanationLabel.TabIndex = 50;
+            this.ListOutputExplanationLabel.Text = "選択したフォルダ内にデータ一覧が作成されます。";
             // 
             // ListOutputLocationReferenceButton
             // 
@@ -381,7 +379,7 @@
             // 
             this.OpenListAfterOutputCheckBox.AutoSize = true;
             this.OpenListAfterOutputCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenListAfterOutputCheckBox.Location = new System.Drawing.Point(15, 855);
+            this.OpenListAfterOutputCheckBox.Location = new System.Drawing.Point(15, 915);
             this.OpenListAfterOutputCheckBox.Name = "OpenListAfterOutputCheckBox";
             this.OpenListAfterOutputCheckBox.Size = new System.Drawing.Size(181, 40);
             this.OpenListAfterOutputCheckBox.TabIndex = 55;
@@ -450,15 +448,15 @@
             this.EditMCLabelTextBox.TabIndex = 10;
             this.EditMCLabelTextBox.Text = "管理コード";
             // 
-            // label7
+            // EditLabelExplanationLabel
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label7.Location = new System.Drawing.Point(855, 63);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(313, 30);
-            this.label7.TabIndex = 57;
-            this.label7.Text = "各ラベルの名称を変更できます。";
+            this.EditLabelExplanationLabel.AutoSize = true;
+            this.EditLabelExplanationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditLabelExplanationLabel.Location = new System.Drawing.Point(855, 63);
+            this.EditLabelExplanationLabel.Name = "EditLabelExplanationLabel";
+            this.EditLabelExplanationLabel.Size = new System.Drawing.Size(313, 30);
+            this.EditLabelExplanationLabel.TabIndex = 57;
+            this.EditLabelExplanationLabel.Text = "各ラベルの名称を変更できます。";
             // 
             // EditLabelName
             // 
@@ -569,7 +567,7 @@
             this.CenterLine.Location = new System.Drawing.Point(818, 12);
             this.CenterLine.Margin = new System.Windows.Forms.Padding(0);
             this.CenterLine.Name = "CenterLine";
-            this.CenterLine.Size = new System.Drawing.Size(2, 872);
+            this.CenterLine.Size = new System.Drawing.Size(2, 934);
             this.CenterLine.TabIndex = 68;
             // 
             // ShowObjectNameLabelVisibleCheckBox
@@ -703,40 +701,6 @@
             this.ShowDataLocationLabelVisibleCheckBox.TabIndex = 79;
             this.ShowDataLocationLabelVisibleCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.TSVOutputRadioButton);
-            this.groupBox1.Controls.Add(this.CSVOutputRadioButton);
-            this.groupBox1.Location = new System.Drawing.Point(651, 767);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(143, 82);
-            this.groupBox1.TabIndex = 80;
-            this.groupBox1.TabStop = false;
-            // 
-            // TSVOutputRadioButton
-            // 
-            this.TSVOutputRadioButton.AutoSize = true;
-            this.TSVOutputRadioButton.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.TSVOutputRadioButton.Location = new System.Drawing.Point(7, 42);
-            this.TSVOutputRadioButton.Name = "TSVOutputRadioButton";
-            this.TSVOutputRadioButton.Size = new System.Drawing.Size(114, 34);
-            this.TSVOutputRadioButton.TabIndex = 0;
-            this.TSVOutputRadioButton.Text = "TSV形式";
-            this.TSVOutputRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // CSVOutputRadioButton
-            // 
-            this.CSVOutputRadioButton.AutoSize = true;
-            this.CSVOutputRadioButton.Checked = true;
-            this.CSVOutputRadioButton.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CSVOutputRadioButton.Location = new System.Drawing.Point(7, 12);
-            this.CSVOutputRadioButton.Name = "CSVOutputRadioButton";
-            this.CSVOutputRadioButton.Size = new System.Drawing.Size(114, 34);
-            this.CSVOutputRadioButton.TabIndex = 0;
-            this.CSVOutputRadioButton.TabStop = true;
-            this.CSVOutputRadioButton.Text = "CSV形式";
-            this.CSVOutputRadioButton.UseVisualStyleBackColor = true;
-            // 
             // CompressTypeLabel
             // 
             this.CompressTypeLabel.AutoSize = true;
@@ -755,7 +719,7 @@
             "単一ファイルに圧縮",
             "項目ごとに圧縮",
             "圧縮なし"});
-            this.CompressTypeComboBox.Location = new System.Drawing.Point(334, 423);
+            this.CompressTypeComboBox.Location = new System.Drawing.Point(357, 420);
             this.CompressTypeComboBox.Name = "CompressTypeComboBox";
             this.CompressTypeComboBox.Size = new System.Drawing.Size(272, 44);
             this.CompressTypeComboBox.TabIndex = 82;
@@ -794,25 +758,25 @@
             this.AutoMCFillCheckBoxLabel.Text = "自動入力";
             this.AutoMCFillCheckBoxLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label2
+            // BackupLocationLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(10, 335);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(573, 30);
-            this.label2.TabIndex = 42;
-            this.label2.Text = "選択したフォルダ内にバックアップフォルダが作成されます。";
+            this.BackupLocationLabel.AutoSize = true;
+            this.BackupLocationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.BackupLocationLabel.Location = new System.Drawing.Point(10, 335);
+            this.BackupLocationLabel.Name = "BackupLocationLabel";
+            this.BackupLocationLabel.Size = new System.Drawing.Size(573, 30);
+            this.BackupLocationLabel.TabIndex = 42;
+            this.BackupLocationLabel.Text = "選択したフォルダ内にバックアップフォルダが作成されます。";
             // 
-            // label1
+            // ProjectLocationExplanationLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(10, 168);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(573, 30);
-            this.label1.TabIndex = 42;
-            this.label1.Text = "選択したフォルダ内にプロジェクトフォルダが作成されます。";
+            this.ProjectLocationExplanationLabel.AutoSize = true;
+            this.ProjectLocationExplanationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ProjectLocationExplanationLabel.Location = new System.Drawing.Point(10, 168);
+            this.ProjectLocationExplanationLabel.Name = "ProjectLocationExplanationLabel";
+            this.ProjectLocationExplanationLabel.Size = new System.Drawing.Size(553, 30);
+            this.ProjectLocationExplanationLabel.TabIndex = 42;
+            this.ProjectLocationExplanationLabel.Text = "入力されたパスをプロジェクトフォルダとして設定します。";
             // 
             // UserValueLabel
             // 
@@ -825,19 +789,42 @@
             this.UserValueLabel.Text = "ユーザー設定値";
             this.UserValueLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // FileFormatLabel
+            // 
+            this.FileFormatLabel.AutoSize = true;
+            this.FileFormatLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.FileFormatLabel.Location = new System.Drawing.Point(7, 762);
+            this.FileFormatLabel.Name = "FileFormatLabel";
+            this.FileFormatLabel.Size = new System.Drawing.Size(226, 51);
+            this.FileFormatLabel.TabIndex = 87;
+            this.FileFormatLabel.Text = "ファイル形式";
+            // 
+            // FileFormatComboBox
+            // 
+            this.FileFormatComboBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.FileFormatComboBox.FormattingEnabled = true;
+            this.FileFormatComboBox.Items.AddRange(new object[] {
+            "CSV",
+            "TSV"});
+            this.FileFormatComboBox.Location = new System.Drawing.Point(357, 762);
+            this.FileFormatComboBox.Name = "FileFormatComboBox";
+            this.FileFormatComboBox.Size = new System.Drawing.Size(272, 44);
+            this.FileFormatComboBox.TabIndex = 88;
+            // 
             // MakeNewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(1774, 914);
+            this.ClientSize = new System.Drawing.Size(1774, 976);
+            this.Controls.Add(this.FileFormatComboBox);
+            this.Controls.Add(this.FileFormatLabel);
             this.Controls.Add(this.UserValueLabel);
             this.Controls.Add(this.AutoMCFillCheckBox);
             this.Controls.Add(this.AutoMCFillCheckBoxLabel);
             this.Controls.Add(this.OtherSettingsLabel);
             this.Controls.Add(this.CompressTypeComboBox);
             this.Controls.Add(this.CompressTypeLabel);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ShowDataLocationLabelVisibleCheckBox);
             this.Controls.Add(this.ShowRealLocationLabelVisibleCheckBox);
             this.Controls.Add(this.Tag3NameVisibleCheckBox);
@@ -859,14 +846,14 @@
             this.Controls.Add(this.EditRegistrationDateLabelTextBox);
             this.Controls.Add(this.CategoryLabel);
             this.Controls.Add(this.RegistrationDateLabel);
-            this.Controls.Add(this.label7);
+            this.Controls.Add(this.EditLabelExplanationLabel);
             this.Controls.Add(this.EditLabelName);
             this.Controls.Add(this.OpenListAfterOutputCheckBox);
             this.Controls.Add(this.EditedListOutputCheckBox);
             this.Controls.Add(this.CloseListOutputCheckBox);
             this.Controls.Add(this.StartUpListOutputCheckBox);
             this.Controls.Add(this.AutoListOutput);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.ListOutputExplanationLabel);
             this.Controls.Add(this.ListOutputLocationReferenceButton);
             this.Controls.Add(this.EditListOutputLocationTextBox);
             this.Controls.Add(this.ListOutputLocation);
@@ -874,7 +861,7 @@
             this.Controls.Add(this.CloseBackUpCheckBox);
             this.Controls.Add(this.StartUpBackUpCheckBox);
             this.Controls.Add(this.AutoBackUpSchedule);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.BackupLocationLabel);
             this.Controls.Add(this.BackupLocationReferenceButton);
             this.Controls.Add(this.ProjectLocationReferenceButton);
             this.Controls.Add(this.EditMCLabelTextBox);
@@ -896,14 +883,12 @@
             this.Controls.Add(this.BackupLocation);
             this.Controls.Add(this.ProjectLocation);
             this.Controls.Add(this.ProjectName);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ProjectLocationExplanationLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MakeNewProject";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "MakeNewProject";
             this.Load += new System.EventHandler(this.MakeNewProject_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -934,7 +919,7 @@
         private System.Windows.Forms.CheckBox CloseListOutputCheckBox;
         private System.Windows.Forms.CheckBox StartUpListOutputCheckBox;
         private System.Windows.Forms.Label AutoListOutput;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label ListOutputExplanationLabel;
         private System.Windows.Forms.Button ListOutputLocationReferenceButton;
         private System.Windows.Forms.TextBox EditListOutputLocationTextBox;
         private System.Windows.Forms.Label ListOutputLocation;
@@ -945,7 +930,7 @@
         private System.Windows.Forms.TextBox EditObjectNameLabelTextBox;
         private System.Windows.Forms.TextBox EditUUIDLabelTextBox;
         private System.Windows.Forms.TextBox EditMCLabelTextBox;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label EditLabelExplanationLabel;
         private System.Windows.Forms.Label EditLabelName;
         private System.Windows.Forms.TextBox EditCategoryLabelTextBox;
         private System.Windows.Forms.TextBox EditRegistrationDateLabelTextBox;
@@ -968,16 +953,15 @@
         private System.Windows.Forms.CheckBox Tag3NameVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowRealLocationLabelVisibleCheckBox;
         private System.Windows.Forms.CheckBox ShowDataLocationLabelVisibleCheckBox;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton TSVOutputRadioButton;
-        private System.Windows.Forms.RadioButton CSVOutputRadioButton;
         private System.Windows.Forms.Label CompressTypeLabel;
         private System.Windows.Forms.ComboBox CompressTypeComboBox;
         private System.Windows.Forms.Label OtherSettingsLabel;
         private System.Windows.Forms.CheckBox AutoMCFillCheckBox;
         private System.Windows.Forms.Label AutoMCFillCheckBoxLabel;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label BackupLocationLabel;
+        private System.Windows.Forms.Label ProjectLocationExplanationLabel;
         private System.Windows.Forms.Label UserValueLabel;
+        private System.Windows.Forms.Label FileFormatLabel;
+        private System.Windows.Forms.ComboBox FileFormatComboBox;
     }
 }
