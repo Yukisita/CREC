@@ -2137,7 +2137,7 @@ namespace CREC
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
@@ -2172,7 +2172,7 @@ namespace CREC
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
@@ -2241,7 +2241,7 @@ namespace CREC
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
@@ -2276,7 +2276,7 @@ namespace CREC
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
@@ -2329,7 +2329,7 @@ namespace CREC
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                             BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                             BackupToolStripMenuItem.Enabled = true;
                             return;
@@ -2364,7 +2364,7 @@ namespace CREC
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                             BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                             BackupToolStripMenuItem.Enabled = true;
                             return;
@@ -5458,6 +5458,7 @@ namespace CREC
             ShowListButton.Font = new Font(fontname, mainfontsize);
             // dataGridViewContextMenuStripの文字サイズ
             AddContentsContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            CopyAndAddContentsContextToolStripMenuItem.Font = new Font(fontname, mainfontsize);
             ListUpdateContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
             // PictureBox1ContextMenuStripの文字サイズ
@@ -5752,7 +5753,7 @@ namespace CREC
         private async void MakeBackUpZip()// バックアップ処理のうちZIP圧縮の部分
         {
             DateTime DT = DateTime.Now;
-            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile);
+            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile);
             BackupToolStripMenuItem.Enabled = false;
             // バックアップ作成
             if (CompressType == 0)// 単一ZIPに圧縮
@@ -5765,7 +5766,7 @@ namespace CREC
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                         BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                         BackupToolStripMenuItem.Enabled = true;
                         return;
@@ -5795,7 +5796,7 @@ namespace CREC
                                 File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 CountBackupedData += 1;
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile) + " : " + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile) + " : " + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
                                 Application.DoEvents();
                             }
                             catch// バックアップ失敗時はログに書き込み
@@ -5809,7 +5810,7 @@ namespace CREC
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("バックアップ作成に失敗しました。\n" + ex.Message, "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                         BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
                         BackupToolStripMenuItem.Enabled = true;
                         return;
@@ -5823,7 +5824,7 @@ namespace CREC
 
             BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
             BackupToolStripMenuItem.Enabled = true;
-            MessageBox.Show("バックアップ作成が完了しました。", "CREC");
+            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupCompleted", "mainform", LanguageFile), "CREC");
         }
         private async void CheckLatestVersion()// 更新確認
         {
@@ -5868,6 +5869,26 @@ namespace CREC
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
+        }
+        private void CopyAndAddContentsToolStripMenuItem_Click(object sender, EventArgs e)// 表示中の内容をコピーして新規追加
+        {
+            // 現在の表示内容を記録
+            string copyName = ShowObjectName.Text;// 名前
+            string copyCategory = ShowCategory.Text;// カテゴリ
+            string copyTag1 = ShowTag1.Text;// タグ1
+            string copyTag2 = ShowTag2.Text;// タグ2
+            string copyTag3 = ShowTag3.Text;// タグ3
+            string copyRealLocation = ShowRealLocation.Text;// 現物保管場所
+
+            AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
+
+            // 記録した内容を複製
+            EditNameTextBox.Text = copyName;
+            EditCategoryTextBox.Text = copyCategory;
+            EditTag1TextBox.Text = copyTag1;
+            EditTag2TextBox.Text = copyTag2;
+            EditTag3TextBox.Text = copyTag3;
+            EditRealLocationTextBox.Text = copyRealLocation;
         }
         private void ListUpdateContextStripMenuItem_Click(object sender, EventArgs e)// 一覧を更新
         {
@@ -5919,16 +5940,12 @@ namespace CREC
                 return;
             }
             // バックアップフォルダが存在するか確認
-            if (Directory.Exists(TargetBackupPath))
-            {
-
-            }
-            else
+            if (!Directory.Exists(TargetBackupPath))
             {
                 MessageBox.Show("バックアップフォルダが見つかりませんでした", "CREC");
                 return;
             }
-            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform",LanguageFile);
+            BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile);
             if (CompressType == 0)
             {
                 FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);

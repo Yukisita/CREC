@@ -411,6 +411,10 @@
 				<itemtext>Add...</itemtext>
 			</item>
 			<item>
+				<itemname>CopyAndAddContentsContextToolStripMenuItem</itemname>
+				<itemtext>Copy and add...</itemtext>
+			</item>
+			<item>
 				<itemname>ListUpdateContextStripMenuItem</itemname>
 				<itemtext>Update</itemtext>
 			</item>
@@ -455,6 +459,18 @@
 			<item>
 				<itemname>TSVOutputError</itemname>
 				<itemtext>Can not output contents list(tsv).</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCompleted</itemname>
+				<itemtext>Backup completed.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupFailed</itemname>
+				<itemtext>BackupFailed.</itemtext>
+			</item>
+			<item>
+				<itemname>UpdateNotification</itemname>
+				<itemtext>A new version CREC is available.&#xD;&#xA;Do you want to get latest version?</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>

@@ -411,6 +411,10 @@
 				<itemtext>新規追加...</itemtext>
 			</item>
 			<item>
+				<itemname>CopyAndAddContentsContextToolStripMenuItem</itemname>
+				<itemtext>新規追加（データを複製）...</itemtext>
+			</item>
+			<item>
 				<itemname>ListUpdateContextStripMenuItem</itemname>
 				<itemtext>更新</itemtext>
 			</item>
@@ -455,6 +459,18 @@
 			<item>
 				<itemname>TSVOutputError</itemname>
 				<itemtext>一覧のTSV出力に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCompleted</itemname>
+				<itemtext>バックアップが完了しました。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupFailed</itemname>
+				<itemtext>バックアップ作成に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>UpdateNotification</itemname>
+				<itemtext>アプリケーションの更新が見つかりました。&#xD;&#xA;最新バージョンの配布先にアクセスしますか？</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
