@@ -116,6 +116,7 @@ namespace CREC
         float smallfontsize = (float)(14.25);// 小フォントのサイズ
         float mainfontsize = (float)(18.0);// 標準フォントのサイズ
         float bigfontsize = (float)(20.25);// 大フォントのサイズ
+        int FontsizeOffset = 0;// 基準値に対するフォントサイズ変更量
 
         XElement LanguageFile;// 言語ファイル
         #endregion
@@ -267,7 +268,11 @@ namespace CREC
 
         private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
         {
-            SetFormLayout();// レイアウト初期化、DPI反映
+            extrasmallfontsize += FontsizeOffset;// 最小フォントのサイズ
+            smallfontsize += FontsizeOffset;// 小フォントのサイズ
+            mainfontsize += FontsizeOffset;// 標準フォントのサイズ
+            bigfontsize += FontsizeOffset;// 大フォントのサイズ
+            SetFormLayout();
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
             if (BootUpdateCheck == true)
@@ -1649,7 +1654,7 @@ namespace CREC
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName, LanguageFile);
+            ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName, LanguageFile, FontsizeOffset);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -2035,6 +2040,7 @@ namespace CREC
             smallfontsize += 1;// 小フォントのサイズ
             mainfontsize += 1;// 標準フォントのサイズ
             bigfontsize += 1;// 大フォントのサイズ
+            FontsizeOffset += 1;// フォントサイズオフセット量を加算
             SetFormLayout();
             //選択後もMenuItem開いたままにする処理
             FontSizeToolStripMenuItem.ShowDropDown();
@@ -2052,6 +2058,7 @@ namespace CREC
                 smallfontsize -= 1;// 小フォントのサイズ
                 mainfontsize -= 1;// 標準フォントのサイズ
                 bigfontsize -= 1;// 大フォントのサイズ
+                FontsizeOffset -= 1;// フォントサイズオフセット量を減算
                 SetFormLayout();
                 //選択後もMenuItem開いたままにする処理
                 FontSizeToolStripMenuItem.ShowDropDown();
@@ -5118,6 +5125,16 @@ namespace CREC
                                 CurrentLanguageFileName = cols[1];
                             }
                             break;
+                        case "FontsizeOffset":
+                            if (cols[1].Length == 0)
+                            {
+                                FontsizeOffset = 0;
+                            }
+                            else
+                            {
+                                FontsizeOffset = Convert.ToInt32(cols[1]);
+                            }
+                            break;
                     }
                 }
             }
@@ -5139,6 +5156,7 @@ namespace CREC
                     sw.WriteLine("BootUpdateCheck,true");
                     sw.WriteLine("ColorSetting,Blue");
                     sw.WriteLine("Language,Japanese");
+                    sw.WriteLine("FontsizeOffse,0");
                     sw.Close();
                     AllowEdit = true;
                     ShowConfidentialData = false;
@@ -5218,6 +5236,7 @@ namespace CREC
             }
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
+            configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
             configfile.Close();
         }
         #endregion

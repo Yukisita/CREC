@@ -28,15 +28,17 @@ namespace CREC
         string[] cols;
         string ColorSetting = "Blue";
         string CurrentLanguageFileName = "";// 言語設定
+        int FontsizeOffset = 0;// 文字サイズオフセット量
         int ConfigNumber;
         readonly XElement LanguageFile;// 言語ファイル
         public bool ReturnConfigSaved { get; private set; } = false;// 保存されて終了した場合はTrue
 
-        public ConfigForm(string colorSetting, string currentLanguage, XElement languageFile)
+        public ConfigForm(string colorSetting, string currentLanguage, XElement languageFile, int fontsizeOffset)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
             CurrentLanguageFileName = currentLanguage;
+            FontsizeOffset = fontsizeOffset;
             SetColorMethod();
             LanguageFile = languageFile;
         }
@@ -203,6 +205,7 @@ namespace CREC
             }
             configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
+            configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
             configfile.Close();
             ReturnConfigSaved = true;
             this.Close();
