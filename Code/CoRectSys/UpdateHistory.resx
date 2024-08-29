@@ -388,10 +388,8 @@ ver7.10.01（2024/07/18）
 管理コード自動入力のON/OFF切り替え機能追加
 特定環境課でCPU名表示が崩れる問題を修正
 
-ver7.10.01β6（2024/08/26）
-既存のデータをコピーしてデータを追加する機能を追加
-ソースコード整理
-多言語対応・言語ファイル更新</value>
+ver7.10.01β7（2024/08/29）
+正式版に向けて最終確認</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

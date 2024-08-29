@@ -1710,6 +1710,7 @@ namespace CREC
                     return;
                 }
             }
+            SaveConfig();
             System.Windows.Forms.Application.Restart();
         }
         private void AddContentsToolStripMenuItem_Click(object sender, EventArgs e)// 新規追加
