@@ -172,6 +172,8 @@ namespace CREC
             Application.DoEvents();
             ImportConfig();// configファイルの読み込み・自動生成
             // 言語ファイル読み込み
+            bootingForm.BootingProgressLabel.Text = "言語ファイル読み込み中";
+            Application.DoEvents();
             System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
             if (!directoryInfo.Exists)// 言語フォルダの存在確認
             {
