@@ -1691,34 +1691,38 @@ namespace CREC
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("編集中のデータを破棄し、編集前の状態に戻しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
+
                     // 詳細情報読み込み＆表示
-                    StreamReader sr1 = null;
+                    StreamReader streamReaderDetailData = null;
                     try
                     {
-                        sr1 = new StreamReader(TargetDetailsPath);
-                    }
-                    catch
-                    {
-                        DetailsTextBox.Text = "No Data.";
-                    }
-                    finally
-                    {
-                        if (sr1 != null)
-                        {
-                            DetailsTextBox.Text = sr1.ReadToEnd();
-                            sr1.Close();
-                        }
-                    }
-                    // 機密情報を読み込み
-                    try
-                    {
-                        StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                        ConfidentialDataTextBox.Text = sr2.ReadToEnd();
-                        sr2.Close();
+                        streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                        DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                        DetailsTextBox.Text = string.Empty;
+                    }
+                    finally
+                    {
+                        streamReaderDetailData?.Close();
+                    }
+                    // 機密情報を読み込み
+                    StreamReader streamReaderConfidentialData = null;
+                    try
+                    {
+                        streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                        ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                        ConfidentialDataTextBox.Text = string.Empty ;
+                    }
+                    finally
+                    {
+                        streamReaderConfidentialData?.Close();
                     }
                     EditNameTextBox.Text = ThisName;
                     EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
@@ -3104,34 +3108,38 @@ namespace CREC
             OpenPictureFolderButton.Visible = false;
 
             // 詳細情報読み込み＆表示
-            StreamReader sr1 = null;
+            StreamReader streamReaderDetailData = null;
             try
             {
-                sr1 = new StreamReader(TargetDetailsPath);
-            }
-            catch
-            {
-                DetailsTextBox.Text = "No Data.";
-            }
-            finally
-            {
-                if (sr1 != null)
-                {
-                    DetailsTextBox.Text = sr1.ReadToEnd();
-                    sr1.Close();
-                }
-            }
-            // 機密情報を読み込み
-            try
-            {
-                StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                ConfidentialDataTextBox.Text = sr2.ReadToEnd();
-                sr2.Close();
+                streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                DetailsTextBox.Text = "No Data.";
             }
+            finally
+            {
+                streamReaderDetailData?.Close();
+            }
+            // 機密情報を読み込み
+            StreamReader streamReaderConfidentialData = null;
+            try
+            {
+                streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                ConfidentialDataTextBox.Text = "No Data.";
+            }
+            finally
+            {
+                streamReaderConfidentialData?.Close();
+            }
+
             // 編集ボタンの表示内容設定
             if (AllowEdit == false || File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
@@ -3269,7 +3277,7 @@ namespace CREC
             ShowRealLocation.Text = "";
             ShowDataLocation.Text = ShowDataLocationLabel + "：";
             DetailsTextBox.Text = "";
-            ConfidentialDataTextBox.Text = "";
+            ConfidentialDataTextBox.Text = string.Empty;
             // 入力フォームをリセット
             EditNameTextBox.ResetText();
             EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
@@ -3447,33 +3455,36 @@ namespace CREC
             }
             StartEditForm();
             // 詳細情報読み込み＆表示
-            StreamReader sr1 = null;
+            StreamReader streamReaderDetailData = null;
             try
             {
-                sr1 = new StreamReader(TargetDetailsPath);
-            }
-            catch
-            {
-                DetailsTextBox.Text = "No Data.";
-            }
-            finally
-            {
-                if (sr1 != null)
-                {
-                    DetailsTextBox.Text = sr1.ReadToEnd();
-                    sr1.Close();
-                }
-            }
-            // 機密情報を読み込み
-            try
-            {
-                StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                ConfidentialDataTextBox.Text = sr2.ReadToEnd();
-                sr2.Close();
+                streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                DetailsTextBox.Text = string.Empty;
+            }
+            finally
+            {
+                streamReaderDetailData?.Close();
+            }
+            // 機密情報を読み込み
+            StreamReader streamReaderConfidentialData = null;
+            try
+            {
+                streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                ConfidentialDataTextBox.Text = string.Empty;
+            }
+            finally
+            {
+                streamReaderConfidentialData?.Close();
             }
             EditNameTextBox.Text = ThisName;
             EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
@@ -3887,7 +3898,7 @@ namespace CREC
             FileStream.Close();
             // 表示中の内容をクリア
             DetailsTextBox.Text = "";
-            ConfidentialDataTextBox.Text = "";
+            ConfidentialDataTextBox.Text = string.Empty;
             Thumbnail.Image = null;
             NoImageLabel.Visible = true;
             Thumbnail.BackColor = menuStrip1.BackColor;
@@ -5481,33 +5492,36 @@ namespace CREC
                         // 現時点でのデータを読み込んで表示
                         LoadDetails();
                         // 詳細情報読み込み＆表示
-                        StreamReader sr1 = null;
+                        StreamReader streamReaderDetailData = null;
                         try
                         {
-                            sr1 = new StreamReader(TargetDetailsPath);
-                        }
-                        catch
-                        {
-                            DetailsTextBox.Text = "No Data.";
-                        }
-                        finally
-                        {
-                            if (sr1 != null)
-                            {
-                                DetailsTextBox.Text = sr1.ReadToEnd();
-                                sr1.Close();
-                            }
-                        }
-                        // 機密情報を読み込み
-                        try
-                        {
-                            StreamReader sr2 = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                            ConfidentialDataTextBox.Text = sr2.ReadToEnd();
-                            sr2.Close();
+                            streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                            DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                         }
                         catch (Exception ex)
                         {
                             MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                            DetailsTextBox.Text = "No Data.";
+                        }
+                        finally
+                        {
+                            streamReaderDetailData?.Close();
+                        }
+                        // 機密情報を読み込み
+                        StreamReader streamReaderConfidentialData = null;
+                        try
+                        {
+                            streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                            ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                            ConfidentialDataTextBox.Text = "No Data.";
+                        }
+                        finally
+                        {
+                            streamReaderConfidentialData?.Close();
                         }
                         EditNameTextBox.Text = ThisName;
                         EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
