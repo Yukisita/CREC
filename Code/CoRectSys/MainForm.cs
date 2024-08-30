@@ -115,7 +115,7 @@ namespace CREC
         double CurrentDPI = 1.0;// 現在のDPI値
         double FirstDPI = 1.0;// 起動時の表示スケール値
         // フォントサイズ
-        float extrasmallfontsize = (float)(9);// 最小フォントのサイズ
+        float extrasmallfontsize = (float)(9.0);// 最小フォントのサイズ
         float smallfontsize = (float)(14.25);// 小フォントのサイズ
         float mainfontsize = (float)(18.0);// 標準フォントのサイズ
         float bigfontsize = (float)(20.25);// 大フォントのサイズ
@@ -459,9 +459,8 @@ namespace CREC
                         {
                             CompressType = Convert.ToInt32(cols[1]);
                         }
-                        catch (Exception ex)
+                        catch
                         {
-                            System.Windows.Forms.MessageBox.Show(ex.Message);
                             CompressType = 1;
                         }
                         break;
@@ -2104,7 +2103,6 @@ namespace CREC
                             try
                             {
                                 ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-
                             }
                             catch (Exception ex)
                             {
@@ -2197,7 +2195,6 @@ namespace CREC
                             try
                             {
                                 ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-
                             }
                             catch (Exception ex)
                             {
@@ -2274,7 +2271,6 @@ namespace CREC
                         try
                         {
                             ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-
                         }
                         catch (Exception ex)
                         {
@@ -2766,7 +2762,6 @@ namespace CREC
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
-            //CheckContentsList();
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -5804,7 +5799,7 @@ namespace CREC
                         HttpResponseMessage httpResponseMessage2 = await httpClient.GetAsync(LatestVersionDownloadLink);
                         if (!httpResponseMessage2.IsSuccessStatusCode)// 配布バージョンと一致しない場合
                         {
-                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UpdateNotification","mainform",LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UpdateNotification", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
                             {
                                 System.Diagnostics.Process.Start(GitHubLatestReleaseURL);
