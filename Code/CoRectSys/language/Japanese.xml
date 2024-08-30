@@ -472,6 +472,14 @@
 				<itemname>UpdateNotification</itemname>
 				<itemtext>アプリケーションの更新が見つかりました。&#xD;&#xA;最新バージョンの配布先にアクセスしますか？</itemtext>
 			</item>
+			<item>
+				<itemname>DetailDataLoadError</itemname>
+				<itemtext>詳細情報の読み込みに失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>RestrictedDataLoadError</itemname>
+				<itemtext>機密情報の読み込みに失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

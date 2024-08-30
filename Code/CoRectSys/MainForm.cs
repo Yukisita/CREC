@@ -1704,7 +1704,7 @@ namespace CREC
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                         DetailsTextBox.Text = string.Empty;
                     }
                     finally
@@ -1720,8 +1720,8 @@ namespace CREC
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
-                        ConfidentialDataTextBox.Text = string.Empty ;
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                        ConfidentialDataTextBox.Text = string.Empty;
                     }
                     finally
                     {
@@ -3110,7 +3110,7 @@ namespace CREC
             ShowPicturesButton.Visible = true;
             OpenPictureFolderButton.Visible = false;
 
-            // 詳細情報読み込み＆表示
+            // 詳細情報読み込み
             StreamReader streamReaderDetailData = null;
             try
             {
@@ -3119,7 +3119,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                 DetailsTextBox.Text = "No Data.";
             }
             finally
@@ -3135,7 +3135,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                 ConfidentialDataTextBox.Text = "No Data.";
             }
             finally
@@ -3466,7 +3466,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                 DetailsTextBox.Text = string.Empty;
             }
             finally
@@ -3482,7 +3482,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                 ConfidentialDataTextBox.Text = string.Empty;
             }
             finally
@@ -5503,7 +5503,7 @@ namespace CREC
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                             DetailsTextBox.Text = "No Data.";
                         }
                         finally
@@ -5519,7 +5519,7 @@ namespace CREC
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("データの読み込みに失敗しました\n" + ex.Message, "CREC");
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
                             ConfidentialDataTextBox.Text = "No Data.";
                         }
                         finally

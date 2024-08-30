@@ -472,6 +472,14 @@
 				<itemname>UpdateNotification</itemname>
 				<itemtext>A new version CREC is available.&#xD;&#xA;Do you want to get latest version?</itemtext>
 			</item>
+			<item>
+				<itemname>DetailDataLoadError</itemname>
+				<itemtext>Faild to load detail data.</itemtext>
+			</item>
+			<item>
+				<itemname>RestrictedDataLoadError</itemname>
+				<itemtext>Faild to load restricted data.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
