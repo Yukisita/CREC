@@ -31,9 +31,12 @@ namespace CREC
 {
     public partial class MainForm : Form
     {
+        // アップデート確認用URLの更新、Release前に変更忘れずに
+        #region 定数の宣言
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.10.02.zip";// アップデート確認用URL
+        readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
+        #endregion
         #region 変数の宣言
-        // アップデート確認用、Release前に変更忘れずに
-        string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v7.10.01.zip";
         // プロジェクトファイル読み込み用変数
         string TargetProjectName = "";// プロジェクト名
         string TargetFolderPath = "";// データ保管場所のフォルダパス
@@ -2058,7 +2061,7 @@ namespace CREC
             System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("WebAccessCheck", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
             {
-                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                System.Diagnostics.Process.Start(GitHubLatestReleaseURL);
             }
         }
         private void UserManualToolStripMenuItem_Click(object sender, EventArgs e)// 利用ガイド
@@ -5783,29 +5786,28 @@ namespace CREC
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupCompleted", "mainform", LanguageFile), "CREC");
         }
-        private async void CheckLatestVersion()// 更新確認
+        /// <summary>
+        /// 更新確認
+        /// </summary>
+        private async void CheckLatestVersion()
         {
             HttpClient httpClient = new HttpClient();
             try
             {
                 // githubのreleaseにアクセスできるか確認
-                HttpResponseMessage httpResponseMessage1 = await httpClient.GetAsync("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                HttpResponseMessage httpResponseMessage1 = await httpClient.GetAsync(GitHubLatestReleaseURL);
                 if (httpResponseMessage1.IsSuccessStatusCode)// githubへのアクセスができた場合
                 {
                     try
                     {
                         // 本バージョンと一致する配布先があるか確認
                         HttpResponseMessage httpResponseMessage2 = await httpClient.GetAsync(LatestVersionDownloadLink);
-                        if (httpResponseMessage2.IsSuccessStatusCode)// 配布バージョンと一致した場合
+                        if (!httpResponseMessage2.IsSuccessStatusCode)// 配布バージョンと一致しない場合
                         {
-                            // MessageBox.Show("success");//デバッグ用
-                        }
-                        else
-                        {
-                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("アプリケーションの更新が見つかりました。\n最新バージョンの配布先にアクセスしますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+                            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UpdateNotification","mainform",LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                             if (result == System.Windows.MessageBoxResult.Yes)// ブラウザでリンクを表示
                             {
-                                System.Diagnostics.Process.Start("https://github.com/Yukisita/CREC/releases/tag/Latest_Release");
+                                System.Diagnostics.Process.Start(GitHubLatestReleaseURL);
                             }
                         }
                     }
