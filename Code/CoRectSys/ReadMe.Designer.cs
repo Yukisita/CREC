@@ -1,4 +1,4 @@
-﻿namespace CoRectSys
+﻿namespace CREC
 {
     partial class ReadMe
     {
@@ -41,33 +41,30 @@
             this.ReadMeTextBox.BackColor = System.Drawing.Color.White;
             this.ReadMeTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ReadMeTextBox.HideSelection = false;
-            this.ReadMeTextBox.Location = new System.Drawing.Point(22, 21);
-            this.ReadMeTextBox.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.ReadMeTextBox.Location = new System.Drawing.Point(12, 12);
             this.ReadMeTextBox.Multiline = true;
             this.ReadMeTextBox.Name = "ReadMeTextBox";
             this.ReadMeTextBox.ReadOnly = true;
             this.ReadMeTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ReadMeTextBox.Size = new System.Drawing.Size(1419, 742);
+            this.ReadMeTextBox.Size = new System.Drawing.Size(754, 420);
             this.ReadMeTextBox.TabIndex = 1;
             this.ReadMeTextBox.Text = resources.GetString("ReadMeTextBox.Text");
             // 
             // DummyTextBox
             // 
-            this.DummyTextBox.Location = new System.Drawing.Point(572, 527);
-            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
+            this.DummyTextBox.Location = new System.Drawing.Point(312, 301);
             this.DummyTextBox.Name = "DummyTextBox";
-            this.DummyTextBox.Size = new System.Drawing.Size(180, 28);
+            this.DummyTextBox.Size = new System.Drawing.Size(100, 19);
             this.DummyTextBox.TabIndex = 0;
             // 
             // ReadMe
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1467, 788);
+            this.ClientSize = new System.Drawing.Size(778, 444);
             this.Controls.Add(this.ReadMeTextBox);
             this.Controls.Add(this.DummyTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 5, 6, 5);
             this.Name = "ReadMe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ReadMe";

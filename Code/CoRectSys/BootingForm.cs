@@ -4,7 +4,7 @@ Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 */
-using CoRectSys;
+using CREC;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

@@ -15,28 +15,38 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
+using System.Xml.Linq;
 
-namespace CoRectSys
+namespace CREC
 {
     public partial class ConfigForm : Form
     {
-        string ConfigFile = "config.sys";
+        readonly string ConfigFile = "config.sys";
         string reader;
         string[] rows;
         string row;
         string[] cols;
         string ColorSetting = "Blue";
+        string CurrentLanguageFileName = "";// 言語設定
+        int FontsizeOffset = 0;// 文字サイズオフセット量
         int ConfigNumber;
+        readonly XElement LanguageFile;// 言語ファイル
+        public bool ReturnConfigSaved { get; private set; } = false;// 保存されて終了した場合はTrue
 
-        public ConfigForm(string colorSetting)
+        public ConfigForm(string colorSetting, string currentLanguage, XElement languageFile, int fontsizeOffset)
         {
             InitializeComponent();
             ColorSetting = colorSetting;
+            CurrentLanguageFileName = currentLanguage;
+            FontsizeOffset = fontsizeOffset;
             SetColorMethod();
+            LanguageFile = languageFile;
         }
 
         private void ConfigForm_Load(object sender, EventArgs e)// 読み込み
         {
+            // 言語設定
+            SetLanguage();
             reader = File.ReadAllText(ConfigFile, Encoding.GetEncoding("UTF-8"));
             string[] tmp = File.ReadAllLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
             rows = reader.Trim().Replace("\r", "").Split('\n');
@@ -189,11 +199,15 @@ namespace CoRectSys
             {
                 configfile.WriteLine("BootUpdateCheck,true");
             }
-            else if(DenyBootUpdateCheckRadioButton.Checked)
+            else if (DenyBootUpdateCheckRadioButton.Checked)
             {
                 configfile.WriteLine("BootUpdateCheck,false");
             }
+            configfile.WriteLine("ColorSetting,{0}", ColorSetting);
+            configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
+            configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
             configfile.Close();
+            ReturnConfigSaved = true;
             this.Close();
         }
 
@@ -231,5 +245,76 @@ namespace CoRectSys
                 SetAutoLoadProjectTextBox.ReadOnly = false;
             }
         }
+
+        #region 言語設定
+        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ConfigForm", LanguageFile);
+            IEnumerable<XElement> buttonItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("Button").Elements("item") select item;
+            foreach (XElement itemData in buttonItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("Label").Elements("item") select item;
+            foreach (XElement itemData in labelItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> radioButtonItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("RadioButton").Elements("item") select item;
+            foreach (XElement itemData in radioButtonItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            IEnumerable<XElement> checkBoxItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("CheckBox").Elements("item") select item;
+            foreach (XElement itemData in checkBoxItemDataList)
+            {
+                try
+                {
+                    Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                    if (targetContrl.Length > 0)
+                    {
+                        targetContrl[0].Text = itemData.Element("itemtext").Value;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+        #endregion
     }
 }
