@@ -2138,7 +2138,6 @@
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
             this.Controls.Add(this.UUIDEditStatusLabel);
-            this.Controls.Add(this.EditRequestButton);
             this.Controls.Add(this.SetProperInventorySettingsButton);
             this.Controls.Add(this.OpenPictureFolderButton);
             this.Controls.Add(this.CloseInventoryManagementModeButton);
@@ -2218,6 +2217,7 @@
             this.Controls.Add(this.MCLabel);
             this.Controls.Add(this.RegistrationDateLabel);
             this.Controls.Add(this.IDLabel);
+            this.Controls.Add(this.EditRequestButton);
             this.Controls.Add(this.EditButton);
             this.Controls.Add(this.SaveAndCloseEditButton);
             this.Controls.Add(this.EditRequestingButton);

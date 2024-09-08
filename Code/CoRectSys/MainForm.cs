@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.1.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -96,6 +96,20 @@ namespace CREC
         string ColorSetting = "Blue";// 色設定
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
+        class DataValues
+        {
+            public string TargetContentsPath { get; set; }
+            public string ThisName { get; set; }
+            public string ThisID { get; set; }
+            public string ThisMC { get; set; }
+            public string ThisRegistrationDate { get; set; }
+            public string ThisCategory { get; set; }
+            public string ThisTag1 { get; set; }
+            public string ThisTag2 { get; set; }
+            public string ThisTag3 { get; set; }
+            public string ThisRealLocation { get; set; }
+        }
+
         string TargetContentsPath = string.Empty;// 詳細表示するデータのフォルダパス
         string ThisName = string.Empty;
         string ThisID = string.Empty;
@@ -2762,19 +2776,12 @@ namespace CREC
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)
+                if (CheckEditingContents() == false)// 処理をキャンセルされた場合
                 {
-                    ShowDetails();
-                }
-                else
-                {
-                    return;
+                    return;// 処理を停止する
                 }
             }
-            else
-            {
-                ShowDetails();
-            }
+            ShowDetails();
         }
         private void OpenDataLocation_Click(object sender, EventArgs e)// ファイルの場所を表示
         {
@@ -2946,15 +2953,10 @@ namespace CREC
                 LoadGrid();
                 return true;
             }
-            else if (result == System.Windows.MessageBoxResult.Cancel)// 何もしない
-            {
-                return false;
-            }
-            else// 仮置き
-            {
-                return false;
-            }
+            // 上記条件以外、処理せずに戻る場合
+            return false;
         }
+
         private void ShowDetails()// 詳細情報の表示
         {
             // 読み込み中の画面に切り替え
@@ -2964,96 +2966,29 @@ namespace CREC
             Thumbnail.BackColor = menuStrip1.BackColor;
             Application.DoEvents();
             LoadDetails();
-            // 表示・非表示項目の設定
             AllowEditIDButton.Visible = false;
             CheckSameMCButton.Visible = false;
             ConfidentialDataTextBox.Visible = false;
             DetailsTextBox.Visible = true;
-            if (ShowObjectNameLabelVisible == false)
-            {
-                ShowObjectName.Visible = false;
-            }
-            else
-            {
-                ShowObjectName.Visible = true;
-            }
-            if (ShowIDLabelVisible == false)
-            {
-                ShowID.Visible = false;
-            }
-            else
-            {
-                ShowID.Visible = true;
-            }
-            if (ShowMCLabelVisible == false)
-            {
-                ShowMC.Visible = false;
-            }
-            else
-            {
-                ShowMC.Visible = true;
-            }
-            if (ShowRegistrationDateLabelVisible == false)
-            {
-                ShowRegistrationDate.Visible = false;
-            }
-            else
-            {
-                ShowRegistrationDate.Visible = true;
-            }
-            if (ShowCategoryLabelVisible == false)
-            {
-                ShowCategory.Visible = false;
-            }
-            else
-            {
-                ShowCategory.Visible = true;
-            }
-            if (ShowTag1NameVisible == false)
-            {
-                ShowTag1.Visible = false;
-            }
-            else
-            {
-                ShowTag1.Visible = true;
-            }
-            if (ShowTag2NameVisible == false)
-            {
-                ShowTag2.Visible = false;
-            }
-            else
-            {
-                ShowTag2.Visible = true;
-            }
-            if (ShowTag3NameVisible == false)
-            {
-                ShowTag3.Visible = false;
-            }
-            else
-            {
-                ShowTag3.Visible = true;
-            }
-            if (ShowRealLocationLabelVisible == false)
-            {
-                ShowRealLocation.Visible = false;
-            }
-            else
-            {
-                ShowRealLocation.Visible = true;
-            }
-            if (ShowDataLocationLabelVisible == false)
-            {
-                ShowDataLocation.Visible = false;
-            }
-            else
-            {
-                ShowDataLocation.Visible = true;
-            }
+            // 表示・非表示項目の設定
+            ShowObjectName.Visible = ShowObjectNameLabelVisible;
+            ShowID.Visible = ShowIDLabelVisible;
+            ShowMC.Visible = ShowMCLabelVisible;
+            ShowRegistrationDate.Visible = ShowRegistrationDateLabelVisible;
+            ShowCategory.Visible = ShowCategoryLabelVisible;
+            ShowTag1.Visible = ShowTag1NameVisible;
+            ShowTag2.Visible = ShowTag2NameVisible;
+            ShowTag3.Visible = ShowTag3NameVisible;
+            ShowRealLocation.Visible = ShowRealLocationLabelVisible;
+            ShowDataLocation.Visible = ShowDataLocationLabelVisible;
 
             if (File.Exists(TargetContentsPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
-                InventoryManagementModeButton.Visible = true;
-                CloseInventoryManagementModeButton.Visible = false;
+                if (CloseInventoryManagementModeButton.Visible == false)
+                {
+                    InventoryManagementModeButton.Visible = true;
+                    CloseInventoryManagementModeButton.Visible = false;
+                }
             }
             else
             {
@@ -3136,7 +3071,6 @@ namespace CREC
             // 編集ボタンの表示内容設定
             if (AllowEdit == false || File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                //EditButton.Text = "編集禁止";
                 ReadOnlyButton.Visible = true;
                 ReadOnlyButton.ForeColor = Color.Red;
                 EditButton.Visible = false;
@@ -3146,7 +3080,6 @@ namespace CREC
             {
                 if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
                 {
-                    //EditButton.Text = "他端末編集中";
                     EditRequestButton.Visible = true;
                     EditRequestButton.ForeColor = Color.Blue;
                     ReadOnlyButton.Visible = false;
@@ -3154,7 +3087,6 @@ namespace CREC
                 }
                 else
                 {
-                    //EditButton.Text = "編集";
                     EditButton.Visible = true;
                     ReadOnlyButton.Visible = false;
                     EditRequestButton.Visible = false;
@@ -3483,8 +3415,6 @@ namespace CREC
             EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
             EditIDTextBox.Text = ThisID;
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-            AllowEditIDButton.Visible = true;
-            UUIDEditStatusLabel.Visible = false;
             EditMCTextBox.Text = ThisMC;
             EditRegistrationDateTextBox.Text = ThisRegistrationDate;
             EditCategoryTextBox.Text = ThisCategory;
@@ -3508,10 +3438,6 @@ namespace CREC
                 EditRequestButton.Visible = false;
                 EditRequestingButton.Visible = true;
                 AwaitEdit();
-            }
-            else
-            {
-                return;
             }
         }
         private void ReadOnlyButton_Click(object sender, EventArgs e)// 編集不可
@@ -3559,47 +3485,18 @@ namespace CREC
                 File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
             }
             // 編集画面に必要な物を表示
-            if (ShowObjectNameLabelVisible == true)
-            {
-                EditNameTextBox.Visible = true;
-            }
-            if (ShowIDLabelVisible == true)
-            {
-                EditIDTextBox.Visible = true;
-                AllowEditIDButton.Visible = true;
-            }
-            if (ShowMCLabelVisible == true)
-            {
-                EditMCTextBox.Visible = true;
-                CheckSameMCButton.Visible = true;
-            }
-            if (ShowRegistrationDateLabelVisible == true)
-            {
-                EditRegistrationDateTextBox.Visible = true;
-            }
-            if (ShowCategoryLabelVisible == true)
-            {
-                EditCategoryTextBox.Visible = true;
-            }
-            if (ShowTag1NameVisible == true)
-            {
-                EditTag1TextBox.Visible = true;
-            }
-            if (ShowTag2NameVisible == true)
-            {
-                EditTag2TextBox.Visible = true;
-            }
-            if (ShowTag3NameVisible == true)
-            {
-                EditTag3TextBox.Visible = true;
-            }
-            if (ShowRealLocationLabelVisible == true)
-            {
-                EditRealLocationTextBox.Visible = true;
-            }
-            if (ShowDataLocationLabelVisible == true)
-            {
-            }
+            EditNameTextBox.Visible = ShowObjectNameLabelVisible;
+            EditIDTextBox.Visible = ShowIDLabelVisible;
+            AllowEditIDButton.Visible = ShowIDLabelVisible;
+            UUIDEditStatusLabel.Visible = false;
+            EditMCTextBox.Visible = ShowMCLabelVisible;
+            CheckSameMCButton.Visible = ShowMCLabelVisible;
+            EditRegistrationDateTextBox.Visible = ShowRegistrationDateLabelVisible;
+            EditCategoryTextBox.Visible = ShowCategoryLabelVisible;
+            EditTag1TextBox.Visible = ShowTag1NameVisible;
+            EditTag2TextBox.Visible = ShowTag2NameVisible;
+            EditTag3TextBox.Visible = ShowTag3NameVisible;
+            EditRealLocationTextBox.Visible = ShowRealLocationLabelVisible;
             SaveAndCloseEditButton.Visible = true;
             SelectThumbnailButton.Visible = true;
             OpenPictureFolderButton.Visible = true;
@@ -3616,9 +3513,6 @@ namespace CREC
             ShowRealLocation.Visible = false;
             ShowPicturesButton.Visible = false;
 
-            // 各ラベルの表示内容を編集用に変更
-            AllowEditIDButton.Visible = true;
-            UUIDEditStatusLabel.Visible = false;
             // 詳細データおよび機密データを編集可能に変更
             DetailsTextBox.ReadOnly = false;
             ConfidentialDataTextBox.ReadOnly = false;
@@ -3834,13 +3728,9 @@ namespace CREC
             }
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)
+                if (CheckEditingContents() == false)// キャンセルされた場合
                 {
-
-                }
-                else
-                {
-                    return;
+                    return;// 編集モードに切り替えず処理を終了
                 }
             }
             dataGridView1.ClearSelection();//　List選択解除
@@ -5343,7 +5233,7 @@ namespace CREC
             ConfidentialDataLabel.Font = new Font(fontname, mainfontsize);
             EditButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditButton.Font = new Font(fontname, mainfontsize);
-            EditRequestButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
+            EditRequestButton.Location = new Point(Convert.ToInt32(FormSize.Width - 630 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             EditRequestButton.Font = new Font(fontname, mainfontsize);
             ReadOnlyButton.Location = new Point(Convert.ToInt32(FormSize.Width - 615 * DpiScale), Convert.ToInt32(FormSize.Height - 90 * DpiScale));
             ReadOnlyButton.Font = new Font(fontname, mainfontsize);
@@ -5533,7 +5423,6 @@ namespace CREC
                     }
                 }
             }
-            return;
         }
         private async void AwaitEditRequest()// 編集リクエストを待機
         {
@@ -5623,7 +5512,6 @@ namespace CREC
                     }
                 }
             }
-            return;
         }
         private async void CheckContentsList()// ContentsListの状態をバックグラウンドで監視
         {
