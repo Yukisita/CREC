@@ -480,6 +480,14 @@
 				<itemname>RestrictedDataLoadError</itemname>
 				<itemtext>機密情報の読み込みに失敗しました。</itemtext>
 			</item>
+			<item>
+				<itemname>SameMCNotFound</itemname>
+				<itemtext>同一管理番号のデータは見つかりませんでした。</itemtext>
+			</item>
+			<item>
+				<itemname>SameMCExist</itemname>
+				<itemtext>同一管理番号のデータが見つかりました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

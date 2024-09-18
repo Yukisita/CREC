@@ -397,6 +397,10 @@ ver8.0.0（2024/09/03）
 
 ver8.0.1（2024/09/08）
 UI周りの不具合修正
+ソースコードのリファクタリング作業中
+
+ver8.0.2（2024/09/19）
+ユーザアシストToolTipの表示非表示が再起動するまで反映されない不具合を修正
 ソースコードのリファクタリング作業中</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

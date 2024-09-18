@@ -40,7 +40,7 @@
             this.UpdateHistoryTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.UpdateHistoryTextBox.HideSelection = false;
             this.UpdateHistoryTextBox.Location = new System.Drawing.Point(16, 15);
-            this.UpdateHistoryTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.UpdateHistoryTextBox.Margin = new System.Windows.Forms.Padding(5);
             this.UpdateHistoryTextBox.Multiline = true;
             this.UpdateHistoryTextBox.Name = "UpdateHistoryTextBox";
             this.UpdateHistoryTextBox.ReadOnly = true;
@@ -52,7 +52,7 @@
             // DummyTextBox
             // 
             this.DummyTextBox.Location = new System.Drawing.Point(416, 376);
-            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(5);
             this.DummyTextBox.Name = "DummyTextBox";
             this.DummyTextBox.Size = new System.Drawing.Size(132, 22);
             this.DummyTextBox.TabIndex = 0;
@@ -65,7 +65,7 @@
             this.Controls.Add(this.UpdateHistoryTextBox);
             this.Controls.Add(this.DummyTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "UpdateHistory";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "UpdateHistory";

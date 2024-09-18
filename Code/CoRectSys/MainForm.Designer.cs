@@ -2138,6 +2138,8 @@
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
             this.Controls.Add(this.UUIDEditStatusLabel);
+            this.Controls.Add(this.AllowEditIDButton);
+            this.Controls.Add(this.CheckSameMCButton);
             this.Controls.Add(this.SetProperInventorySettingsButton);
             this.Controls.Add(this.OpenPictureFolderButton);
             this.Controls.Add(this.CloseInventoryManagementModeButton);
@@ -2147,12 +2149,10 @@
             this.Controls.Add(this.ShowPictureFileNameLabel);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
-            this.Controls.Add(this.AllowEditIDButton);
             this.Controls.Add(this.EditIDTextBox);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.EditTag1TextBox);
             this.Controls.Add(this.EditNameTextBox);
-            this.Controls.Add(this.CheckSameMCButton);
             this.Controls.Add(this.EditTag3TextBox);
             this.Controls.Add(this.EditTag2TextBox);
             this.Controls.Add(this.EditCategoryTextBox);

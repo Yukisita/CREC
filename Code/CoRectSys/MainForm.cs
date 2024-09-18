@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.1.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.2.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -80,35 +80,27 @@ namespace CREC
         bool ShowDataLocationLabelVisible = true;
         int SearchOptionNumber = 0;// 検索対象設定、デフォルトで0
         int SearchMethodNumber = 0;// 検索方法、デフォルトで0
-        string AutoLoadProjectPath = string.Empty;// 自動読み込みプロジェクトのパス
-        bool OpenLastTimeProject = false;// 前回開いていたプロジェクトを開く
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
         string CurrentLanguageFileName = string.Empty;
-        // config.sys読み込み用変数
-        bool AllowEdit;// 編集可否を設定
-        bool AllowEditID = false;// IDの手動設定の可否を設定、デフォルトで禁止<-使わなくなった、今後のために残す
-        bool ShowConfidentialData;// 機密情報表示の可否を設定
-        bool ShowUserAssistToolTips;// ユーザー補助のポップアップの表示・非表示を設定
-        bool AutoSearch;// 検索窓に入力された内容を自動で検索するか設定
-        bool RecentShownContents;// 検索候補を表示するか設定
-        bool BootUpdateCheck;// 起動時に更新確認するか設定
-        string ColorSetting = "Blue";// 色設定
+        // config.sys読み込み用Class
+        ConfigValuesClass ConfigValues = new ConfigValuesClass();
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
         class DataValues
         {
             public string TargetContentsPath { get; set; }
-            public string ThisName { get; set; }
-            public string ThisID { get; set; }
-            public string ThisMC { get; set; }
-            public string ThisRegistrationDate { get; set; }
-            public string ThisCategory { get; set; }
-            public string ThisTag1 { get; set; }
-            public string ThisTag2 { get; set; }
-            public string ThisTag3 { get; set; }
-            public string ThisRealLocation { get; set; }
+            public string Name { get; set; }
+            public string ID { get; set; }
+            public string MC { get; set; }
+            public string RegistrationDate { get; set; }
+            public string Category { get; set; }
+            public string Tag1 { get; set; }
+            public string Tag2 { get; set; }
+            public string Tag3 { get; set; }
+            public string RealLocation { get; set; }
         }
+        List<DataValues> DataList = new List<DataValues>();
 
         string TargetContentsPath = string.Empty;// 詳細表示するデータのフォルダパス
         string ThisName = string.Empty;
@@ -264,7 +256,7 @@ namespace CREC
                     MessageBox.Show(string.Empty + ex, "CREC");
                 }
             }
-            if (AutoSearch == true)
+            if (ConfigValues.AutoSearch == true)
             {
                 SearchButton.Visible = false;
             }
@@ -283,7 +275,7 @@ namespace CREC
             SetFormLayout();
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
-            if (BootUpdateCheck == true)
+            if (ConfigValues.BootUpdateCheck == true)
             {
                 CheckLatestVersion();// 更新の確認
             }
@@ -296,7 +288,7 @@ namespace CREC
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, ColorSetting, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, ConfigValues.ColorSetting, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                     {
@@ -311,7 +303,7 @@ namespace CREC
             }
             else// 編集中データがなかった場合
             {
-                MakeNewProject makenewproject = new MakeNewProject(string.Empty, ColorSetting, LanguageFile);
+                MakeNewProject makenewproject = new MakeNewProject(string.Empty, ConfigValues.ColorSetting, LanguageFile);
                 makenewproject.ShowDialog();
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
@@ -1639,11 +1631,12 @@ namespace CREC
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ColorSetting, CurrentLanguageFileName, LanguageFile, FontsizeOffset);
+            ConfigForm configform = new ConfigForm(ConfigValues.ColorSetting, CurrentLanguageFileName, LanguageFile, FontsizeOffset);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
                 ImportConfig();// 更新したconfigファイルを読み込み
+                SetUserAssistToolTips();// ToolTipの表示設定を再読み込み
             }
         }
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)// プログラム終了
@@ -1940,7 +1933,7 @@ namespace CREC
         #region 色設定
         private void AliceBlueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ColorSetting = "Blue";
+            ConfigValues.ColorSetting = "Blue";
             this.BackColor = Color.AliceBlue;
             ShowListButton.BackColor = Color.AliceBlue;
             menuStrip1.BackColor = SystemColors.InactiveCaption;
@@ -1957,7 +1950,7 @@ namespace CREC
         }
         private void WhiteSmokeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ColorSetting = "White";
+            ConfigValues.ColorSetting = "White";
             this.BackColor = Color.WhiteSmoke;
             ShowListButton.BackColor = Color.WhiteSmoke;
             menuStrip1.BackColor = Color.Gainsboro;
@@ -1974,7 +1967,7 @@ namespace CREC
         }
         private void LavenderBlushToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ColorSetting = "Sakura";
+            ConfigValues.ColorSetting = "Sakura";
             this.BackColor = Color.LavenderBlush;
             ShowListButton.BackColor = Color.LavenderBlush;
             menuStrip1.BackColor = Color.LightPink;
@@ -1991,7 +1984,7 @@ namespace CREC
         }
         private void HoneydewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ColorSetting = "Green";
+            ConfigValues.ColorSetting = "Green";
             this.BackColor = Color.Honeydew;
             ShowListButton.BackColor = Color.Honeydew;
             menuStrip1.BackColor = Color.FromArgb(192, 255, 192);
@@ -2051,17 +2044,17 @@ namespace CREC
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ColorSetting, CurrentDPI, LanguageFile);
+            VersionInformation VerInfo = new VersionInformation(ConfigValues.ColorSetting, CurrentDPI, LanguageFile);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
         {
-            ReadMe readme = new ReadMe(ColorSetting);
+            ReadMe readme = new ReadMe(ConfigValues.ColorSetting);
             readme.ShowDialog();
         }
         private void UpdateHistoryToolStripMenuItem_Click(object sender, EventArgs e)// 更新履歴
         {
-            UpdateHistory updateHistory = new UpdateHistory(ColorSetting);
+            UpdateHistory updateHistory = new UpdateHistory(ConfigValues.ColorSetting);
             updateHistory.ShowDialog();
         }
         private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
@@ -2104,7 +2097,7 @@ namespace CREC
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         DateTime DT = DateTime.Now;
                         if (CompressType == 0)
@@ -2195,7 +2188,7 @@ namespace CREC
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         // バックアップ作成
                         DateTime DT = DateTime.Now;
@@ -2271,7 +2264,7 @@ namespace CREC
                 {
                     BackUpMethod();
                     this.Hide();// メインフォームを消す
-                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ColorSetting);
+                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                     // バックアップ作成
                     DateTime DT = DateTime.Now;
@@ -2347,7 +2340,7 @@ namespace CREC
         }
         private void ForceEditRequestToolStripMenuItem_Click(object sender, EventArgs e)// 編集権限強制取得
         {
-            if (AllowEdit == false)
+            if (ConfigValues.AllowEdit == false)
             {
                 MessageBox.Show("設定により編集が禁止されています。", "CREC");
             }
@@ -2413,7 +2406,7 @@ namespace CREC
                 {
                     if (CheckEditingContents() == true)
                     {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, LanguageFile);
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ConfigValues.ColorSetting, LanguageFile);
                         makenewproject.ShowDialog();
                         if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                         {
@@ -2428,7 +2421,7 @@ namespace CREC
                 }
                 else
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ColorSetting, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ConfigValues.ColorSetting, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                     {
@@ -2447,7 +2440,7 @@ namespace CREC
             }
             else
             {
-                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, ColorSetting);
+                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, ConfigValues.ColorSetting);
                 projectInfoForm.ShowDialog();
             }
         }
@@ -2493,9 +2486,11 @@ namespace CREC
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                 try
                 {
+                    DataList.Clear();// DataListを初期化
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
+                        DataValues thisDataValues = new DataValues();// Listを使用するよう変更中
                         NoData = false;
                         if (DataLoadingStatus == "stop")
                         {
@@ -2503,14 +2498,6 @@ namespace CREC
                             break;
                         }
                         // 変数初期化「List読み込み内でのみ使用すること」
-                        string ListThisName = string.Empty;
-                        string ListThisID = string.Empty;
-                        string ListThisMC = string.Empty;
-                        string ListThisCategory = string.Empty;
-                        string ListThisTag1 = string.Empty;
-                        string ListThisTag2 = string.Empty;
-                        string ListThisTag3 = string.Empty;
-                        string ListRegistrationDate = string.Empty;
                         string ListInventory = string.Empty;
                         string ListInventoryStatus = string.Empty;
                         int? ListSafetyStock = null;
@@ -2527,28 +2514,28 @@ namespace CREC
                                 switch (cols[0])
                                 {
                                     case "名称":
-                                        ListThisName = line.Substring(3);
+                                        thisDataValues.Name = line.Substring(3);
                                         break;
                                     case "ID":
-                                        ListThisID = line.Substring(3);
+                                        thisDataValues.ID = line.Substring(3);
                                         break;
                                     case "MC":
-                                        ListThisMC = line.Substring(3);
+                                        thisDataValues.MC = line.Substring(3);
                                         break;
                                     case "登録日":
-                                        ListRegistrationDate = line.Substring(4);
+                                        thisDataValues.RegistrationDate = line.Substring(4);
                                         break;
                                     case "カテゴリ":
-                                        ListThisCategory = line.Substring(5);
+                                        thisDataValues.Category = line.Substring(5);
                                         break;
                                     case "タグ1":
-                                        ListThisTag1 = line.Substring(4);
+                                        thisDataValues.Tag1 = line.Substring(4);
                                         break;
                                     case "タグ2":
-                                        ListThisTag2 = line.Substring(4);
+                                        thisDataValues.Tag2 = line.Substring(4);
                                         break;
                                     case "タグ3":
-                                        ListThisTag3 = line.Substring(4);
+                                        thisDataValues.Tag3 = line.Substring(4);
                                         break;
                                 }
                             }
@@ -2556,9 +2543,9 @@ namespace CREC
                         catch (Exception ex)
                         {
                             MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                            ListThisID = subFolder.Name;
-                            ListThisName = "Status：Indexファイル破損";
-                            ListThisCategory = "　ー　";
+                            thisDataValues.ID = subFolder.Name;
+                            thisDataValues.Name = "Status：Indexファイル破損";
+                            thisDataValues.Category = "　ー　";
                         }
                         // 在庫状態を取得、invからデータを読み込み
                         if (File.Exists(subFolder.FullName + "\\inventory.inv"))
@@ -2633,12 +2620,12 @@ namespace CREC
                             {
                                 if (SearchMethod(ListInventoryStatus) == true)
                                 {
-                                    ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                    ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                 }
                             }
                             else
                             {
-                                ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                             }
                         }
                         else if (SearchFormTextBox.TextLength >= 1)
@@ -2647,51 +2634,51 @@ namespace CREC
                             switch (SearchOptionComboBox.SelectedIndex)
                             {
                                 case 0:
-                                    if (SearchMethod(ListThisID) == true)
+                                    if (SearchMethod(thisDataValues.ID) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 1:
-                                    if (SearchMethod(ListThisMC) == true)
+                                    if (SearchMethod(thisDataValues.MC) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 2:
-                                    if (SearchMethod(ListThisName) == true)
+                                    if (SearchMethod(thisDataValues.Name) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 3:
-                                    if (SearchMethod(ListThisCategory) == true)
+                                    if (SearchMethod(thisDataValues.Category) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 4:
-                                    if (SearchMethod(ListThisTag1) == true)
+                                    if (SearchMethod(thisDataValues.Tag1) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 5:
-                                    if (SearchMethod(ListThisTag2) == true)
+                                    if (SearchMethod(thisDataValues.Tag2) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 6:
-                                    if (SearchMethod(ListThisTag3) == true)
+                                    if (SearchMethod(thisDataValues.Tag3) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 7:
                                     if (SearchMethod(ListInventoryStatus) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                             }
@@ -2699,12 +2686,14 @@ namespace CREC
                         // 更新前に選択されていたデータの行番号を取得
                         if (CurrentSelectedContentsID.Length != 0)
                         {
-                            if (CurrentSelectedContentsID == ListThisID)
+                            if (CurrentSelectedContentsID == thisDataValues.ID)
                             {
                                 dataGridView1.ClearSelection();
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
+
+                        DataList.Add(thisDataValues);// リストに追加
                     }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
                     dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
@@ -2807,11 +2796,11 @@ namespace CREC
         }
         private void ShowConfidentialDataButton_Click(object sender, EventArgs e)// 機密情報表示
         {
-            if (ShowConfidentialData == false)// 機密情報表示が禁止されている場合
+            if (ConfigValues.ShowConfidentialData == false)// 機密情報表示が禁止されている場合
             {
                 MessageBox.Show("Access Denied.", "CREC");
             }
-            else if (ShowConfidentialData == true)
+            else if (ConfigValues.ShowConfidentialData == true)
             {
                 if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
@@ -2881,7 +2870,7 @@ namespace CREC
                 ConfidentialDataTextBox.ReadOnly = true;
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
-                AllowEditID = false;
+                ConfigValues.AllowEditID = false;
                 AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
@@ -2943,7 +2932,7 @@ namespace CREC
                 ConfidentialDataTextBox.ReadOnly = true;
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
-                AllowEditID = false;
+                ConfigValues.AllowEditID = false;
                 AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
@@ -3069,7 +3058,7 @@ namespace CREC
             }
 
             // 編集ボタンの表示内容設定
-            if (AllowEdit == false || File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            if (ConfigValues.AllowEdit == false || File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = true;
                 ReadOnlyButton.ForeColor = Color.Red;
@@ -3315,7 +3304,7 @@ namespace CREC
             NextPictureButton.Visible = false;
             PreviousPictureButton.Visible = false;
             NoPicturesLabel.Visible = false;
-            if (AutoSearch == false)
+            if (ConfigValues.AutoSearch == false)
             {
                 SearchButton.Visible = true;
             }
@@ -3442,7 +3431,7 @@ namespace CREC
         }
         private void ReadOnlyButton_Click(object sender, EventArgs e)// 編集不可
         {
-            if (AllowEdit == false)
+            if (ConfigValues.AllowEdit == false)
             {
                 MessageBox.Show("設定により編集が禁止されています。", "CREC");
                 return;
@@ -3584,7 +3573,7 @@ namespace CREC
             ConfidentialDataTextBox.ReadOnly = true;
             // ID手動設定を不可に変更
             EditIDTextBox.ReadOnly = true;
-            AllowEditID = false;
+            ConfigValues.AllowEditID = false;
             AllowEditIDButton.Visible = true;
             UUIDEditStatusLabel.Visible = false;
             // 再度詳細情報を表示
@@ -3646,7 +3635,7 @@ namespace CREC
                 ConfidentialDataTextBox.ReadOnly = true;
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
-                AllowEditID = false;
+                ConfigValues.AllowEditID = false;
                 AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 // 再度詳細情報を表示
@@ -3678,7 +3667,7 @@ namespace CREC
         }
         private void AllowEditIDButton_Click(object sender, EventArgs e)// ID手動設定の可否
         {
-            AllowEditID = true;
+            ConfigValues.AllowEditID = true;
             AllowEditIDButton.Visible = false;
             UUIDEditStatusLabel.Visible = true;
             UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
@@ -3712,11 +3701,20 @@ namespace CREC
             SearchMethodComboBox.SelectedIndex = 3;
             SearchFormTextBox.Text = EditMCTextBox.Text;
             LoadGrid();
-            if (AutoSearch == true)
+            if (ConfigValues.AutoSearch == true)
             {
                 SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
                 SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
                 SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            }
+            // 同一IDの検索結果を表示
+            if (dataGridView1.Rows.Count == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("SameMCNotFound", "mainform",LanguageFile),"CREC");
+            }
+            else
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("SameMCExist", "mainform", LanguageFile), "CREC");
             }
         }
         private void AddContentsMethod()// 新規にデータを追加する処理のメソッド
@@ -4073,7 +4071,7 @@ namespace CREC
                 SearchFormTextBoxClearButton.Visible = true;
                 AddContentsButton.Visible = true;
                 ListUpdateButton.Visible = true;
-                if (AutoSearch == false)
+                if (ConfigValues.AutoSearch == false)
                 {
                     SearchButton.Visible = true;
                 }
@@ -4261,24 +4259,35 @@ namespace CREC
             SetProperInventorySettingsButton.Visible = true;
             // 行数を確認
             string[] tmp = File.ReadAllLines(TargetContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            StreamWriter sw = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
-            for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
+            StreamWriter streamWriter;
+            streamWriter = new StreamWriter(TargetContentsPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+            try
             {
-                if (i == 0)// .invのヘッダをコピー
+                for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
                 {
-                    string row;
-                    row = rowsIM[i];
-                    cols = row.Split(',');
-                    sw.WriteLine("{0},{1},{2},{3}", cols[0], SafetyStock, ReorderPoint, MaximumLevel);
+                    if (i == 0)// .invのヘッダをコピー
+                    {
+                        string row;
+                        row = rowsIM[i];
+                        cols = row.Split(',');
+                        streamWriter.WriteLine("{0},{1},{2},{3}", cols[0], SafetyStock, ReorderPoint, MaximumLevel);
+                    }
+                    else// 既存のデータを順に書き込み
+                    {
+                        streamWriter.WriteLine(rowsIM[i]);
+                    }
                 }
-                else// 既存のデータを順に書き込み
-                {
-                    sw.WriteLine(rowsIM[i]);
-                }
+                ProperInventoryNotification();
+                TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             }
-            sw.Close();
-            ProperInventoryNotification();
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC");
+            }
+            finally
+            {
+                streamWriter.Close();
+            }
         }
         private void SetProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更モード開始
         {
@@ -4475,7 +4484,7 @@ namespace CREC
         {
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Clear();
-            if (AutoSearch == true)// 自動検索が有効な場合
+            if (ConfigValues.AutoSearch == true)// 自動検索が有効な場合
             {
                 SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
                 LoadGrid();// 再度読み込み
@@ -4583,222 +4592,226 @@ namespace CREC
         }
         private void SaveSearchSettings()//現時点での検索対象、検索メソッドの内容、List表示内容をプロジェクトファイルに書き込み
         {
-            try
+            if (TargetCRECPath.Length > 0)
             {
-                if (TargetCRECPath.Length > 0)
+                StreamWriter streamWriter;
+                streamWriter = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
+                try
                 {
-                    StreamWriter sw = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
-                    sw.WriteLine("{0},{1}", "projectname", TargetProjectName);
-                    sw.WriteLine("{0},{1}", "projectlocation", TargetFolderPath);
-                    sw.WriteLine("{0},{1}", "backuplocation", TargetBackupPath);
-                    sw.Write("autobackup,");
+                    streamWriter.WriteLine("{0},{1}", "projectname", TargetProjectName);
+                    streamWriter.WriteLine("{0},{1}", "projectlocation", TargetFolderPath);
+                    streamWriter.WriteLine("{0},{1}", "backuplocation", TargetBackupPath);
+                    streamWriter.Write("autobackup,");
                     if (StartUpBackUp == true)
                     {
-                        sw.Write("S");
+                        streamWriter.Write("S");
                     }
                     if (CloseBackUp == true)
                     {
-                        sw.Write("C");
+                        streamWriter.Write("C");
                     }
                     if (EditedBackUp == true)
                     {
-                        sw.Write("E");
+                        streamWriter.Write("E");
                     }
-                    sw.Write('\n');
-                    sw.WriteLine("CompressType,{0}", CompressType);
-                    sw.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
-                    sw.Write("autoListoutput,");
+                    streamWriter.Write('\n');
+                    streamWriter.WriteLine("CompressType,{0}", CompressType);
+                    streamWriter.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
+                    streamWriter.Write("autoListoutput,");
                     if (StartUpListOutput == true)
                     {
-                        sw.Write("S");
+                        streamWriter.Write("S");
                     }
                     if (CloseListOutput == true)
                     {
-                        sw.Write("C");
+                        streamWriter.Write("C");
                     }
                     if (EditedListOutput == true)
                     {
-                        sw.Write("E");
+                        streamWriter.Write("E");
                     }
-                    sw.Write('\n');
-                    sw.Write("openListafteroutput,");
+                    streamWriter.Write('\n');
+                    streamWriter.Write("openListafteroutput,");
                     if (OpenListAfterOutput == true)
                     {
-                        sw.Write("O");
+                        streamWriter.Write("O");
                     }
-                    sw.Write('\n');
-                    sw.WriteLine("ListOutputFormat,{0}", ListOutputFormat);
-                    sw.WriteLine("{0},{1}", "created", TargetCreatedDate);
-                    sw.WriteLine("{0},{1}", "modified", TargetModifiedDate);
-                    sw.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
+                    streamWriter.Write('\n');
+                    streamWriter.WriteLine("ListOutputFormat,{0}", ListOutputFormat);
+                    streamWriter.WriteLine("{0},{1}", "created", TargetCreatedDate);
+                    streamWriter.WriteLine("{0},{1}", "modified", TargetModifiedDate);
+                    streamWriter.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
                     if (ShowObjectNameLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "f");
                     }
                     if (ShowIDLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "f");
                     }
                     if (ShowMCLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "f");
                     }
                     if (ShowRegistrationDateLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "f");
                     }
                     if (AutoMCFill == true)
                     {
-                        sw.Write("AutoMCFill,t\n");
+                        streamWriter.Write("AutoMCFill,t\n");
                     }
                     else
                     {
-                        sw.Write("AutoMCFill,f\n");
+                        streamWriter.Write("AutoMCFill,f\n");
                     }
                     if (ShowCategoryLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "f");
                     }
                     if (ShowTag1NameVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "f");
                     }
                     if (ShowTag2NameVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "f");
                     }
                     if (ShowTag3NameVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "f");
                     }
                     if (ShowRealLocationLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "f");
                     }
                     if (ShowDataLocationLabelVisible == true)
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "t");
                     }
                     else
                     {
-                        sw.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "f");
                     }
-                    sw.WriteLine("{0},{1}", "SearchOptionNumber", SearchOptionComboBox.SelectedIndex.ToString());
-                    sw.WriteLine("{0},{1}", "SearchMethodNumber", SearchMethodComboBox.SelectedIndex.ToString());
+                    streamWriter.WriteLine("{0},{1}", "SearchOptionNumber", SearchOptionComboBox.SelectedIndex.ToString());
+                    streamWriter.WriteLine("{0},{1}", "SearchMethodNumber", SearchMethodComboBox.SelectedIndex.ToString());
                     if (IDList.Visible == true)
                     {
-                        sw.WriteLine("IDListVisible,true");
+                        streamWriter.WriteLine("IDListVisible,true");
                     }
                     else if (IDList.Visible == false)
                     {
-                        sw.WriteLine("IDListVisible,false");
+                        streamWriter.WriteLine("IDListVisible,false");
                     }
                     if (MCList.Visible == true)
                     {
-                        sw.WriteLine("MCListVisible,true");
+                        streamWriter.WriteLine("MCListVisible,true");
                     }
                     else if (MCList.Visible == false)
                     {
-                        sw.WriteLine("MCListVisible,false");
+                        streamWriter.WriteLine("MCListVisible,false");
                     }
                     if (ObjectNameList.Visible == true)
                     {
-                        sw.WriteLine("ObjectNameListVisible,true");
+                        streamWriter.WriteLine("ObjectNameListVisible,true");
                     }
                     else if (ObjectNameList.Visible == false)
                     {
-                        sw.WriteLine("ObjectNameListVisible,false");
+                        streamWriter.WriteLine("ObjectNameListVisible,false");
                     }
                     if (RegistrationDateList.Visible == true)
                     {
-                        sw.WriteLine("RegistrationDateListVisible,true");
+                        streamWriter.WriteLine("RegistrationDateListVisible,true");
                     }
                     else if (RegistrationDateList.Visible == false)
                     {
-                        sw.WriteLine("RegistrationDateListVisible,false");
+                        streamWriter.WriteLine("RegistrationDateListVisible,false");
                     }
                     if (CategoryList.Visible == true)
                     {
-                        sw.WriteLine("CategoryListVisible,true");
+                        streamWriter.WriteLine("CategoryListVisible,true");
                     }
                     else if (CategoryList.Visible == false)
                     {
-                        sw.WriteLine("CategoryListVisible,false");
+                        streamWriter.WriteLine("CategoryListVisible,false");
                     }
                     if (Tag1List.Visible == true)
                     {
-                        sw.WriteLine("Tag1ListVisible,true");
+                        streamWriter.WriteLine("Tag1ListVisible,true");
                     }
                     else if (Tag1List.Visible == false)
                     {
-                        sw.WriteLine("Tag1ListVisible,false");
+                        streamWriter.WriteLine("Tag1ListVisible,false");
                     }
                     if (Tag2List.Visible == true)
                     {
-                        sw.WriteLine("Tag2ListVisible,true");
+                        streamWriter.WriteLine("Tag2ListVisible,true");
                     }
                     else if (Tag2List.Visible == false)
                     {
-                        sw.WriteLine("Tag2ListVisible,false");
+                        streamWriter.WriteLine("Tag2ListVisible,false");
                     }
                     if (Tag3List.Visible == true)
                     {
-                        sw.WriteLine("Tag3ListVisible,true");
+                        streamWriter.WriteLine("Tag3ListVisible,true");
                     }
                     else if (Tag3List.Visible == false)
                     {
-                        sw.WriteLine("Tag3ListVisible,false");
+                        streamWriter.WriteLine("Tag3ListVisible,false");
                     }
                     if (InventoryList.Visible == true)
                     {
-                        sw.WriteLine("InventoryInformationListVisible,true");
+                        streamWriter.WriteLine("InventoryInformationListVisible,true");
                     }
                     else if (InventoryList.Visible == false)
                     {
-                        sw.WriteLine("InventoryInformationListVisible,false");
+                        streamWriter.WriteLine("InventoryInformationListVisible,false");
                     }
-                    sw.Close();
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("プロジェクトファイルの更新に失敗しました。\n" + ex.Message, "CREC");
+                catch(Exception ex)
+                {
+                    MessageBox.Show("プロジェクトファイルの更新に失敗しました。\n" + ex.Message, "CREC");
+                }
+                finally
+                {
+                    streamWriter.Close();
+                }
             }
         }
         #endregion
@@ -4810,13 +4823,6 @@ namespace CREC
             if (File.Exists(ConfigFile))
             {
                 // 指定されていなかった場合のために初期化
-                AllowEdit = true;
-                ShowConfidentialData = false;
-                ShowUserAssistToolTips = true;
-                OpenLastTimeProject = false;
-                AutoSearch = true;
-                RecentShownContents = false;
-                BootUpdateCheck = false;
                 CurrentLanguageFileName = "Japanese";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
@@ -4828,31 +4834,31 @@ namespace CREC
                         case "AllowEdit":
                             if (cols[1] == "true")
                             {
-                                AllowEdit = true;
+                                ConfigValues.AllowEdit = true;
                             }
                             else
                             {
-                                AllowEdit = false;
+                                ConfigValues.AllowEdit = false;
                             }
                             break;
                         case "ShowConfidentialData":
                             if (cols[1] == "true")
                             {
-                                ShowConfidentialData = true;
+                                ConfigValues.ShowConfidentialData = true;
                             }
                             else
                             {
-                                ShowConfidentialData = false;
+                                ConfigValues.ShowConfidentialData = false;
                             }
                             break;
                         case "ShowUserAssistToolTips":
                             if (cols[1] == "true")
                             {
-                                ShowUserAssistToolTips = true;
+                                ConfigValues.ShowUserAssistToolTips = true;
                             }
                             else
                             {
-                                ShowUserAssistToolTips = false;
+                                ConfigValues.ShowUserAssistToolTips = false;
                             }
                             break;
                         case "AutoLoadProject":
@@ -4862,34 +4868,34 @@ namespace CREC
                                 {
                                     TargetCRECPath = cols[1];//CREC起動時のみ読み込み
                                 }
-                                AutoLoadProjectPath = cols[1];
+                                ConfigValues.AutoLoadProjectPath = cols[1];
                             }
                             else if (cols[1].Length == 0)
                             {
-                                AutoLoadProjectPath = string.Empty;
+                                ConfigValues.AutoLoadProjectPath = string.Empty;
                             }
                             else
                             {
                                 MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
                                 TargetCRECPath = string.Empty;
-                                AutoLoadProjectPath = string.Empty;
+                                ConfigValues.AutoLoadProjectPath = string.Empty;
                             }
                             break;
                         case "OpenLastTimeProject":
                             if (cols[1] == "true")
                             {
-                                OpenLastTimeProject = true;
+                                ConfigValues.OpenLastTimeProject = true;
                             }
                             else
                             {
-                                OpenLastTimeProject = false;
+                                ConfigValues.OpenLastTimeProject = false;
                             }
                             break;
                         case "AutoSearch":
                             if (cols[1] == "true")
                             {
                                 SearchButton.Visible = false;
-                                AutoSearch = true;
+                                ConfigValues.AutoSearch = true;
                                 SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
                                 SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
                                 SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
@@ -4897,7 +4903,7 @@ namespace CREC
                             else
                             {
                                 SearchButton.Visible = true;
-                                AutoSearch = false;
+                                ConfigValues.AutoSearch = false;
                                 SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
                                 SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
                                 SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
@@ -4906,31 +4912,31 @@ namespace CREC
                         case "RecentShownContents":
                             if (cols[1] == "true")
                             {
-                                RecentShownContents = true;
+                                ConfigValues.RecentShownContents = true;
                             }
                             else
                             {
-                                RecentShownContents = false;
+                                ConfigValues.RecentShownContents = false;
                             }
                             break;
                         case "BootUpdateCheck":
                             if (cols[1] == "true")
                             {
-                                BootUpdateCheck = true;
+                                ConfigValues.BootUpdateCheck = true;
                             }
                             else
                             {
-                                BootUpdateCheck = false;
+                                ConfigValues.BootUpdateCheck = false;
                             }
                             break;
                         case "ColorSetting":
                             if (cols[1].Length == 0)
                             {
-                                ColorSetting = "Blue";
+                                ConfigValues.ColorSetting = "Blue";
                             }
                             else
                             {
-                                ColorSetting = cols[1];
+                                ConfigValues.ColorSetting = cols[1];
                             }
                             break;
                         case "Language":
@@ -4976,13 +4982,13 @@ namespace CREC
                     sw.WriteLine("Language,Japanese");
                     sw.WriteLine("FontsizeOffse,0");
                     sw.Close();
-                    AllowEdit = true;
-                    ShowConfidentialData = false;
-                    ShowUserAssistToolTips = true;
-                    OpenLastTimeProject = false;
-                    AutoSearch = true;
-                    RecentShownContents = false;
-                    BootUpdateCheck = true;
+                    ConfigValues.AllowEdit = true;
+                    ConfigValues.ShowConfidentialData = false;
+                    ConfigValues.ShowUserAssistToolTips = true;
+                    ConfigValues.OpenLastTimeProject = false;
+                    ConfigValues.AutoSearch = true;
+                    ConfigValues.RecentShownContents = false;
+                    ConfigValues.BootUpdateCheck = true;
                     CurrentLanguageFileName = "Japanese";
                 }
                 catch (Exception ex)
@@ -4994,7 +5000,7 @@ namespace CREC
         private void SaveConfig()// config.sysの保存
         {
             StreamWriter configfile = new StreamWriter("config.sys", false, Encoding.GetEncoding("UTF-8"));
-            if (AllowEdit == true)
+            if (ConfigValues.AllowEdit == true)
             {
                 configfile.WriteLine("AllowEdit,true");
             }
@@ -5002,7 +5008,7 @@ namespace CREC
             {
                 configfile.WriteLine("AllowEdit,false");
             }
-            if (ShowConfidentialData == true)
+            if (ConfigValues.ShowConfidentialData == true)
             {
                 configfile.WriteLine("ShowConfidentialData,true");
             }
@@ -5010,7 +5016,7 @@ namespace CREC
             {
                 configfile.WriteLine("ShowConfidentialData,false");
             }
-            if (ShowUserAssistToolTips == true)
+            if (ConfigValues.ShowUserAssistToolTips == true)
             {
                 configfile.WriteLine("ShowUserAssistToolTips,true");
             }
@@ -5018,17 +5024,17 @@ namespace CREC
             {
                 configfile.WriteLine("ShowUserAssistToolTips,false");
             }
-            if (OpenLastTimeProject == true)
+            if (ConfigValues.OpenLastTimeProject == true)
             {
                 configfile.WriteLine("AutoLoadProject,{0}", TargetCRECPath);
                 configfile.WriteLine("OpenLastTimeProject,true");
             }
             else
             {
-                configfile.WriteLine("AutoLoadProject,{0}", AutoLoadProjectPath);
+                configfile.WriteLine("AutoLoadProject,{0}", ConfigValues.AutoLoadProjectPath);
                 configfile.WriteLine("OpenLastTimeProject,false");
             }
-            if (AutoSearch == true)
+            if (ConfigValues.AutoSearch == true)
             {
                 configfile.WriteLine("AutoSearch,true");
             }
@@ -5036,7 +5042,7 @@ namespace CREC
             {
                 configfile.WriteLine("AutoSearch,false");
             }
-            if (RecentShownContents == true)
+            if (ConfigValues.RecentShownContents == true)
             {
                 configfile.WriteLine("RecentShownContents,true");
             }
@@ -5044,7 +5050,7 @@ namespace CREC
             {
                 configfile.WriteLine("RecentShownContents,false");
             }
-            if (BootUpdateCheck == true)
+            if (ConfigValues.BootUpdateCheck == true)
             {
                 configfile.WriteLine("BootUpdateCheck,true");
             }
@@ -5052,7 +5058,7 @@ namespace CREC
             {
                 configfile.WriteLine("BootUpdateCheck,false");
             }
-            configfile.WriteLine("ColorSetting,{0}", ColorSetting);
+            configfile.WriteLine("ColorSetting,{0}", ConfigValues.ColorSetting);
             configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
             configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
             configfile.Close();
@@ -5571,7 +5577,6 @@ namespace CREC
                     {
                         if (SaveAndCloseEditButton.Visible == false)
                         {
-                            //EditButton.Text = "他端末編集中";
                             EditRequestButton.Visible = true;
                             EditRequestButton.ForeColor = Color.Blue;
                             EditButton.Visible = false;
@@ -5581,10 +5586,18 @@ namespace CREC
                 }
                 else
                 {
-                    //EditButton.Text = "編集";
-                    EditButton.Visible = true;
-                    ReadOnlyButton.Visible = false;
-                    EditRequestButton.Visible = false;
+                    if (ConfigValues.AllowEdit == true)
+                    {
+                        EditButton.Visible = true;
+                        ReadOnlyButton.Visible = false;
+                        EditRequestButton.Visible = false;
+                    }
+                    else
+                    {
+                        EditButton.Visible = false;
+                        ReadOnlyButton.Visible = true;
+                        EditRequestButton.Visible = false;
+                    }
                 }
             }
         }
@@ -6164,28 +6177,17 @@ namespace CREC
             StandardDisplayModeToolStripMenuItem.Checked = false;
             if (SaveAndCloseEditButton.Visible == true)// 編集中に切り替えた場合の処理
             {
-                if (InventoryModeDataGridView.Visible == true)// 在庫管理中に切り替わった場合
+                dataGridView1.Visible = false;
+                dataGridView1BackgroundPictureBox.Visible = false;
+                ShowSelectedItemInformationButton.Visible = false;
+                SearchFormTextBox.Visible = false;
+                SearchFormTextBoxClearButton.Visible = false;
+                SearchOptionComboBox.Visible = false;
+                SearchMethodComboBox.Visible = false;
+                ShowListButton.Visible = true;
+                if (InventoryModeDataGridView.Visible == false)// 在庫管理以外の画面状態で切り替わった場合
                 {
-                    dataGridView1.Visible = false;
-                    dataGridView1BackgroundPictureBox.Visible = false;
-                    ShowSelectedItemInformationButton.Visible = false;
-                    SearchFormTextBox.Visible = false;
-                    SearchFormTextBoxClearButton.Visible = false;
-                    SearchOptionComboBox.Visible = false;
-                    SearchMethodComboBox.Visible = false;
-                    ShowListButton.Visible = true;
-                }
-                else// その他の状態から切り替わった場合の処理
-                {
-                    dataGridView1.Visible = false;
-                    dataGridView1BackgroundPictureBox.Visible = false;
-                    ShowSelectedItemInformationButton.Visible = false;
-                    SearchFormTextBox.Visible = false;
-                    SearchFormTextBoxClearButton.Visible = false;
-                    SearchOptionComboBox.Visible = false;
-                    SearchMethodComboBox.Visible = false;
-                    ShowListButton.Visible = true;
-                    ShowPicturesMethod();
+                    ShowPicturesMethod();// 画像を表示
                 }
             }
             else
@@ -6235,50 +6237,38 @@ namespace CREC
             ShowListButton.Visible = true;
             ShowPicturesMethod();
         }
-        private void ShowListButton_Click(object sender, EventArgs e)// List表示モードに戻る
+        /// <summary>
+        /// 全体表示画面状態で、詳細表示画面からList表示画面に戻る
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowListButton_Click(object sender, EventArgs e)// 
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)
+                if (CheckEditingContents() != true)// 編集終了をキャンセルされた場合
                 {
-                    dataGridView1.Visible = true;
-                    dataGridView1BackgroundPictureBox.Visible = true;
-                    ShowSelectedItemInformationButton.Visible = true;
-                    SearchFormTextBox.Visible = true;
-                    SearchFormTextBoxClearButton.Visible = true;
-                    SearchOptionComboBox.Visible = true;
-                    SearchMethodComboBox.Visible = true;
-                    AddContentsButton.Visible = true;
-                    ListUpdateButton.Visible = true;
-                    ShowListButton.Visible = false;
-                    ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-                }
-                else
-                {
-                    return;
+                    return;// 何もせず終了
                 }
             }
-            else
-            {
-                dataGridView1.Visible = true;
-                dataGridView1BackgroundPictureBox.Visible = true;
-                ShowSelectedItemInformationButton.Visible = true;
-                SearchFormTextBox.Visible = true;
-                SearchFormTextBoxClearButton.Visible = true;
-                SearchOptionComboBox.Visible = true;
-                SearchMethodComboBox.Visible = true;
-                AddContentsButton.Visible = true;
-                ListUpdateButton.Visible = true;
-                ShowListButton.Visible = false;
-                ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
-            }
+            dataGridView1.Visible = true;
+            dataGridView1BackgroundPictureBox.Visible = true;
+            ShowSelectedItemInformationButton.Visible = true;
+            SearchFormTextBox.Visible = true;
+            SearchFormTextBoxClearButton.Visible = true;
+            SearchOptionComboBox.Visible = true;
+            SearchMethodComboBox.Visible = true;
+            AddContentsButton.Visible = true;
+            ListUpdateButton.Visible = true;
+            ShowListButton.Visible = false;
+            ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
         }
         private void SetColorMethod()// 色設定のメソッド
         {
-            switch (ColorSetting)
+            switch (ConfigValues.ColorSetting)
             {
                 case "Blue":
-                    ColorSetting = "Blue";
+                    ConfigValues.ColorSetting = "Blue";
                     this.BackColor = Color.AliceBlue;
                     ShowListButton.BackColor = Color.AliceBlue;
                     menuStrip1.BackColor = SystemColors.InactiveCaption;
@@ -6294,7 +6284,7 @@ namespace CREC
                     DarkToolStripMenuItem.Checked = false;
                     break;
                 case "White":
-                    ColorSetting = "White";
+                    ConfigValues.ColorSetting = "White";
                     this.BackColor = Color.WhiteSmoke;
                     ShowListButton.BackColor = Color.WhiteSmoke;
                     menuStrip1.BackColor = Color.Gainsboro;
@@ -6310,7 +6300,7 @@ namespace CREC
                     DarkToolStripMenuItem.Checked = false;
                     break;
                 case "Sakura":
-                    ColorSetting = "Sakura";
+                    ConfigValues.ColorSetting = "Sakura";
                     this.BackColor = Color.LavenderBlush;
                     ShowListButton.BackColor = Color.LavenderBlush;
                     menuStrip1.BackColor = Color.LightPink;
@@ -6326,7 +6316,7 @@ namespace CREC
                     DarkToolStripMenuItem.Checked = false;
                     break;
                 case "Green":
-                    ColorSetting = "Green";
+                    ConfigValues.ColorSetting = "Green";
                     this.BackColor = Color.Honeydew;
                     ShowListButton.BackColor = Color.Honeydew;
                     menuStrip1.BackColor = Color.FromArgb(192, 255, 192);
@@ -6342,7 +6332,7 @@ namespace CREC
                     DarkToolStripMenuItem.Checked = false;
                     break;
                 default:
-                    ColorSetting = "Blue";
+                    ConfigValues.ColorSetting = "Blue";
                     this.BackColor = Color.AliceBlue;
                     ShowListButton.BackColor = Color.AliceBlue;
                     menuStrip1.BackColor = SystemColors.InactiveCaption;
@@ -6623,7 +6613,7 @@ namespace CREC
         }
         private void SetUserAssistToolTips()// ユーザーアシストのToolTip設定
         {
-            if (ShowUserAssistToolTips == true)
+            if (ConfigValues.ShowUserAssistToolTips == true)
             {
                 UserAssistToolTip.SetToolTip(SearchFormTextBox, LanguageSettingClass.GetToolTipMessage("SearchFormTextBox", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(SearchOptionComboBox, LanguageSettingClass.GetToolTipMessage("SearchOptionComboBox", "mainform", LanguageFile));
@@ -6633,7 +6623,7 @@ namespace CREC
                 UserAssistToolTip.SetToolTip(EditQuantityTextBox, LanguageSettingClass.GetToolTipMessage("EditQuantityTextBox", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(SelectThumbnailButton, LanguageSettingClass.GetToolTipMessage("SelectThumbnailButton", "mainform", LanguageFile));
             }
-            else if (ShowUserAssistToolTips == false)
+            else if (ConfigValues.ShowUserAssistToolTips == false)
             {
                 UserAssistToolTip.RemoveAll();
             }

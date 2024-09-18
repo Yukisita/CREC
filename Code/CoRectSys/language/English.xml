@@ -480,6 +480,14 @@
 				<itemname>RestrictedDataLoadError</itemname>
 				<itemtext>Faild to load restricted data.</itemtext>
 			</item>
+			<item>
+				<itemname>SameMCNotFound</itemname>
+				<itemtext>Same management number not found.</itemtext>
+			</item>
+			<item>
+				<itemname>SameMCExist</itemname>
+				<itemtext>This management number is already used.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
