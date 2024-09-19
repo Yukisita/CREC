@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2024/09/19";
+            this.ReleaseDate.Text = "Release: 2024/09/20";
             // 
             // VersionName
             // 
@@ -75,7 +75,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(124, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 8.0.2";
+            this.VersionName.Text = "Version 8.0.3";
             // 
             // CopyrightLabel
             // 
@@ -145,7 +145,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::ColRECt.Properties.Resources.CREC128_icon;
+            this.pictureBox1.Image = global::CREC.Properties.Resources.CREC128_icon;
             this.pictureBox1.Location = new System.Drawing.Point(20, 15);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
@@ -156,7 +156,7 @@
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::ColRECt.Properties.Resources._2024_2_Spring;
+            this.pictureBox2.Image = global::CREC.Properties.Resources._2024_2_Spring;
             this.pictureBox2.Location = new System.Drawing.Point(480, 13);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";

@@ -26,6 +26,7 @@ using ColRECt;
 using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
+using System.Diagnostics.Eventing.Reader;
 
 namespace CREC
 {
@@ -33,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.2.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.3.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -87,20 +88,21 @@ namespace CREC
         ConfigValuesClass ConfigValues = new ConfigValuesClass();
 
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
-        class DataValues
+        class DataValuesClass
         {
-            public string TargetContentsPath { get; set; }
-            public string Name { get; set; }
-            public string ID { get; set; }
-            public string MC { get; set; }
-            public string RegistrationDate { get; set; }
-            public string Category { get; set; }
-            public string Tag1 { get; set; }
-            public string Tag2 { get; set; }
-            public string Tag3 { get; set; }
-            public string RealLocation { get; set; }
+            public string TargetContentsPath { get; set; } = string.Empty;
+            public string Name { get; set; } = string.Empty;
+            public string ID { get; set; } = string.Empty;
+            public string MC { get; set; } = string.Empty;
+            public string RegistrationDate { get; set; } = string.Empty;
+            public string Category { get; set; } = string.Empty;
+            public string Tag1 { get; set; } = string.Empty;
+            public string Tag2 { get; set; } = string.Empty;
+            public string Tag3 { get; set; } = string.Empty;
+            public string RealLocation { get; set; } = string.Empty;
         }
-        List<DataValues> DataList = new List<DataValues>();
+        List<DataValuesClass> DataList = new List<DataValuesClass>();
+        DataValuesClass DataValues = new DataValuesClass();
 
         string TargetContentsPath = string.Empty;// 詳細表示するデータのフォルダパス
         string ThisName = string.Empty;
@@ -125,7 +127,6 @@ namespace CREC
         float smallfontsize = (float)(14.25);// 小フォントのサイズ
         float mainfontsize = (float)(18.0);// 標準フォントのサイズ
         float bigfontsize = (float)(20.25);// 大フォントのサイズ
-        int FontsizeOffset = 0;// 基準値に対するフォントサイズ変更量
 
         XElement LanguageFile;// 言語ファイル
         #endregion
@@ -268,10 +269,10 @@ namespace CREC
 
         private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
         {
-            extrasmallfontsize += FontsizeOffset;// 最小フォントのサイズ
-            smallfontsize += FontsizeOffset;// 小フォントのサイズ
-            mainfontsize += FontsizeOffset;// 標準フォントのサイズ
-            bigfontsize += FontsizeOffset;// 大フォントのサイズ
+            extrasmallfontsize += ConfigValues.FontsizeOffset;// 最小フォントのサイズ
+            smallfontsize += ConfigValues.FontsizeOffset;// 小フォントのサイズ
+            mainfontsize += ConfigValues.FontsizeOffset;// 標準フォントのサイズ
+            bigfontsize += ConfigValues.FontsizeOffset;// 大フォントのサイズ
             SetFormLayout();
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// DataGridViewのセルサイズ調整
             dataGridView1.Columns["TargetPath"].Visible = false;// TargetPathを非表示に
@@ -325,54 +326,38 @@ namespace CREC
                 MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
         }
-        private void OpenProjectMethod()// 既存の在庫管理プロジェクトを読み込むメソッド
+        /// <summary>
+        /// 既存のプロジェクトを読み込むメソッド
+        /// </summary>
+        private void OpenProjectMethod()
         {
-            // 開いているプロジェクトがあった場合は内容を保存
-            if (TargetContentsPath.Length > 0)
+            if (TargetContentsPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
                 SaveSearchSettings();
             }
 
-            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+            if (SaveAndCloseEditButton.Visible == true && CheckEditingContents() != true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
-                {
-                    OpenFileDialog openFolderDialog = new OpenFileDialog();
-                    openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
-                    openFolderDialog.Title = "ファイルを選択してください";
-                    openFolderDialog.Filter = "管理ファイル|*.crec";
-                    if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
-                    {
-                        DataLoadingStatus = "false";
-                        TargetCRECPath = openFolderDialog.FileName;
-                        openFolderDialog.Dispose();
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    }
-                    else// ファイル読み込み失敗
-                    {
-                    }
-                }
-                else// キャンセルされた場合
-                {
-                    return;
-                }
+                return;
             }
-            else// 編集中データがなかった場合
+
+            OpenFileDialog openFolderDialog = new OpenFileDialog// OpenFileDialog作成
             {
-                OpenFileDialog openFolderDialog = new OpenFileDialog();
-                openFolderDialog.InitialDirectory = Directory.GetCurrentDirectory();
-                openFolderDialog.Title = "ファイルを選択してください";
-                openFolderDialog.Filter = "管理ファイル|*.crec";
-                if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
-                {
-                    DataLoadingStatus = "false";
-                    TargetCRECPath = openFolderDialog.FileName;
-                    openFolderDialog.Dispose();
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                }
-                else// ファイル読み込み失敗
-                {
-                }
+                InitialDirectory = Directory.GetCurrentDirectory(),
+                Title = "ファイルを選択してください",
+                Filter = "管理ファイル|*.crec"
+            };
+
+            if (openFolderDialog.ShowDialog() == DialogResult.OK)// OpenFileDialogでファイルが選択された場合
+            {
+                DataLoadingStatus = "false";
+                TargetCRECPath = openFolderDialog.FileName;
+                openFolderDialog.Dispose();
+                LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+            }
+            else
+            {
+                openFolderDialog.Dispose();
             }
         }
         private void LoadProjectFileMethod()// CREC読み込み用の処理メソッド
@@ -1301,36 +1286,44 @@ namespace CREC
         }
         private void OutputListShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をListに出力
         {
+            string tempTargetListOutputPath = string.Empty;
+            if (Directory.Exists(TargetListOutputPath))
+            {
+                tempTargetListOutputPath = TargetListOutputPath;
+            }
+            else
+            {
+                tempTargetListOutputPath = TargetFolderPath;
+            }
+            StreamWriter streamWriter;
+            if (ListOutputFormat == "CSV")
+            {
+                streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
+            }
+            else
+            {
+                streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+            }
             try
             {
-                string tempTargetListOutputPath = string.Empty;
-                if (Directory.Exists(TargetListOutputPath))
+                if (ListOutputFormat == "CSV" || ListOutputFormat == "TSV")
                 {
-                    tempTargetListOutputPath = TargetListOutputPath;
-                }
-                else
-                {
-                    tempTargetListOutputPath = TargetFolderPath;
-                }
-                if (ListOutputFormat == "CSV")// CSV出力用
-                {
-                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
-                    streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
-                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                    // ヘッダ書き込み
+                    if (ListOutputFormat == "CSV")
+                    {
+                        streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
+                    }
+                    else
+                    {
+                        streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                    }
                     try
                     {
-                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                         for (int i = 0; i < dataGridView1.RowCount; i++)
                         {
-                            // 変数初期化「List作成処理ないでのみ使用すること」
-                            string ListThisName = string.Empty;
-                            string ListThisID = string.Empty;
-                            string ListThisMC = string.Empty;
-                            string ListThisCategory = string.Empty;
-                            string ListThisTag1 = string.Empty;
-                            string ListThisTag2 = string.Empty;
-                            string ListThisTag3 = string.Empty;
-                            string ListRegistrationDate = string.Empty;
+                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
+                            // 変数初期化
+                            DataValuesClass thisDataValues = new DataValuesClass();
                             string ListInventory = string.Empty;
                             string ListInventoryStatus = string.Empty;
                             int? ListSafetyStock = null;
@@ -1338,7 +1331,6 @@ namespace CREC
                             int? ListMaximumLevel = null;
                             // index読み込み
                             IEnumerable<string> tmp = null;
-                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
                             try
                             {
                                 tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
@@ -1348,28 +1340,28 @@ namespace CREC
                                     switch (cols[0])
                                     {
                                         case "名称":
-                                            ListThisName = line.Substring(3).Replace(",", string.Empty);
+                                            thisDataValues.Name = line.Substring(3).Replace(",", string.Empty);
                                             break;
                                         case "ID":
-                                            ListThisID = line.Substring(3).Replace(",", string.Empty);
+                                            thisDataValues.ID = line.Substring(3).Replace(",", string.Empty);
                                             break;
                                         case "MC":
-                                            ListThisMC = line.Substring(3).Replace(",", string.Empty);
+                                            thisDataValues.MC = line.Substring(3).Replace(",", string.Empty);
                                             break;
                                         case "登録日":
-                                            ListRegistrationDate = line.Substring(4).Replace(",", string.Empty);
+                                            thisDataValues.RegistrationDate = line.Substring(4).Replace(",", string.Empty);
                                             break;
                                         case "カテゴリ":
-                                            ListThisCategory = line.Substring(5).Replace(",", string.Empty);
+                                            thisDataValues.Category = line.Substring(5).Replace(",", string.Empty);
                                             break;
                                         case "タグ1":
-                                            ListThisTag1 = line.Substring(4).Replace(",", string.Empty);
+                                            thisDataValues.Tag1 = line.Substring(4).Replace(",", string.Empty);
                                             break;
                                         case "タグ2":
-                                            ListThisTag2 = line.Substring(4).Replace(",", string.Empty);
+                                            thisDataValues.Tag2 = line.Substring(4).Replace(",", string.Empty);
                                             break;
                                         case "タグ3":
-                                            ListThisTag3 = line.Substring(4).Replace(",", string.Empty);
+                                            thisDataValues.Tag3 = line.Substring(4).Replace(",", string.Empty);
                                             break;
                                     }
                                 }
@@ -1377,9 +1369,9 @@ namespace CREC
                             catch (Exception ex)
                             {
                                 MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                                ListThisID = "Status：Indexファイル破損";
-                                ListThisName = "Status：Indexファイル破損";
-                                ListThisCategory = "　ー　";
+                                thisDataValues.ID = Path.GetDirectoryName(ListContentsPath);
+                                thisDataValues.Name = "Status：Indexファイル破損";
+                                thisDataValues.Category = " - ";
                             }
                             // 在庫状態を取得
                             //invからデータを読み込んで表示
@@ -1448,168 +1440,50 @@ namespace CREC
                                 ListInventory = "-";
                                 ListInventoryStatus = "-";
                             }
-                            streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
-                        }
-                        streamWriter.Close();
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    if (OpenListAfterOutput == true)
-                    {
-                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
-                    }
-                }
-                else if (ListOutputFormat == "TSV")
-                {
-                    StreamWriter streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
-                    streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
-                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
-                    try
-                    {
-                        IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                        for (int i = 0; i < dataGridView1.RowCount; i++)
-                        {
-                            // 変数初期化「List作成処理ないでのみ使用すること」
-                            string ListThisName = string.Empty;
-                            string ListThisID = string.Empty;
-                            string ListThisMC = string.Empty;
-                            string ListThisCategory = string.Empty;
-                            string ListThisTag1 = string.Empty;
-                            string ListThisTag2 = string.Empty;
-                            string ListThisTag3 = string.Empty;
-                            string ListRegistrationDate = string.Empty;
-                            string ListInventory = string.Empty;
-                            string ListInventoryStatus = string.Empty;
-                            int? ListSafetyStock = null;
-                            int? ListReorderPoint = null;
-                            int? ListMaximumLevel = null;
-                            // index読み込み
-                            IEnumerable<string> tmp = null;
-                            string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
-                            try
+                            // ファイル書き込み
+                            if (ListOutputFormat == "CSV")
                             {
-                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                                foreach (string line in tmp)
-                                {
-                                    cols = line.Split(',');
-                                    switch (cols[0])
-                                    {
-                                        case "名称":
-                                            ListThisName = line.Substring(3);
-                                            break;
-                                        case "ID":
-                                            ListThisID = line.Substring(3);
-                                            break;
-                                        case "MC":
-                                            ListThisMC = line.Substring(3);
-                                            break;
-                                        case "登録日":
-                                            ListRegistrationDate = line.Substring(4);
-                                            break;
-                                        case "カテゴリ":
-                                            ListThisCategory = line.Substring(5);
-                                            break;
-                                        case "タグ1":
-                                            ListThisTag1 = line.Substring(4);
-                                            break;
-                                        case "タグ2":
-                                            ListThisTag2 = line.Substring(4);
-                                            break;
-                                        case "タグ3":
-                                            ListThisTag3 = line.Substring(4);
-                                            break;
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                                ListThisID = "Status：Indexファイル破損";
-                                ListThisName = "Status：Indexファイル破損";
-                                ListThisCategory = "　ー　";
-                            }
-                            // 在庫状態を取得
-                            //invからデータを読み込んで表示
-                            if (File.Exists(ListContentsPath + "\\inventory.inv"))
-                            {
-                                try
-                                {
-                                    tmp = File.ReadLines(ListContentsPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                                    bool firstline = true;
-                                    int count = 0;
-                                    foreach (string line in tmp)
-                                    {
-                                        cols = line.Split(',');
-                                        if (firstline == true)
-                                        {
-                                            if (cols[1].Length != 0)
-                                            {
-                                                ListSafetyStock = Convert.ToInt32(cols[1]);
-                                            }
-                                            if (cols[2].Length != 0)
-                                            {
-                                                ListReorderPoint = Convert.ToInt32(cols[2]);
-                                            }
-                                            if (cols[3].Length != 0)
-                                            {
-                                                ListMaximumLevel = Convert.ToInt32(cols[3]);
-                                            }
-                                            firstline = false;
-                                        }
-                                        else
-                                        {
-                                            count = count + Convert.ToInt32(cols[2]);
-                                        }
-                                    }
-                                    ListInventory = Convert.ToString(count);
-                                    ListInventoryStatus = "-";
-                                    if (0 == count)
-                                    {
-                                        ListInventoryStatus = "欠品";
-                                    }
-                                    else if (0 < count && count < ListSafetyStock)
-                                    {
-                                        ListInventoryStatus = "不足";
-                                    }
-                                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
-                                    {
-                                        ListInventoryStatus = "不足";
-                                    }
-                                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
-                                    {
-                                        ListInventoryStatus = "適正";
-                                    }
-                                    else if (ListMaximumLevel < count)
-                                    {
-                                        ListInventoryStatus = "過剰";
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    ListInventory = "ERROR";
-                                    ListInventoryStatus = ex.Message;
-                                }
+                                streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                             }
                             else
                             {
-                                ListInventory = "-";
-                                ListInventoryStatus = "-";
+                                streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                             }
-                            streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
                         }
                         streamWriter.Close();
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
+                        // 正常出力完了のメッセージ表示
+                        if (ListOutputFormat == "CSV")
+                        {
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                        }
+                        else
+                        {
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                        }
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        // エラーメッセージ表示
+                        if (ListOutputFormat == "CSV")
+                        {
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
+                    // 出力後の描画処理
                     if (OpenListAfterOutput == true)
                     {
-                        System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                        if (ListOutputFormat == "CSV")
+                        {
+                            System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
+                        }
+                        else if (ListOutputFormat == "TSV")
+                        {
+                            System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
+                        }
                     }
                 }
                 else
@@ -1619,19 +1493,24 @@ namespace CREC
             }
             catch (Exception ex)
             {
+                // エラーメッセージ表示
                 if (ListOutputFormat == "CSV")
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                else if (ListOutputFormat == "TSV")
+                else
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            finally
+            {
+                streamWriter.Close();
+            }
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ConfigValues.ColorSetting, CurrentLanguageFileName, LanguageFile, FontsizeOffset);
+            ConfigForm configform = new ConfigForm(ConfigValues.ColorSetting, CurrentLanguageFileName, LanguageFile, ConfigValues.FontsizeOffset);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -2016,7 +1895,7 @@ namespace CREC
             smallfontsize += 1;// 小フォントのサイズ
             mainfontsize += 1;// 標準フォントのサイズ
             bigfontsize += 1;// 大フォントのサイズ
-            FontsizeOffset += 1;// フォントサイズオフセット量を加算
+            ConfigValues.FontsizeOffset += 1;// フォントサイズオフセット量を加算
             SetFormLayout();
             //選択後もMenuItem開いたままにする処理
             FontSizeToolStripMenuItem.ShowDropDown();
@@ -2034,7 +1913,7 @@ namespace CREC
                 smallfontsize -= 1;// 小フォントのサイズ
                 mainfontsize -= 1;// 標準フォントのサイズ
                 bigfontsize -= 1;// 大フォントのサイズ
-                FontsizeOffset -= 1;// フォントサイズオフセット量を減算
+                ConfigValues.FontsizeOffset -= 1;// フォントサイズオフセット量を減算
                 SetFormLayout();
                 //選択後もMenuItem開いたままにする処理
                 FontSizeToolStripMenuItem.ShowDropDown();
@@ -2490,7 +2369,7 @@ namespace CREC
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
-                        DataValues thisDataValues = new DataValues();// Listを使用するよう変更中
+                        DataValuesClass thisDataValues = new DataValuesClass();
                         NoData = false;
                         if (DataLoadingStatus == "stop")
                         {
@@ -3433,14 +3312,14 @@ namespace CREC
         {
             if (ConfigValues.AllowEdit == false)
             {
-                MessageBox.Show("設定により編集が禁止されています。", "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoEditingPermissions","mainform",LanguageFile), "CREC");
                 return;
             }
             else if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
             {
-                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+                if (File.Exists(TargetContentsPath + "\\SystemData\\RED")) 
                 {
-                    MessageBox.Show("編集中、編集待機中の端末があります。\n閲覧のみ可能です。", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EditWaitingUserExists", "mainform", LanguageFile), "CREC");
                     return;
                 }
             }
@@ -3710,7 +3589,7 @@ namespace CREC
             // 同一IDの検索結果を表示
             if (dataGridView1.Rows.Count == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("SameMCNotFound", "mainform",LanguageFile),"CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("SameMCNotFound", "mainform", LanguageFile), "CREC");
             }
             else
             {
@@ -4804,7 +4683,7 @@ namespace CREC
                         streamWriter.WriteLine("InventoryInformationListVisible,false");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show("プロジェクトファイルの更新に失敗しました。\n" + ex.Message, "CREC");
                 }
@@ -4820,10 +4699,10 @@ namespace CREC
         private readonly string ConfigFile = "config.sys";
         private void ImportConfig()// config.sysの読み込み
         {
+            // 指定されていなかった場合のために初期化
+            CurrentLanguageFileName = "Japanese";
             if (File.Exists(ConfigFile))
             {
-                // 指定されていなかった場合のために初期化
-                CurrentLanguageFileName = "Japanese";
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in tmp)
@@ -4952,11 +4831,11 @@ namespace CREC
                         case "FontsizeOffset":
                             if (cols[1].Length == 0)
                             {
-                                FontsizeOffset = 0;
+                                ConfigValues.FontsizeOffset = 0;
                             }
                             else
                             {
-                                FontsizeOffset = Convert.ToInt32(cols[1]);
+                                ConfigValues.FontsizeOffset = Convert.ToInt32(cols[1]);
                             }
                             break;
                     }
@@ -4966,102 +4845,84 @@ namespace CREC
             {
                 MessageBox.Show("設定ファイルが見つかりません。\nデフォルト設定で起動します。", "CREC");
                 //Config.sysの作成
-                var TargetFile = Directory.GetCurrentDirectory() + "\\config.sys";
-                try
-                {
-                    StreamWriter sw = File.CreateText(TargetFile);
-                    sw.WriteLine("AllowEdit,true");
-                    sw.WriteLine("ShowConfidentialData,false");
-                    sw.WriteLine("ShowUserAssistToolTips,true");
-                    sw.WriteLine("AutoLoadProject,");
-                    sw.WriteLine("OpenLastTimeProject,false");
-                    sw.WriteLine("AutoSearch,true");
-                    sw.WriteLine("RecentShownContents,true");
-                    sw.WriteLine("BootUpdateCheck,true");
-                    sw.WriteLine("ColorSetting,Blue");
-                    sw.WriteLine("Language,Japanese");
-                    sw.WriteLine("FontsizeOffse,0");
-                    sw.Close();
-                    ConfigValues.AllowEdit = true;
-                    ConfigValues.ShowConfidentialData = false;
-                    ConfigValues.ShowUserAssistToolTips = true;
-                    ConfigValues.OpenLastTimeProject = false;
-                    ConfigValues.AutoSearch = true;
-                    ConfigValues.RecentShownContents = false;
-                    ConfigValues.BootUpdateCheck = true;
-                    CurrentLanguageFileName = "Japanese";
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Config.sysの作成に失敗しました(´・ω・｀)\n" + ex.Message, "CREC");
-                }
+                SaveConfig();
             }
         }
         private void SaveConfig()// config.sysの保存
         {
-            StreamWriter configfile = new StreamWriter("config.sys", false, Encoding.GetEncoding("UTF-8"));
-            if (ConfigValues.AllowEdit == true)
+            StreamWriter configfile = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.sys", false, Encoding.GetEncoding("UTF-8"));
+            try
             {
-                configfile.WriteLine("AllowEdit,true");
+                if (ConfigValues.AllowEdit == true)
+                {
+                    configfile.WriteLine("AllowEdit,true");
+                }
+                else
+                {
+                    configfile.WriteLine("AllowEdit,false");
+                }
+                if (ConfigValues.ShowConfidentialData == true)
+                {
+                    configfile.WriteLine("ShowConfidentialData,true");
+                }
+                else
+                {
+                    configfile.WriteLine("ShowConfidentialData,false");
+                }
+                if (ConfigValues.ShowUserAssistToolTips == true)
+                {
+                    configfile.WriteLine("ShowUserAssistToolTips,true");
+                }
+                else
+                {
+                    configfile.WriteLine("ShowUserAssistToolTips,false");
+                }
+                if (ConfigValues.OpenLastTimeProject == true)
+                {
+                    configfile.WriteLine("AutoLoadProject,{0}", TargetCRECPath);
+                    configfile.WriteLine("OpenLastTimeProject,true");
+                }
+                else
+                {
+                    configfile.WriteLine("AutoLoadProject,{0}", ConfigValues.AutoLoadProjectPath);
+                    configfile.WriteLine("OpenLastTimeProject,false");
+                }
+                if (ConfigValues.AutoSearch == true)
+                {
+                    configfile.WriteLine("AutoSearch,true");
+                }
+                else
+                {
+                    configfile.WriteLine("AutoSearch,false");
+                }
+                if (ConfigValues.RecentShownContents == true)
+                {
+                    configfile.WriteLine("RecentShownContents,true");
+                }
+                else
+                {
+                    configfile.WriteLine("RecentShownContents,false");
+                }
+                if (ConfigValues.BootUpdateCheck == true)
+                {
+                    configfile.WriteLine("BootUpdateCheck,true");
+                }
+                else
+                {
+                    configfile.WriteLine("BootUpdateCheck,false");
+                }
+                configfile.WriteLine("ColorSetting,{0}", ConfigValues.ColorSetting);
+                configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
+                configfile.WriteLine("FontsizeOffset,{0}", ConfigValues.FontsizeOffset);
             }
-            else
+            catch (Exception ex)
             {
-                configfile.WriteLine("AllowEdit,false");
+                MessageBox.Show("Config.sysの作成に失敗しました(´・ω・｀)\n" + ex.Message, "CREC");
             }
-            if (ConfigValues.ShowConfidentialData == true)
+            finally
             {
-                configfile.WriteLine("ShowConfidentialData,true");
+                configfile.Close();
             }
-            else
-            {
-                configfile.WriteLine("ShowConfidentialData,false");
-            }
-            if (ConfigValues.ShowUserAssistToolTips == true)
-            {
-                configfile.WriteLine("ShowUserAssistToolTips,true");
-            }
-            else
-            {
-                configfile.WriteLine("ShowUserAssistToolTips,false");
-            }
-            if (ConfigValues.OpenLastTimeProject == true)
-            {
-                configfile.WriteLine("AutoLoadProject,{0}", TargetCRECPath);
-                configfile.WriteLine("OpenLastTimeProject,true");
-            }
-            else
-            {
-                configfile.WriteLine("AutoLoadProject,{0}", ConfigValues.AutoLoadProjectPath);
-                configfile.WriteLine("OpenLastTimeProject,false");
-            }
-            if (ConfigValues.AutoSearch == true)
-            {
-                configfile.WriteLine("AutoSearch,true");
-            }
-            else
-            {
-                configfile.WriteLine("AutoSearch,false");
-            }
-            if (ConfigValues.RecentShownContents == true)
-            {
-                configfile.WriteLine("RecentShownContents,true");
-            }
-            else
-            {
-                configfile.WriteLine("RecentShownContents,false");
-            }
-            if (ConfigValues.BootUpdateCheck == true)
-            {
-                configfile.WriteLine("BootUpdateCheck,true");
-            }
-            else
-            {
-                configfile.WriteLine("BootUpdateCheck,false");
-            }
-            configfile.WriteLine("ColorSetting,{0}", ConfigValues.ColorSetting);
-            configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
-            configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
-            configfile.Close();
         }
         #endregion
 
@@ -5823,13 +5684,9 @@ namespace CREC
                 tempTargetListOutputPath = TargetFolderPath;
             }
             // 出力形式に合わせて出力
-            if (ListOutputFormat == "CSV")
+            if (ListOutputFormat == "CSV" || ListOutputFormat == "TSV")
             {
-                CSVListOutputMethod(tempTargetListOutputPath);
-            }
-            else if (ListOutputFormat == "TSV")
-            {
-                TSVListOutputMethod(tempTargetListOutputPath);
+                ListOutputMethod(tempTargetListOutputPath, ListOutputFormat);
             }
             else
             {
@@ -5850,182 +5707,33 @@ namespace CREC
             }
         }
         /// <summary>
-        /// CSVで一覧出力する処理
+        /// 一覧出力する処理
         /// </summary>
         /// <param name="tempTargetListOutputPath">出力パス</param>
-        private void CSVListOutputMethod(string tempTargetListOutputPath)
+        /// <param name="ListOutputFormat">フォーマット</param>
+        private void ListOutputMethod(string tempTargetListOutputPath, string ListOutputFormat)
         {
             StreamWriter streamWriter;
-            streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
-            try
+            // ヘッダ書き込み
+            if (ListOutputFormat == "CSV")
             {
+                streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
                 streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
-                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                foreach (System.IO.DirectoryInfo subFolder in subFolders)
-                {
-                    // 変数初期化「ListSA作成処理内でのみ使用すること」
-                    string ListThisName = string.Empty;
-                    string ListThisID = string.Empty;
-                    string ListThisMC = string.Empty;
-                    string ListThisCategory = string.Empty;
-                    string ListThisTag1 = string.Empty;
-                    string ListThisTag2 = string.Empty;
-                    string ListThisTag3 = string.Empty;
-                    string ListRegistrationDate = string.Empty;
-                    string ListInventory = string.Empty;
-                    string ListInventoryStatus = string.Empty;
-                    int? ListSafetyStock = null;
-                    int? ListReorderPoint = null;
-                    int? ListMaximumLevel = null;
-                    // index読み込み
-                    IEnumerable<string> tmp = null;
-                    try
-                    {
-                        tmp = File.ReadLines(subFolder.FullName + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                        foreach (string line in tmp)
-                        {
-                            cols = line.Split(',');
-                            switch (cols[0])
-                            {
-                                case "名称":
-                                    ListThisName = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "ID":
-                                    ListThisID = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "MC":
-                                    ListThisMC = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "登録日":
-                                    ListRegistrationDate = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "カテゴリ":
-                                    ListThisCategory = line.Substring(5).Replace(",", string.Empty);
-                                    break;
-                                case "タグ1":
-                                    ListThisTag1 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "タグ2":
-                                    ListThisTag2 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "タグ3":
-                                    ListThisTag3 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                        ListThisID = subFolder.Name;
-                        ListThisName = "Status：Indexファイル破損";
-                        ListThisCategory = "　ー　";
-                    }
-                    // 在庫状態を取得
-                    //invからデータを読み込んで表示
-                    if (File.Exists(subFolder.FullName + "\\inventory.inv"))
-                    {
-                        try
-                        {
-                            tmp = File.ReadLines(subFolder.FullName + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                            bool firstline = true;
-                            int count = 0;
-                            foreach (string line in tmp)
-                            {
-                                cols = line.Split(',');
-                                if (firstline == true)
-                                {
-                                    if (cols[1].Length != 0)
-                                    {
-                                        ListSafetyStock = Convert.ToInt32(cols[1]);
-                                    }
-                                    if (cols[2].Length != 0)
-                                    {
-                                        ListReorderPoint = Convert.ToInt32(cols[2]);
-                                    }
-                                    if (cols[3].Length != 0)
-                                    {
-                                        ListMaximumLevel = Convert.ToInt32(cols[3]);
-                                    }
-                                    firstline = false;
-                                }
-                                else
-                                {
-                                    count = count + Convert.ToInt32(cols[2]);
-                                }
-                            }
-                            ListInventory = Convert.ToString(count);
-                            ListInventoryStatus = "-";
-                            if (0 == count)
-                            {
-                                ListInventoryStatus = "欠品";
-                            }
-                            else if (0 < count && count < ListSafetyStock)
-                            {
-                                ListInventoryStatus = "不足";
-                            }
-                            else if (ListSafetyStock <= count && count <= ListReorderPoint)
-                            {
-                                ListInventoryStatus = "不足";
-                            }
-                            else if (ListReorderPoint <= count && count <= ListMaximumLevel)
-                            {
-                                ListInventoryStatus = "適正";
-                            }
-                            else if (ListMaximumLevel < count)
-                            {
-                                ListInventoryStatus = "過剰";
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ListInventory = "ERROR";
-                            ListInventoryStatus = ex.Message;
-                        }
-                    }
-                    else
-                    {
-                        ListInventory = "-";
-                        ListInventoryStatus = "-";
-                    }
-                    streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
-                }
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+                streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
             }
-            finally
-            {
-                streamWriter.Close();
-            }
-        }
-        /// <summary>
-        /// TSVで一覧出力する処理
-        /// </summary>
-        /// <param name="tempTargetListOutputPath">出力パス</param>
-        private void TSVListOutputMethod(string tempTargetListOutputPath)
-        {
-            StreamWriter streamWriter;
-            streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
+
             try
             {
-                streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
                 IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                 foreach (System.IO.DirectoryInfo subFolder in subFolders)
                 {
-                    // 変数初期化「ListSA作成処理内でのみ使用すること」
-                    string ListThisName = string.Empty;
-                    string ListThisID = string.Empty;
-                    string ListThisMC = string.Empty;
-                    string ListThisCategory = string.Empty;
-                    string ListThisTag1 = string.Empty;
-                    string ListThisTag2 = string.Empty;
-                    string ListThisTag3 = string.Empty;
-                    string ListRegistrationDate = string.Empty;
+                    // 変数初期化
+                    DataValuesClass thisDataValues = new DataValuesClass();
                     string ListInventory = string.Empty;
                     string ListInventoryStatus = string.Empty;
                     int? ListSafetyStock = null;
@@ -6042,28 +5750,28 @@ namespace CREC
                             switch (cols[0])
                             {
                                 case "名称":
-                                    ListThisName = line.Substring(3);
+                                    thisDataValues.Name = line.Substring(3).Replace(",", string.Empty);
                                     break;
                                 case "ID":
-                                    ListThisID = line.Substring(3);
+                                    thisDataValues.ID = line.Substring(3).Replace(",", string.Empty);
                                     break;
                                 case "MC":
-                                    ListThisMC = line.Substring(3);
+                                    thisDataValues.MC = line.Substring(3).Replace(",", string.Empty);
                                     break;
                                 case "登録日":
-                                    ListRegistrationDate = line.Substring(4);
+                                    thisDataValues.RegistrationDate = line.Substring(4).Replace(",", string.Empty);
                                     break;
                                 case "カテゴリ":
-                                    ListThisCategory = line.Substring(5);
+                                    thisDataValues.Category = line.Substring(5).Replace(",", string.Empty);
                                     break;
                                 case "タグ1":
-                                    ListThisTag1 = line.Substring(4);
+                                    thisDataValues.Tag1 = line.Substring(4).Replace(",", string.Empty);
                                     break;
                                 case "タグ2":
-                                    ListThisTag2 = line.Substring(4);
+                                    thisDataValues.Tag2 = line.Substring(4).Replace(",", string.Empty);
                                     break;
                                 case "タグ3":
-                                    ListThisTag3 = line.Substring(4);
+                                    thisDataValues.Tag3 = line.Substring(4).Replace(",", string.Empty);
                                     break;
                             }
                         }
@@ -6071,9 +5779,9 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                        ListThisID = subFolder.Name;
-                        ListThisName = "Status：Indexファイル破損";
-                        ListThisCategory = "　ー　";
+                        thisDataValues.ID = subFolder.Name;
+                        thisDataValues.Name = "Status：Indexファイル破損";
+                        thisDataValues.Category = " - ";
                     }
                     // 在庫状態を取得
                     //invからデータを読み込んで表示
@@ -6142,14 +5850,37 @@ namespace CREC
                         ListInventory = "-";
                         ListInventoryStatus = "-";
                     }
-                    streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, ListThisID, ListThisMC, ListThisName, ListRegistrationDate, ListThisCategory, ListThisTag1, ListThisTag2, ListThisTag3, ListInventory, ListInventoryStatus);
+                    // ファイル書き込み
+                    if (ListOutputFormat == "CSV")
+                    {
+                        streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                    }
+                    else
+                    {
+                        streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                    }
                 }
-                streamWriter.Close();
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                // 正常出力完了のメッセージ表示
+                if (ListOutputFormat == "CSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                }
+                else
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // エラーメッセージ表示
+                if (ListOutputFormat == "CSV")
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             finally
             {
@@ -6242,7 +5973,7 @@ namespace CREC
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ShowListButton_Click(object sender, EventArgs e)// 
+        private void ShowListButton_Click(object sender, EventArgs e)
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {

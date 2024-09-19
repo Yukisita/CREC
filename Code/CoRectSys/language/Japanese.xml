@@ -198,6 +198,10 @@
 				<itemname>AllowEditIDButton</itemname>
 				<itemtext>変　更</itemtext>
 			</item>
+			<item>
+				<itemname>ReadOnlyButton</itemname>
+				<itemtext>閲覧のみ</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>
@@ -487,6 +491,14 @@
 			<item>
 				<itemname>SameMCExist</itemname>
 				<itemtext>同一管理番号のデータが見つかりました。</itemtext>
+			</item>
+			<item>
+				<itemname>NoEditingPermissions</itemname>
+				<itemtext>設定により編集が禁止されています</itemtext>
+			</item>
+			<item>
+				<itemname>EditWaitingUserExists</itemname>
+				<itemtext>編集中、編集待機中の端末があります。&#xD;&#xA;閲覧のみ可能です。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>

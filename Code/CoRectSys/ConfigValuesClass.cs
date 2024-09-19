@@ -19,6 +19,7 @@ namespace CREC
         public string ColorSetting { get; set; } = "Blue";
         public string AutoLoadProjectPath { get; set; } = string.Empty;
         public bool OpenLastTimeProject { get; set; } = false;
+        public int FontsizeOffset { get; set; } = 0;
 
     }
 }
