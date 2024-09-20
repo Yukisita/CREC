@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.3.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.4.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -1065,7 +1065,7 @@ namespace CREC
                 if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
                 {
                     RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
-                    File.Delete("RecentlyOpenedProjectList.log");
+                    FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
                     StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                     streamWriter.WriteLine(TargetProjectName + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
                     int Count = 0;
@@ -1198,7 +1198,7 @@ namespace CREC
                     System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
                     return;
                 }
-                File.Delete("RecentlyOpenedProjectList.log");
+                FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
                 StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in RecentlyOpendProjectList)
                 {
@@ -1246,7 +1246,7 @@ namespace CREC
             {
                 try
                 {
-                    File.Delete("RecentlyOpenedProjectList.log");
+                    FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
                 }
                 catch (Exception ex)
                 {
@@ -1543,14 +1543,13 @@ namespace CREC
                     {
                         Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                     }
-                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-                    FileStream.Close();
-                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
-                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
+                    FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
                     // サムネ画像が更新されていた場合は一時データをを削除
                     if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                     {
-                        File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                     }
                     // 新規作成の場合はデータを削除
                     if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
@@ -1559,7 +1558,7 @@ namespace CREC
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
                     }
                 }
                 else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ再起動をキャンセル
@@ -1649,8 +1648,7 @@ namespace CREC
             }
             else
             {
-                FileStream FileStream = File.Create(TargetContentsPath + "\\inventory.inv");
-                FileStream.Close();
+                FileOperationClass.AddBlankFile(TargetContentsPath + "\\inventory.inv");
                 StreamWriter InventoryManagementFile = new StreamWriter(TargetContentsPath + "\\inventory.inv");
                 InventoryManagementFile.WriteLine("{0},,,", ThisID);
                 InventoryManagementFile.Close();
@@ -2042,14 +2040,13 @@ namespace CREC
                     {
                         Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                     }
-                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-                    FileStream.Close();
-                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
-                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
+                    FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
                     // サムネ画像が更新されていた場合は一時データをを削除
                     if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                     {
-                        File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                     }
                     if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
                     {
@@ -2057,7 +2054,7 @@ namespace CREC
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
                     }
                     if (CloseListOutput == true)
                     {
@@ -2233,11 +2230,10 @@ namespace CREC
                     {
                         Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                     }
-                    FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-                    FileStream.Close();
-                    File.Delete(TargetContentsPath + "\\SystemData\\RED");
-                    File.Delete(TargetContentsPath + "\\SystemData\\DED");
-                    File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+                    FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
                 }
                 else
                 {
@@ -2766,14 +2762,13 @@ namespace CREC
                 {
                     Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                 }
-                FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-                FileStream.Close();
-                File.Delete(TargetContentsPath + "\\SystemData\\RED");
-                File.Delete(TargetContentsPath + "\\SystemData\\DED");
+                FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+                FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
+                FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
                 // サムネ画像が更新されていた場合は一時データをを削除
                 if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                 {
-                    File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
                 }
                 if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))// データ追加時は削除
                 {
@@ -2781,7 +2776,7 @@ namespace CREC
                 }
                 else
                 {
-                    File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
                 }
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
@@ -3301,8 +3296,7 @@ namespace CREC
                 {
                     Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                 }
-                FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\RED");
-                FileStream.Close();
+                FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\RED");
                 EditRequestButton.Visible = false;
                 EditRequestingButton.Visible = true;
                 AwaitEdit();
@@ -3327,7 +3321,7 @@ namespace CREC
         private void StartEditForm()// 編集画面に切り替え
         {
             // 編集中の端末がいないか確認
-            if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE"))
+            if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE")&&!File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
             {
                 DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
@@ -3337,20 +3331,19 @@ namespace CREC
             }
             else
             {
-                File.Delete(TargetContentsPath + "\\SystemData\\FREE");
+                FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\FREE");
             }
             // 編集中タグを作成
             if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
             {
                 Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
             }
-            FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\DED");
-            FileStream.Close();
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\DED");
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
             // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
             {
-                File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
             }
             // 編集画面に必要な物を表示
             EditNameTextBox.Visible = ShowObjectNameLabelVisible;
@@ -3626,21 +3619,17 @@ namespace CREC
             Directory.CreateDirectory(TargetContentsPath + "\\data");
             Directory.CreateDirectory(TargetContentsPath + "\\pictures");
             Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
-            FileStream FileStream = File.Create(TargetContentsPath + "\\index.txt");
-            StreamWriter streamWriter = new StreamWriter(FileStream);
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\index.txt");
+            StreamWriter streamWriter = new StreamWriter(TargetContentsPath + "\\index.txt");
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
             streamWriter.Close();
-            FileStream.Close();
-            FileStream = File.Create(TargetContentsPath + "\\details.txt");
-            FileStream.Close();
-            FileStream = File.Create(TargetContentsPath + "\\confidentialdata.txt");
-            FileStream.Close();
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\details.txt");
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\confidentialdata.txt");
             // 在庫管理を行うか確認
             DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                FileStream = File.Create(TargetContentsPath + "\\inventory.inv");
-                FileStream.Close();
+                FileOperationClass.AddBlankFile(TargetContentsPath + "\\inventory.inv");
                 StreamWriter InventoryManagementFile = new StreamWriter(TargetContentsPath + "\\inventory.inv");
                 InventoryManagementFile.WriteLine("{0},,,", EditIDTextBox.Text);
                 InventoryManagementFile.Close();
@@ -3653,9 +3642,7 @@ namespace CREC
                 CloseInventoryManagementModeButton.Visible = false;
             }
             // 新規作成タグを作成
-            FileStream = File.Create(TargetContentsPath + "\\SystemData\\ADD");
-            FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-            FileStream.Close();
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\ADD");
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
@@ -3768,7 +3755,7 @@ namespace CREC
             if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
             {
                 File.Copy(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg", TargetContentsPath + "\\pictures\\Thumbnail1.jpg", true);
-                File.Delete(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
             }
             if (PictureBox1.Visible == true)// 詳細画像表示されている場合は読み込み
             {
@@ -3779,11 +3766,10 @@ namespace CREC
             {
                 Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
             }
-            FileStream FileStream = File.Create(TargetContentsPath + "\\SystemData\\FREE");
-            FileStream.Close();
-            File.Delete(TargetContentsPath + "\\SystemData\\DED");
-            File.Delete(TargetContentsPath + "\\SystemData\\RED");
-            File.Delete(TargetContentsPath + "\\SystemData\\ADD");
+            FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+            FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
+            FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
+            FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
 
             // ID変更処理
             if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
@@ -5374,7 +5360,7 @@ namespace CREC
                     }
                     else
                     {
-                        File.Delete(TargetContentsPath + "\\SystemData\\RED");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
                         break;
                     }
                 }
