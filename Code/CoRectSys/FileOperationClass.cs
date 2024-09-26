@@ -2,7 +2,7 @@
 Program
 Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
+https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace CREC
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
             }
-            catch(ArgumentException ex)// Pathが不完全
+            catch (ArgumentException ex)// Pathが不完全
             {
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
@@ -66,7 +66,7 @@ namespace CREC
                     return false;
                 }
             }
-            catch(UnauthorizedAccessException ex)// 権限がない
+            catch (UnauthorizedAccessException ex)// 権限がない
             {
                 MessageBox.Show(ex.Message, "CREC");
                 if (DeleteReadOnlyFile(FileFullPath))
@@ -78,7 +78,7 @@ namespace CREC
                     return false;
                 }
             }
-            catch(Exception ex)// 予期せぬエラー
+            catch (Exception ex)// 予期せぬエラー
             {
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
@@ -100,13 +100,61 @@ namespace CREC
                 File.Delete(FileFullPath);
                 return true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
             }
         }
-
+        /// <summary>
+        /// フォルダを指定の場所に移動
+        /// </summary>
+        /// <param name="CurrentFolderFullPath"></param>
+        /// <param name="NewFolderFullPath"></param>
+        /// <returns>移動成功：true、移動失敗：false</returns>
+        public static bool MoveFolder(string CurrentFolderFullPath, string NewFolderFullPath)
+        {
+            try
+            {
+                Directory.Move(CurrentFolderFullPath, NewFolderFullPath);
+                return true;
+            }
+            catch (UnauthorizedAccessException ex)// アクセス許可がない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (ArgumentNullException ex)// 移動前、または移動先のフォルダパスが未指定
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (ArgumentException ex)// 移動前、または移動先のフォルダパスに無効な文字が含まれる
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (PathTooLongException ex)// 移動前、または移動先のフォルダパスがシステムの最大長以上
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (DirectoryNotFoundException ex)// 移動前のフォルダが見つからない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (IOException ex)// 移動前と移動先のフォルダパスが同一、使用中のフォルダまたはファイルがある、など
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (Exception ex)// 予期せぬエラー
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+        }
         /// <summary>
         /// 指定された空ファイルを作成する処理
         /// </summary>
@@ -119,7 +167,7 @@ namespace CREC
                 File.Create(FileFullPath).Close();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "CREC");
                 return false;

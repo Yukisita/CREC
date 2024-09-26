@@ -2149,7 +2149,6 @@
             this.Controls.Add(this.ShowPictureFileNameLabel);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
-            this.Controls.Add(this.EditIDTextBox);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.EditTag1TextBox);
             this.Controls.Add(this.EditNameTextBox);
@@ -2222,6 +2221,7 @@
             this.Controls.Add(this.SaveAndCloseEditButton);
             this.Controls.Add(this.EditRequestingButton);
             this.Controls.Add(this.ReadOnlyButton);
+            this.Controls.Add(this.EditIDTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);

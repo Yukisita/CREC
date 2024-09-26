@@ -2,7 +2,7 @@
 VersionInformation
 Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
+https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;

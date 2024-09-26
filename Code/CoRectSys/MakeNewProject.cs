@@ -2,7 +2,7 @@
 MakeNewProjectForm
 Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
+https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;
@@ -475,7 +475,7 @@ namespace CREC
                 {
                     if (Directory.Exists(EditProjectLocationTextBox.Text))
                     {
-                        MessageBox.Show("指定されたプロジェクトフォルダは既に存在しています。", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectDirectoryAlreadyExist", "MakeNewProject", LanguageFile), "CREC");
                     }
                     else
                     {
@@ -494,7 +494,7 @@ namespace CREC
                 {
                     if (Directory.Exists(EditProjectLocationTextBox.Text))
                     {
-                        MessageBox.Show("指定されたプロジェクトフォルダが見つかりました。", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectDirectoryAlreadyExist", "MakeNewProject", LanguageFile), "CREC");
                     }
                     else
                     {
@@ -505,7 +505,7 @@ namespace CREC
                 {
                     if (Directory.Exists(EditBackupLocationTextBox.Text))
                     {
-                        MessageBox.Show("指定されたバックアップフォルダは既に存在しています。", "CREC");
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectBackupDirectoryAlreadyExist", "MakeNewProject", LanguageFile), "CREC");
                     }
                     else
                     {

@@ -500,6 +500,10 @@
 				<itemname>EditWaitingUserExists</itemname>
 				<itemtext>編集中、編集待機中の端末があります。&#xD;&#xA;閲覧のみ可能です。</itemtext>
 			</item>
+			<item>
+				<itemname>UUIDChangeError</itemname>
+				<itemtext>UUIDの変更に失敗したため、操作をキャンセルしました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -793,6 +797,14 @@
 			<item>
 				<itemname>AskChangeUUIDLabel</itemname>
 				<itemtext>UUIDはシステムが使用する値です。&#xD;&#xA;この値を変更すると不具合が発生する可能性があります。&#xD;&#xA;変更しますか？</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectDirectoryAlreadyExist</itemname>
+				<itemtext>指定されたプロジェクトのディレクトリは既に存在しています。</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectBackupDirectoryAlreadyExist</itemname>
+				<itemtext>指定されたバックアップフォルダは既に存在しています。</itemtext>
 			</item>
 		</MessageBox>
 		<Other>

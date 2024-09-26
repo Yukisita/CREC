@@ -500,6 +500,10 @@
 				<itemname>EditWaitingUserExists</itemname>
 				<itemtext>Locked for editing reserving user.</itemtext>
 			</item>
+			<item>
+				<itemname>UUIDChangeError</itemname>
+				<itemtext>Operation canceled because of UUID change error.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -793,6 +797,14 @@
 			<item>
 				<itemname>AskChangeUUIDLabel</itemname>
 				<itemtext>UUID is the value used by the system.&#xD;&#xA;This operation may cause system malfunction.&#xD;&#xA;Do you want to change this?</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectDirectoryAlreadyExist</itemname>
+				<itemtext>Project directory already exist.</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectBackupDirectoryAlreadyExist</itemname>
+				<itemtext>Project backup directory already exist.</itemtext>
 			</item>
 		</MessageBox>
 		<Other>

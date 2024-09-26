@@ -2,7 +2,7 @@
 MainForm
 Copyright (c) [2022-2024] [S.Yukisita]
 This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
+https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;
@@ -34,47 +34,18 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.4.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.5.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
-        string TargetProjectName = string.Empty;// プロジェクト名
-        string TargetFolderPath = string.Empty;// データ保管場所のフォルダパス
         string TargetCRECPath = string.Empty;// 管理ファイル（.crec）のファイルパス
         string TargetIndexPath = string.Empty;// Indexの場所
         string TargetDetailsPath = string.Empty;// 説明txtのパス
-        string TargetBackupPath = string.Empty;// バックアップ場所のフォルダパス
-        string TargetListOutputPath = string.Empty;// 一覧List出力場所のフォルダパス
-        bool StartUpBackUp = false;// S、起動時にバックアップ
-        bool EditedBackUp = false;// E、編集後にバックアップ
-        bool CloseBackUp = false;// C、終了時にバックアップ
-        int CompressType = 1;// 圧縮方法
-        bool StartUpListOutput = false;// S、起動時に一覧作成
-        bool EditedListOutput = false;// E、編集後に一覧作成
-        bool CloseListOutput = false;// C、終了時に一覧作成
-        bool OpenListAfterOutput = false;// O、一覧作成後に自動で開く
-        string ListOutputFormat = "CSV";// List作成時のフォーマット、デフォルトでCSV
-        string TargetCreatedDate = string.Empty;// 作成日時
-        string TargetModifiedDate = string.Empty;// 更新日時
-        string TargetAccessedDate = string.Empty;// 最終アクセス日時
-        string ShowObjectNameLabel = "名称";// 名称ラベルの表示名
-        bool ShowObjectNameLabelVisible = true;
-        string ShowIDLabel = "UUID";// IDラベルの表示名
-        bool ShowIDLabelVisible = true;
-        string ShowMCLabel = "管理コード";// 管理コードラベルの表示名
-        bool ShowMCLabelVisible = true;
-        bool AutoMCFill = true;
-        string ShowRegistrationDateLabel = "登録日";// 登録日ラベルの表示名
-        bool ShowRegistrationDateLabelVisible = true;
-        string ShowCategoryLabel = "カテゴリ";// カテゴリラベルの表示名
-        bool ShowCategoryLabelVisible = true;
-        string Tag1Name = "タグ１";// Tag1の名称
-        bool ShowTag1NameVisible = true;
-        string Tag2Name = "タグ２";// Tag2の名称
-        bool ShowTag2NameVisible = true;
-        string Tag3Name = "タグ３";// Tag3の名称
-        bool ShowTag3NameVisible = true;
+        ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
+        int CompressType = 1;// 圧縮方法、あとで直す
+        string ListOutputFormat = "CSV";// List作成時のフォーマット、デフォルトでCSV、後で直す
+
         string ShowRealLocationLabel = "現物保管場所";// 現物保管場所ラベルの表示名
         bool ShowRealLocationLabelVisible = true;
         string ShowDataLocationLabel = "データ保管場所";// データ保管場所ラベルの表示名
@@ -90,7 +61,7 @@ namespace CREC
         // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
         class DataValuesClass
         {
-            public string TargetContentsPath { get; set; } = string.Empty;
+            public string FolderPath { get; set; } = string.Empty;
             public string Name { get; set; } = string.Empty;
             public string ID { get; set; } = string.Empty;
             public string MC { get; set; } = string.Empty;
@@ -101,19 +72,10 @@ namespace CREC
             public string Tag3 { get; set; } = string.Empty;
             public string RealLocation { get; set; } = string.Empty;
         }
-        List<DataValuesClass> DataList = new List<DataValuesClass>();
-        DataValuesClass DataValues = new DataValuesClass();
+        List<DataValuesClass> DataList = new List<DataValuesClass>();// 一覧表示しているデータ
+        DataValuesClass CurrentShownDataValues = new DataValuesClass();// 詳細表示中のデータ
 
         string TargetContentsPath = string.Empty;// 詳細表示するデータのフォルダパス
-        string ThisName = string.Empty;
-        string ThisID = string.Empty;
-        string ThisMC = string.Empty;
-        string ThisRegistrationDate = string.Empty;
-        string ThisCategory = string.Empty;
-        string ThisTag1 = string.Empty;
-        string ThisTag2 = string.Empty;
-        string ThisTag3 = string.Empty;
-        string ThisRealLocation = string.Empty;
 
         // データ一覧表示関係
         DataTable ContentsDataTable = new DataTable();
@@ -235,11 +197,11 @@ namespace CREC
                 {
                     MessageBox.Show(string.Empty + ex, "CREC");
                 }
-                if (StartUpListOutput == true)
+                if (CurrentProjectSettingValues.StartUpListOutput == true)
                 {
                     ListOutputMethod(ListOutputFormat);
                 }
-                if (StartUpBackUp == true)// 自動バックアップ
+                if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
                 {
                     BackUpMethod();
                     MakeBackUpZip();// ZIP圧縮を非同期で開始
@@ -316,11 +278,11 @@ namespace CREC
         private void OpenMenu_Click(object sender, EventArgs e)// 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpListOutput == true)
+            if (CurrentProjectSettingValues.StartUpListOutput == true)
             {
                 ListOutputMethod(ListOutputFormat);
             }
-            if (StartUpBackUp == true)// 自動バックアップ
+            if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
             {
                 BackUpMethod();
                 MakeBackUpZip();// ZIP圧縮を非同期で開始
@@ -412,39 +374,39 @@ namespace CREC
                 switch (cols[0])
                 {
                     case "projectname":
-                        TargetProjectName = cols[1];
+                        CurrentProjectSettingValues.Name = cols[1];
                         ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + cols[1];
                         break;
                     case "projectlocation":
-                        TargetFolderPath = cols[1];
+                        CurrentProjectSettingValues.ProjectDataFolderPath = cols[1];
                         break;
                     case "backuplocation":
-                        TargetBackupPath = cols[1];
+                        CurrentProjectSettingValues.ProjectBackupFolderPath = cols[1];
                         break;
                     case "autobackup":
                         if (cols[1].Contains("S"))
                         {
-                            StartUpBackUp = true;
+                            CurrentProjectSettingValues.StartUpBackUp = true;
                         }
                         else
                         {
-                            StartUpBackUp = false;
+                            CurrentProjectSettingValues.StartUpBackUp = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            CloseBackUp = true;
+                            CurrentProjectSettingValues.CloseBackUp = true;
                         }
                         else
                         {
-                            CloseBackUp = false;
+                            CurrentProjectSettingValues.CloseBackUp = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            EditedBackUp = true;
+                            CurrentProjectSettingValues.EditBackUp = true;
                         }
                         else
                         {
-                            EditedBackUp = false;
+                            CurrentProjectSettingValues.EditBackUp = false;
                         }
                         break;
                     case "CompressType":
@@ -458,42 +420,42 @@ namespace CREC
                         }
                         break;
                     case "Listoutputlocation":
-                        TargetListOutputPath = cols[1];
+                        CurrentProjectSettingValues.ListOutputPath = cols[1];
                         break;
                     case "autoListoutput":
                         if (cols[1].Contains("S"))
                         {
-                            StartUpListOutput = true;
+                            CurrentProjectSettingValues.StartUpListOutput = true;
                         }
                         else
                         {
-                            StartUpListOutput = false;
+                            CurrentProjectSettingValues.StartUpListOutput = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            CloseListOutput = true;
+                            CurrentProjectSettingValues.CloseListOutput = true;
                         }
                         else
                         {
-                            CloseListOutput = false;
+                            CurrentProjectSettingValues.CloseListOutput = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            EditedListOutput = true;
+                            CurrentProjectSettingValues.EditListOutput = true;
                         }
                         else
                         {
-                            EditedListOutput = false;
+                            CurrentProjectSettingValues.EditListOutput = false;
                         }
                         break;
                     case "openListafteroutput":
                         if (cols[1].Contains("O"))
                         {
-                            OpenListAfterOutput = true;
+                            CurrentProjectSettingValues.OpenListAfterOutput = true;
                         }
                         else
                         {
-                            OpenListAfterOutput = false;
+                            CurrentProjectSettingValues.OpenListAfterOutput = false;
                         }
                         break;
                     case "ListOutputFormat":
@@ -507,41 +469,41 @@ namespace CREC
                         }
                         break;
                     case "created":
-                        TargetCreatedDate = cols[1];
+                        CurrentProjectSettingValues.CreatedDate = cols[1];
                         break;
                     case "modified":
-                        TargetModifiedDate = cols[1];
+                        CurrentProjectSettingValues.ModifiedDate = cols[1];
                         break;
                     case "accessed":
-                        TargetAccessedDate = cols[1];
+                        CurrentProjectSettingValues.AccessedDate = cols[1];
                         break;
                     case "ShowObjectNameLabel":
                         try
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowObjectNameLabel = cols[1];
+                                CurrentProjectSettingValues.CollectionNameLabel = cols[1];
                             }
                             else
                             {
-                                ShowCategoryLabel = "名称";
+                                CurrentProjectSettingValues.CollectionNameLabel = "Name";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowObjectNameLabelVisible = false;
+                                CurrentProjectSettingValues.CollectionNameVisible = false;
                                 ObjectNameLabel.Visible = false;
                                 ShowObjectName.Visible = false;
                             }
                             else
                             {
-                                ShowObjectNameLabelVisible = true;
+                                CurrentProjectSettingValues.CollectionNameVisible = true;
                                 ObjectNameLabel.Visible = true;
                                 ShowObjectName.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowObjectNameLabelVisible = true;
+                            CurrentProjectSettingValues.CollectionNameVisible = true;
                             ObjectNameLabel.Visible = true;
                             ShowObjectName.Visible = true;
                         }
@@ -551,21 +513,21 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowIDLabel = cols[1];
+                                CurrentProjectSettingValues.UUIDLabel = cols[1];
                             }
                             else
                             {
-                                ShowIDLabel = "ID";
+                                CurrentProjectSettingValues.UUIDLabel = "UUID";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowIDLabelVisible = false;
+                                CurrentProjectSettingValues.UUIDVisible = false;
                                 IDLabel.Visible = false;
                                 ShowID.Visible = false;
                             }
                             else
                             {
-                                ShowIDLabelVisible = true;
+                                CurrentProjectSettingValues.UUIDVisible = true;
                                 IDLabel.Visible = true;
                                 ShowID.Visible = true;
                                 AllowEditIDButton.Visible = true;
@@ -573,7 +535,7 @@ namespace CREC
                         }
                         catch
                         {
-                            ShowIDLabelVisible = true;
+                            CurrentProjectSettingValues.UUIDVisible = true;
                             IDLabel.Visible = true;
                             ShowID.Visible = true;
                             AllowEditIDButton.Visible = true;
@@ -584,21 +546,21 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowMCLabel = cols[1];
+                                CurrentProjectSettingValues.ManagementCodeLabel = cols[1];
                             }
                             else
                             {
-                                ShowMCLabel = "管理コード";
+                                CurrentProjectSettingValues.ManagementCodeLabel = "管理コード";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowMCLabelVisible = false;
+                                CurrentProjectSettingValues.ManagementCodeVisible = false;
                                 MCLabel.Visible = false;
                                 ShowMC.Visible = false;
                             }
                             else
                             {
-                                ShowMCLabelVisible = true;
+                                CurrentProjectSettingValues.ManagementCodeVisible = true;
                                 MCLabel.Visible = true;
                                 ShowMC.Visible = true;
                                 CheckSameMCButton.Visible = true;
@@ -606,7 +568,7 @@ namespace CREC
                         }
                         catch
                         {
-                            ShowMCLabelVisible = true;
+                            CurrentProjectSettingValues.ManagementCodeVisible = true;
                             MCLabel.Visible = true;
                             ShowMC.Visible = true;
                             CheckSameMCButton.Visible = true;
@@ -617,28 +579,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowRegistrationDateLabel = cols[1];
+                                CurrentProjectSettingValues.RegistrationDateLabel = cols[1];
                             }
                             else
                             {
-                                ShowRegistrationDateLabel = "登録日";
+                                CurrentProjectSettingValues.RegistrationDateLabel = "登録日";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowRegistrationDateLabelVisible = false;
+                                CurrentProjectSettingValues.RegistrationDateVisible = false;
                                 RegistrationDateLabel.Visible = false;
                                 ShowRegistrationDate.Visible = false;
                             }
                             else
                             {
-                                ShowRegistrationDateLabelVisible = true;
+                                CurrentProjectSettingValues.RegistrationDateVisible = true;
                                 RegistrationDateLabel.Visible = true;
                                 ShowRegistrationDate.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowRegistrationDateLabelVisible = true;
+                            CurrentProjectSettingValues.RegistrationDateVisible = true;
                             RegistrationDateLabel.Visible = true;
                             ShowRegistrationDate.Visible = true;
                         }
@@ -648,16 +610,16 @@ namespace CREC
                         {
                             if (cols[1] == "f")
                             {
-                                AutoMCFill = false;
+                                CurrentProjectSettingValues.ManagementCodeAutoFill = false;
                             }
                             else
                             {
-                                AutoMCFill = true;
+                                CurrentProjectSettingValues.ManagementCodeAutoFill = true;
                             }
                         }
                         catch
                         {
-                            AutoMCFill = true;
+                            CurrentProjectSettingValues.ManagementCodeAutoFill = true;
                         }
                         break;
                     case "ShowCategoryLabel":
@@ -665,28 +627,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowCategoryLabel = cols[1];
+                                CurrentProjectSettingValues.CategoryLabel = cols[1];
                             }
                             else
                             {
-                                ShowCategoryLabel = "カテゴリ";
+                                CurrentProjectSettingValues.CategoryLabel = "カテゴリ";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowCategoryLabelVisible = false;
+                                CurrentProjectSettingValues.CategoryVisible = false;
                                 CategoryLabel.Visible = false;
                                 ShowCategory.Visible = false;
                             }
                             else
                             {
-                                ShowCategoryLabelVisible = true;
+                                CurrentProjectSettingValues.CategoryVisible = true;
                                 CategoryLabel.Visible = true;
                                 ShowCategory.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowCategoryLabelVisible = true;
+                            CurrentProjectSettingValues.CategoryVisible = true;
                             CategoryLabel.Visible = true;
                             ShowCategory.Visible = true;
                         }
@@ -696,28 +658,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                Tag1Name = cols[1];
+                                CurrentProjectSettingValues.FirstTagLabel = cols[1];
                             }
                             else
                             {
-                                Tag1Name = "タグ１";
+                                CurrentProjectSettingValues.FirstTagLabel = "タグ１";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowTag1NameVisible = false;
+                                CurrentProjectSettingValues.FirstTagVisible = false;
                                 Tag1NameLabel.Visible = false;
                                 ShowTag1.Visible = false;
                             }
                             else
                             {
-                                ShowTag1NameVisible = true;
+                                CurrentProjectSettingValues.FirstTagVisible = true;
                                 Tag1NameLabel.Visible = true;
                                 ShowTag1.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowTag1NameVisible = true;
+                            CurrentProjectSettingValues.FirstTagVisible = true;
                             Tag1NameLabel.Visible = true;
                             ShowTag1.Visible = true;
                         }
@@ -727,28 +689,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                Tag2Name = cols[1];
+                                CurrentProjectSettingValues.SecondTagLabel = cols[1];
                             }
                             else
                             {
-                                Tag2Name = "タグ２";
+                                CurrentProjectSettingValues.SecondTagLabel = "タグ２";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowTag2NameVisible = false;
+                                CurrentProjectSettingValues.SecondTagVisible = false;
                                 Tag2NameLabel.Visible = false;
                                 ShowTag2.Visible = false;
                             }
                             else
                             {
-                                ShowTag2NameVisible = true;
+                                CurrentProjectSettingValues.SecondTagVisible = true;
                                 Tag2NameLabel.Visible = true;
                                 ShowTag2.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowTag2NameVisible = true;
+                            CurrentProjectSettingValues.SecondTagVisible = true;
                             Tag2NameLabel.Visible = true;
                             ShowTag2.Visible = true;
                         }
@@ -758,28 +720,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                Tag3Name = cols[1];
+                                CurrentProjectSettingValues.ThirdTagLabel = cols[1];
                             }
                             else
                             {
-                                Tag3Name = "タグ３";
+                                CurrentProjectSettingValues.ThirdTagLabel = "タグ３";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowTag3NameVisible = false;
+                                CurrentProjectSettingValues.ThirdTagVisible = false;
                                 Tag3NameLabel.Visible = false;
                                 ShowTag3.Visible = false;
                             }
                             else
                             {
-                                ShowTag3NameVisible = true;
+                                CurrentProjectSettingValues.ThirdTagVisible = true;
                                 Tag3NameLabel.Visible = true;
                                 ShowTag3.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowTag3NameVisible = true;
+                            CurrentProjectSettingValues.ThirdTagVisible = true;
                             Tag3NameLabel.Visible = true;
                             ShowTag3.Visible = true;
                         }
@@ -992,59 +954,59 @@ namespace CREC
             Tag3ListVisibleToolStripMenuItem.CheckedChanged += Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged += InventoryInformationToolStripMenuItem_CheckedChanged;
             // ラベルの名称を読み込んで詳細表示画面に設定
-            ObjectNameLabel.Text = ShowObjectNameLabel + "：";
-            IDLabel.Text = ShowIDLabel + "：";
-            MCLabel.Text = ShowMCLabel + "：";
-            RegistrationDateLabel.Text = ShowRegistrationDateLabel + "：";
-            CategoryLabel.Text = ShowCategoryLabel + "：";
-            Tag1NameLabel.Text = Tag1Name + "：";
-            Tag2NameLabel.Text = Tag2Name + "：";
-            Tag3NameLabel.Text = Tag3Name + "：";
+            ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
+            IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
+            MCLabel.Text = CurrentProjectSettingValues.ManagementCodeLabel + "：";
+            RegistrationDateLabel.Text = CurrentProjectSettingValues.RegistrationDateLabel + "：";
+            CategoryLabel.Text = CurrentProjectSettingValues.CategoryLabel + "：";
+            Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
+            Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
+            Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
             RealLocationLabel.Text = ShowRealLocationLabel + "：";
             ShowDataLocation.Text = ShowDataLocationLabel + "：";
             // ラベルの名称を読み込んで検索ボックスに設定、順番注意
             SearchOptionComboBox.Items.Clear();
-            SearchOptionComboBox.Items.Add(ShowIDLabel);
-            SearchOptionComboBox.Items.Add(ShowMCLabel);
-            SearchOptionComboBox.Items.Add(ShowObjectNameLabel);
-            SearchOptionComboBox.Items.Add(ShowCategoryLabel);
-            SearchOptionComboBox.Items.Add(Tag1Name);
-            SearchOptionComboBox.Items.Add(Tag2Name);
-            SearchOptionComboBox.Items.Add(Tag3Name);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ManagementCodeLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CollectionNameLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CategoryLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.FirstTagLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.SecondTagLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ThirdTagLabel);
             SearchOptionComboBox.Items.Add("在庫状況");
             // ラベルの名称を読み込んでDGVに設定
             dataGridView1.Refresh();
-            dataGridView1.Columns["IDList"].HeaderText = ShowIDLabel;
+            dataGridView1.Columns["IDList"].HeaderText = CurrentProjectSettingValues.UUIDLabel;
             dataGridView1.Columns["IDList"].Visible = IDListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["MCList"].HeaderText = ShowMCLabel;
+            dataGridView1.Columns["MCList"].HeaderText = CurrentProjectSettingValues.ManagementCodeLabel;
             dataGridView1.Columns["MCList"].Visible = MCListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["ObjectNameList"].HeaderText = ShowObjectNameLabel;
+            dataGridView1.Columns["ObjectNameList"].HeaderText = CurrentProjectSettingValues.CollectionNameLabel;
             dataGridView1.Columns["ObjectNameList"].Visible = NameListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["RegistrationDateList"].HeaderText = ShowRegistrationDateLabel;
+            dataGridView1.Columns["RegistrationDateList"].HeaderText = CurrentProjectSettingValues.RegistrationDateLabel;
             dataGridView1.Columns["RegistrationDateList"].Visible = RegistrationDateListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["CategoryList"].HeaderText = ShowCategoryLabel;
+            dataGridView1.Columns["CategoryList"].HeaderText = CurrentProjectSettingValues.CategoryLabel;
             dataGridView1.Columns["CategoryList"].Visible = CategoryListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["Tag1List"].HeaderText = Tag1Name;
+            dataGridView1.Columns["Tag1List"].HeaderText = CurrentProjectSettingValues.FirstTagLabel;
             dataGridView1.Columns["Tag1List"].Visible = Tag1ListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["Tag2List"].HeaderText = Tag2Name;
+            dataGridView1.Columns["Tag2List"].HeaderText = CurrentProjectSettingValues.SecondTagLabel;
             dataGridView1.Columns["Tag2List"].Visible = Tag2ListVisibleToolStripMenuItem.Checked;
-            dataGridView1.Columns["Tag3List"].HeaderText = Tag3Name;
+            dataGridView1.Columns["Tag3List"].HeaderText = CurrentProjectSettingValues.ThirdTagLabel;
             dataGridView1.Columns["Tag3List"].Visible = Tag3ListVisibleToolStripMenuItem.Checked;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
-            IDListVisibleToolStripMenuItem.Text = ShowIDLabel;
-            MCListVisibleToolStripMenuItem.Text = ShowMCLabel;
-            NameListVisibleToolStripMenuItem.Text = ShowObjectNameLabel;
-            RegistrationDateListVisibleToolStripMenuItem.Text = ShowRegistrationDateLabel;
-            CategoryListVisibleToolStripMenuItem.Text = ShowCategoryLabel;
-            Tag1ListVisibleToolStripMenuItem.Text = Tag1Name;
-            Tag2ListVisibleToolStripMenuItem.Text = Tag2Name;
-            Tag3ListVisibleToolStripMenuItem.Text = Tag3Name;
+            IDListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.UUIDLabel;
+            MCListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ManagementCodeLabel;
+            NameListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.CollectionNameLabel;
+            RegistrationDateListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.RegistrationDateLabel;
+            CategoryListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.CategoryLabel;
+            Tag1ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
+            Tag2ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
+            Tag3ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
             // ToolTipsの設定
             SetTagNameToolTips();
             // ListOutputPathの設定
-            if (!Directory.Exists(TargetListOutputPath))
+            if (!Directory.Exists(CurrentProjectSettingValues.ListOutputPath))
             {
-                TargetListOutputPath = TargetFolderPath;
+                CurrentProjectSettingValues.ListOutputPath = CurrentProjectSettingValues.ProjectDataFolderPath;
             }
             // ComboBoxの初期選択項目を設定
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
@@ -1067,11 +1029,11 @@ namespace CREC
                     RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                     FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
                     StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
-                    streamWriter.WriteLine(TargetProjectName + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
                     int Count = 0;
                     foreach (string line in RecentlyOpendProjectList)
                     {
-                        if (line != TargetProjectName + "," + TargetCRECPath)// 重複を回避
+                        if (line != CurrentProjectSettingValues.Name + "," + TargetCRECPath)// 重複を回避
                         {
                             streamWriter.WriteLine(line);
                             Count++;
@@ -1086,7 +1048,7 @@ namespace CREC
                 else// 履歴存在しない場合は新規作成
                 {
                     StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
-                    streamWriter.WriteLine(TargetProjectName + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
                     streamWriter.Close();
                 }
             }
@@ -1266,14 +1228,14 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (TargetBackupPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
                 MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
                 return;
             }
             try
             {
-                System.Diagnostics.Process.Start(TargetBackupPath);
+                System.Diagnostics.Process.Start(CurrentProjectSettingValues.ProjectBackupFolderPath);
             }
             catch (Exception ex)
             {
@@ -1287,13 +1249,13 @@ namespace CREC
         private void OutputListShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をListに出力
         {
             string tempTargetListOutputPath = string.Empty;
-            if (Directory.Exists(TargetListOutputPath))
+            if (Directory.Exists(CurrentProjectSettingValues.ListOutputPath))
             {
-                tempTargetListOutputPath = TargetListOutputPath;
+                tempTargetListOutputPath = CurrentProjectSettingValues.ListOutputPath;
             }
             else
             {
-                tempTargetListOutputPath = TargetFolderPath;
+                tempTargetListOutputPath = CurrentProjectSettingValues.ProjectDataFolderPath;
             }
             StreamWriter streamWriter;
             if (ListOutputFormat == "CSV")
@@ -1474,7 +1436,7 @@ namespace CREC
                         }
                     }
                     // 出力後の描画処理
-                    if (OpenListAfterOutput == true)
+                    if (CurrentProjectSettingValues.OpenListAfterOutput == true)
                     {
                         if (ListOutputFormat == "CSV")
                         {
@@ -1534,7 +1496,11 @@ namespace CREC
                     {
                         return;// 不備があった場合は再起動キャンセル
                     }
-                    SaveContentsMethod();// データ保存メソッドを呼び出し
+                    // データ保存メソッドを呼び出し
+                    if (SaveContentsMethod() == false)
+                    {
+                        return;
+                    }
                 }
                 else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                 {
@@ -1615,19 +1581,19 @@ namespace CREC
                 {
                     streamReaderConfidentialData?.Close();
                 }
-                EditNameTextBox.Text = ThisName;
+                EditNameTextBox.Text = CurrentShownDataValues.Name;
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = ThisID;
+                EditIDTextBox.Text = CurrentShownDataValues.ID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                 AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
-                EditMCTextBox.Text = ThisMC;
-                EditRegistrationDateTextBox.Text = ThisRegistrationDate;
-                EditCategoryTextBox.Text = ThisCategory;
-                EditTag1TextBox.Text = ThisTag1;
-                EditTag2TextBox.Text = ThisTag2;
-                EditTag3TextBox.Text = ThisTag3;
-                EditRealLocationTextBox.Text = ThisRealLocation;
+                EditMCTextBox.Text = CurrentShownDataValues.MC;
+                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
+                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
+                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
+                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
+                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
             }
         }
         private void AddInventoryModeToolStripMenuItem_Click(object sender, EventArgs e)// 在庫数管理モードを追加
@@ -1650,7 +1616,7 @@ namespace CREC
             {
                 FileOperationClass.AddBlankFile(TargetContentsPath + "\\inventory.inv");
                 StreamWriter InventoryManagementFile = new StreamWriter(TargetContentsPath + "\\inventory.inv");
-                InventoryManagementFile.WriteLine("{0},,,", ThisID);
+                InventoryManagementFile.WriteLine("{0},,,", CurrentShownDataValues.ID);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
                 CloseInventoryManagementModeButton.Visible = false;
@@ -1962,15 +1928,20 @@ namespace CREC
                     // 入力内容を確認
                     if (CheckContent() == false)
                     {
+                        e.Cancel = true;
                         return;
                     }
                     // データ保存メソッドを呼び出し
-                    SaveContentsMethod();
-                    if (CloseListOutput == true)
+                    if (SaveContentsMethod() == false)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                    if (CurrentProjectSettingValues.CloseListOutput == true)
                     {
                         ListOutputMethod(ListOutputFormat);
                     }
-                    if (CloseBackUp == true)// 自動バックアップ
+                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
@@ -1981,7 +1952,7 @@ namespace CREC
                         {
                             try
                             {
-                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                             }
                             catch (Exception ex)
                             {
@@ -1990,16 +1961,16 @@ namespace CREC
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
-                            Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                         }
                         else if (CompressType == 1)
                         {
                             // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                             try
                             {
-                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                                 IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                                 foreach (System.IO.DirectoryInfo subFolder in subFolders)
                                 {
@@ -2007,7 +1978,7 @@ namespace CREC
                                     {
                                         FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                         ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                         Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                     }
                                     catch// バックアップ失敗時はログに書き込み
@@ -2056,11 +2027,11 @@ namespace CREC
                     {
                         FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
                     }
-                    if (CloseListOutput == true)
+                    if (CurrentProjectSettingValues.CloseListOutput == true)
                     {
                         ListOutputMethod(ListOutputFormat);
                     }
-                    if (CloseBackUp == true)// 自動バックアップ
+                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
@@ -2072,7 +2043,7 @@ namespace CREC
                         {
                             try
                             {
-                                ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                             }
                             catch (Exception ex)
                             {
@@ -2081,16 +2052,16 @@ namespace CREC
                                 BackupToolStripMenuItem.Enabled = true;
                                 return;
                             }
-                            Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                         }
                         else if (CompressType == 1)
                         {
                             // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                             try
                             {
-                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                                 IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                                 foreach (System.IO.DirectoryInfo subFolder in subFolders)
                                 {
@@ -2098,7 +2069,7 @@ namespace CREC
                                     {
                                         FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                         ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                         Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                     }
                                     catch// バックアップ失敗時はログに書き込み
@@ -2132,11 +2103,11 @@ namespace CREC
             }
             else
             {
-                if (CloseListOutput == true)
+                if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
                     ListOutputMethod(ListOutputFormat);
                 }
-                if (CloseBackUp == true)// 自動バックアップ
+                if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                 {
                     BackUpMethod();
                     this.Hide();// メインフォームを消す
@@ -2148,7 +2119,7 @@ namespace CREC
                     {
                         try
                         {
-                            ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                            ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                         }
                         catch (Exception ex)
                         {
@@ -2157,16 +2128,16 @@ namespace CREC
                             BackupToolStripMenuItem.Enabled = true;
                             return;
                         }
-                        Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                        Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                     }
                     else if (CompressType == 1)
                     {
                         // バックアップ用フォルダ作成
-                        Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                        File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                        Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                        File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                         try
                         {
-                            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                             IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                             foreach (System.IO.DirectoryInfo subFolder in subFolders)
                             {
@@ -2174,7 +2145,7 @@ namespace CREC
                                 {
                                     FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                     ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                     Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 }
                                 catch// バックアップ失敗時はログに書き込み
@@ -2208,7 +2179,7 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(ThisName + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(CurrentShownDataValues.Name + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 削除を実行
             {
                 DeleteContent();
@@ -2255,17 +2226,17 @@ namespace CREC
                 StartEditForm();
                 // 現時点でのデータを読み込んで表示
                 LoadDetails();
-                EditNameTextBox.Text = ThisName;
+                EditNameTextBox.Text = CurrentShownDataValues.Name;
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = ThisID;
+                EditIDTextBox.Text = CurrentShownDataValues.ID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                EditMCTextBox.Text = ThisMC;
-                EditRegistrationDateTextBox.Text = ThisRegistrationDate;
-                EditCategoryTextBox.Text = ThisCategory;
-                EditTag1TextBox.Text = ThisTag1;
-                EditTag2TextBox.Text = ThisTag2;
-                EditTag3TextBox.Text = ThisTag3;
-                EditRealLocationTextBox.Text = ThisRealLocation;
+                EditMCTextBox.Text = CurrentShownDataValues.MC;
+                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
+                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
+                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
+                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
+                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
             }
         }
         private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト管理ファイルの編集
@@ -2358,7 +2329,7 @@ namespace CREC
             dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             try
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                 try
                 {
                     DataList.Clear();// DataListを初期化
@@ -2629,7 +2600,7 @@ namespace CREC
                 DataLoadingStatus = "false";
             }
             // アクセス日時を更新
-            TargetAccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             SaveSearchSettings();
             // 一応読み込み終了を宣言
             DataLoadingLabel.Visible = false;
@@ -2716,7 +2687,10 @@ namespace CREC
                     return false;
                 }
                 // データ保存メソッドを呼び出し
-                SaveContentsMethod();
+                if (SaveContentsMethod() == false)
+                {
+                    return false;
+                }
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
                 EditIDTextBox.Visible = false;
@@ -2819,7 +2793,6 @@ namespace CREC
             // 上記条件以外、処理せずに戻る場合
             return false;
         }
-
         private void ShowDetails()// 詳細情報の表示
         {
             // 読み込み中の画面に切り替え
@@ -2834,14 +2807,14 @@ namespace CREC
             ConfidentialDataTextBox.Visible = false;
             DetailsTextBox.Visible = true;
             // 表示・非表示項目の設定
-            ShowObjectName.Visible = ShowObjectNameLabelVisible;
-            ShowID.Visible = ShowIDLabelVisible;
-            ShowMC.Visible = ShowMCLabelVisible;
-            ShowRegistrationDate.Visible = ShowRegistrationDateLabelVisible;
-            ShowCategory.Visible = ShowCategoryLabelVisible;
-            ShowTag1.Visible = ShowTag1NameVisible;
-            ShowTag2.Visible = ShowTag2NameVisible;
-            ShowTag3.Visible = ShowTag3NameVisible;
+            ShowObjectName.Visible = CurrentProjectSettingValues.CollectionNameVisible;
+            ShowID.Visible = CurrentProjectSettingValues.UUIDVisible;
+            ShowMC.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
+            ShowRegistrationDate.Visible = CurrentProjectSettingValues.RegistrationDateVisible;
+            ShowCategory.Visible = CurrentProjectSettingValues.CategoryVisible;
+            ShowTag1.Visible = CurrentProjectSettingValues.FirstTagVisible;
+            ShowTag2.Visible = CurrentProjectSettingValues.SecondTagVisible;
+            ShowTag3.Visible = CurrentProjectSettingValues.ThirdTagVisible;
             ShowRealLocation.Visible = ShowRealLocationLabelVisible;
             ShowDataLocation.Visible = ShowDataLocationLabelVisible;
 
@@ -2862,24 +2835,24 @@ namespace CREC
             ConfidentialDataLabel.Visible = false;
             ShowConfidentialDataButton.Visible = true;
             HideConfidentialDataButton.Visible = false;
-            ObjectNameLabel.Text = ShowObjectNameLabel + "：";
-            ShowObjectName.Text = ThisName;
-            IDLabel.Text = ShowIDLabel + "：";
-            ShowID.Text = ThisID;
-            MCLabel.Text = ShowMCLabel + "：";
-            ShowMC.Text = ThisMC;
-            RegistrationDateLabel.Text = ShowRegistrationDateLabel + "：";
-            ShowRegistrationDate.Text = ThisRegistrationDate;
-            CategoryLabel.Text = ShowCategoryLabel + "：";
-            ShowCategory.Text = ThisCategory;
-            Tag1NameLabel.Text = Tag1Name + "：";
-            ShowTag1.Text = ThisTag1;
-            Tag2NameLabel.Text = Tag2Name + "：";
-            ShowTag2.Text = ThisTag2;
-            Tag3NameLabel.Text = Tag3Name + "：";
-            ShowTag3.Text = ThisTag3;
+            ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
+            ShowObjectName.Text = CurrentShownDataValues.Name;
+            IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
+            ShowID.Text = CurrentShownDataValues.ID;
+            MCLabel.Text = CurrentProjectSettingValues.ManagementCodeLabel + "：";
+            ShowMC.Text = CurrentShownDataValues.MC;
+            RegistrationDateLabel.Text = CurrentProjectSettingValues.RegistrationDateLabel + "：";
+            ShowRegistrationDate.Text = CurrentShownDataValues.RegistrationDate;
+            CategoryLabel.Text = CurrentProjectSettingValues.CategoryLabel + "：";
+            ShowCategory.Text = CurrentShownDataValues.Category;
+            Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
+            ShowTag1.Text = CurrentShownDataValues.Tag1;
+            Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
+            ShowTag2.Text = CurrentShownDataValues.Tag2;
+            Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
+            ShowTag3.Text = CurrentShownDataValues.Tag3;
             RealLocationLabel.Text = ShowRealLocationLabel + "：";
-            ShowRealLocation.Text = ThisRealLocation;
+            ShowRealLocation.Text = CurrentShownDataValues.RealLocation;
             ShowDataLocation.Text = ShowDataLocationLabel + "：";
             Thumbnail.ImageLocation = (TargetContentsPath + "\\pictures\\Thumbnail1.jpg");
             TargetDetailsPath = (TargetContentsPath + "\\details.txt");
@@ -2996,31 +2969,31 @@ namespace CREC
                     switch (cols[0])
                     {
                         case "名称":
-                            ThisName = line.Substring(3);
+                            CurrentShownDataValues.Name = line.Substring(3);
                             break;
                         case "ID":
-                            ThisID = line.Substring(3);
+                            CurrentShownDataValues.ID = line.Substring(3);
                             break;
                         case "MC":
-                            ThisMC = line.Substring(3);
+                            CurrentShownDataValues.MC = line.Substring(3);
                             break;
                         case "登録日":
-                            ThisRegistrationDate = line.Substring(4);
+                            CurrentShownDataValues.RegistrationDate = line.Substring(4);
                             break;
                         case "カテゴリ":
-                            ThisCategory = line.Substring(5);
+                            CurrentShownDataValues.Category = line.Substring(5);
                             break;
                         case "タグ1":
-                            ThisTag1 = line.Substring(4);
+                            CurrentShownDataValues.Tag1 = line.Substring(4);
                             break;
                         case "タグ2":
-                            ThisTag2 = line.Substring(4);
+                            CurrentShownDataValues.Tag2 = line.Substring(4);
                             break;
                         case "タグ3":
-                            ThisTag3 = line.Substring(4);
+                            CurrentShownDataValues.Tag3 = line.Substring(4);
                             break;
                         case "場所1(Real)":
-                            ThisRealLocation = cols[1];
+                            CurrentShownDataValues.RealLocation = cols[1];
                             break;
                     }
                 }
@@ -3028,44 +3001,37 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                ThisName = "　ー　";
-                ThisID = Path.GetFileName(TargetContentsPath);
-                ThisRegistrationDate = "　ー　";
+                CurrentShownDataValues.Name = " - ";
+                CurrentShownDataValues.ID = Path.GetFileName(TargetContentsPath);
+                CurrentShownDataValues.RegistrationDate = " - ";
             }
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
             // 詳細表示の表示内容を初期化
-            ThisName = string.Empty;
-            ObjectNameLabel.Text = ShowObjectNameLabel + "：";
+            CurrentShownDataValues = new DataValuesClass();
+            ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
             ShowObjectName.Text = string.Empty;
-            ThisID = string.Empty;
-            IDLabel.Text = ShowIDLabel + "：";
+            IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
             ShowID.Text = string.Empty;
-            ThisMC = string.Empty;
-            MCLabel.Text = ShowMCLabel + "：";
+            MCLabel.Text = CurrentProjectSettingValues.ManagementCodeLabel + "：";
             ShowMC.Text = string.Empty;
-            ThisRegistrationDate = string.Empty;
-            RegistrationDateLabel.Text = ShowRegistrationDateLabel + "：";
+            RegistrationDateLabel.Text = CurrentProjectSettingValues.RegistrationDateLabel + "：";
             ShowRegistrationDate.Text = string.Empty;
-            ThisCategory = string.Empty;
-            CategoryLabel.Text = ShowCategoryLabel + "：";
+            CategoryLabel.Text = CurrentProjectSettingValues.CategoryLabel + "：";
             ShowCategory.Text = string.Empty;
-            ThisTag1 = string.Empty;
             ShowTag1.Text = string.Empty;
-            Tag1NameLabel.Text = Tag1Name + "：";
-            ThisTag2 = string.Empty;
+            Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
             ShowTag2.Text = string.Empty;
-            Tag2NameLabel.Text = Tag2Name + "：";
-            ThisTag3 = string.Empty;
+            Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
             ShowTag3.Text = string.Empty;
-            Tag3NameLabel.Text = Tag3Name + "：";
-            ThisRealLocation = string.Empty;
+            Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
             RealLocationLabel.Text = ShowRealLocationLabel + "：";
             ShowRealLocation.Text = string.Empty;
             ShowDataLocation.Text = ShowDataLocationLabel + "：";
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
+
             // 入力フォームをリセット
             EditNameTextBox.ResetText();
             EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
@@ -3274,17 +3240,17 @@ namespace CREC
             {
                 streamReaderConfidentialData?.Close();
             }
-            EditNameTextBox.Text = ThisName;
+            EditNameTextBox.Text = CurrentShownDataValues.Name;
             EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-            EditIDTextBox.Text = ThisID;
+            EditIDTextBox.Text = CurrentShownDataValues.ID;
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-            EditMCTextBox.Text = ThisMC;
-            EditRegistrationDateTextBox.Text = ThisRegistrationDate;
-            EditCategoryTextBox.Text = ThisCategory;
-            EditTag1TextBox.Text = ThisTag1;
-            EditTag2TextBox.Text = ThisTag2;
-            EditTag3TextBox.Text = ThisTag3;
-            EditRealLocationTextBox.Text = ThisRealLocation;
+            EditMCTextBox.Text = CurrentShownDataValues.MC;
+            EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
+            EditCategoryTextBox.Text = CurrentShownDataValues.Category;
+            EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
+            EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
+            EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
+            EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
         }
         private void EditRequestButton_Click(object sender, EventArgs e)// 編集権限リクエスト
         {
@@ -3306,12 +3272,12 @@ namespace CREC
         {
             if (ConfigValues.AllowEdit == false)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoEditingPermissions","mainform",LanguageFile), "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoEditingPermissions", "mainform", LanguageFile), "CREC");
                 return;
             }
             else if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
             {
-                if (File.Exists(TargetContentsPath + "\\SystemData\\RED")) 
+                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EditWaitingUserExists", "mainform", LanguageFile), "CREC");
                     return;
@@ -3321,7 +3287,7 @@ namespace CREC
         private void StartEditForm()// 編集画面に切り替え
         {
             // 編集中の端末がいないか確認
-            if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE")&&!File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
+            if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE") && !File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
             {
                 DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
@@ -3346,17 +3312,17 @@ namespace CREC
                 FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
             }
             // 編集画面に必要な物を表示
-            EditNameTextBox.Visible = ShowObjectNameLabelVisible;
-            EditIDTextBox.Visible = ShowIDLabelVisible;
-            AllowEditIDButton.Visible = ShowIDLabelVisible;
+            EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
+            EditIDTextBox.Visible = CurrentProjectSettingValues.UUIDVisible;
+            AllowEditIDButton.Visible = CurrentProjectSettingValues.UUIDVisible;
             UUIDEditStatusLabel.Visible = false;
-            EditMCTextBox.Visible = ShowMCLabelVisible;
-            CheckSameMCButton.Visible = ShowMCLabelVisible;
-            EditRegistrationDateTextBox.Visible = ShowRegistrationDateLabelVisible;
-            EditCategoryTextBox.Visible = ShowCategoryLabelVisible;
-            EditTag1TextBox.Visible = ShowTag1NameVisible;
-            EditTag2TextBox.Visible = ShowTag2NameVisible;
-            EditTag3TextBox.Visible = ShowTag3NameVisible;
+            EditMCTextBox.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
+            CheckSameMCButton.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
+            EditRegistrationDateTextBox.Visible = CurrentProjectSettingValues.RegistrationDateVisible;
+            EditCategoryTextBox.Visible = CurrentProjectSettingValues.CategoryVisible;
+            EditTag1TextBox.Visible = CurrentProjectSettingValues.FirstTagVisible;
+            EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
+            EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
             EditRealLocationTextBox.Visible = ShowRealLocationLabelVisible;
             SaveAndCloseEditButton.Visible = true;
             SelectThumbnailButton.Visible = true;
@@ -3408,12 +3374,21 @@ namespace CREC
             // 入力内容を確認
             if (CheckContent() == false)
             {
+                SaveAndCloseEditButton.Visible = true;
+                SavingLabel.Visible = false;
+                EditRequestButton.Visible = false;
+                return;
+            }
+            // データ保存メソッドを呼び出し
+            if (SaveContentsMethod() == false)
+            {
+                SaveAndCloseEditButton.Visible = true;
+                SavingLabel.Visible = false;
+                EditRequestButton.Visible = false;
                 return;
             }
             // 通常画面用にラベルを変更
             ShowPicturesButton.Visible = true;
-            // データ保存メソッドを呼び出し
-            SaveContentsMethod();
             SavingLabel.Visible = false;
             // 通常画面に不要な物を非表示に
             EditNameTextBox.Visible = false;
@@ -3453,7 +3428,7 @@ namespace CREC
             {
                 DataLoadingStatus = "stop";
             }
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             LoadGrid();
             ShowDetails();
         }
@@ -3519,15 +3494,15 @@ namespace CREC
             SearchFormTextBox.Text = string.Empty;
             SearchOptionComboBox.SelectedIndex = 0;
             MessageBox.Show("削除成功", "CREC");
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             LoadGrid();
             ShowDetails();
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
-            if (System.IO.Directory.Exists(TargetFolderPath + "\\" + EditIDTextBox.Text))// ID重複確認
+            if (System.IO.Directory.Exists(CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))// ID重複確認
             {
-                if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
+                if (TargetContentsPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                 {
                     UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
                     UUIDEditStatusLabel.ForeColor = Color.Red;
@@ -3548,12 +3523,12 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
-            if (ThisID == EditIDTextBox.Text)
+            if (CurrentShownDataValues.ID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Black;
             }
-            else if (System.IO.Directory.Exists(TargetFolderPath + "\\" + EditIDTextBox.Text))
+            else if (System.IO.Directory.Exists(CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Red;
@@ -3591,7 +3566,7 @@ namespace CREC
         }
         private void AddContentsMethod()// 新規にデータを追加する処理のメソッド
         {
-            if (TargetFolderPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectDataFolderPath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -3605,15 +3580,15 @@ namespace CREC
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            ThisID = Convert.ToString(Guid.NewGuid());
-            EditIDTextBox.Text = ThisID;// UUIDを入力
+            CurrentShownDataValues.ID = Convert.ToString(Guid.NewGuid());
+            EditIDTextBox.Text = CurrentShownDataValues.ID;// UUIDを入力
             DateTime DT = DateTime.Now;
-            if (AutoMCFill == true)
+            if (CurrentProjectSettingValues.ManagementCodeAutoFill == true)
             {
                 EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
             }
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
-            TargetContentsPath = TargetFolderPath + "\\" + EditIDTextBox.Text;
+            TargetContentsPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
             Directory.CreateDirectory(TargetContentsPath);
             Directory.CreateDirectory(TargetContentsPath + "\\data");
@@ -3663,8 +3638,21 @@ namespace CREC
                 ShowPicturesMethod();
             }
         }
-        private void SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
+        private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
+            // ID変更処理が必要な場合
+            if (TargetContentsPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+            {
+                if (FileOperationClass.MoveFolder(TargetContentsPath, CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))
+                {
+                    TargetContentsPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;// 移動先のパスで保存処理を続行
+                }
+                else// 移動に失敗した場合
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDChangeError", "mainform", LanguageFile), "CREC");
+                    return false;
+                }
+            }
             // フォルダを作成
             Directory.CreateDirectory(TargetContentsPath);
             Directory.CreateDirectory(TargetContentsPath + "\\data");
@@ -3771,20 +3759,16 @@ namespace CREC
             FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
             FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
 
-            // ID変更処理
-            if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
-            {
-                Directory.Move(@TargetContentsPath, @TargetFolderPath + "\\" + EditIDTextBox.Text);
-            }
-            if (EditedListOutput == true)
+            if (CurrentProjectSettingValues.EditListOutput == true)
             {
                 ListOutputMethod(ListOutputFormat);
             }
-            if (EditedBackUp == true)
+            if (CurrentProjectSettingValues.EditBackUp == true)
             {
                 BackUpMethod();
                 MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
+            return true;
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
         {
@@ -4054,7 +4038,7 @@ namespace CREC
             {
                 MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
             }
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             ProperInventoryNotification();// 適正在庫設定と比較
         }
         private void ProperInventorySettingsComboBox_SelectedIndexChanged(object sender, EventArgs e)// 適正在庫の表示項目を選択および表示
@@ -4115,7 +4099,7 @@ namespace CREC
                     break;
             }
             ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
         private void SaveProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定保存
         {
@@ -4143,7 +4127,7 @@ namespace CREC
                     }
                 }
                 ProperInventoryNotification();
-                TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             }
             catch (Exception ex)
             {
@@ -4163,7 +4147,7 @@ namespace CREC
             {
                 ProperInventorySettingsTextBox.Text = string.Empty;
             }
-            TargetModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
         private void ProperInventorySettingsTextBox_TextChanged(object sender, EventArgs e)// 入力された内容をリアルタイムで反映
         {
@@ -4269,7 +4253,7 @@ namespace CREC
         }
         private void SearchFormTextBox_TextChanged(object sender, EventArgs e)// 検索窓が更新されるごとに再度一覧を読み込んで更新
         {
-            if (TargetFolderPath.Length != 0)
+            if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
                 // 現時点での文字列を保存
 
@@ -4304,16 +4288,14 @@ namespace CREC
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
-                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
                 }
                 LoadGrid();// 再度読み込み
             }
-            else if (TargetFolderPath.Length != 0)
+            else if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
-                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -4323,9 +4305,8 @@ namespace CREC
         }
         private void SearchMethodComboBox_SelectedIndexChanged(object sender, EventArgs e)// 検索メソッドが変更された場合に一覧を読み込んで更新
         {
-            if (TargetFolderPath.Length != 0)
+            if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
-                //ContentsDataTable.Rows.Clear();// DataGridViewのカラム情報以外を削除
                 if (DataLoadingStatus == "true")
                 {
                     DataLoadingStatus = "stop";
@@ -4335,7 +4316,7 @@ namespace CREC
         }
         private void SearchButton_Click(object sender, EventArgs e)// 検索ボタン、自動検索OFF時に使用
         {
-            if (TargetFolderPath.Length != 0)
+            if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
                 // 検索
                 if (DataLoadingStatus == "true")
@@ -4463,82 +4444,82 @@ namespace CREC
                 streamWriter = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
                 try
                 {
-                    streamWriter.WriteLine("{0},{1}", "projectname", TargetProjectName);
-                    streamWriter.WriteLine("{0},{1}", "projectlocation", TargetFolderPath);
-                    streamWriter.WriteLine("{0},{1}", "backuplocation", TargetBackupPath);
+                    streamWriter.WriteLine("{0},{1}", "projectname", CurrentProjectSettingValues.Name);
+                    streamWriter.WriteLine("{0},{1}", "projectlocation", CurrentProjectSettingValues.ProjectDataFolderPath);
+                    streamWriter.WriteLine("{0},{1}", "backuplocation", CurrentProjectSettingValues.ProjectBackupFolderPath);
                     streamWriter.Write("autobackup,");
-                    if (StartUpBackUp == true)
+                    if (CurrentProjectSettingValues.StartUpBackUp == true)
                     {
                         streamWriter.Write("S");
                     }
-                    if (CloseBackUp == true)
+                    if (CurrentProjectSettingValues.CloseBackUp == true)
                     {
                         streamWriter.Write("C");
                     }
-                    if (EditedBackUp == true)
+                    if (CurrentProjectSettingValues.EditBackUp == true)
                     {
                         streamWriter.Write("E");
                     }
                     streamWriter.Write('\n');
                     streamWriter.WriteLine("CompressType,{0}", CompressType);
-                    streamWriter.WriteLine("{0},{1}", "Listoutputlocation", TargetListOutputPath);
+                    streamWriter.WriteLine("{0},{1}", "Listoutputlocation", CurrentProjectSettingValues.ListOutputPath);
                     streamWriter.Write("autoListoutput,");
-                    if (StartUpListOutput == true)
+                    if (CurrentProjectSettingValues.StartUpListOutput == true)
                     {
                         streamWriter.Write("S");
                     }
-                    if (CloseListOutput == true)
+                    if (CurrentProjectSettingValues.CloseListOutput == true)
                     {
                         streamWriter.Write("C");
                     }
-                    if (EditedListOutput == true)
+                    if (CurrentProjectSettingValues.EditListOutput == true)
                     {
                         streamWriter.Write("E");
                     }
                     streamWriter.Write('\n');
                     streamWriter.Write("openListafteroutput,");
-                    if (OpenListAfterOutput == true)
+                    if (CurrentProjectSettingValues.OpenListAfterOutput == true)
                     {
                         streamWriter.Write("O");
                     }
                     streamWriter.Write('\n');
                     streamWriter.WriteLine("ListOutputFormat,{0}", ListOutputFormat);
-                    streamWriter.WriteLine("{0},{1}", "created", TargetCreatedDate);
-                    streamWriter.WriteLine("{0},{1}", "modified", TargetModifiedDate);
-                    streamWriter.WriteLine("{0},{1}", "accessed", TargetAccessedDate);
-                    if (ShowObjectNameLabelVisible == true)
+                    streamWriter.WriteLine("{0},{1}", "created", CurrentProjectSettingValues.CreatedDate);
+                    streamWriter.WriteLine("{0},{1}", "modified", CurrentProjectSettingValues.ModifiedDate);
+                    streamWriter.WriteLine("{0},{1}", "accessed", CurrentProjectSettingValues.AccessedDate);
+                    if (CurrentProjectSettingValues.CollectionNameVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", CurrentProjectSettingValues.CollectionNameLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", ShowObjectNameLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", CurrentProjectSettingValues.CollectionNameLabel, "f");
                     }
-                    if (ShowIDLabelVisible == true)
+                    if (CurrentProjectSettingValues.UUIDVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", CurrentProjectSettingValues.UUIDLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", ShowIDLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", CurrentProjectSettingValues.UUIDLabel, "f");
                     }
-                    if (ShowMCLabelVisible == true)
+                    if (CurrentProjectSettingValues.ManagementCodeVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", CurrentProjectSettingValues.ManagementCodeLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", ShowMCLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", CurrentProjectSettingValues.ManagementCodeLabel, "f");
                     }
-                    if (ShowRegistrationDateLabelVisible == true)
+                    if (CurrentProjectSettingValues.RegistrationDateVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", CurrentProjectSettingValues.RegistrationDateLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", ShowRegistrationDateLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", CurrentProjectSettingValues.RegistrationDateLabel, "f");
                     }
-                    if (AutoMCFill == true)
+                    if (CurrentProjectSettingValues.ManagementCodeAutoFill == true)
                     {
                         streamWriter.Write("AutoMCFill,t\n");
                     }
@@ -4546,37 +4527,37 @@ namespace CREC
                     {
                         streamWriter.Write("AutoMCFill,f\n");
                     }
-                    if (ShowCategoryLabelVisible == true)
+                    if (CurrentProjectSettingValues.CategoryVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", CurrentProjectSettingValues.CategoryLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", ShowCategoryLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", CurrentProjectSettingValues.CategoryLabel, "f");
                     }
-                    if (ShowTag1NameVisible == true)
+                    if (CurrentProjectSettingValues.FirstTagVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", Tag1Name, "f");
-                    }
-                    if (ShowTag2NameVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", CurrentProjectSettingValues.FirstTagLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", Tag2Name, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", CurrentProjectSettingValues.FirstTagLabel, "f");
                     }
-                    if (ShowTag3NameVisible == true)
+                    if (CurrentProjectSettingValues.SecondTagVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", CurrentProjectSettingValues.SecondTagLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", Tag3Name, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", CurrentProjectSettingValues.SecondTagLabel, "f");
+                    }
+                    if (CurrentProjectSettingValues.ThirdTagVisible == true)
+                    {
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", CurrentProjectSettingValues.ThirdTagLabel, "t");
+                    }
+                    else
+                    {
+                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", CurrentProjectSettingValues.ThirdTagLabel, "f");
                     }
                     if (ShowRealLocationLabelVisible == true)
                     {
@@ -5259,19 +5240,19 @@ namespace CREC
                         {
                             streamReaderConfidentialData?.Close();
                         }
-                        EditNameTextBox.Text = ThisName;
+                        EditNameTextBox.Text = CurrentShownDataValues.Name;
                         EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                        EditIDTextBox.Text = ThisID;
+                        EditIDTextBox.Text = CurrentShownDataValues.ID;
                         EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                         AllowEditIDButton.Visible = true;
                         UUIDEditStatusLabel.Visible = false;
-                        EditMCTextBox.Text = ThisMC;
-                        EditRegistrationDateTextBox.Text = ThisRegistrationDate;
-                        EditCategoryTextBox.Text = ThisCategory;
-                        EditTag1TextBox.Text = ThisTag1;
-                        EditTag2TextBox.Text = ThisTag2;
-                        EditTag3TextBox.Text = ThisTag3;
-                        EditRealLocationTextBox.Text = ThisRealLocation;
+                        EditMCTextBox.Text = CurrentShownDataValues.MC;
+                        EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
+                        EditCategoryTextBox.Text = CurrentShownDataValues.Category;
+                        EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
+                        EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
+                        EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
+                        EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
                         return;
                     }
                 }
@@ -5288,23 +5269,32 @@ namespace CREC
                     if (result == System.Windows.MessageBoxResult.Yes)// 編集を権限を譲渡
                     {
                         // 保存関係の処理
-                        if (TargetContentsPath == TargetFolderPath + "\\" + EditIDTextBox.Text)
+                        if (TargetContentsPath == CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                         {
-                            SaveContentsMethod();
+                            if (SaveContentsMethod() == false)
+                            {
+                                return;
+                            }
                         }
-                        else if (TargetContentsPath != TargetFolderPath + "\\" + EditIDTextBox.Text)
+                        else if (TargetContentsPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                         {
                             result = System.Windows.MessageBox.Show("IDを変更した場合、他の端末へ編集権限を譲渡できなくなります。\nIDを変更前のものに戻して保存しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
                             if (result == System.Windows.MessageBoxResult.Yes)
                             {
-                                ThisID = Path.GetFileName(TargetContentsPath);
-                                EditIDTextBox.Text = ThisID;
-                                MessageBox.Show("IDを" + ThisID + "に戻しました", "CREC");
-                                SaveContentsMethod();
+                                CurrentShownDataValues.ID = Path.GetFileName(TargetContentsPath);
+                                EditIDTextBox.Text = CurrentShownDataValues.ID;
+                                MessageBox.Show("IDを" + CurrentShownDataValues.ID + "に戻しました", "CREC");
+                                if (SaveContentsMethod() == false)
+                                {
+                                    return;
+                                }
                             }
                             else
                             {
-                                SaveContentsMethod();
+                                if (SaveContentsMethod() == false)
+                                {
+                                    return;
+                                }
                             }
 
                         }
@@ -5371,12 +5361,9 @@ namespace CREC
             while (true)
             {
                 await Task.Delay(1);
-                if (dataGridView1.CurrentRow == null)// セル未選択時は何もしない
+                if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
                 {
-                }
-                else
-                {
-                    if (ThisID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                    if (CurrentShownDataValues.ID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
                     {
                         if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                         {
@@ -5460,7 +5447,7 @@ namespace CREC
                 {
                     try
                     {
-                        ZipFile.CreateFromDirectory(TargetBackupPath + "\\backuptmp", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                        ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                     }
                     catch (Exception ex)
                     {
@@ -5469,7 +5456,7 @@ namespace CREC
                         BackupToolStripMenuItem.Enabled = true;
                         return;
                     }
-                    Directory.Delete(TargetBackupPath + "\\backuptmp", true);
+                    Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                 });
             }
             else if (CompressType == 1)// コンテンツごとに圧縮
@@ -5477,11 +5464,11 @@ namespace CREC
                 await Task.Run(() =>
                 {
                     // バックアップ用フォルダ作成
-                    Directory.CreateDirectory(TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                    File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                    Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                    File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                     try
                     {
-                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                        System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                         IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                         int CountBackupedData = 0;
                         int TotalBackupData = subFolders.Count();
@@ -5491,7 +5478,7 @@ namespace CREC
                             {
                                 FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 CountBackupedData += 1;
                                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile) + " : " + Convert.ToString(CountBackupedData) + "/" + Convert.ToString(TotalBackupData);
@@ -5598,11 +5585,11 @@ namespace CREC
         private void OpenProjectContextStripMenuItem_Click(object sender, EventArgs e)// プロジェクトを開く、OpenMenu_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (StartUpListOutput == true)
+            if (CurrentProjectSettingValues.StartUpListOutput == true)
             {
                 ListOutputMethod(ListOutputFormat);
             }
-            if (StartUpBackUp == true)// 自動バックアップ
+            if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
             {
                 BackUpMethod();
                 MakeBackUpZip();// ZIP圧縮を非同期で開始
@@ -5620,13 +5607,13 @@ namespace CREC
                 return;
             }
             // バックアップ場所が設定されているか確認
-            if (TargetBackupPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
                 MessageBox.Show("バックアップフォルダが指定されていません。", "CREC");
                 return;
             }
             // バックアップフォルダが存在するか確認
-            if (!Directory.Exists(TargetBackupPath))
+            if (!Directory.Exists(CurrentProjectSettingValues.ProjectBackupFolderPath))
             {
                 MessageBox.Show("バックアップフォルダが見つかりませんでした", "CREC");
                 return;
@@ -5634,14 +5621,14 @@ namespace CREC
             BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile);
             if (CompressType == 0)
             {
-                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                File.Copy(TargetCRECPath, TargetBackupPath + "\\backuptmp" + "\\backup.crec", true);
+                FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp" + "\\backup.crec", true);
             }
             else if (CompressType == 2)
             {
                 DateTime DT = DateTime.Now;
-                FileSystem.CopyDirectory(TargetFolderPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                File.Copy(TargetCRECPath, TargetBackupPath + "\\" + TargetProjectName + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);
+                FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);
             }
         }
         #endregion
@@ -5661,13 +5648,13 @@ namespace CREC
             }
             // ファイル出力先を設定
             string tempTargetListOutputPath;
-            if (Directory.Exists(TargetListOutputPath))
+            if (Directory.Exists(CurrentProjectSettingValues.ListOutputPath))
             {
-                tempTargetListOutputPath = TargetListOutputPath;
+                tempTargetListOutputPath = CurrentProjectSettingValues.ListOutputPath;
             }
             else
             {
-                tempTargetListOutputPath = TargetFolderPath;
+                tempTargetListOutputPath = CurrentProjectSettingValues.ProjectDataFolderPath;
             }
             // 出力形式に合わせて出力
             if (ListOutputFormat == "CSV" || ListOutputFormat == "TSV")
@@ -5680,7 +5667,7 @@ namespace CREC
                 return;
             }
             // 出力後の描画処理
-            if (OpenListAfterOutput == true)
+            if (CurrentProjectSettingValues.OpenListAfterOutput == true)
             {
                 if (ListOutputFormat == "CSV")
                 {
@@ -5714,7 +5701,7 @@ namespace CREC
 
             try
             {
-                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(TargetFolderPath);
+                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                 IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                 foreach (System.IO.DirectoryInfo subFolder in subFolders)
                 {
@@ -6268,7 +6255,7 @@ namespace CREC
                 }
             }
             SetUserAssistToolTips();
-            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + TargetProjectName;
+            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
             // 検索方法の表示更新
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
