@@ -214,6 +214,8 @@
             this.EditRequestButton = new System.Windows.Forms.Button();
             this.ReadOnlyButton = new System.Windows.Forms.Button();
             this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
+            this.AddQuantityButton = new System.Windows.Forms.Button();
+            this.SubtractQuantityButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -2131,12 +2133,42 @@
             this.UUIDEditStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.UUIDEditStatusLabel.Visible = false;
             // 
+            // AddQuantityButton
+            // 
+            this.AddQuantityButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.AddQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.AddQuantityButton.Location = new System.Drawing.Point(492, 1106);
+            this.AddQuantityButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddQuantityButton.Name = "AddQuantityButton";
+            this.AddQuantityButton.Size = new System.Drawing.Size(104, 50);
+            this.AddQuantityButton.TabIndex = 108;
+            this.AddQuantityButton.Text = "+1";
+            this.AddQuantityButton.UseVisualStyleBackColor = true;
+            this.AddQuantityButton.Visible = false;
+            this.AddQuantityButton.Click += new System.EventHandler(this.AddQuantityButton_Click);
+            // 
+            // SubtractQuantityButton
+            // 
+            this.SubtractQuantityButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.SubtractQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SubtractQuantityButton.Location = new System.Drawing.Point(492, 1178);
+            this.SubtractQuantityButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SubtractQuantityButton.Name = "SubtractQuantityButton";
+            this.SubtractQuantityButton.Size = new System.Drawing.Size(104, 50);
+            this.SubtractQuantityButton.TabIndex = 109;
+            this.SubtractQuantityButton.Text = "-1";
+            this.SubtractQuantityButton.UseVisualStyleBackColor = true;
+            this.SubtractQuantityButton.Visible = false;
+            this.SubtractQuantityButton.Click += new System.EventHandler(this.SubtractQuantityButton_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.SubtractQuantityButton);
+            this.Controls.Add(this.AddQuantityButton);
             this.Controls.Add(this.UUIDEditStatusLabel);
             this.Controls.Add(this.AllowEditIDButton);
             this.Controls.Add(this.CheckSameMCButton);
@@ -2425,6 +2457,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.ToolStripMenuItem CopyAndAddContentsContextToolStripMenuItem;
+        private System.Windows.Forms.Button AddQuantityButton;
+        private System.Windows.Forms.Button SubtractQuantityButton;
     }
 }
 

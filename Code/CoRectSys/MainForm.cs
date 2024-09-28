@@ -3829,6 +3829,8 @@ namespace CREC
             AddInventoryOperationButton.Visible = true;
             InventoryOperationLabel.Visible = true;
             InputQuantitiyLabel.Visible = true;
+            AddQuantityButton.Visible = true;
+            SubtractQuantityButton.Visible = true;
             InventoryOperationNoteLabel.Visible = true;
             EditInventoryOperationNoteTextBox.Visible = true;
             ProperInventorySettingsComboBox.Visible = true;
@@ -4212,6 +4214,55 @@ namespace CREC
                 e.Handled = true;
             }
         }
+        /// <summary>
+        /// 在庫操作数を＋１する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddQuantityButton_Click(object sender, EventArgs e)
+        {
+            AddSubtractQuantity(true);
+        }
+        /// <summary>
+        /// 在庫操作数を-１する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SubtractQuantityButton_Click(object sender, EventArgs e)
+        {
+            AddSubtractQuantity(false);
+        }
+        /// <summary>
+        /// 在庫操作数を加算・減算する処理
+        /// </summary>
+        /// <param name="Add">加算するときはtrue</param>
+        private void AddSubtractQuantity(bool Add)
+        {
+            // 現在の在庫操作数を取得
+            long CurrentQuantity = 0;
+            if (EditQuantityTextBox.Text != string.Empty)// TextBoxに値が入っている場合は取得
+            {
+                try
+                {
+                    CurrentQuantity = Convert.ToInt64(EditQuantityTextBox.Text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "CREC");
+                }
+            }
+            // 加算・減算処理
+            try
+            {
+                CurrentQuantity += (int)Math.Pow(-1, 1 + Convert.ToInt32(Add));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC");
+            }
+            // TextBoxに入れる
+            EditQuantityTextBox.Text = Convert.ToString(CurrentQuantity);
+        }
         private void CloseInventoryViewMethod()// 在庫表示モードを閉じるメソッド
         {
             CloseInventoryManagementModeButton.Visible = false;
@@ -4222,6 +4273,8 @@ namespace CREC
             AddInventoryOperationButton.Visible = false;
             InventoryOperationLabel.Visible = false;
             InputQuantitiyLabel.Visible = false;
+            AddQuantityButton.Visible = false;
+            SubtractQuantityButton.Visible = false;
             InventoryOperationNoteLabel.Visible = false;
             EditInventoryOperationNoteTextBox.Visible = false;
             ProperInventorySettingsComboBox.Visible = false;
@@ -5092,6 +5145,10 @@ namespace CREC
             OperationOptionComboBox.Font = new Font(fontname, mainfontsize);
             EditQuantityTextBox.Location = new Point(Convert.ToInt32(210 * DpiScale), Convert.ToInt32(FormSize.Height - 160 * DpiScale));
             EditQuantityTextBox.Font = new Font(fontname, mainfontsize);
+            AddQuantityButton.Location = new Point(Convert.ToInt32(380 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
+            AddQuantityButton.Font = new Font(fontname, mainfontsize);
+            SubtractQuantityButton.Location = new Point(Convert.ToInt32(380 * DpiScale), Convert.ToInt32(FormSize.Height - 150 * DpiScale));
+            SubtractQuantityButton.Font= new Font(fontname, mainfontsize);
             AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 165 * DpiScale));
             AddInventoryOperationButton.Font = new Font(fontname, mainfontsize);
             InventoryOperationNoteLabel.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
@@ -6327,6 +6384,5 @@ namespace CREC
             }
         }
         #endregion
-
     }
 }
