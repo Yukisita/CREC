@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.5.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.0.6.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -43,13 +43,7 @@ namespace CREC
         string TargetIndexPath = string.Empty;// Indexの場所
         string TargetDetailsPath = string.Empty;// 説明txtのパス
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
-        int CompressType = 1;// 圧縮方法、あとで直す
-        string ListOutputFormat = "CSV";// List作成時のフォーマット、デフォルトでCSV、後で直す
 
-        string ShowRealLocationLabel = "現物保管場所";// 現物保管場所ラベルの表示名
-        bool ShowRealLocationLabelVisible = true;
-        string ShowDataLocationLabel = "データ保管場所";// データ保管場所ラベルの表示名
-        bool ShowDataLocationLabelVisible = true;
         int SearchOptionNumber = 0;// 検索対象設定、デフォルトで0
         int SearchMethodNumber = 0;// 検索方法、デフォルトで0
         string[] cols;// List等読み込み用
@@ -199,7 +193,7 @@ namespace CREC
                 }
                 if (CurrentProjectSettingValues.StartUpListOutput == true)
                 {
-                    ListOutputMethod(ListOutputFormat);
+                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
                 }
                 if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
                 {
@@ -280,7 +274,7 @@ namespace CREC
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
             if (CurrentProjectSettingValues.StartUpListOutput == true)
             {
-                ListOutputMethod(ListOutputFormat);
+                ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
             }
             if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
             {
@@ -412,11 +406,11 @@ namespace CREC
                     case "CompressType":
                         try
                         {
-                            CompressType = Convert.ToInt32(cols[1]);
+                            CurrentProjectSettingValues.CompressType = (CREC.CompressType)Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            CompressType = 1;
+                            CurrentProjectSettingValues.CompressType = (CREC.CompressType)1;
                         }
                         break;
                     case "Listoutputlocation":
@@ -461,11 +455,11 @@ namespace CREC
                     case "ListOutputFormat":
                         if (cols[1] == "CSV")
                         {
-                            ListOutputFormat = "CSV";
+                            CurrentProjectSettingValues.ListOutputFormat = ListOutputFormat.CSV;
                         }
                         else if (cols[1] == "TSV")
                         {
-                            ListOutputFormat = "TSV";
+                            CurrentProjectSettingValues.ListOutputFormat = ListOutputFormat.TSV;
                         }
                         break;
                     case "created":
@@ -751,28 +745,28 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowRealLocationLabel = cols[1];
+                                CurrentProjectSettingValues.RealLocationLabel = cols[1];
                             }
                             else
                             {
-                                ShowRealLocationLabel = "現物保管場所";
+                                CurrentProjectSettingValues.RealLocationLabel = "現物保管場所";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowRealLocationLabelVisible = false;
+                                CurrentProjectSettingValues.RealLocationVisible = false;
                                 RealLocationLabel.Visible = false;
                                 ShowRealLocation.Visible = false;
                             }
                             else
                             {
-                                ShowRealLocationLabelVisible = true;
+                                CurrentProjectSettingValues.RealLocationVisible = true;
                                 RealLocationLabel.Visible = true;
                                 ShowRealLocation.Visible = true;
                             }
                         }
                         catch
                         {
-                            ShowRealLocationLabelVisible = true;
+                            CurrentProjectSettingValues.RealLocationVisible = true;
                             RealLocationLabel.Visible = true;
                             ShowRealLocation.Visible = true;
                         }
@@ -782,22 +776,22 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                ShowDataLocationLabel = cols[1];
+                                CurrentProjectSettingValues.DataLocationLabel = cols[1];
                             }
                             else
                             {
-                                ShowDataLocationLabel = "データ保管場所";
+                                CurrentProjectSettingValues.DataLocationLabel = "データ保管場所";
                             }
                             if (cols[2] == "f")
                             {
-                                ShowDataLocationLabelVisible = false;
+                                CurrentProjectSettingValues.DataLocationVisible = false;
                                 ShowDataLocation.Visible = false;
                                 OpenDataLocation.Visible = false;
                                 CopyDataLocationPath.Visible = false;
                             }
                             else
                             {
-                                ShowDataLocationLabelVisible = true;
+                                CurrentProjectSettingValues.DataLocationVisible = true;
                                 ShowDataLocation.Visible = true;
                                 OpenDataLocation.Visible = true;
                                 CopyDataLocationPath.Visible = true;
@@ -805,7 +799,7 @@ namespace CREC
                         }
                         catch
                         {
-                            ShowDataLocationLabelVisible = true;
+                            CurrentProjectSettingValues.DataLocationVisible = true;
                             ShowDataLocation.Visible = true;
                             OpenDataLocation.Visible = true;
                             CopyDataLocationPath.Visible = true;
@@ -962,8 +956,8 @@ namespace CREC
             Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
             Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
             Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
-            RealLocationLabel.Text = ShowRealLocationLabel + "：";
-            ShowDataLocation.Text = ShowDataLocationLabel + "：";
+            RealLocationLabel.Text = CurrentProjectSettingValues.RealLocationLabel + "：";
+            ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             // ラベルの名称を読み込んで検索ボックスに設定、順番注意
             SearchOptionComboBox.Items.Clear();
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
@@ -1244,7 +1238,7 @@ namespace CREC
         }
         private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
         {
-            ListOutputMethod(ListOutputFormat);
+            ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
         }
         private void OutputListShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 一覧に表示中のデータのみ一覧をListに出力
         {
@@ -1258,7 +1252,7 @@ namespace CREC
                 tempTargetListOutputPath = CurrentProjectSettingValues.ProjectDataFolderPath;
             }
             StreamWriter streamWriter;
-            if (ListOutputFormat == "CSV")
+            if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
             {
                 streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
             }
@@ -1268,10 +1262,10 @@ namespace CREC
             }
             try
             {
-                if (ListOutputFormat == "CSV" || ListOutputFormat == "TSV")
+                if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV || CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.TSV)
                 {
                     // ヘッダ書き込み
-                    if (ListOutputFormat == "CSV")
+                    if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                     {
                         streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
                     }
@@ -1403,7 +1397,7 @@ namespace CREC
                                 ListInventoryStatus = "-";
                             }
                             // ファイル書き込み
-                            if (ListOutputFormat == "CSV")
+                            if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                             {
                                 streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                             }
@@ -1414,19 +1408,19 @@ namespace CREC
                         }
                         streamWriter.Close();
                         // 正常出力完了のメッセージ表示
-                        if (ListOutputFormat == "CSV")
+                        if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                         {
                             MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                         }
                         else
                         {
-                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                         }
                     }
                     catch (Exception ex)
                     {
                         // エラーメッセージ表示
-                        if (ListOutputFormat == "CSV")
+                        if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                         {
                             MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
@@ -1438,11 +1432,11 @@ namespace CREC
                     // 出力後の描画処理
                     if (CurrentProjectSettingValues.OpenListAfterOutput == true)
                     {
-                        if (ListOutputFormat == "CSV")
+                        if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                         {
                             System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
                         }
-                        else if (ListOutputFormat == "TSV")
+                        else if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.TSV)
                         {
                             System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
                         }
@@ -1456,7 +1450,7 @@ namespace CREC
             catch (Exception ex)
             {
                 // エラーメッセージ表示
-                if (ListOutputFormat == "CSV")
+                if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -1939,7 +1933,7 @@ namespace CREC
                     }
                     if (CurrentProjectSettingValues.CloseListOutput == true)
                     {
-                        ListOutputMethod(ListOutputFormat);
+                        ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
                     }
                     if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                     {
@@ -1948,7 +1942,7 @@ namespace CREC
                         CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         DateTime DT = DateTime.Now;
-                        if (CompressType == 0)
+                        if(CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                         {
                             try
                             {
@@ -1963,7 +1957,7 @@ namespace CREC
                             }
                             Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                         }
-                        else if (CompressType == 1)
+                        else if(CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
                         {
                             // バックアップ用フォルダ作成
                             Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
@@ -2029,7 +2023,7 @@ namespace CREC
                     }
                     if (CurrentProjectSettingValues.CloseListOutput == true)
                     {
-                        ListOutputMethod(ListOutputFormat);
+                        ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
                     }
                     if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                     {
@@ -2039,7 +2033,7 @@ namespace CREC
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         // バックアップ作成
                         DateTime DT = DateTime.Now;
-                        if (CompressType == 0)
+                        if(CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                         {
                             try
                             {
@@ -2054,7 +2048,7 @@ namespace CREC
                             }
                             Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                         }
-                        else if (CompressType == 1)
+                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
                         {
                             // バックアップ用フォルダ作成
                             Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
@@ -2105,7 +2099,7 @@ namespace CREC
             {
                 if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
-                    ListOutputMethod(ListOutputFormat);
+                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
                 }
                 if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
                 {
@@ -2115,7 +2109,7 @@ namespace CREC
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                     // バックアップ作成
                     DateTime DT = DateTime.Now;
-                    if (CompressType == 0)
+                    if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                     {
                         try
                         {
@@ -2130,7 +2124,7 @@ namespace CREC
                         }
                         Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                     }
-                    else if (CompressType == 1)
+                    else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
                     {
                         // バックアップ用フォルダ作成
                         Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
@@ -2815,8 +2809,8 @@ namespace CREC
             ShowTag1.Visible = CurrentProjectSettingValues.FirstTagVisible;
             ShowTag2.Visible = CurrentProjectSettingValues.SecondTagVisible;
             ShowTag3.Visible = CurrentProjectSettingValues.ThirdTagVisible;
-            ShowRealLocation.Visible = ShowRealLocationLabelVisible;
-            ShowDataLocation.Visible = ShowDataLocationLabelVisible;
+            ShowRealLocation.Visible = CurrentProjectSettingValues.RealLocationVisible;
+            ShowDataLocation.Visible = CurrentProjectSettingValues.DataLocationVisible;
 
             if (File.Exists(TargetContentsPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
@@ -2851,9 +2845,9 @@ namespace CREC
             ShowTag2.Text = CurrentShownDataValues.Tag2;
             Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
             ShowTag3.Text = CurrentShownDataValues.Tag3;
-            RealLocationLabel.Text = ShowRealLocationLabel + "：";
+            RealLocationLabel.Text = CurrentProjectSettingValues.RealLocationLabel + "：";
             ShowRealLocation.Text = CurrentShownDataValues.RealLocation;
-            ShowDataLocation.Text = ShowDataLocationLabel + "：";
+            ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             Thumbnail.ImageLocation = (TargetContentsPath + "\\pictures\\Thumbnail1.jpg");
             TargetDetailsPath = (TargetContentsPath + "\\details.txt");
             if (System.IO.File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.jpg"))
@@ -3026,9 +3020,9 @@ namespace CREC
             Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
             ShowTag3.Text = string.Empty;
             Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
-            RealLocationLabel.Text = ShowRealLocationLabel + "：";
+            RealLocationLabel.Text = CurrentProjectSettingValues.RealLocationLabel + "：";
             ShowRealLocation.Text = string.Empty;
-            ShowDataLocation.Text = ShowDataLocationLabel + "：";
+            ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
 
@@ -3323,7 +3317,7 @@ namespace CREC
             EditTag1TextBox.Visible = CurrentProjectSettingValues.FirstTagVisible;
             EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
             EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
-            EditRealLocationTextBox.Visible = ShowRealLocationLabelVisible;
+            EditRealLocationTextBox.Visible = CurrentProjectSettingValues.RealLocationVisible;
             SaveAndCloseEditButton.Visible = true;
             SelectThumbnailButton.Visible = true;
             OpenPictureFolderButton.Visible = true;
@@ -3761,7 +3755,7 @@ namespace CREC
 
             if (CurrentProjectSettingValues.EditListOutput == true)
             {
-                ListOutputMethod(ListOutputFormat);
+                ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
             }
             if (CurrentProjectSettingValues.EditBackUp == true)
             {
@@ -4461,7 +4455,7 @@ namespace CREC
                         streamWriter.Write("E");
                     }
                     streamWriter.Write('\n');
-                    streamWriter.WriteLine("CompressType,{0}", CompressType);
+                    streamWriter.WriteLine("CompressType,{0}", (int)CurrentProjectSettingValues.CompressType);
                     streamWriter.WriteLine("{0},{1}", "Listoutputlocation", CurrentProjectSettingValues.ListOutputPath);
                     streamWriter.Write("autoListoutput,");
                     if (CurrentProjectSettingValues.StartUpListOutput == true)
@@ -4483,7 +4477,7 @@ namespace CREC
                         streamWriter.Write("O");
                     }
                     streamWriter.Write('\n');
-                    streamWriter.WriteLine("ListOutputFormat,{0}", ListOutputFormat);
+                    streamWriter.WriteLine("ListOutputFormat,{0}", CurrentProjectSettingValues.ListOutputFormat.ToString());
                     streamWriter.WriteLine("{0},{1}", "created", CurrentProjectSettingValues.CreatedDate);
                     streamWriter.WriteLine("{0},{1}", "modified", CurrentProjectSettingValues.ModifiedDate);
                     streamWriter.WriteLine("{0},{1}", "accessed", CurrentProjectSettingValues.AccessedDate);
@@ -4559,21 +4553,21 @@ namespace CREC
                     {
                         streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", CurrentProjectSettingValues.ThirdTagLabel, "f");
                     }
-                    if (ShowRealLocationLabelVisible == true)
+                    if (CurrentProjectSettingValues.RealLocationVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", CurrentProjectSettingValues.RealLocationLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", ShowRealLocationLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", CurrentProjectSettingValues.RealLocationLabel, "f");
                     }
-                    if (ShowDataLocationLabelVisible == true)
+                    if (CurrentProjectSettingValues.DataLocationVisible == true)
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "t");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", CurrentProjectSettingValues.DataLocationLabel, "t");
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", ShowDataLocationLabel, "f");
+                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", CurrentProjectSettingValues.DataLocationLabel, "f");
                     }
                     streamWriter.WriteLine("{0},{1}", "SearchOptionNumber", SearchOptionComboBox.SelectedIndex.ToString());
                     streamWriter.WriteLine("{0},{1}", "SearchMethodNumber", SearchMethodComboBox.SelectedIndex.ToString());
@@ -5441,7 +5435,7 @@ namespace CREC
             BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile);
             BackupToolStripMenuItem.Enabled = false;
             // バックアップ作成
-            if (CompressType == 0)// 単一ZIPに圧縮
+            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)// 単一ZIPに圧縮
             {
                 await Task.Run(() =>
                 {
@@ -5459,7 +5453,7 @@ namespace CREC
                     Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                 });
             }
-            else if (CompressType == 1)// コンテンツごとに圧縮
+            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)// コンテンツごとに圧縮
             {
                 await Task.Run(() =>
                 {
@@ -5587,7 +5581,7 @@ namespace CREC
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
             if (CurrentProjectSettingValues.StartUpListOutput == true)
             {
-                ListOutputMethod(ListOutputFormat);
+                ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
             }
             if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
             {
@@ -5619,12 +5613,12 @@ namespace CREC
                 return;
             }
             BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("BackupToolStripMenuItemBackupInProgressMessage", "mainform", LanguageFile);
-            if (CompressType == 0)
+            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
             {
                 FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                 File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp" + "\\backup.crec", true);
             }
-            else if (CompressType == 2)
+            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.NoCompress)
             {
                 DateTime DT = DateTime.Now;
                 FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
@@ -5638,7 +5632,7 @@ namespace CREC
         /// 一覧を出力
         /// </summary>
         /// <param name="ListOutputFormat">一覧出力先フォルダのパス</param>
-        private void ListOutputMethod(string ListOutputFormat)
+        private void ListOutputMethod(CREC.ListOutputFormat listOutputFormat)
         {
             // ファイルが開いているか確認
             if (TargetCRECPath.Length == 0)
@@ -5657,9 +5651,9 @@ namespace CREC
                 tempTargetListOutputPath = CurrentProjectSettingValues.ProjectDataFolderPath;
             }
             // 出力形式に合わせて出力
-            if (ListOutputFormat == "CSV" || ListOutputFormat == "TSV")
+            if (listOutputFormat == CREC.ListOutputFormat.CSV || listOutputFormat == CREC.ListOutputFormat.TSV)
             {
-                ListOutputMethod(tempTargetListOutputPath, ListOutputFormat);
+                ListOutputMethod(tempTargetListOutputPath, listOutputFormat);
             }
             else
             {
@@ -5669,11 +5663,11 @@ namespace CREC
             // 出力後の描画処理
             if (CurrentProjectSettingValues.OpenListAfterOutput == true)
             {
-                if (ListOutputFormat == "CSV")
+                if (listOutputFormat == CREC.ListOutputFormat.CSV)
                 {
                     System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.csv");
                 }
-                else if (ListOutputFormat == "TSV")
+                else if (listOutputFormat == CREC.ListOutputFormat.TSV)
                 {
                     System.Diagnostics.Process process = System.Diagnostics.Process.Start(tempTargetListOutputPath + "\\InventoryOutput.tsv");
                 }
@@ -5684,11 +5678,11 @@ namespace CREC
         /// </summary>
         /// <param name="tempTargetListOutputPath">出力パス</param>
         /// <param name="ListOutputFormat">フォーマット</param>
-        private void ListOutputMethod(string tempTargetListOutputPath, string ListOutputFormat)
+        private void ListOutputMethod(string tempTargetListOutputPath, CREC.ListOutputFormat listOutputFormat)
         {
             StreamWriter streamWriter;
             // ヘッダ書き込み
-            if (ListOutputFormat == "CSV")
+            if (listOutputFormat == CREC.ListOutputFormat.CSV)
             {
                 streamWriter = new StreamWriter(tempTargetListOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
                 streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
@@ -5824,7 +5818,7 @@ namespace CREC
                         ListInventoryStatus = "-";
                     }
                     // ファイル書き込み
-                    if (ListOutputFormat == "CSV")
+                    if (listOutputFormat == CREC.ListOutputFormat.CSV)
                     {
                         streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
                     }
@@ -5834,19 +5828,19 @@ namespace CREC
                     }
                 }
                 // 正常出力完了のメッセージ表示
-                if (ListOutputFormat == "CSV")
+                if (listOutputFormat == CREC.ListOutputFormat.CSV)
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
                 else
                 {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.csv", "CREC");
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputFinish", "mainform", LanguageFile) + "\n" + tempTargetListOutputPath + "\\InventoryOutput.tsv", "CREC");
                 }
             }
             catch (Exception ex)
             {
                 // エラーメッセージ表示
-                if (ListOutputFormat == "CSV")
+                if (listOutputFormat == CREC.ListOutputFormat.CSV)
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }

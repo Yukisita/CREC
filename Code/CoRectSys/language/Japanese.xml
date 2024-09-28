@@ -108,7 +108,7 @@
 		<Button>
 			<item>
 				<itemname>AddContentsButton</itemname>
-				<itemtext>新規追加</itemtext>
+				<itemtext>追加(&amp;A)</itemtext>
 			</item>
 			<item>
 				<itemname>EditButton</itemname>

@@ -108,7 +108,7 @@
 		<Button>
 			<item>
 				<itemname>AddContentsButton</itemname>
-				<itemtext>Add</itemtext>
+				<itemtext>Add(&amp;A)</itemtext>
 			</item>
 			<item>
 				<itemname>EditButton</itemname>

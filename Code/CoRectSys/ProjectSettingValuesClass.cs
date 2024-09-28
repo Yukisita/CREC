@@ -114,5 +114,21 @@ namespace CREC
         /// コレクションのタグ3の表示・非表示フラグ
         /// </summary>
         public bool ThirdTagVisible { get; set; } = true;
+        /// <summary>
+        /// コレクションの現物保管場所のラベル
+        /// </summary>
+        public string RealLocationLabel { get; set; } = "Real location";
+        /// <summary>
+        /// コレクションの現物保管場所のラベルの表示・非表示フラグ
+        /// </summary>
+        public bool RealLocationVisible { get; set; } = true;
+        /// <summary>
+        /// コレクションのデータ保管場所のラベル
+        /// </summary>
+        public string DataLocationLabel { get; set; } = "Data location";
+        /// <summary>
+        /// コレクションのデータ保管場場所のラベルの表示・非表示フラグ
+        /// </summary>
+        public bool DataLocationVisible { get; set; } = true;
     }
 }
