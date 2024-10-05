@@ -44,8 +44,6 @@ namespace CREC
         string TargetDetailsPath = string.Empty;// 説明txtのパス
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
 
-        int SearchOptionNumber = 0;// 検索対象設定、デフォルトで0
-        int SearchMethodNumber = 0;// 検索方法、デフォルトで0
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
         string CurrentLanguageFileName = string.Empty;
@@ -245,7 +243,7 @@ namespace CREC
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, ConfigValues.ColorSetting, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, ref CurrentProjectSettingValues, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                     {
@@ -260,7 +258,7 @@ namespace CREC
             }
             else// 編集中データがなかった場合
             {
-                MakeNewProject makenewproject = new MakeNewProject(string.Empty, ConfigValues.ColorSetting, LanguageFile);
+                MakeNewProject makenewproject = new MakeNewProject(string.Empty, ref CurrentProjectSettingValues, LanguageFile);
                 makenewproject.ShowDialog();
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
@@ -289,7 +287,7 @@ namespace CREC
         {
             if (TargetContentsPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
-                SaveSearchSettings();
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             }
 
             if (SaveAndCloseEditButton.Visible == true && CheckEditingContents() != true)// 編集中の場合は警告を表示
@@ -334,619 +332,15 @@ namespace CREC
             ListUpdateButton.Visible = true;
             ShowListButton.Visible = false;
             ClosePicturesViewMethod();
-            IEnumerable<string> tmp = null;
-            if (File.Exists(TargetCRECPath))
+            // 読み込み処理呼び出し
+            if (!ProjectSettingClass.LoadProjectSetting(ref CurrentProjectSettingValues, TargetCRECPath))
             {
-                try
-                {
-                    tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
-                }
-                catch
-                {
-                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
-                    return;
-                }
-            }
-            else
-            {
-                MessageBox.Show("プロジェクトファイルが見つかりませんでした。", "CREC");
+                // 読み込み失敗時
                 return;
             }
-            // 表示内容復元時にToolStripMenuが出たままにならないようイベントハンドラを一時停止
-            IDListVisibleToolStripMenuItem.CheckedChanged -= IDVisibleToolStripMenuItem_CheckedChanged;
-            MCListVisibleToolStripMenuItem.CheckedChanged -= MCVisibleToolStripMenuItem_CheckedChanged;
-            NameListVisibleToolStripMenuItem.CheckedChanged -= NameVisibleToolStripMenuItem_CheckedChanged;
-            RegistrationDateListVisibleToolStripMenuItem.CheckedChanged -= RegistrationDateVisibleToolStripMenuItem_CheckedChanged;
-            CategoryListVisibleToolStripMenuItem.CheckedChanged -= CategoryVisibleToolStripMenuItem_CheckedChanged;
-            Tag1ListVisibleToolStripMenuItem.CheckedChanged -= Tag1VisibleToolStripMenuItem_CheckedChanged;
-            Tag2ListVisibleToolStripMenuItem.CheckedChanged -= Tag2VisibleToolStripMenuItem_CheckedChanged;
-            Tag3ListVisibleToolStripMenuItem.CheckedChanged -= Tag3VisibleToolStripMenuItem_CheckedChanged;
-            InventoryInformationListToolStripMenuItem.CheckedChanged -= InventoryInformationToolStripMenuItem_CheckedChanged;
-            foreach (string line in tmp)
-            {
-                cols = line.Split(',');
-                switch (cols[0])
-                {
-                    case "projectname":
-                        CurrentProjectSettingValues.Name = cols[1];
-                        ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + cols[1];
-                        break;
-                    case "projectlocation":
-                        CurrentProjectSettingValues.ProjectDataFolderPath = cols[1];
-                        break;
-                    case "backuplocation":
-                        CurrentProjectSettingValues.ProjectBackupFolderPath = cols[1];
-                        break;
-                    case "autobackup":
-                        if (cols[1].Contains("S"))
-                        {
-                            CurrentProjectSettingValues.StartUpBackUp = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.StartUpBackUp = false;
-                        }
-                        if (cols[1].Contains("C"))
-                        {
-                            CurrentProjectSettingValues.CloseBackUp = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.CloseBackUp = false;
-                        }
-                        if (cols[1].Contains("E"))
-                        {
-                            CurrentProjectSettingValues.EditBackUp = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.EditBackUp = false;
-                        }
-                        break;
-                    case "CompressType":
-                        try
-                        {
-                            CurrentProjectSettingValues.CompressType = (CREC.CompressType)Convert.ToInt32(cols[1]);
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.CompressType = (CREC.CompressType)1;
-                        }
-                        break;
-                    case "Listoutputlocation":
-                        CurrentProjectSettingValues.ListOutputPath = cols[1];
-                        break;
-                    case "autoListoutput":
-                        if (cols[1].Contains("S"))
-                        {
-                            CurrentProjectSettingValues.StartUpListOutput = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.StartUpListOutput = false;
-                        }
-                        if (cols[1].Contains("C"))
-                        {
-                            CurrentProjectSettingValues.CloseListOutput = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.CloseListOutput = false;
-                        }
-                        if (cols[1].Contains("E"))
-                        {
-                            CurrentProjectSettingValues.EditListOutput = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.EditListOutput = false;
-                        }
-                        break;
-                    case "openListafteroutput":
-                        if (cols[1].Contains("O"))
-                        {
-                            CurrentProjectSettingValues.OpenListAfterOutput = true;
-                        }
-                        else
-                        {
-                            CurrentProjectSettingValues.OpenListAfterOutput = false;
-                        }
-                        break;
-                    case "ListOutputFormat":
-                        if (cols[1] == "CSV")
-                        {
-                            CurrentProjectSettingValues.ListOutputFormat = ListOutputFormat.CSV;
-                        }
-                        else if (cols[1] == "TSV")
-                        {
-                            CurrentProjectSettingValues.ListOutputFormat = ListOutputFormat.TSV;
-                        }
-                        break;
-                    case "created":
-                        CurrentProjectSettingValues.CreatedDate = cols[1];
-                        break;
-                    case "modified":
-                        CurrentProjectSettingValues.ModifiedDate = cols[1];
-                        break;
-                    case "accessed":
-                        CurrentProjectSettingValues.AccessedDate = cols[1];
-                        break;
-                    case "ShowObjectNameLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.CollectionNameLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.CollectionNameLabel = "Name";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.CollectionNameVisible = false;
-                                ObjectNameLabel.Visible = false;
-                                ShowObjectName.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.CollectionNameVisible = true;
-                                ObjectNameLabel.Visible = true;
-                                ShowObjectName.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.CollectionNameVisible = true;
-                            ObjectNameLabel.Visible = true;
-                            ShowObjectName.Visible = true;
-                        }
-                        break;
-                    case "ShowIDLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.UUIDLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.UUIDLabel = "UUID";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.UUIDVisible = false;
-                                IDLabel.Visible = false;
-                                ShowID.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.UUIDVisible = true;
-                                IDLabel.Visible = true;
-                                ShowID.Visible = true;
-                                AllowEditIDButton.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.UUIDVisible = true;
-                            IDLabel.Visible = true;
-                            ShowID.Visible = true;
-                            AllowEditIDButton.Visible = true;
-                        }
-                        break;
-                    case "ShowMCLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.ManagementCodeLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.ManagementCodeLabel = "管理コード";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.ManagementCodeVisible = false;
-                                MCLabel.Visible = false;
-                                ShowMC.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.ManagementCodeVisible = true;
-                                MCLabel.Visible = true;
-                                ShowMC.Visible = true;
-                                CheckSameMCButton.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.ManagementCodeVisible = true;
-                            MCLabel.Visible = true;
-                            ShowMC.Visible = true;
-                            CheckSameMCButton.Visible = true;
-                        }
-                        break;
-                    case "ShowRegistrationDateLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.RegistrationDateLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.RegistrationDateLabel = "登録日";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.RegistrationDateVisible = false;
-                                RegistrationDateLabel.Visible = false;
-                                ShowRegistrationDate.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.RegistrationDateVisible = true;
-                                RegistrationDateLabel.Visible = true;
-                                ShowRegistrationDate.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.RegistrationDateVisible = true;
-                            RegistrationDateLabel.Visible = true;
-                            ShowRegistrationDate.Visible = true;
-                        }
-                        break;
-                    case "AutoMCFill":
-                        try
-                        {
-                            if (cols[1] == "f")
-                            {
-                                CurrentProjectSettingValues.ManagementCodeAutoFill = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.ManagementCodeAutoFill = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.ManagementCodeAutoFill = true;
-                        }
-                        break;
-                    case "ShowCategoryLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.CategoryLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.CategoryLabel = "カテゴリ";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.CategoryVisible = false;
-                                CategoryLabel.Visible = false;
-                                ShowCategory.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.CategoryVisible = true;
-                                CategoryLabel.Visible = true;
-                                ShowCategory.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.CategoryVisible = true;
-                            CategoryLabel.Visible = true;
-                            ShowCategory.Visible = true;
-                        }
-                        break;
-                    case "Tag1Name":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.FirstTagLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.FirstTagLabel = "タグ１";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.FirstTagVisible = false;
-                                Tag1NameLabel.Visible = false;
-                                ShowTag1.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.FirstTagVisible = true;
-                                Tag1NameLabel.Visible = true;
-                                ShowTag1.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.FirstTagVisible = true;
-                            Tag1NameLabel.Visible = true;
-                            ShowTag1.Visible = true;
-                        }
-                        break;
-                    case "Tag2Name":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.SecondTagLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.SecondTagLabel = "タグ２";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.SecondTagVisible = false;
-                                Tag2NameLabel.Visible = false;
-                                ShowTag2.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.SecondTagVisible = true;
-                                Tag2NameLabel.Visible = true;
-                                ShowTag2.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.SecondTagVisible = true;
-                            Tag2NameLabel.Visible = true;
-                            ShowTag2.Visible = true;
-                        }
-                        break;
-                    case "Tag3Name":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.ThirdTagLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.ThirdTagLabel = "タグ３";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.ThirdTagVisible = false;
-                                Tag3NameLabel.Visible = false;
-                                ShowTag3.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.ThirdTagVisible = true;
-                                Tag3NameLabel.Visible = true;
-                                ShowTag3.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.ThirdTagVisible = true;
-                            Tag3NameLabel.Visible = true;
-                            ShowTag3.Visible = true;
-                        }
-                        break;
-                    case "ShowRealLocationLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.RealLocationLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.RealLocationLabel = "現物保管場所";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.RealLocationVisible = false;
-                                RealLocationLabel.Visible = false;
-                                ShowRealLocation.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.RealLocationVisible = true;
-                                RealLocationLabel.Visible = true;
-                                ShowRealLocation.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.RealLocationVisible = true;
-                            RealLocationLabel.Visible = true;
-                            ShowRealLocation.Visible = true;
-                        }
-                        break;
-                    case "ShowDataLocationLabel":
-                        try
-                        {
-                            if (cols[1].Length > 0)
-                            {
-                                CurrentProjectSettingValues.DataLocationLabel = cols[1];
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.DataLocationLabel = "データ保管場所";
-                            }
-                            if (cols[2] == "f")
-                            {
-                                CurrentProjectSettingValues.DataLocationVisible = false;
-                                ShowDataLocation.Visible = false;
-                                OpenDataLocation.Visible = false;
-                                CopyDataLocationPath.Visible = false;
-                            }
-                            else
-                            {
-                                CurrentProjectSettingValues.DataLocationVisible = true;
-                                ShowDataLocation.Visible = true;
-                                OpenDataLocation.Visible = true;
-                                CopyDataLocationPath.Visible = true;
-                            }
-                        }
-                        catch
-                        {
-                            CurrentProjectSettingValues.DataLocationVisible = true;
-                            ShowDataLocation.Visible = true;
-                            OpenDataLocation.Visible = true;
-                            CopyDataLocationPath.Visible = true;
-                        }
-                        break;
-                    case "SearchOptionNumber":
-                        SearchOptionNumber = Convert.ToInt32(cols[1]);
-                        break;
-                    case "SearchMethodNumber":
-                        SearchMethodNumber = Convert.ToInt32(cols[1]);
-                        break;
-                    case "IDListVisible":
-                        if (cols[1] == "false")
-                        {
-                            IDList.Visible = false;
-                            IDListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            IDList.Visible = true;
-                            IDListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "MCListVisible":
-                        if (cols[1] == "false")
-                        {
-                            MCList.Visible = false;
-                            MCListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            MCList.Visible = true;
-                            MCListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "ObjectNameListVisible":
-                        if (cols[1] == "false")
-                        {
-                            ObjectNameList.Visible = false;
-                            NameListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            ObjectNameList.Visible = true;
-                            NameListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "RegistrationDateListVisible":
-                        if (cols[1] == "false")
-                        {
-                            RegistrationDateList.Visible = false;
-                            RegistrationDateListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            RegistrationDateList.Visible = true;
-                            RegistrationDateListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "CategoryListVisible":
-                        if (cols[1] == "false")
-                        {
-                            CategoryList.Visible = false;
-                            CategoryListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            CategoryList.Visible = true;
-                            CategoryListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "Tag1ListVisible":
-                        if (cols[1] == "false")
-                        {
-                            Tag1List.Visible = false;
-                            Tag1ListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            Tag1List.Visible = true;
-                            Tag1ListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "Tag2ListVisible":
-                        if (cols[1] == "false")
-                        {
-                            Tag2List.Visible = false;
-                            Tag2ListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            Tag2List.Visible = true;
-                            Tag2ListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "Tag3ListVisible":
-                        if (cols[1] == "false")
-                        {
-                            Tag3List.Visible = false;
-                            Tag3ListVisibleToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            Tag3List.Visible = true;
-                            Tag3ListVisibleToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                    case "InventoryInformationListVisible":
-                        if (cols[1] == "false")
-                        {
-                            InventoryList.Visible = false;
-                            InventoryStatusList.Visible = false;
-                            InventoryInformationListToolStripMenuItem.Checked = false;
-                        }
-                        else
-                        {
-                            InventoryList.Visible = true;
-                            InventoryStatusList.Visible = true;
-                            InventoryInformationListToolStripMenuItem.Checked = true;
-                        }
-                        break;
-                }
-                if (IDListVisibleToolStripMenuItem.Checked == false
-                    && MCListVisibleToolStripMenuItem.Checked == false
-                    && NameListVisibleToolStripMenuItem.Checked == false
-                    && RegistrationDateListVisibleToolStripMenuItem.Checked == false
-                    && CategoryListVisibleToolStripMenuItem.Checked == false
-                    && Tag1ListVisibleToolStripMenuItem.Checked == false
-                    && Tag2ListVisibleToolStripMenuItem.Checked == false
-                    && Tag3ListVisibleToolStripMenuItem.Checked == false
-                    && InventoryList.Visible == false)
-                {
-                    MessageBox.Show("全項目が非表示状態に設定されています。システム上IDのみ表示します。", "CREC");
-                    IDList.Visible = true;
-                    IDListVisibleToolStripMenuItem.Checked = true;
-                }
-            }
-            // イベントハンドラ再開
-            IDListVisibleToolStripMenuItem.CheckedChanged += IDVisibleToolStripMenuItem_CheckedChanged;
-            MCListVisibleToolStripMenuItem.CheckedChanged += MCVisibleToolStripMenuItem_CheckedChanged;
-            NameListVisibleToolStripMenuItem.CheckedChanged += NameVisibleToolStripMenuItem_CheckedChanged;
-            RegistrationDateListVisibleToolStripMenuItem.CheckedChanged += RegistrationDateVisibleToolStripMenuItem_CheckedChanged;
-            CategoryListVisibleToolStripMenuItem.CheckedChanged += CategoryVisibleToolStripMenuItem_CheckedChanged;
-            Tag1ListVisibleToolStripMenuItem.CheckedChanged += Tag1VisibleToolStripMenuItem_CheckedChanged;
-            Tag2ListVisibleToolStripMenuItem.CheckedChanged += Tag2VisibleToolStripMenuItem_CheckedChanged;
-            Tag3ListVisibleToolStripMenuItem.CheckedChanged += Tag3VisibleToolStripMenuItem_CheckedChanged;
-            InventoryInformationListToolStripMenuItem.CheckedChanged += InventoryInformationToolStripMenuItem_CheckedChanged;
+
+            // 色設定
+            SetColorMethod();
             // ラベルの名称を読み込んで詳細表示画面に設定
             ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
             IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
@@ -971,21 +365,13 @@ namespace CREC
             // ラベルの名称を読み込んでDGVに設定
             dataGridView1.Refresh();
             dataGridView1.Columns["IDList"].HeaderText = CurrentProjectSettingValues.UUIDLabel;
-            dataGridView1.Columns["IDList"].Visible = IDListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["MCList"].HeaderText = CurrentProjectSettingValues.ManagementCodeLabel;
-            dataGridView1.Columns["MCList"].Visible = MCListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["ObjectNameList"].HeaderText = CurrentProjectSettingValues.CollectionNameLabel;
-            dataGridView1.Columns["ObjectNameList"].Visible = NameListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["RegistrationDateList"].HeaderText = CurrentProjectSettingValues.RegistrationDateLabel;
-            dataGridView1.Columns["RegistrationDateList"].Visible = RegistrationDateListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["CategoryList"].HeaderText = CurrentProjectSettingValues.CategoryLabel;
-            dataGridView1.Columns["CategoryList"].Visible = CategoryListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag1List"].HeaderText = CurrentProjectSettingValues.FirstTagLabel;
-            dataGridView1.Columns["Tag1List"].Visible = Tag1ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag2List"].HeaderText = CurrentProjectSettingValues.SecondTagLabel;
-            dataGridView1.Columns["Tag2List"].Visible = Tag2ListVisibleToolStripMenuItem.Checked;
             dataGridView1.Columns["Tag3List"].HeaderText = CurrentProjectSettingValues.ThirdTagLabel;
-            dataGridView1.Columns["Tag3List"].Visible = Tag3ListVisibleToolStripMenuItem.Checked;
             // ラベルの名称を読み込んでDGVのList表示・非表示設定画面に追加
             IDListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.UUIDLabel;
             MCListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ManagementCodeLabel;
@@ -995,6 +381,64 @@ namespace CREC
             Tag1ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
             Tag2ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
             Tag3ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
+
+            // 表示内容更新
+            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
+            ObjectNameLabel.Visible
+                = ShowObjectName.Visible
+                = CurrentProjectSettingValues.CollectionNameVisible;
+            IDLabel.Visible
+                = ShowID.Visible
+                = CurrentProjectSettingValues.UUIDVisible;
+            MCLabel.Visible
+                = ShowMC.Visible
+                = CheckSameMCButton.Visible
+                = CurrentProjectSettingValues.ManagementCodeVisible;
+            RegistrationDateLabel.Visible
+                = ShowRegistrationDate.Visible
+                = CurrentProjectSettingValues.RegistrationDateVisible;
+            CategoryLabel.Visible
+                = ShowCategory.Visible
+                = CurrentProjectSettingValues.CategoryVisible;
+            Tag1NameLabel.Visible
+                = ShowTag1.Visible
+                = CurrentProjectSettingValues.FirstTagVisible;
+            Tag2NameLabel.Visible
+                = ShowTag2.Visible
+                = CurrentProjectSettingValues.SecondTagVisible;
+            Tag3NameLabel.Visible
+                = ShowTag3.Visible
+                = CurrentProjectSettingValues.ThirdTagVisible;
+            RealLocationLabel.Visible
+                = ShowRealLocation.Visible
+                = CurrentProjectSettingValues.RealLocationVisible;
+            ShowDataLocation.Visible
+                = OpenDataLocation.Visible
+                = CopyDataLocationPath.Visible
+                = CurrentProjectSettingValues.DataLocationVisible;
+
+            // 表示内容復元時にToolStripMenuが出たままにならないようイベントハンドラを一時停止
+            IDListVisibleToolStripMenuItem.CheckedChanged -= IDVisibleToolStripMenuItem_CheckedChanged;
+            MCListVisibleToolStripMenuItem.CheckedChanged -= MCVisibleToolStripMenuItem_CheckedChanged;
+            NameListVisibleToolStripMenuItem.CheckedChanged -= NameVisibleToolStripMenuItem_CheckedChanged;
+            RegistrationDateListVisibleToolStripMenuItem.CheckedChanged -= RegistrationDateVisibleToolStripMenuItem_CheckedChanged;
+            CategoryListVisibleToolStripMenuItem.CheckedChanged -= CategoryVisibleToolStripMenuItem_CheckedChanged;
+            Tag1ListVisibleToolStripMenuItem.CheckedChanged -= Tag1VisibleToolStripMenuItem_CheckedChanged;
+            Tag2ListVisibleToolStripMenuItem.CheckedChanged -= Tag2VisibleToolStripMenuItem_CheckedChanged;
+            Tag3ListVisibleToolStripMenuItem.CheckedChanged -= Tag3VisibleToolStripMenuItem_CheckedChanged;
+            InventoryInformationListToolStripMenuItem.CheckedChanged -= InventoryInformationToolStripMenuItem_CheckedChanged;
+            ControlCollectionListColumnVisibe();
+            // イベントハンドラ再開
+            IDListVisibleToolStripMenuItem.CheckedChanged += IDVisibleToolStripMenuItem_CheckedChanged;
+            MCListVisibleToolStripMenuItem.CheckedChanged += MCVisibleToolStripMenuItem_CheckedChanged;
+            NameListVisibleToolStripMenuItem.CheckedChanged += NameVisibleToolStripMenuItem_CheckedChanged;
+            RegistrationDateListVisibleToolStripMenuItem.CheckedChanged += RegistrationDateVisibleToolStripMenuItem_CheckedChanged;
+            CategoryListVisibleToolStripMenuItem.CheckedChanged += CategoryVisibleToolStripMenuItem_CheckedChanged;
+            Tag1ListVisibleToolStripMenuItem.CheckedChanged += Tag1VisibleToolStripMenuItem_CheckedChanged;
+            Tag2ListVisibleToolStripMenuItem.CheckedChanged += Tag2VisibleToolStripMenuItem_CheckedChanged;
+            Tag3ListVisibleToolStripMenuItem.CheckedChanged += Tag3VisibleToolStripMenuItem_CheckedChanged;
+            InventoryInformationListToolStripMenuItem.CheckedChanged += InventoryInformationToolStripMenuItem_CheckedChanged;
+
             // ToolTipsの設定
             SetTagNameToolTips();
             // ListOutputPathの設定
@@ -1005,8 +449,8 @@ namespace CREC
             // ComboBoxの初期選択項目を設定
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
-            SearchOptionComboBox.SelectedIndex = SearchOptionNumber;
-            SearchMethodComboBox.SelectedIndex = SearchMethodNumber;
+            SearchOptionComboBox.SelectedIndex = CurrentProjectSettingValues.SearchOptionNumber;
+            SearchMethodComboBox.SelectedIndex = CurrentProjectSettingValues.SearchMethodNumber;
             SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             // DataGridViewにデータ読み込み
@@ -1136,7 +580,7 @@ namespace CREC
             // 開いているプロジェクトがあった場合は内容を保存
             if (TargetContentsPath.Length > 0)
             {
-                SaveSearchSettings();
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             }
 
             TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
@@ -1466,7 +910,7 @@ namespace CREC
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ConfigValues.ColorSetting, CurrentLanguageFileName, LanguageFile, ConfigValues.FontsizeOffset);
+            ConfigForm configform = new ConfigForm(CurrentProjectSettingValues.ColorSetting.ToString(), CurrentLanguageFileName, LanguageFile, ConfigValues.FontsizeOffset);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -1526,6 +970,7 @@ namespace CREC
                     return;
                 }
             }
+            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             SaveConfig();
             System.Windows.Forms.Application.Restart();
         }
@@ -1616,152 +1061,128 @@ namespace CREC
                 CloseInventoryManagementModeButton.Visible = false;
             }
         }
-        #region データ一覧の表示項目設定
+        #region コレクション一覧の表示項目設定
+        /// <summary>
+        /// コレクションリストの表示内容をコントロール
+        /// </summary>
+        private void ControlCollectionListColumnVisibe()
+        {
+            IDList.Visible
+                = IDListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["IDList"].Visible
+                = CurrentProjectSettingValues.CollectionListUUIDVisible;
+            MCList.Visible
+                = MCListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["MCList"].Visible
+                = CurrentProjectSettingValues.CollectionListManagementCodeVisible;
+            ObjectNameList.Visible
+                = NameListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["ObjectNameList"].Visible
+                = CurrentProjectSettingValues.CollectionListNameVisible;
+            RegistrationDateList.Visible
+                = RegistrationDateListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["RegistrationDateList"].Visible
+                = CurrentProjectSettingValues.CollectionListRegistrationDateVisible;
+            CategoryList.Visible
+                = CategoryListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["CategoryList"].Visible
+                = CurrentProjectSettingValues.CollectionListCategoryVisible;
+            Tag1List.Visible
+                = Tag1ListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["Tag1List"].Visible
+                = CurrentProjectSettingValues.CollectionListFirstTagVisible;
+            Tag2List.Visible
+                = Tag2ListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["Tag2List"].Visible
+                = CurrentProjectSettingValues.CollectionListSecondTagVisible;
+            Tag3List.Visible
+                = Tag3ListVisibleToolStripMenuItem.Checked
+                = dataGridView1.Columns["Tag3List"].Visible
+                = CurrentProjectSettingValues.CollectionListThirdTagVisible;
+            InventoryList.Visible
+                = InventoryStatusList.Visible
+                = InventoryInformationListToolStripMenuItem.Checked
+                = dataGridView1.Columns["InventoryList"].Visible
+                = dataGridView1.Columns["InventoryStatusList"].Visible
+                = CurrentProjectSettingValues.CollectionListInventoryInformationVisible;
+        }
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
-
-            if (IDListVisibleToolStripMenuItem.Checked == true)
-            {
-                IDList.Visible = true;
-                dataGridView1.Columns["IDList"].Visible = true;
-            }
-            else if (IDListVisibleToolStripMenuItem.Checked == false)
-            {
-                IDList.Visible = false;
-                dataGridView1.Columns["IDList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListUUIDVisible = IDListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             //選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void MCVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 管理コードの表示・非表示
         {
-            if (MCListVisibleToolStripMenuItem.Checked == true)
-            {
-                MCList.Visible = true;
-                dataGridView1.Columns["MCList"].Visible = true;
-            }
-            else if (MCListVisibleToolStripMenuItem.Checked == false)
-            {
-                MCList.Visible = false;
-                dataGridView1.Columns["MCList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListManagementCodeVisible = MCListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void NameVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 名称の表示・非表示
         {
-            if (NameListVisibleToolStripMenuItem.Checked == true)
-            {
-                ObjectNameList.Visible = true;
-                dataGridView1.Columns["ObjectNameList"].Visible = true;
-            }
-            else if (NameListVisibleToolStripMenuItem.Checked == false)
-            {
-                ObjectNameList.Visible = false;
-                dataGridView1.Columns["ObjectNameList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListNameVisible = NameListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void RegistrationDateVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 登録日の表示・非表示
         {
-            if (RegistrationDateListVisibleToolStripMenuItem.Checked == true)
-            {
-                RegistrationDateList.Visible = true;
-                dataGridView1.Columns["RegistrationDateList"].Visible = true;
-            }
-            else if (RegistrationDateListVisibleToolStripMenuItem.Checked == false)
-            {
-                RegistrationDateList.Visible = false;
-                dataGridView1.Columns["RegistrationDateList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListRegistrationDateVisible = RegistrationDateListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void CategoryVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// カテゴリの表示・非表示
         {
-            if (CategoryListVisibleToolStripMenuItem.Checked == true)
-            {
-                CategoryList.Visible = true;
-                dataGridView1.Columns["CategoryList"].Visible = true;
-            }
-            else if (CategoryListVisibleToolStripMenuItem.Checked == false)
-            {
-                CategoryList.Visible = false;
-                dataGridView1.Columns["CategoryList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListCategoryVisible = CategoryListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void Tag1VisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ１の表示・非表示
         {
-            if (Tag1ListVisibleToolStripMenuItem.Checked == true)
-            {
-                Tag1List.Visible = true;
-                dataGridView1.Columns["Tag1List"].Visible = true;
-            }
-            else if (Tag1ListVisibleToolStripMenuItem.Checked == false)
-            {
-                Tag1List.Visible = false;
-                dataGridView1.Columns["Tag1List"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListFirstTagVisible = Tag1ListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void Tag2VisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ２の表示・非表示
         {
-            if (Tag2ListVisibleToolStripMenuItem.Checked == true)
-            {
-                Tag2List.Visible = true;
-                dataGridView1.Columns["Tag2List"].Visible = true;
-            }
-            else if (Tag2ListVisibleToolStripMenuItem.Checked == false)
-            {
-                Tag2List.Visible = false;
-                dataGridView1.Columns["Tag2List"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListSecondTagVisible = Tag2ListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void Tag3VisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ３の表示・非表示
         {
-            if (Tag3ListVisibleToolStripMenuItem.Checked == true)
-            {
-                Tag3List.Visible = true;
-                dataGridView1.Columns["Tag3List"].Visible = true;
-            }
-            else if (Tag3ListVisibleToolStripMenuItem.Checked == false)
-            {
-                Tag3List.Visible = false;
-                dataGridView1.Columns["Tag3List"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListThirdTagVisible = Tag3ListVisibleToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
         }
         private void InventoryInformationToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 在庫状況の表示
         {
-            if (InventoryInformationListToolStripMenuItem.Checked == true)
-            {
-                InventoryList.Visible = true;
-                dataGridView1.Columns["InventoryList"].Visible = true;
-                InventoryStatusList.Visible = true;
-                dataGridView1.Columns["InventoryStatusList"].Visible = true;
-            }
-            else if (InventoryInformationListToolStripMenuItem.Checked == false)
-            {
-                InventoryList.Visible = false;
-                dataGridView1.Columns["InventoryList"].Visible = false;
-                InventoryStatusList.Visible = false;
-                dataGridView1.Columns["InventoryStatusList"].Visible = false;
-            }
+            CurrentProjectSettingValues.CollectionListInventoryInformationVisible = InventoryInformationListToolStripMenuItem.Checked;
+            ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
+            ControlCollectionListColumnVisibe();
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
@@ -1770,71 +1191,23 @@ namespace CREC
         #region 色設定
         private void AliceBlueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConfigValues.ColorSetting = "Blue";
-            this.BackColor = Color.AliceBlue;
-            ShowListButton.BackColor = Color.AliceBlue;
-            menuStrip1.BackColor = SystemColors.InactiveCaption;
-            ShowProjcetNameTextBox.BackColor = SystemColors.InactiveCaption;
-            dataGridView1.BackgroundColor = SystemColors.InactiveCaption;
-            InventoryModeDataGridView.BackgroundColor = SystemColors.InactiveCaption;
-            Thumbnail.BackColor = SystemColors.InactiveCaption;
-            NoImageLabel.BackColor = SystemColors.InactiveCaption;
-            AliceBlueToolStripMenuItem.Checked = true;
-            HoneydewToolStripMenuItem.Checked = false;
-            LavenderBlushToolStripMenuItem.Checked = false;
-            WhiteSmokeToolStripMenuItem.Checked = false;
-            DarkToolStripMenuItem.Checked = false;
+            CurrentProjectSettingValues.ColorSetting = ColorValue.Blue;
+            SetColorMethod();
         }
         private void WhiteSmokeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConfigValues.ColorSetting = "White";
-            this.BackColor = Color.WhiteSmoke;
-            ShowListButton.BackColor = Color.WhiteSmoke;
-            menuStrip1.BackColor = Color.Gainsboro;
-            ShowProjcetNameTextBox.BackColor = Color.Gainsboro;
-            dataGridView1.BackgroundColor = SystemColors.ControlDark;
-            InventoryModeDataGridView.BackgroundColor = SystemColors.ControlDark;
-            Thumbnail.BackColor = Color.Gainsboro;
-            NoImageLabel.BackColor = Color.Gainsboro;
-            WhiteSmokeToolStripMenuItem.Checked = true;
-            LavenderBlushToolStripMenuItem.Checked = false;
-            AliceBlueToolStripMenuItem.Checked = false;
-            HoneydewToolStripMenuItem.Checked = false;
-            DarkToolStripMenuItem.Checked = false;
+            CurrentProjectSettingValues.ColorSetting = ColorValue.White;
+            SetColorMethod();
         }
         private void LavenderBlushToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConfigValues.ColorSetting = "Sakura";
-            this.BackColor = Color.LavenderBlush;
-            ShowListButton.BackColor = Color.LavenderBlush;
-            menuStrip1.BackColor = Color.LightPink;
-            ShowProjcetNameTextBox.BackColor = Color.LightPink;
-            dataGridView1.BackgroundColor = Color.LightPink;
-            InventoryModeDataGridView.BackgroundColor = Color.LightPink;
-            Thumbnail.BackColor = Color.LightPink;
-            NoImageLabel.BackColor = Color.LightPink;
-            LavenderBlushToolStripMenuItem.Checked = true;
-            AliceBlueToolStripMenuItem.Checked = false;
-            HoneydewToolStripMenuItem.Checked = false;
-            WhiteSmokeToolStripMenuItem.Checked = false;
-            DarkToolStripMenuItem.Checked = false;
+            CurrentProjectSettingValues.ColorSetting = ColorValue.Sakura;
+            SetColorMethod();
         }
         private void HoneydewToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            ConfigValues.ColorSetting = "Green";
-            this.BackColor = Color.Honeydew;
-            ShowListButton.BackColor = Color.Honeydew;
-            menuStrip1.BackColor = Color.FromArgb(192, 255, 192);
-            ShowProjcetNameTextBox.BackColor = Color.FromArgb(192, 255, 192);
-            dataGridView1.BackgroundColor = Color.FromArgb(192, 255, 192);
-            InventoryModeDataGridView.BackgroundColor = Color.FromArgb(192, 255, 192);
-            Thumbnail.BackColor = Color.FromArgb(192, 255, 192);
-            NoImageLabel.BackColor = Color.FromArgb(192, 255, 192);
-            HoneydewToolStripMenuItem.Checked = true;
-            AliceBlueToolStripMenuItem.Checked = false;
-            LavenderBlushToolStripMenuItem.Checked = false;
-            WhiteSmokeToolStripMenuItem.Checked = false;
-            DarkToolStripMenuItem.Checked = false;
+            CurrentProjectSettingValues.ColorSetting = ColorValue.Green;
+            SetColorMethod();
         }
         private void DarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1881,17 +1254,17 @@ namespace CREC
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(ConfigValues.ColorSetting, CurrentDPI, LanguageFile);
+            VersionInformation VerInfo = new VersionInformation(CurrentProjectSettingValues.ColorSetting.ToString(), CurrentDPI, LanguageFile);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
         {
-            ReadMe readme = new ReadMe(ConfigValues.ColorSetting);
+            ReadMe readme = new ReadMe(CurrentProjectSettingValues.ColorSetting.ToString());
             readme.ShowDialog();
         }
         private void UpdateHistoryToolStripMenuItem_Click(object sender, EventArgs e)// 更新履歴
         {
-            UpdateHistory updateHistory = new UpdateHistory(ConfigValues.ColorSetting);
+            UpdateHistory updateHistory = new UpdateHistory(CurrentProjectSettingValues.ColorSetting.ToString());
             updateHistory.ShowDialog();
         }
         private void AccessLatestReleaseToolStripMenuItem_Click(object sender, EventArgs e)// WebのLatestReleaseにアクセス
@@ -1912,7 +1285,7 @@ namespace CREC
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
-            SaveSearchSettings();
+            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             SaveConfig();
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
             {
@@ -1939,10 +1312,10 @@ namespace CREC
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         DateTime DT = DateTime.Now;
-                        if(CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                         {
                             try
                             {
@@ -1957,7 +1330,7 @@ namespace CREC
                             }
                             Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
                         }
-                        else if(CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
                         {
                             // バックアップ用フォルダ作成
                             Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
@@ -2029,11 +1402,11 @@ namespace CREC
                     {
                         BackUpMethod();
                         this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
                         Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                         // バックアップ作成
                         DateTime DT = DateTime.Now;
-                        if(CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                         {
                             try
                             {
@@ -2105,7 +1478,7 @@ namespace CREC
                 {
                     BackUpMethod();
                     this.Hide();// メインフォームを消す
-                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(ConfigValues.ColorSetting);
+                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
                     Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
                     // バックアップ作成
                     DateTime DT = DateTime.Now;
@@ -2246,7 +1619,7 @@ namespace CREC
                 {
                     if (CheckEditingContents() == true)
                     {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ConfigValues.ColorSetting, LanguageFile);
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ref CurrentProjectSettingValues, LanguageFile);
                         makenewproject.ShowDialog();
                         if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                         {
@@ -2261,7 +1634,7 @@ namespace CREC
                 }
                 else
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ConfigValues.ColorSetting, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ref CurrentProjectSettingValues, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                     {
@@ -2280,7 +1653,7 @@ namespace CREC
             }
             else
             {
-                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, ConfigValues.ColorSetting);
+                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, CurrentProjectSettingValues.ColorSetting.ToString());
                 projectInfoForm.ShowDialog();
             }
         }
@@ -2595,7 +1968,7 @@ namespace CREC
             }
             // アクセス日時を更新
             CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            SaveSearchSettings();
+            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             // 一応読み込み終了を宣言
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
@@ -4314,6 +3687,7 @@ namespace CREC
         }
         private void SearchOptionComboBox_SelectedIndexChanged(object sender, EventArgs e)// 検索対象が変更された場合に一覧を読み込んで更新
         {
+            CurrentProjectSettingValues.SearchOptionNumber = SearchOptionComboBox.SelectedIndex;
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchMethodComboBox.Items.Clear();
             if (SearchOptionComboBox.SelectedIndex == 7)
@@ -4332,6 +3706,7 @@ namespace CREC
                 SearchMethodComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SearchMethodExactMatch", "mainform", LanguageFile));
             }
             SearchMethodComboBox.SelectedIndex = 0;
+            CurrentProjectSettingValues.SearchMethodNumber = SearchMethodComboBox.SelectedIndex;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             if (SearchOptionComboBox.SelectedIndex == 7)
             {
@@ -4352,6 +3727,7 @@ namespace CREC
         }
         private void SearchMethodComboBox_SelectedIndexChanged(object sender, EventArgs e)// 検索メソッドが変更された場合に一覧を読み込んで更新
         {
+            CurrentProjectSettingValues.SearchMethodNumber = SearchMethodComboBox.SelectedIndex;
             if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
                 if (DataLoadingStatus == "true")
@@ -4483,230 +3859,6 @@ namespace CREC
                     return false;
             }
         }
-        private void SaveSearchSettings()//現時点での検索対象、検索メソッドの内容、List表示内容をプロジェクトファイルに書き込み
-        {
-            if (TargetCRECPath.Length > 0)
-            {
-                StreamWriter streamWriter;
-                streamWriter = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
-                try
-                {
-                    streamWriter.WriteLine("{0},{1}", "projectname", CurrentProjectSettingValues.Name);
-                    streamWriter.WriteLine("{0},{1}", "projectlocation", CurrentProjectSettingValues.ProjectDataFolderPath);
-                    streamWriter.WriteLine("{0},{1}", "backuplocation", CurrentProjectSettingValues.ProjectBackupFolderPath);
-                    streamWriter.Write("autobackup,");
-                    if (CurrentProjectSettingValues.StartUpBackUp == true)
-                    {
-                        streamWriter.Write("S");
-                    }
-                    if (CurrentProjectSettingValues.CloseBackUp == true)
-                    {
-                        streamWriter.Write("C");
-                    }
-                    if (CurrentProjectSettingValues.EditBackUp == true)
-                    {
-                        streamWriter.Write("E");
-                    }
-                    streamWriter.Write('\n');
-                    streamWriter.WriteLine("CompressType,{0}", (int)CurrentProjectSettingValues.CompressType);
-                    streamWriter.WriteLine("{0},{1}", "Listoutputlocation", CurrentProjectSettingValues.ListOutputPath);
-                    streamWriter.Write("autoListoutput,");
-                    if (CurrentProjectSettingValues.StartUpListOutput == true)
-                    {
-                        streamWriter.Write("S");
-                    }
-                    if (CurrentProjectSettingValues.CloseListOutput == true)
-                    {
-                        streamWriter.Write("C");
-                    }
-                    if (CurrentProjectSettingValues.EditListOutput == true)
-                    {
-                        streamWriter.Write("E");
-                    }
-                    streamWriter.Write('\n');
-                    streamWriter.Write("openListafteroutput,");
-                    if (CurrentProjectSettingValues.OpenListAfterOutput == true)
-                    {
-                        streamWriter.Write("O");
-                    }
-                    streamWriter.Write('\n');
-                    streamWriter.WriteLine("ListOutputFormat,{0}", CurrentProjectSettingValues.ListOutputFormat.ToString());
-                    streamWriter.WriteLine("{0},{1}", "created", CurrentProjectSettingValues.CreatedDate);
-                    streamWriter.WriteLine("{0},{1}", "modified", CurrentProjectSettingValues.ModifiedDate);
-                    streamWriter.WriteLine("{0},{1}", "accessed", CurrentProjectSettingValues.AccessedDate);
-                    if (CurrentProjectSettingValues.CollectionNameVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", CurrentProjectSettingValues.CollectionNameLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowObjectNameLabel", CurrentProjectSettingValues.CollectionNameLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.UUIDVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", CurrentProjectSettingValues.UUIDLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowIDLabel", CurrentProjectSettingValues.UUIDLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.ManagementCodeVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", CurrentProjectSettingValues.ManagementCodeLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowMCLabel", CurrentProjectSettingValues.ManagementCodeLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.RegistrationDateVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", CurrentProjectSettingValues.RegistrationDateLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRegistrationDateLabel", CurrentProjectSettingValues.RegistrationDateLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.ManagementCodeAutoFill == true)
-                    {
-                        streamWriter.Write("AutoMCFill,t\n");
-                    }
-                    else
-                    {
-                        streamWriter.Write("AutoMCFill,f\n");
-                    }
-                    if (CurrentProjectSettingValues.CategoryVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", CurrentProjectSettingValues.CategoryLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowCategoryLabel", CurrentProjectSettingValues.CategoryLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.FirstTagVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", CurrentProjectSettingValues.FirstTagLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag1Name", CurrentProjectSettingValues.FirstTagLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.SecondTagVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", CurrentProjectSettingValues.SecondTagLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag2Name", CurrentProjectSettingValues.SecondTagLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.ThirdTagVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", CurrentProjectSettingValues.ThirdTagLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "Tag3Name", CurrentProjectSettingValues.ThirdTagLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.RealLocationVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", CurrentProjectSettingValues.RealLocationLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowRealLocationLabel", CurrentProjectSettingValues.RealLocationLabel, "f");
-                    }
-                    if (CurrentProjectSettingValues.DataLocationVisible == true)
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", CurrentProjectSettingValues.DataLocationLabel, "t");
-                    }
-                    else
-                    {
-                        streamWriter.WriteLine("{0},{1},{2}", "ShowDataLocationLabel", CurrentProjectSettingValues.DataLocationLabel, "f");
-                    }
-                    streamWriter.WriteLine("{0},{1}", "SearchOptionNumber", SearchOptionComboBox.SelectedIndex.ToString());
-                    streamWriter.WriteLine("{0},{1}", "SearchMethodNumber", SearchMethodComboBox.SelectedIndex.ToString());
-                    if (IDList.Visible == true)
-                    {
-                        streamWriter.WriteLine("IDListVisible,true");
-                    }
-                    else if (IDList.Visible == false)
-                    {
-                        streamWriter.WriteLine("IDListVisible,false");
-                    }
-                    if (MCList.Visible == true)
-                    {
-                        streamWriter.WriteLine("MCListVisible,true");
-                    }
-                    else if (MCList.Visible == false)
-                    {
-                        streamWriter.WriteLine("MCListVisible,false");
-                    }
-                    if (ObjectNameList.Visible == true)
-                    {
-                        streamWriter.WriteLine("ObjectNameListVisible,true");
-                    }
-                    else if (ObjectNameList.Visible == false)
-                    {
-                        streamWriter.WriteLine("ObjectNameListVisible,false");
-                    }
-                    if (RegistrationDateList.Visible == true)
-                    {
-                        streamWriter.WriteLine("RegistrationDateListVisible,true");
-                    }
-                    else if (RegistrationDateList.Visible == false)
-                    {
-                        streamWriter.WriteLine("RegistrationDateListVisible,false");
-                    }
-                    if (CategoryList.Visible == true)
-                    {
-                        streamWriter.WriteLine("CategoryListVisible,true");
-                    }
-                    else if (CategoryList.Visible == false)
-                    {
-                        streamWriter.WriteLine("CategoryListVisible,false");
-                    }
-                    if (Tag1List.Visible == true)
-                    {
-                        streamWriter.WriteLine("Tag1ListVisible,true");
-                    }
-                    else if (Tag1List.Visible == false)
-                    {
-                        streamWriter.WriteLine("Tag1ListVisible,false");
-                    }
-                    if (Tag2List.Visible == true)
-                    {
-                        streamWriter.WriteLine("Tag2ListVisible,true");
-                    }
-                    else if (Tag2List.Visible == false)
-                    {
-                        streamWriter.WriteLine("Tag2ListVisible,false");
-                    }
-                    if (Tag3List.Visible == true)
-                    {
-                        streamWriter.WriteLine("Tag3ListVisible,true");
-                    }
-                    else if (Tag3List.Visible == false)
-                    {
-                        streamWriter.WriteLine("Tag3ListVisible,false");
-                    }
-                    if (InventoryList.Visible == true)
-                    {
-                        streamWriter.WriteLine("InventoryInformationListVisible,true");
-                    }
-                    else if (InventoryList.Visible == false)
-                    {
-                        streamWriter.WriteLine("InventoryInformationListVisible,false");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("プロジェクトファイルの更新に失敗しました。\n" + ex.Message, "CREC");
-                }
-                finally
-                {
-                    streamWriter.Close();
-                }
-            }
-        }
         #endregion
 
         #region Config読み込み・保存
@@ -4822,16 +3974,6 @@ namespace CREC
                                 ConfigValues.BootUpdateCheck = false;
                             }
                             break;
-                        case "ColorSetting":
-                            if (cols[1].Length == 0)
-                            {
-                                ConfigValues.ColorSetting = "Blue";
-                            }
-                            else
-                            {
-                                ConfigValues.ColorSetting = cols[1];
-                            }
-                            break;
                         case "Language":
                             if (cols[1].Length == 0)
                             {
@@ -4925,7 +4067,6 @@ namespace CREC
                 {
                     configfile.WriteLine("BootUpdateCheck,false");
                 }
-                configfile.WriteLine("ColorSetting,{0}", ConfigValues.ColorSetting);
                 configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
                 configfile.WriteLine("FontsizeOffset,{0}", ConfigValues.FontsizeOffset);
             }
@@ -5148,7 +4289,7 @@ namespace CREC
             AddQuantityButton.Location = new Point(Convert.ToInt32(380 * DpiScale), Convert.ToInt32(FormSize.Height - 195 * DpiScale));
             AddQuantityButton.Font = new Font(fontname, mainfontsize);
             SubtractQuantityButton.Location = new Point(Convert.ToInt32(380 * DpiScale), Convert.ToInt32(FormSize.Height - 150 * DpiScale));
-            SubtractQuantityButton.Font= new Font(fontname, mainfontsize);
+            SubtractQuantityButton.Font = new Font(fontname, mainfontsize);
             AddInventoryOperationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 - 175 * DpiScale), Convert.ToInt32(FormSize.Height - 165 * DpiScale));
             AddInventoryOperationButton.Font = new Font(fontname, mainfontsize);
             InventoryOperationNoteLabel.Location = new Point(Convert.ToInt32(30 * DpiScale), Convert.ToInt32(FormSize.Height - 120 * DpiScale));
@@ -6020,10 +5161,9 @@ namespace CREC
         }
         private void SetColorMethod()// 色設定のメソッド
         {
-            switch (ConfigValues.ColorSetting)
+            switch (CurrentProjectSettingValues.ColorSetting)
             {
-                case "Blue":
-                    ConfigValues.ColorSetting = "Blue";
+                case ColorValue.Blue:
                     this.BackColor = Color.AliceBlue;
                     ShowListButton.BackColor = Color.AliceBlue;
                     menuStrip1.BackColor = SystemColors.InactiveCaption;
@@ -6038,8 +5178,7 @@ namespace CREC
                     WhiteSmokeToolStripMenuItem.Checked = false;
                     DarkToolStripMenuItem.Checked = false;
                     break;
-                case "White":
-                    ConfigValues.ColorSetting = "White";
+                case ColorValue.White:
                     this.BackColor = Color.WhiteSmoke;
                     ShowListButton.BackColor = Color.WhiteSmoke;
                     menuStrip1.BackColor = Color.Gainsboro;
@@ -6054,8 +5193,7 @@ namespace CREC
                     HoneydewToolStripMenuItem.Checked = false;
                     DarkToolStripMenuItem.Checked = false;
                     break;
-                case "Sakura":
-                    ConfigValues.ColorSetting = "Sakura";
+                case ColorValue.Sakura:
                     this.BackColor = Color.LavenderBlush;
                     ShowListButton.BackColor = Color.LavenderBlush;
                     menuStrip1.BackColor = Color.LightPink;
@@ -6070,8 +5208,7 @@ namespace CREC
                     WhiteSmokeToolStripMenuItem.Checked = false;
                     DarkToolStripMenuItem.Checked = false;
                     break;
-                case "Green":
-                    ConfigValues.ColorSetting = "Green";
+                case ColorValue.Green:
                     this.BackColor = Color.Honeydew;
                     ShowListButton.BackColor = Color.Honeydew;
                     menuStrip1.BackColor = Color.FromArgb(192, 255, 192);
@@ -6087,7 +5224,6 @@ namespace CREC
                     DarkToolStripMenuItem.Checked = false;
                     break;
                 default:
-                    ConfigValues.ColorSetting = "Blue";
                     this.BackColor = Color.AliceBlue;
                     ShowListButton.BackColor = Color.AliceBlue;
                     menuStrip1.BackColor = SystemColors.InactiveCaption;

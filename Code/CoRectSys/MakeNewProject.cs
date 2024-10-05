@@ -21,15 +21,14 @@ namespace CREC
     public partial class MakeNewProject : Form
     {
         string TargetCRECPath = "";//管理ファイル（.crec）のファイルパス
-        string[] cols;// List等読み込み用
-        string ColorSetting = "Blue";
         readonly XElement LanguageFile;// 言語ファイル
+        ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在編集中のプロジェクトの設定値
         public string ReturnTargetProject { get; private set; } = "";
-        public MakeNewProject(string tmp, string colorSetting, XElement languageFile)
+        public MakeNewProject(string tmp, ref ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
             InitializeComponent();
             TargetCRECPath = tmp;
-            ColorSetting = colorSetting;
+            CurrentProjectSettingValues = projectSettingValues;
             SetColorMethod();
             LanguageFile = languageFile;
         }
@@ -39,419 +38,56 @@ namespace CREC
             SetLanguage();
             // 必要な項目を初期化
             CompressTypeComboBox.SelectedIndex = 0;
-            FileFormatComboBox.SelectedIndex = 0;
-            if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
+            FileFormatComboBox.SelectedIndex = 0;// 追加の場合はデフォルト値を各ラベルから取得してTextBoxに入れる
+            if (TargetCRECPath.Length == 0)// 新規作成の場合はプロジェクト設定値を初期化
             {
-                IEnumerable<string> tmp = null;
-                tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
-                foreach (string line in tmp)
-                {
-                    cols = line.Split(',');
-                    switch (cols[0])
-                    {
-                        case "projectname":
-                            EditProjectNameTextBox.Text = cols[1];
-                            break;
-                        case "projectlocation":
-                            EditProjectLocationTextBox.Text = cols[1];
-                            break;
-                        case "backuplocation":
-                            if (cols[1] == "null")
-                            {
-                                EditBackupLocationTextBox.Text = "";
-                            }
-                            else
-                            {
-                                EditBackupLocationTextBox.Text = cols[1];
-                            }
-                            break;
-                        case "autobackup":
-                            if (cols[1].Contains("S"))
-                            {
-                                StartUpBackUpCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                StartUpBackUpCheckBox.Checked = false;
-                            }
-                            if (cols[1].Contains("C"))
-                            {
-                                CloseBackUpCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                CloseBackUpCheckBox.Checked = false;
-                            }
-                            if (cols[1].Contains("E"))
-                            {
-                                EditedBackUpCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                EditedBackUpCheckBox.Checked = false;
-                            }
-                            break;
-                        case "CompressType":
-                            try
-                            {
-                                CompressTypeComboBox.SelectedIndex = Convert.ToInt32(cols[1]);
-                            }
-                            catch (Exception ex)
-                            {
-                                System.Windows.Forms.MessageBox.Show(ex.Message);
-                                CompressTypeComboBox.SelectedIndex = 1;
-                            }
-                            break;
-                        case "Listoutputlocation":
-                            if (cols[1] == "null")
-                            {
-                                EditListOutputLocationTextBox.Text = "";
-                            }
-                            else
-                            {
-                                EditListOutputLocationTextBox.Text = cols[1];
-                            }
-                            break;
-                        case "autoListoutput":
-                            if (cols[1].Contains("S"))
-                            {
-                                StartUpListOutputCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                StartUpListOutputCheckBox.Checked = false;
-                            }
-                            if (cols[1].Contains("C"))
-                            {
-                                CloseListOutputCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                CloseListOutputCheckBox.Checked = false;
-                            }
-                            if (cols[1].Contains("E"))
-                            {
-                                EditedListOutputCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                EditedListOutputCheckBox.Checked = false;
-                            }
-                            break;
-                        case "openListafteroutput":
-                            if (cols[1].Contains("O"))
-                            {
-                                OpenListAfterOutputCheckBox.Checked = true;
-                            }
-                            else
-                            {
-                                OpenListAfterOutputCheckBox.Checked = false;
-                            }
-                            break;
-                        case "ListOutputFormat":
-                            if (cols[1] == "CSV")
-                            {
-                                FileFormatComboBox.SelectedIndex = 0;
-                            }
-                            else if (cols[1] == "TSV")
-                            {
-                                FileFormatComboBox.SelectedIndex = 1;
-                            }
-                            else
-                            {
-                                FileFormatComboBox.SelectedIndex = 0;
-                            }
-                            break;
-                        case "created":
-                            break;
-                        case "modified":
-                            break;
-                        case "accessed":
-                            break;
-                        case "ShowObjectNameLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditObjectNameLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditObjectNameLabelTextBox.Text = "名称";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowObjectNameLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowObjectNameLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowObjectNameLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowIDLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditUUIDLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditUUIDLabelTextBox.Text = "ID";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowIDLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowIDLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowIDLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowMCLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditMCLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditMCLabelTextBox.Text = "管理コード";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowMCLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowMCLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowMCLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "AutoMCFill":
-                            try
-                            {
-                                if (cols[1] == "f")
-                                {
-                                    AutoMCFillCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    AutoMCFillCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                AutoMCFillCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowRegistrationDateLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditRegistrationDateLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditRegistrationDateLabelTextBox.Text = "登録日";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowRegistrationDateLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowRegistrationDateLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowRegistrationDateLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowCategoryLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditCategoryLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditCategoryLabelTextBox.Text = "カテゴリ";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowCategoryLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowCategoryLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowCategoryLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "Tag1Name":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditTag1NameTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditTag1NameTextBox.Text = "タグ１";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    Tag1NameVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    Tag1NameVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                Tag1NameVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "Tag2Name":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditTag2NameTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditTag2NameTextBox.Text = "タグ２";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    Tag2NameVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    Tag2NameVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                Tag2NameVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "Tag3Name":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditTag3NameTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditTag3NameTextBox.Text = "タグ３";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    Tag3NameVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    Tag3NameVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                Tag3NameVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowRealLocationLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditRealLocationLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditRealLocationLabelTextBox.Text = "現物保管場所";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowRealLocationLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowRealLocationLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowRealLocationLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                        case "ShowDataLocationLabel":
-                            try
-                            {
-                                if (cols[1].Length > 0)
-                                {
-                                    EditDataLocationLabelTextBox.Text = cols[1];
-                                }
-                                else
-                                {
-                                    EditDataLocationLabelTextBox.Text = "データ保管場所";
-                                }
-                                if (cols[2] == "f")
-                                {
-                                    ShowDataLocationLabelVisibleCheckBox.Checked = false;
-                                }
-                                else
-                                {
-                                    ShowDataLocationLabelVisibleCheckBox.Checked = true;
-                                }
-                            }
-                            catch
-                            {
-                                ShowDataLocationLabelVisibleCheckBox.Checked = true;
-                            }
-                            break;
-                    }
-                }
-
+                CurrentProjectSettingValues = new ProjectSettingValuesClass();
+                CurrentProjectSettingValues.CollectionNameLabel = ObjectNameLabel.Text;
+                CurrentProjectSettingValues.UUIDLabel = UUIDLabel.Text;
+                CurrentProjectSettingValues.ManagementCodeLabel = MCLabel.Text;
+                CurrentProjectSettingValues.RegistrationDateLabel = RegistrationDateLabel.Text;
+                CurrentProjectSettingValues.CategoryLabel = CategoryLabel.Text;
+                CurrentProjectSettingValues.FirstTagLabel = Tag1NameLabel.Text;
+                CurrentProjectSettingValues.SecondTagLabel = Tag2NameLabel.Text;
+                CurrentProjectSettingValues.ThirdTagLabel = Tag3NameLabel.Text;
+                CurrentProjectSettingValues.RealLocationLabel = RealLocationLabel.Text;
+                CurrentProjectSettingValues.DataLocationLabel = DataLocationLabel.Text;
             }
-            else// 追加の場合はデフォルト値を各ラベルから取得してTextBoxに入れる
-            {
-                EditObjectNameLabelTextBox.Text = ObjectNameLabel.Text;
-                EditUUIDLabelTextBox.Text = UUIDLabel.Text;
-                EditMCLabelTextBox.Text = MCLabel.Text;
-                EditRegistrationDateLabelTextBox.Text = RegistrationDateLabel.Text;
-                EditCategoryLabelTextBox.Text = CategoryLabel.Text;
-                EditTag1NameTextBox.Text = Tag1NameLabel.Text;
-                EditTag2NameTextBox.Text = Tag2NameLabel.Text;
-                EditTag3NameTextBox.Text = Tag3NameLabel.Text;
-                EditRealLocationLabelTextBox.Text = RealLocationLabel.Text;
-                EditDataLocationLabelTextBox.Text = DataLocationLabel.Text;
-            }
+            // 現在の内容を表示
+            EditProjectNameTextBox.Text = CurrentProjectSettingValues.Name;
+            EditProjectLocationTextBox.Text = CurrentProjectSettingValues.ProjectDataFolderPath;
+            EditBackupLocationTextBox.Text = CurrentProjectSettingValues.ProjectBackupFolderPath;
+            StartUpBackUpCheckBox.Checked = CurrentProjectSettingValues.StartUpBackUp;
+            CloseBackUpCheckBox.Checked = CurrentProjectSettingValues.CloseBackUp;
+            EditedBackUpCheckBox.Checked = CurrentProjectSettingValues.EditBackUp;
+            CompressTypeComboBox.SelectedIndex = (int)CurrentProjectSettingValues.CompressType;
+            EditListOutputLocationTextBox.Text = CurrentProjectSettingValues.ListOutputPath;
+            StartUpListOutputCheckBox.Checked = CurrentProjectSettingValues.StartUpListOutput;
+            CloseListOutputCheckBox.Checked = CurrentProjectSettingValues.CloseListOutput;
+            EditedListOutputCheckBox.Checked = CurrentProjectSettingValues.EditListOutput;
+            OpenListAfterOutputCheckBox.Checked = CurrentProjectSettingValues.OpenListAfterOutput;
+            FileFormatComboBox.SelectedIndex = (int)CurrentProjectSettingValues.ListOutputFormat;
+            EditObjectNameLabelTextBox.Text = CurrentProjectSettingValues.CollectionNameLabel;
+            ShowObjectNameLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.CollectionNameVisible;
+            EditUUIDLabelTextBox.Text = CurrentProjectSettingValues.UUIDLabel;
+            ShowIDLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.UUIDVisible;
+            EditMCLabelTextBox.Text = CurrentProjectSettingValues.ManagementCodeLabel;
+            ShowMCLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.ManagementCodeVisible;
+            AutoMCFillCheckBox.Checked = CurrentProjectSettingValues.ManagementCodeAutoFill;
+            EditRegistrationDateLabelTextBox.Text = CurrentProjectSettingValues.RegistrationDateLabel;
+            ShowRegistrationDateLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.RegistrationDateVisible;
+            EditCategoryLabelTextBox.Text = CurrentProjectSettingValues.CategoryLabel;
+            ShowCategoryLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.CategoryVisible;
+            EditTag1NameTextBox.Text = CurrentProjectSettingValues.FirstTagLabel;
+            Tag1NameVisibleCheckBox.Checked = CurrentProjectSettingValues.FirstTagVisible;
+            EditTag2NameTextBox.Text = CurrentProjectSettingValues.SecondTagLabel;
+            Tag2NameVisibleCheckBox.Checked = CurrentProjectSettingValues.SecondTagVisible;
+            EditTag3NameTextBox.Text = CurrentProjectSettingValues.ThirdTagLabel;
+            Tag3NameVisibleCheckBox.Checked = CurrentProjectSettingValues.ThirdTagVisible;
+            EditRealLocationLabelTextBox.Text = CurrentProjectSettingValues.RealLocationLabel;
+            ShowRealLocationLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.RealLocationVisible;
+            EditDataLocationLabelTextBox.Text = CurrentProjectSettingValues.DataLocationLabel;
+            ShowDataLocationLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.DataLocationVisible;
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -468,8 +104,43 @@ namespace CREC
                 MessageBox.Show("プロジェクトの作成場所を空欄にすることはできません。", "CREC");
             }
 
-            if (error == 0)// 記入内容に問題がなかった場合は.crsファイルを作成
+            if (error == 0)// 記入内容に問題がなかった場合は.crecファイルを作成
             {
+                // 編集内容をプロジェクト設定値に反映
+                CurrentProjectSettingValues.Name = EditProjectNameTextBox.Text;
+                CurrentProjectSettingValues.ProjectDataFolderPath = EditProjectLocationTextBox.Text;
+                CurrentProjectSettingValues.ProjectBackupFolderPath = EditBackupLocationTextBox.Text;
+                CurrentProjectSettingValues.StartUpBackUp = StartUpBackUpCheckBox.Checked;
+                CurrentProjectSettingValues.CloseBackUp = CloseBackUpCheckBox.Checked;
+                CurrentProjectSettingValues.EditBackUp = EditedBackUpCheckBox.Checked;
+                CurrentProjectSettingValues.CompressType = (CompressType)CompressTypeComboBox.SelectedIndex;
+                CurrentProjectSettingValues.ListOutputPath = EditListOutputLocationTextBox.Text;
+                CurrentProjectSettingValues.StartUpListOutput = StartUpListOutputCheckBox.Checked;
+                CurrentProjectSettingValues.CloseListOutput = CloseListOutputCheckBox.Checked;
+                CurrentProjectSettingValues.EditListOutput = EditedListOutputCheckBox.Checked;
+                CurrentProjectSettingValues.OpenListAfterOutput = OpenListAfterOutputCheckBox.Checked;
+                CurrentProjectSettingValues.ListOutputFormat = (ListOutputFormat)FileFormatComboBox.SelectedIndex;
+                CurrentProjectSettingValues.CollectionNameLabel = EditObjectNameLabelTextBox.Text;
+                CurrentProjectSettingValues.CollectionNameVisible = ShowObjectNameLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.UUIDLabel = EditUUIDLabelTextBox.Text;
+                CurrentProjectSettingValues.UUIDVisible = ShowIDLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.ManagementCodeLabel = EditMCLabelTextBox.Text;
+                CurrentProjectSettingValues.ManagementCodeVisible = ShowMCLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.ManagementCodeAutoFill = AutoMCFillCheckBox.Checked;
+                CurrentProjectSettingValues.RegistrationDateLabel = EditRegistrationDateLabelTextBox.Text;
+                CurrentProjectSettingValues.RegistrationDateVisible = ShowRegistrationDateLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.CategoryLabel = EditCategoryLabelTextBox.Text;
+                CurrentProjectSettingValues.CategoryVisible = ShowCategoryLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.FirstTagLabel = EditTag1NameTextBox.Text;
+                CurrentProjectSettingValues.FirstTagVisible = Tag1NameVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.SecondTagLabel = EditTag2NameTextBox.Text;
+                CurrentProjectSettingValues.SecondTagVisible = Tag2NameVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.ThirdTagLabel = EditTag3NameTextBox.Text;
+                CurrentProjectSettingValues.ThirdTagVisible = Tag3NameVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.RealLocationLabel = EditRealLocationLabelTextBox.Text;
+                CurrentProjectSettingValues.RealLocationVisible = ShowRealLocationLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.DataLocationLabel = EditDataLocationLabelTextBox.Text;
+                CurrentProjectSettingValues.DataLocationVisible = ShowDataLocationLabelVisibleCheckBox.Checked;
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (TargetCRECPath.Length == 0)// 新規プロジェクト作成の場合
                 {
@@ -531,252 +202,8 @@ namespace CREC
                         MessageBox.Show("既存の管理ファイルの削除に失敗しました。\n新規に管理ファイルを作成します。\n" + ex.Message, "CREC");
                     }
                 }
-                // crec出力先の設定
-                if (TargetCRECPath.Length > 0)
-                {
-
-                }
-                else
-                {
-                    TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
-                }
-                StreamWriter sw = new StreamWriter(TargetCRECPath, false, Encoding.GetEncoding("UTF-8"));
-
-                sw.WriteLine("{0},{1}\n{2},{3}", "projectname", EditProjectNameTextBox.Text, "projectlocation", EditProjectLocationTextBox.Text);
-                // バックアップ場所の設定
-                if (EditBackupLocationTextBox.Text.Length == 0)
-                {
-                    sw.WriteLine("{0},{1}", "backuplocation", "null");
-                }
-                else
-                {
-                    sw.WriteLine("{0},{1}", "backuplocation", EditBackupLocationTextBox.Text);
-                }
-                // 自動バックアップの設定
-                sw.Write("autobackup,");
-                if (StartUpBackUpCheckBox.Checked == true)
-                {
-                    sw.Write("S");
-                }
-                if (CloseBackUpCheckBox.Checked == true)
-                {
-                    sw.Write("C");
-                }
-                if (EditedBackUpCheckBox.Checked == true)
-                {
-                    sw.Write("E");
-                }
-                sw.Write('\n');
-                // 圧縮方法
-                sw.Write("CompressType,");
-                sw.Write(Convert.ToString(CompressTypeComboBox.SelectedIndex));
-                sw.Write('\n');
-                // 一覧出力先の設定
-                if (EditListOutputLocationTextBox.Text.Length == 0)
-                {
-                    sw.WriteLine("{0},{1}", "Listoutputlocation", "null");
-                }
-                else
-                {
-                    sw.WriteLine("{0},{1}", "Listoutputlocation", EditListOutputLocationTextBox.Text);
-                }
-                // 自動一覧出力の設定
-                sw.Write("autoListoutput,");
-                if (StartUpListOutputCheckBox.Checked == true)
-                {
-                    sw.Write("S");
-                }
-                if (CloseListOutputCheckBox.Checked == true)
-                {
-                    sw.Write("C");
-                }
-                if (EditedListOutputCheckBox.Checked == true)
-                {
-                    sw.Write("E");
-                }
-                sw.Write('\n');
-                sw.Write("openListafteroutput,");
-                if (OpenListAfterOutputCheckBox.Checked == true)
-                {
-                    sw.Write("O");
-                }
-                sw.Write('\n');
-                sw.Write("ListOutputFormat,");
-                sw.Write(Convert.ToString(FileFormatComboBox.SelectedItem));
-                sw.Write('\n');
-                // 現在時刻を取得 
-                DateTime DT = DateTime.Now;
-                sw.WriteLine("{0},{1}\n{2},{3}\n{4},{5}", "created", DT.ToString("yyyy/MM/dd hh:mm:ss"), "modified", DT.ToString("yyyy/MM/dd hh:mm:ss"), "accesssed", DT.ToString("yyyy/MM/dd hh:mm:ss"));
-                // 各ラベルの表示名設定を書き込み
-                if (EditObjectNameLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowObjectNameLabel", EditObjectNameLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowObjectNameLabel", ObjectNameLabel.Text);
-                }
-                if (ShowObjectNameLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowObjectNameLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditUUIDLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowIDLabel", EditUUIDLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowIDLabel", UUIDLabel.Text);
-                }
-                if (ShowIDLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowIDLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditMCLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowMCLabel", EditMCLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowMCLabel", MCLabel.Text);
-                }
-                if (ShowMCLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowMCLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (AutoMCFillCheckBox.Checked == true)
-                {
-                    sw.Write("AutoMCFill,t\n");
-                }
-                else
-                {
-                    sw.Write("AutoMCFill,f\n");
-                }
-                if (EditRegistrationDateLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowRegistrationDateLabel", EditRegistrationDateLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowRegistrationDateLabel", RegistrationDateLabel.Text);
-                }
-                if (ShowRegistrationDateLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowRegistrationDateLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditCategoryLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowCategoryLabel", EditCategoryLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowCategoryLabel", CategoryLabel.Text);
-                }
-                if (ShowCategoryLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowCategoryLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditTag1NameTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "Tag1Name", EditTag1NameTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "Tag1Name", Tag1NameLabel.Text);
-                }
-                if (Tag1NameVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (Tag1NameVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditTag2NameTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "Tag2Name", EditTag2NameTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "Tag2Name", Tag2NameLabel.Text);
-                }
-                if (Tag2NameVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (Tag2NameVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditTag3NameTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "Tag3Name", EditTag3NameTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "Tag3Name", Tag3NameLabel.Text);
-                }
-                if (Tag3NameVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (Tag3NameVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditRealLocationLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowRealLocationLabel", EditRealLocationLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowRealLocationLabel", RealLocationLabel.Text);
-                }
-                if (ShowRealLocationLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowRealLocationLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                if (EditDataLocationLabelTextBox.Text.Length > 0)
-                {
-                    sw.Write("{0},{1},", "ShowDataLocationLabel", EditDataLocationLabelTextBox.Text);
-                }
-                else
-                {
-                    sw.Write("{0},{1},", "ShowDataLocationLabel", DataLocationLabel.Text);
-                }
-                if (ShowDataLocationLabelVisibleCheckBox.Checked == true)
-                {
-                    sw.Write("t\n");
-                }
-                else if (ShowDataLocationLabelVisibleCheckBox.Checked == false)
-                {
-                    sw.Write("f\n");
-                }
-                sw.Close();
+                TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues,TargetCRECPath);
                 ReturnTargetProject = TargetCRECPath;
                 this.Close();
             }
@@ -852,7 +279,7 @@ namespace CREC
         }
         private void SetColorMethod()// 色設定のメソッド
         {
-            switch (ColorSetting)
+            switch (CurrentProjectSettingValues.ColorSetting.ToString())
             {
                 case "Blue":
                     this.BackColor = Color.AliceBlue;
@@ -868,7 +295,7 @@ namespace CREC
                     break;
                 default:
                     this.BackColor = Color.AliceBlue;
-                    ColorSetting = "Blue";
+                    CurrentProjectSettingValues.ColorSetting = 0;
                     break;
             }
         }

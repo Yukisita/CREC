@@ -16,7 +16,6 @@ namespace CREC
         public bool AutoSearch { get; set; } = true;
         public bool RecentShownContents { get; set; } = true;
         public bool BootUpdateCheck { get; set; } = true;
-        public string ColorSetting { get; set; } = "Blue";
         public string AutoLoadProjectPath { get; set; } = string.Empty;
         public bool OpenLastTimeProject { get; set; } = false;
         public int FontsizeOffset { get; set; } = 0;

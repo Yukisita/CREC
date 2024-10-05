@@ -203,7 +203,6 @@ namespace CREC
             {
                 configfile.WriteLine("BootUpdateCheck,false");
             }
-            configfile.WriteLine("ColorSetting,{0}", ColorSetting);
             configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
             configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
             configfile.Close();
