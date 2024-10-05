@@ -13,8 +13,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-
-
 namespace CREC
 {
     public enum CompressType// バックアップ時のファイル圧縮方法
@@ -324,7 +322,9 @@ namespace CREC
                         projectSettingValues.ModifiedDate = cols[1];
                         break;
                     case "accessed":
-                        projectSettingValues.AccessedDate = cols[1];
+                        // 現在時刻を取得 
+                        DateTime dateTime = DateTime.Now;
+                        projectSettingValues.AccessedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
                         break;
                     case "Color":
                         try

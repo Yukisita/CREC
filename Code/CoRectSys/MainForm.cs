@@ -243,7 +243,7 @@ namespace CREC
             {
                 if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, ref CurrentProjectSettingValues, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, CurrentProjectSettingValues, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                     {
@@ -258,7 +258,7 @@ namespace CREC
             }
             else// 編集中データがなかった場合
             {
-                MakeNewProject makenewproject = new MakeNewProject(string.Empty, ref CurrentProjectSettingValues, LanguageFile);
+                MakeNewProject makenewproject = new MakeNewProject(string.Empty, CurrentProjectSettingValues, LanguageFile);
                 makenewproject.ShowDialog();
                 if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
                 {
@@ -1285,255 +1285,258 @@ namespace CREC
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
-            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             SaveConfig();
-            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
+            if (TargetCRECPath.Length != 0)
             {
-                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
-                if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+                if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
                 {
-                    // 入力内容を確認
-                    if (CheckContent() == false)
+                    System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+                    if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
                     {
-                        e.Cancel = true;
-                        return;
-                    }
-                    // データ保存メソッドを呼び出し
-                    if (SaveContentsMethod() == false)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                    if (CurrentProjectSettingValues.CloseListOutput == true)
-                    {
-                        ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-                    }
-                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                    {
-                        BackUpMethod();
-                        this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                        Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                        DateTime DT = DateTime.Now;
-                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                        // 入力内容を確認
+                        if (CheckContent() == false)
                         {
-                            try
-                            {
-                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
-                        }
-                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
-                        {
-                            // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                            try
-                            {
-                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
-                                {
-                                    try
-                                    {
-                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
-                                    }
-                                    catch// バックアップ失敗時はログに書き込み
-                                    {
-                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                        streamWriter.WriteLine(subFolder.FullName);
-                                        streamWriter.Close();
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete("backuptmp", true);// 削除
-                            if (File.Exists("BackupErrorLog.txt"))
-                            {
-                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
-                            }
-                        }
-                    }
-                }
-                else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
-                {
-                    // 編集中タグを削除・解放をマーク
-                    if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
-                    {
-                        Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
-                    }
-                    FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
-                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
-                    FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
-                    // サムネ画像が更新されていた場合は一時データをを削除
-                    if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
-                    {
-                        FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
-                    }
-                    if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
-                    {
-                        DeleteContent();
-                    }
-                    else
-                    {
-                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
-                    }
-                    if (CurrentProjectSettingValues.CloseListOutput == true)
-                    {
-                        ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-                    }
-                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                    {
-                        BackUpMethod();
-                        this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                        Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                        // バックアップ作成
-                        DateTime DT = DateTime.Now;
-                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
-                        {
-                            try
-                            {
-                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
-                        }
-                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
-                        {
-                            // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                            try
-                            {
-                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
-                                {
-                                    try
-                                    {
-                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
-                                    }
-                                    catch// バックアップ失敗時はログに書き込み
-                                    {
-                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                        streamWriter.WriteLine(subFolder.FullName);
-                                        streamWriter.Close();
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete("backuptmp", true);// 削除
-                            if (File.Exists("BackupErrorLog.txt"))
-                            {
-                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
-                            }
-                        }
-                    }
-                }
-                else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ終了をキャンセル
-                {
-                    e.Cancel = true;
-                    return;
-                }
-            }
-            else
-            {
-                if (CurrentProjectSettingValues.CloseListOutput == true)
-                {
-                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-                }
-                if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                {
-                    BackUpMethod();
-                    this.Hide();// メインフォームを消す
-                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                    Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                    // バックアップ作成
-                    DateTime DT = DateTime.Now;
-                    if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
-                    {
-                        try
-                        {
-                            ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                            BackupToolStripMenuItem.Enabled = true;
+                            e.Cancel = true;
                             return;
                         }
-                        Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
-                    }
-                    else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
-                    {
-                        // バックアップ用フォルダ作成
-                        Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                        File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                        try
+                        // データ保存メソッドを呼び出し
+                        if (SaveContentsMethod() == false)
                         {
-                            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                            IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                            foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                            e.Cancel = true;
+                            return;
+                        }
+                        if (CurrentProjectSettingValues.CloseListOutput == true)
+                        {
+                            ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
+                        }
+                        if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
+                        {
+                            BackUpMethod();
+                            this.Hide();// メインフォームを消す
+                            CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
+                            Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
+                            DateTime DT = DateTime.Now;
+                            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                             {
                                 try
                                 {
-                                    FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                    ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                    Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                    ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                                 }
-                                catch// バックアップ失敗時はログに書き込み
+                                catch (Exception ex)
                                 {
-                                    StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                    streamWriter.WriteLine(subFolder.FullName);
-                                    streamWriter.Close();
+                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                    BackupToolStripMenuItem.Enabled = true;
+                                    return;
+                                }
+                                Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
+                            }
+                            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                            {
+                                // バックアップ用フォルダ作成
+                                Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                                try
+                                {
+                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                    {
+                                        try
+                                        {
+                                            FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                            ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                            File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                        }
+                                        catch// バックアップ失敗時はログに書き込み
+                                        {
+                                            StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                            streamWriter.WriteLine(subFolder.FullName);
+                                            streamWriter.Close();
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                    BackupToolStripMenuItem.Enabled = true;
+                                    return;
+                                }
+                                Directory.Delete("backuptmp", true);// 削除
+                                if (File.Exists("BackupErrorLog.txt"))
+                                {
+                                    MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
                                 }
                             }
                         }
-                        catch (Exception ex)
+                    }
+                    else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
+                    {
+                        // 編集中タグを削除・解放をマーク
+                        if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
                         {
-                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                            BackupToolStripMenuItem.Enabled = true;
-                            return;
+                            Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
                         }
-                        Directory.Delete("backuptmp", true);// 削除
-                        if (File.Exists("BackupErrorLog.txt"))
+                        FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\FREE");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\RED");
+                        FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\DED");
+                        // サムネ画像が更新されていた場合は一時データをを削除
+                        if (File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg"))
                         {
-                            MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                            FileOperationClass.DeleteFile(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg");
+                        }
+                        if (File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
+                        {
+                            DeleteContent();
+                        }
+                        else
+                        {
+                            FileOperationClass.DeleteFile(TargetContentsPath + "\\SystemData\\ADD");
+                        }
+                        if (CurrentProjectSettingValues.CloseListOutput == true)
+                        {
+                            ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
+                        }
+                        if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
+                        {
+                            BackUpMethod();
+                            this.Hide();// メインフォームを消す
+                            CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
+                            Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
+                                                                              // バックアップ作成
+                            DateTime DT = DateTime.Now;
+                            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                            {
+                                try
+                                {
+                                    ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                    BackupToolStripMenuItem.Enabled = true;
+                                    return;
+                                }
+                                Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
+                            }
+                            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                            {
+                                // バックアップ用フォルダ作成
+                                Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                                try
+                                {
+                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                    {
+                                        try
+                                        {
+                                            FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                            ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                            File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                        }
+                                        catch// バックアップ失敗時はログに書き込み
+                                        {
+                                            StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                            streamWriter.WriteLine(subFolder.FullName);
+                                            streamWriter.Close();
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                    BackupToolStripMenuItem.Enabled = true;
+                                    return;
+                                }
+                                Directory.Delete("backuptmp", true);// 削除
+                                if (File.Exists("BackupErrorLog.txt"))
+                                {
+                                    MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                                }
+                            }
+                        }
+                    }
+                    else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ終了をキャンセル
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                }
+                else
+                {
+                    if (CurrentProjectSettingValues.CloseListOutput == true)
+                    {
+                        ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
+                    }
+                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
+                    {
+                        BackUpMethod();
+                        this.Hide();// メインフォームを消す
+                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
+                        Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
+                                                                          // バックアップ作成
+                        DateTime DT = DateTime.Now;
+                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                        {
+                            try
+                            {
+                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
+                        }
+                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                        {
+                            // バックアップ用フォルダ作成
+                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                            try
+                            {
+                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                {
+                                    try
+                                    {
+                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                    }
+                                    catch// バックアップ失敗時はログに書き込み
+                                    {
+                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                        streamWriter.WriteLine(subFolder.FullName);
+                                        streamWriter.Close();
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                                BackupToolStripMenuItem.Enabled = true;
+                                return;
+                            }
+                            Directory.Delete("backuptmp", true);// 削除
+                            if (File.Exists("BackupErrorLog.txt"))
+                            {
+                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
+                            }
                         }
                     }
                 }
@@ -1619,7 +1622,7 @@ namespace CREC
                 {
                     if (CheckEditingContents() == true)
                     {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ref CurrentProjectSettingValues, LanguageFile);
+                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, CurrentProjectSettingValues, LanguageFile);
                         makenewproject.ShowDialog();
                         if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                         {
@@ -1634,7 +1637,7 @@ namespace CREC
                 }
                 else
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, ref CurrentProjectSettingValues, LanguageFile);
+                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, CurrentProjectSettingValues, LanguageFile);
                     makenewproject.ShowDialog();
                     if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                     {
@@ -1653,7 +1656,7 @@ namespace CREC
             }
             else
             {
-                ProjectInfoForm projectInfoForm = new ProjectInfoForm(TargetCRECPath, CurrentProjectSettingValues.ColorSetting.ToString());
+                ProjectInfoForm projectInfoForm = new ProjectInfoForm(CurrentProjectSettingValues);
                 projectInfoForm.ShowDialog();
             }
         }

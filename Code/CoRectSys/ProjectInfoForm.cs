@@ -14,50 +14,33 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using CREC;
 
 namespace ColRECt
 {
     public partial class ProjectInfoForm : Form
     {
         // 共用の変数
-        string TargetCRECPath = ""; //管理ファイル（.crec）のファイルパス
-        string[] cols;// List等読み込み用
+        ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
         string ColorSetting = "Blue";
 
-        public ProjectInfoForm(string tmp, string colorSetting)
+        public ProjectInfoForm(ProjectSettingValuesClass projectSettingValues)
         {
             InitializeComponent();
-            TargetCRECPath = tmp;
-            ColorSetting = colorSetting;
+            CurrentProjectSettingValues = projectSettingValues;
+            ColorSetting = projectSettingValues.ColorSetting.ToString();
             SetColorMethod();
             ReadProjcetInformationMethod();
         }
 
         private void ReadProjcetInformationMethod()// 管理ファイルを読み込んで表示
         {
-            if (TargetCRECPath.Length > 0)// 編集の場合は既存の.crecを読み込み
+            if (CurrentProjectSettingValues.Name.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
-                IEnumerable<string> tmp = null;
-                tmp = File.ReadLines(TargetCRECPath, Encoding.GetEncoding("UTF-8"));
-                foreach (string line in tmp)
-                {
-                    cols = line.Split(',');
-                    switch (cols[0])
-                    {
-                        case "projectname":
-                            ProjcetNameLabel.Text = "　名　称　：" + cols[1];
-                            break;
-                        case "created":
-                            ProjcetCreatedDateLabel.Text = "　作　成　日　：" + cols[1];
-                            break;
-                        case "modified":
-                            ProjcetModifiedDateLabel.Text = "　更　新　日　：" + cols[1];
-                            break;
-                        case "accessed":
-                            ProjcetAccessedDateLabel.Text = "最終アクセス日：" + cols[1];
-                            break;
-                    }
-                }
+                ProjcetNameLabel.Text = "　名　称　：" + CurrentProjectSettingValues.Name;
+                ProjcetCreatedDateLabel.Text = "　作　成　日　：" + CurrentProjectSettingValues.CreatedDate;
+                ProjcetModifiedDateLabel.Text = "　更　新　日　：" + CurrentProjectSettingValues.ModifiedDate;
+                ProjcetAccessedDateLabel.Text = "最終アクセス日：" + CurrentProjectSettingValues.AccessedDate;
             }
         }
 

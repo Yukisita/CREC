@@ -24,7 +24,7 @@ namespace CREC
         readonly XElement LanguageFile;// 言語ファイル
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在編集中のプロジェクトの設定値
         public string ReturnTargetProject { get; private set; } = "";
-        public MakeNewProject(string tmp, ref ProjectSettingValuesClass projectSettingValues, XElement languageFile)
+        public MakeNewProject(string tmp, ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
             InitializeComponent();
             TargetCRECPath = tmp;
@@ -52,6 +52,9 @@ namespace CREC
                 CurrentProjectSettingValues.ThirdTagLabel = Tag3NameLabel.Text;
                 CurrentProjectSettingValues.RealLocationLabel = RealLocationLabel.Text;
                 CurrentProjectSettingValues.DataLocationLabel = DataLocationLabel.Text;
+                // 現在時刻を取得 
+                DateTime dateTime = DateTime.Now;
+                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
             }
             // 現在の内容を表示
             EditProjectNameTextBox.Text = CurrentProjectSettingValues.Name;
@@ -106,6 +109,9 @@ namespace CREC
 
             if (error == 0)// 記入内容に問題がなかった場合は.crecファイルを作成
             {
+                // 現在時刻を取得 
+                DateTime dateTime = DateTime.Now;
+                CurrentProjectSettingValues.ModifiedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
                 // 編集内容をプロジェクト設定値に反映
                 CurrentProjectSettingValues.Name = EditProjectNameTextBox.Text;
                 CurrentProjectSettingValues.ProjectDataFolderPath = EditProjectLocationTextBox.Text;
@@ -203,7 +209,7 @@ namespace CREC
                     }
                 }
                 TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues,TargetCRECPath);
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
                 ReturnTargetProject = TargetCRECPath;
                 this.Close();
             }
