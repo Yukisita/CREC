@@ -16,7 +16,7 @@ using System.Windows.Forms;
 using System.IO;
 using CREC;
 
-namespace ColRECt
+namespace CREC
 {
     public partial class ProjectInfoForm : Form
     {

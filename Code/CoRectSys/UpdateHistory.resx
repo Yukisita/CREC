@@ -418,6 +418,11 @@ ver8.0.5（2024/09/26）
 ver8.0.6（2024/09/28）
 メッセージに誤記が見つかったため修正
 コレクション追加にショートカットキーを追加（試験的）
+リファクタリング作業中
+
+ver8.1.0（2024/10/06）
+在庫入力をキーボードなしで行うボタンを追加
+プロジェクト更新日、最終アクセス時の表示機能を実装する
 リファクタリング作業中</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
