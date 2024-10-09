@@ -22,7 +22,6 @@ using System.Windows.Documents;
 using System.IO.Compression;
 using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
-using ColRECt;
 using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
@@ -34,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.1.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.1.1.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -49,8 +48,9 @@ namespace CREC
         string CurrentLanguageFileName = string.Empty;
         // config.sys読み込み用Class
         ConfigValuesClass ConfigValues = new ConfigValuesClass();
-
-        // 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
+        /// <summary>
+        /// 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
+        /// </summary>
         class DataValuesClass
         {
             public string FolderPath { get; set; } = string.Empty;
@@ -234,6 +234,8 @@ namespace CREC
             {
                 CheckLatestVersion();// 更新の確認
             }
+            // 英語モードだとボタンが表示されなくなる不具合対策、原因は不明
+            ShowSelectedItemInformationButton.Visible = false;
         }
 
         #region メニューバー関係
@@ -5161,6 +5163,7 @@ namespace CREC
             ListUpdateButton.Visible = true;
             ShowListButton.Visible = false;
             ClosePicturesViewMethod();// 画像表示モードを閉じるメソッドを呼び出し
+            CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
         }
         private void SetColorMethod()// 色設定のメソッド
         {

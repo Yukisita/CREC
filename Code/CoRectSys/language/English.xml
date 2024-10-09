@@ -202,6 +202,10 @@
 				<itemname>ReadOnlyButton</itemname>
 				<itemtext>Read only</itemtext>
 			</item>
+			<item>
+				<itemname>ShowSelectedItemInformationButton</itemname>
+				<itemtext>Show information.</itemtext>
+			</item>
 		</Button>
 		<Label>
 			<item>

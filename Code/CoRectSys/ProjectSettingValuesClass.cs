@@ -15,20 +15,29 @@ using System.Windows;
 
 namespace CREC
 {
-    public enum CompressType// バックアップ時のファイル圧縮方法
+    /// <summary>
+    /// バックアップ時のファイル圧縮方法
+    /// </summary>
+    public enum CompressType
     {
         SingleFile,
         ParData,
         NoCompress
     }
 
-    public enum ListOutputFormat// リスト出力時のフォーマット
+    /// <summary>
+    /// リスト出力時のフォーマット
+    /// </summary>
+    public enum ListOutputFormat
     {
         CSV,
         TSV
     }
 
-    public enum ColorValue// 色設定値
+    /// <summary>
+    /// 色設定値
+    /// </summary>
+    public enum ColorValue
     {
         Blue,
         White,
@@ -38,22 +47,70 @@ namespace CREC
 
     public class ProjectSettingValuesClass
     {
-        public string Name { get; set; } = string.Empty;// プロジェクト名
-        public string ProjectDataFolderPath { get; set; } = string.Empty;// プロジェクトデータ保存場所のパス
-        public string ProjectBackupFolderPath { get; set; } = string.Empty;// プロジェクトデータのバックアップ場所のパス
-        public bool StartUpBackUp { get; set; } = false;// 起動時の自動バックアップ
-        public bool CloseBackUp { get; set; } = false;// アプリケーション終了時の自動バックアップ
-        public bool EditBackUp { get; set; } = false;// データ編集後の自動バックアップ
-        public CompressType CompressType { get; set; } = CompressType.NoCompress;// 圧縮方法
-        public string ListOutputPath { get; set; } = string.Empty;// リスト出力フォルダのパス
-        public bool StartUpListOutput { get; set; } = false;// 起動時の自動リスト出力
-        public bool CloseListOutput { get; set; } = false;// アプリケーション終了時の自動リスト出力
-        public bool EditListOutput { get; set; } = false;// データ編集後の自動リスト出力
-        public bool OpenListAfterOutput { get; set; } = false;// リスト出力後にファイルを開くか設定
-        public ListOutputFormat ListOutputFormat { get; set; } = ListOutputFormat.CSV;// リスト出力時のフォーマット
-        public string CreatedDate { get; set; } = string.Empty;// プロジェクト作成日
-        public string ModifiedDate { get; set; } = string.Empty;// プロジェクト最終編集日
-        public string AccessedDate { get; set; } = string.Empty;// プロジェクト最終アクセス日
+        /// <summary>
+        /// プロジェクト名
+        /// </summary>
+        public string Name { get; set; } = string.Empty;
+        /// <summary>
+        /// プロジェクトデータ保存場所のパス
+        /// </summary>
+        public string ProjectDataFolderPath { get; set; } = string.Empty;
+        /// <summary>
+        /// プロジェクトデータのバックアップ場所のパス
+        /// </summary>
+        public string ProjectBackupFolderPath { get; set; } = string.Empty;
+        /// <summary>
+        /// 起動時の自動バックアップ
+        /// </summary>
+        public bool StartUpBackUp { get; set; } = false;
+        /// <summary>
+        /// アプリケーション終了時の自動バックアップ
+        /// </summary>
+        public bool CloseBackUp { get; set; } = false;
+        /// <summary>
+        /// データ編集後の自動バックアップ
+        /// </summary>
+        public bool EditBackUp { get; set; } = false;
+        /// <summary>
+        /// 圧縮方法
+        /// </summary>
+        public CompressType CompressType { get; set; } = CompressType.NoCompress;
+        /// <summary>
+        /// リスト出力フォルダのパス
+        /// </summary>
+        public string ListOutputPath { get; set; } = string.Empty;
+        /// <summary>
+        /// 起動時の自動リスト出力
+        /// </summary>
+        public bool StartUpListOutput { get; set; } = false;
+        /// <summary>
+        /// アプリケーション終了時の自動リスト出力
+        /// </summary>
+        public bool CloseListOutput { get; set; } = false;
+        /// <summary>
+        /// データ編集後の自動リスト出力
+        /// </summary>
+        public bool EditListOutput { get; set; } = false;
+        /// <summary>
+        /// リスト出力後にファイルを開くか設定
+        /// </summary>
+        public bool OpenListAfterOutput { get; set; } = false;
+        /// <summary>
+        /// リスト出力時のフォーマット
+        /// </summary>
+        public ListOutputFormat ListOutputFormat { get; set; } = ListOutputFormat.CSV;
+        /// <summary>
+        /// プロジェクト作成日
+        /// </summary>
+        public string CreatedDate { get; set; } = string.Empty;
+        /// <summary>
+        /// プロジェクト最終編集日
+        /// </summary>
+        public string ModifiedDate { get; set; } = string.Empty;
+        /// <summary>
+        /// プロジェクト最終アクセス日
+        /// </summary>
+        public string AccessedDate { get; set; } = string.Empty;
         /// <summary>
         /// プロジェクトの色設定
         /// </summary>

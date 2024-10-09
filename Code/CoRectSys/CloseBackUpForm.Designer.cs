@@ -1,4 +1,4 @@
-﻿namespace ColRECt
+﻿namespace CREC
 {
     partial class CloseBackUpForm
     {

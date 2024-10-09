@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ColRECt
+namespace CREC
 {
     public partial class BootingForm : Form
     {

@@ -1778,8 +1778,7 @@
             // 
             // ShowSelectedItemInformationButton
             // 
-            this.ShowSelectedItemInformationButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("メイリオ", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(1164, 64);
             this.ShowSelectedItemInformationButton.Margin = new System.Windows.Forms.Padding(4);
             this.ShowSelectedItemInformationButton.Name = "ShowSelectedItemInformationButton";
@@ -1787,7 +1786,6 @@
             this.ShowSelectedItemInformationButton.TabIndex = 83;
             this.ShowSelectedItemInformationButton.Text = "選択項目の情報を表示";
             this.ShowSelectedItemInformationButton.UseVisualStyleBackColor = true;
-            this.ShowSelectedItemInformationButton.Visible = false;
             this.ShowSelectedItemInformationButton.Click += new System.EventHandler(this.ShowSelectedItemInformationButton_Click);
             // 
             // NoPicturesLabel
@@ -2167,6 +2165,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.ShowSelectedItemInformationButton);
             this.Controls.Add(this.SubtractQuantityButton);
             this.Controls.Add(this.AddQuantityButton);
             this.Controls.Add(this.UUIDEditStatusLabel);
@@ -2194,7 +2193,6 @@
             this.Controls.Add(this.ListUpdateButton);
             this.Controls.Add(this.AddContentsButton);
             this.Controls.Add(this.NoPicturesLabel);
-            this.Controls.Add(this.ShowSelectedItemInformationButton);
             this.Controls.Add(this.SearchFormTextBoxClearButton);
             this.Controls.Add(this.SearchMethodComboBox);
             this.Controls.Add(this.SearchFormTextBox);
