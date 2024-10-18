@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.1.1.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.1.2.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -1222,7 +1222,12 @@ namespace CREC
         }
         #endregion
         #region 文字サイズ
-        private void ZoomInFontToolStripMenuItem_Click(object sender, EventArgs e)// フォントサイズを1Pt大きくする
+        /// <summary>
+        /// フォントサイズを1Pt大きくする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ZoomInFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             extrasmallfontsize += 1;// 最小フォントのサイズ
             smallfontsize += 1;// 小フォントのサイズ
@@ -1233,8 +1238,14 @@ namespace CREC
             //選択後もMenuItem開いたままにする処理
             FontSizeToolStripMenuItem.ShowDropDown();
             ZoomInFontToolStripMenuItem.ShowDropDown();
+            ResetEditingContentsToolStripMenuItem.ShowDropDown();
         }
-        private void ZoomOutFontToolStripMenuItem_Click(object sender, EventArgs e)// フォントサイズを1Pt小さくする
+        /// <summary>
+        /// フォントサイズを1Pt小さくする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ZoomOutFontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (extrasmallfontsize <= 1)
             {
@@ -1251,7 +1262,26 @@ namespace CREC
                 //選択後もMenuItem開いたままにする処理
                 FontSizeToolStripMenuItem.ShowDropDown();
                 ZoomOutFontToolStripMenuItem.ShowDropDown();
+                ResetEditingContentsToolStripMenuItem.ShowDropDown();
             }
+        }
+        /// <summary>
+        /// フォントサイズをリセット
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ResetFontSizeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            extrasmallfontsize = (float)9.0;// 最小フォントのサイズ
+            smallfontsize = (float)14.25;// 小フォントのサイズ
+            mainfontsize = (float)18.0;// 標準フォントのサイズ
+            bigfontsize = (float)20.25;// 大フォントのサイズ
+            ConfigValues.FontsizeOffset = 0;// フォントサイズオフセット量を加算
+            SetFormLayout();
+            //選択後もMenuItem開いたままにする処理
+            FontSizeToolStripMenuItem.ShowDropDown();
+            ZoomInFontToolStripMenuItem.ShowDropDown();
+            ResetEditingContentsToolStripMenuItem.ShowDropDown();
         }
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
@@ -4105,8 +4135,9 @@ namespace CREC
                 dataGridView1BackgroundPictureBox.Width = 0;
                 dataGridView1BackgroundPictureBox.Height = 0;
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
-                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
-                ShowSelectedItemInformationButton.Font = new Font(fontname, mainfontsize);
+                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(ListUpdateButton.Location.X + ListUpdateButton.Width + 30 * DpiScale), ListUpdateButton.Location.Y);
+                ShowSelectedItemInformationButton.Font = new Font(fontname, smallfontsize);
+                ShowSelectedItemInformationButton.Height = ListUpdateButton.Height;
             }
             else if (FullDisplayModeToolStripMenuItem.Checked)
             {
@@ -4114,8 +4145,9 @@ namespace CREC
                 dataGridView1BackgroundPictureBox.Width = Convert.ToInt32(FormSize.Width);
                 dataGridView1BackgroundPictureBox.Height = Convert.ToInt32(FormSize.Height - 35 * DpiScale);
                 dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, Convert.ToInt32(35 * DpiScale));
-                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(FormSize.Width * 0.5 + 10 * DpiScale), SearchOptionComboBox.Location.Y);
-                ShowSelectedItemInformationButton.Font = new Font(fontname, mainfontsize);
+                ShowSelectedItemInformationButton.Location = new Point(Convert.ToInt32(ListUpdateButton.Location.X + ListUpdateButton.Width + 30 * DpiScale), ListUpdateButton.Location.Y);
+                ShowSelectedItemInformationButton.Font = new Font(fontname, smallfontsize);
+                ShowSelectedItemInformationButton.Height = ListUpdateButton.Height;
             }
             // 編集TextBox関係
             if (FormSize.Width < 1600 * DpiScale)
@@ -4325,10 +4357,11 @@ namespace CREC
             ShowListButton.Width = Convert.ToInt32(130 * DpiScale);
             ShowListButton.Font = new Font(fontname, mainfontsize);
             // dataGridViewContextMenuStripの文字サイズ
-            AddContentsContextStripMenuItem.Font = new Font(fontname, mainfontsize);
-            CopyAndAddContentsContextToolStripMenuItem.Font = new Font(fontname, mainfontsize);
-            ListUpdateContextStripMenuItem.Font = new Font(fontname, mainfontsize);
-            OpenProjectContextStripMenuItem.Font = new Font(fontname, mainfontsize);
+            AddContentsContextStripMenuItem.Font = new Font(fontname, smallfontsize);
+            CopyAndAddContentsContextToolStripMenuItem.Font = new Font(fontname, smallfontsize);
+            ListUpdateContextStripMenuItem.Font = new Font(fontname, smallfontsize);
+            OpenProjectContextStripMenuItem.Font = new Font(fontname, smallfontsize);
+            ShowSelectedItemInformationToolStripMenuItem.Font = new Font(fontname, smallfontsize);
             // PictureBox1ContextMenuStripの文字サイズ
             OpenPicturewithAppToolStripMenuItem.Font = new Font(fontname, mainfontsize);
             AddContentsButton.Font = new Font(fontname, smallfontsize);
@@ -4747,6 +4780,24 @@ namespace CREC
         #endregion
 
         #region DataGridView内のContextStripMenuの設定
+        /// <summary>
+        /// 全体表示モードで詳細表示画面に切り替える
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowSelectedItemInformationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Visible = false;
+            dataGridView1BackgroundPictureBox.Visible = false;
+            ShowSelectedItemInformationButton.Visible = false;
+            SearchFormTextBox.Visible = false;
+            SearchFormTextBoxClearButton.Visible = false;
+            SearchOptionComboBox.Visible = false;
+            SearchMethodComboBox.Visible = false;
+            AddContentsButton.Visible = false;
+            ShowListButton.Visible = true;
+            ShowPicturesMethod();
+        }
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
@@ -5066,6 +5117,8 @@ namespace CREC
             FullDisplayModeToolStripMenuItem.Checked = false;
             ShowSelectedItemInformationButton.Visible = false;
             ShowListButton.Visible = false;
+            ShowSelectedItemInformationToolStripMenuItem.Visible = false;
+            ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = false;
             if (PictureBox1.Visible == true)// 画像が表示されている場合は閉じるボタンを表示
             {
                 ClosePicturesButton.Visible = true;
@@ -5076,6 +5129,8 @@ namespace CREC
         {
             FullDisplayModeToolStripMenuItem.Checked = true;
             StandardDisplayModeToolStripMenuItem.Checked = false;
+            ShowSelectedItemInformationToolStripMenuItem.Visible = true;
+            ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = true;
             if (SaveAndCloseEditButton.Visible == true)// 編集中に切り替えた場合の処理
             {
                 dataGridView1.Visible = false;
@@ -5449,6 +5504,7 @@ namespace CREC
             }
             SetUserAssistToolTips();
             ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
+            ShowListButton.Text = LanguageSettingClass.GetOtherMessage("ShowListButton", "mainform", LanguageFile);
             // 検索方法の表示更新
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
@@ -5526,5 +5582,6 @@ namespace CREC
             }
         }
         #endregion
+
     }
 }

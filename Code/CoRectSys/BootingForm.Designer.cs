@@ -56,7 +56,7 @@
             this.CRECVersionLabel.Name = "CRECVersionLabel";
             this.CRECVersionLabel.Size = new System.Drawing.Size(194, 36);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC Ver 8.1.1";
+            this.CRECVersionLabel.Text = "CREC Ver 8.1.2";
             // 
             // BootingProgressLabel
             // 
@@ -90,13 +90,13 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(116, 25);
             this.label2.TabIndex = 5;
-            this.label2.Text = "2024/10/10";
+            this.label2.Text = "2024/10/18";
             // 
             // BootingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(388, 208);
             this.ControlBox = false;
             this.Controls.Add(this.label2);

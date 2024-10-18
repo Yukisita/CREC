@@ -120,7 +120,7 @@
 			</item>
 			<item>
 				<itemname>ListUpdateButton</itemname>
-				<itemtext>一覧更新</itemtext>
+				<itemtext>一覧更新(&amp;U)</itemtext>
 			</item>
 			<item>
 				<itemname>EditRequestingButton</itemname>
@@ -371,6 +371,10 @@
 				<itemtext>縮小</itemtext>
 			</item>
 			<item>
+				<itemname>ResetFontSizeToolStripMenuItem</itemname>
+				<itemtext>リセット</itemtext>
+			</item>
+			<item>
 				<itemname>VisibleListElementsToolStripMenuItem</itemname>
 				<itemtext>データ一覧の表示項目</itemtext>
 			</item>
@@ -429,6 +433,10 @@
 			<item>
 				<itemname>OpenProjectContextStripMenuItem</itemname>
 				<itemtext>別のプロジェクトを開く...</itemtext>
+			</item>
+			<item>
+				<itemname>ShowSelectedItemInformationToolStripMenuItem</itemname>
+				<itemtext>詳細情報表示</itemtext>
 			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
@@ -631,6 +639,10 @@
 			<item>
 				<itemname>BackupToolStripMenuItemBackupInProgressMessage</itemname>
 				<itemtext>バックアップ作成中</itemtext>
+			</item>
+			<item>
+				<itemname>ShowListButton</itemname>
+				<itemtext>← 一覧に戻る</itemtext>
 			</item>
 		</Other>
 	</mainform>

@@ -81,6 +81,8 @@
             this.FontSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZoomInFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZoomOutFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+            this.ResetFontSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.VisibleListElementsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IDListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -119,9 +121,11 @@
             this.InventoryList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.InventoryStatusList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ShowSelectedItemInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddContentsContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyAndAddContentsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListUpdateContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
             this.OpenProjectContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowObjectName = new System.Windows.Forms.Label();
             this.ShowID = new System.Windows.Forms.Label();
@@ -216,6 +220,7 @@
             this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -547,7 +552,9 @@
             // 
             this.FontSizeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ZoomInFontToolStripMenuItem,
-            this.ZoomOutFontToolStripMenuItem});
+            this.ZoomOutFontToolStripMenuItem,
+            this.toolStripSeparator9,
+            this.ResetFontSizeToolStripMenuItem});
             this.FontSizeToolStripMenuItem.Name = "FontSizeToolStripMenuItem";
             this.FontSizeToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
             this.FontSizeToolStripMenuItem.Text = "文字サイズ";
@@ -555,16 +562,28 @@
             // ZoomInFontToolStripMenuItem
             // 
             this.ZoomInFontToolStripMenuItem.Name = "ZoomInFontToolStripMenuItem";
-            this.ZoomInFontToolStripMenuItem.Size = new System.Drawing.Size(148, 34);
+            this.ZoomInFontToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
             this.ZoomInFontToolStripMenuItem.Text = "拡大";
             this.ZoomInFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomInFontToolStripMenuItem_Click);
             // 
             // ZoomOutFontToolStripMenuItem
             // 
             this.ZoomOutFontToolStripMenuItem.Name = "ZoomOutFontToolStripMenuItem";
-            this.ZoomOutFontToolStripMenuItem.Size = new System.Drawing.Size(148, 34);
+            this.ZoomOutFontToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
             this.ZoomOutFontToolStripMenuItem.Text = "縮小";
             this.ZoomOutFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomOutFontToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator9
+            // 
+            this.toolStripSeparator9.Name = "toolStripSeparator9";
+            this.toolStripSeparator9.Size = new System.Drawing.Size(162, 6);
+            // 
+            // ResetFontSizeToolStripMenuItem
+            // 
+            this.ResetFontSizeToolStripMenuItem.Name = "ResetFontSizeToolStripMenuItem";
+            this.ResetFontSizeToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
+            this.ResetFontSizeToolStripMenuItem.Text = "リセット";
+            this.ResetFontSizeToolStripMenuItem.Click += new System.EventHandler(this.ResetFontSizeToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
@@ -768,7 +787,7 @@
             this.ShowListButton.Padding = new System.Windows.Forms.Padding(1);
             this.ShowListButton.ReadOnly = true;
             this.ShowListButton.Size = new System.Drawing.Size(125, 37);
-            this.ShowListButton.Text = "⇚一覧に戻る";
+            this.ShowListButton.Text = "← List";
             this.ShowListButton.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ShowListButton.Visible = false;
             this.ShowListButton.Click += new System.EventHandler(this.ShowListButton_Click);
@@ -960,12 +979,23 @@
             this.dataGridViewContextMenuStrip.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.dataGridViewContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.dataGridViewContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowSelectedItemInformationToolStripMenuItem,
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator,
             this.AddContentsContextStripMenuItem,
             this.CopyAndAddContentsContextToolStripMenuItem,
             this.ListUpdateContextStripMenuItem,
+            this.toolStripSeparator10,
             this.OpenProjectContextStripMenuItem});
             this.dataGridViewContextMenuStrip.Name = "dataGridViewContextMenuStrip";
-            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(403, 164);
+            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(403, 216);
+            // 
+            // ShowSelectedItemInformationToolStripMenuItem
+            // 
+            this.ShowSelectedItemInformationToolStripMenuItem.Name = "ShowSelectedItemInformationToolStripMenuItem";
+            this.ShowSelectedItemInformationToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.ShowSelectedItemInformationToolStripMenuItem.Text = "詳細表示";
+            this.ShowSelectedItemInformationToolStripMenuItem.Visible = false;
+            this.ShowSelectedItemInformationToolStripMenuItem.Click += new System.EventHandler(this.ShowSelectedItemInformationToolStripMenuItem_Click);
             // 
             // AddContentsContextStripMenuItem
             // 
@@ -987,6 +1017,11 @@
             this.ListUpdateContextStripMenuItem.Size = new System.Drawing.Size(402, 40);
             this.ListUpdateContextStripMenuItem.Text = "一覧更新";
             this.ListUpdateContextStripMenuItem.Click += new System.EventHandler(this.ListUpdateContextStripMenuItem_Click);
+            // 
+            // toolStripSeparator10
+            // 
+            this.toolStripSeparator10.Name = "toolStripSeparator10";
+            this.toolStripSeparator10.Size = new System.Drawing.Size(399, 6);
             // 
             // OpenProjectContextStripMenuItem
             // 
@@ -1778,11 +1813,11 @@
             // 
             // ShowSelectedItemInformationButton
             // 
-            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("メイリオ", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(1164, 64);
+            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(634, 123);
             this.ShowSelectedItemInformationButton.Margin = new System.Windows.Forms.Padding(4);
             this.ShowSelectedItemInformationButton.Name = "ShowSelectedItemInformationButton";
-            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(375, 50);
+            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(343, 47);
             this.ShowSelectedItemInformationButton.TabIndex = 83;
             this.ShowSelectedItemInformationButton.Text = "選択項目の情報を表示";
             this.ShowSelectedItemInformationButton.UseVisualStyleBackColor = true;
@@ -1803,10 +1838,10 @@
             // AddContentsButton
             // 
             this.AddContentsButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddContentsButton.Location = new System.Drawing.Point(14, 121);
+            this.AddContentsButton.Location = new System.Drawing.Point(15, 121);
             this.AddContentsButton.Margin = new System.Windows.Forms.Padding(4);
             this.AddContentsButton.Name = "AddContentsButton";
-            this.AddContentsButton.Size = new System.Drawing.Size(150, 45);
+            this.AddContentsButton.Size = new System.Drawing.Size(180, 45);
             this.AddContentsButton.TabIndex = 85;
             this.AddContentsButton.Text = "新規追加";
             this.AddContentsButton.UseVisualStyleBackColor = true;
@@ -1815,10 +1850,10 @@
             // ListUpdateButton
             // 
             this.ListUpdateButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ListUpdateButton.Location = new System.Drawing.Point(201, 121);
+            this.ListUpdateButton.Location = new System.Drawing.Point(230, 121);
             this.ListUpdateButton.Margin = new System.Windows.Forms.Padding(4);
             this.ListUpdateButton.Name = "ListUpdateButton";
-            this.ListUpdateButton.Size = new System.Drawing.Size(150, 45);
+            this.ListUpdateButton.Size = new System.Drawing.Size(180, 45);
             this.ListUpdateButton.TabIndex = 86;
             this.ListUpdateButton.Text = "一覧更新";
             this.ListUpdateButton.UseVisualStyleBackColor = true;
@@ -2159,6 +2194,12 @@
             this.SubtractQuantityButton.Visible = false;
             this.SubtractQuantityButton.Click += new System.EventHandler(this.SubtractQuantityButton_Click);
             // 
+            // ShowSelectedItemInformationToolStripMenuItemSeparator
+            // 
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Name = "ShowSelectedItemInformationToolStripMenuItemSeparator";
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Size = new System.Drawing.Size(399, 6);
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -2457,6 +2498,11 @@
         private System.Windows.Forms.ToolStripMenuItem CopyAndAddContentsContextToolStripMenuItem;
         private System.Windows.Forms.Button AddQuantityButton;
         private System.Windows.Forms.Button SubtractQuantityButton;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+        private System.Windows.Forms.ToolStripMenuItem ResetFontSizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ShowSelectedItemInformationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+        private System.Windows.Forms.ToolStripSeparator ShowSelectedItemInformationToolStripMenuItemSeparator;
     }
 }
 

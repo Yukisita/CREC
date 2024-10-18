@@ -120,7 +120,7 @@
 			</item>
 			<item>
 				<itemname>ListUpdateButton</itemname>
-				<itemtext>Update</itemtext>
+				<itemtext>Update(&amp;U)</itemtext>
 			</item>
 			<item>
 				<itemname>EditRequestingButton</itemname>
@@ -371,6 +371,10 @@
 				<itemtext>Zoom Out</itemtext>
 			</item>
 			<item>
+				<itemname>ResetFontSizeToolStripMenuItem</itemname>
+				<itemtext>Reset</itemtext>
+			</item>
+			<item>
 				<itemname>VisibleListElementsToolStripMenuItem</itemname>
 				<itemtext>Items Displayed in the List</itemtext>
 			</item>
@@ -429,6 +433,10 @@
 			<item>
 				<itemname>OpenProjectContextStripMenuItem</itemname>
 				<itemtext>Open Project...</itemtext>
+			</item>
+			<item>
+				<itemname>ShowSelectedItemInformationToolStripMenuItem</itemname>
+				<itemtext>Show information.</itemtext>
 			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
@@ -631,6 +639,10 @@
 			<item>
 				<itemname>BackupToolStripMenuItemBackupInProgressMessage</itemname>
 				<itemtext>Backup in progress</itemtext>
+			</item>
+			<item>
+				<itemname>ShowListButton</itemname>
+				<itemtext>← List</itemtext>
 			</item>
 		</Other>
 	</mainform>
