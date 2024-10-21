@@ -778,6 +778,10 @@
 				<itemname>DataLocationLabel</itemname>
 				<itemtext>データ保管場所</itemtext>
 			</item>
+			<item>
+				<itemname>SleepModeLabel</itemname>
+				<itemtext>スリープ設定</itemtext>
+			</item>
 		</Label>
 		<CheckBox>
 			<item>

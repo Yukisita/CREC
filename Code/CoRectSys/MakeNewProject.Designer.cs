@@ -96,6 +96,8 @@
             this.UserValueLabel = new System.Windows.Forms.Label();
             this.FileFormatLabel = new System.Windows.Forms.Label();
             this.FileFormatComboBox = new System.Windows.Forms.ComboBox();
+            this.SleepModeComboBox = new System.Windows.Forms.ComboBox();
+            this.SleepModeLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // ProjectName
@@ -811,12 +813,36 @@
             this.FileFormatComboBox.Size = new System.Drawing.Size(272, 44);
             this.FileFormatComboBox.TabIndex = 88;
             // 
+            // SleepModeComboBox
+            // 
+            this.SleepModeComboBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SleepModeComboBox.FormattingEnabled = true;
+            this.SleepModeComboBox.Items.AddRange(new object[] {
+            "CSV",
+            "TSV"});
+            this.SleepModeComboBox.Location = new System.Drawing.Point(1145, 844);
+            this.SleepModeComboBox.Name = "SleepModeComboBox";
+            this.SleepModeComboBox.Size = new System.Drawing.Size(272, 44);
+            this.SleepModeComboBox.TabIndex = 90;
+            // 
+            // SleepModeLabel
+            // 
+            this.SleepModeLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SleepModeLabel.Location = new System.Drawing.Point(846, 844);
+            this.SleepModeLabel.Name = "SleepModeLabel";
+            this.SleepModeLabel.Size = new System.Drawing.Size(290, 50);
+            this.SleepModeLabel.TabIndex = 91;
+            this.SleepModeLabel.Text = "スリープ設定";
+            this.SleepModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // MakeNewProject
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(1774, 976);
+            this.Controls.Add(this.SleepModeLabel);
+            this.Controls.Add(this.SleepModeComboBox);
             this.Controls.Add(this.FileFormatComboBox);
             this.Controls.Add(this.FileFormatLabel);
             this.Controls.Add(this.UserValueLabel);
@@ -963,5 +989,7 @@
         private System.Windows.Forms.Label UserValueLabel;
         private System.Windows.Forms.Label FileFormatLabel;
         private System.Windows.Forms.ComboBox FileFormatComboBox;
+        private System.Windows.Forms.ComboBox SleepModeComboBox;
+        private System.Windows.Forms.Label SleepModeLabel;
     }
 }

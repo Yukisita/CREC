@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.1.2.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.2.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -972,7 +972,10 @@ namespace CREC
                     return;
                 }
             }
-            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+            if (TargetCRECPath.Length != 0)
+            {
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+            }
             SaveConfig();
             System.Windows.Forms.Application.Restart();
         }
@@ -4618,49 +4621,102 @@ namespace CREC
         }
         private async void CheckEditing()// 表示中のデータが他の端末で編集中かバックグラウンドで監視
         {
+            bool activeForm = false;
             while (true)
             {
                 await Task.Delay(1);
-                if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
+                switch (CurrentProjectSettingValues.SleepMode)
                 {
-                    if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
-                    {
-                        if (EditRequestingButton.Visible == false)
+                    case SleepMode.Deep:
+                        if (Form.ActiveForm == this)
                         {
-                            ReadOnlyButton.Visible = true;
-                            ReadOnlyButton.ForeColor = Color.Red;
+                            activeForm = true;
                         }
                         else
                         {
-                            ReadOnlyButton.Visible = false;
+                            activeForm = false;
+                            await Task.Delay(99);
+                            try// 終了時にエラーが出るのでCatchするが、微妙
+                            {
+                                ShowProjcetNameTextBox.Text = "Deep Sleep...";
+                            }
+                            catch
+                            { }
                         }
-                        EditButton.Visible = false;
-                        EditRequestButton.Visible = false;
-                    }
-                    else
-                    {
-                        if (SaveAndCloseEditButton.Visible == false)
+                        break;
+                    case SleepMode.Normal:
+                        if (Form.ActiveForm == this)
                         {
-                            EditRequestButton.Visible = true;
-                            EditRequestButton.ForeColor = Color.Blue;
-                            EditButton.Visible = false;
-                            ReadOnlyButton.Visible = false;
+                            activeForm = true;
+                        }
+                        else
+                        {
+                            activeForm = true;
+                            await Task.Delay(99);
+                            try// 終了時にエラーが出るのでCatchするが、微妙
+                            {
+                                ShowProjcetNameTextBox.Text = "Sleep...";
+                            }
+                            catch
+                            { }
+                        }
+                        break;
+                    case SleepMode.Disable:
+                        activeForm = true;
+                        break;
+                }
+
+                if (activeForm == true)
+                {
+                    try// 終了時にエラーが出るのでCatchするが、微妙
+                    {
+                        if (ShowProjcetNameTextBox.Text.Contains("Sleep..."))
+                        {
+                            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
                         }
                     }
-                }
-                else
-                {
-                    if (ConfigValues.AllowEdit == true)
+                    catch { }
+                    if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
                     {
-                        EditButton.Visible = true;
-                        ReadOnlyButton.Visible = false;
-                        EditRequestButton.Visible = false;
+                        if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+                        {
+                            if (EditRequestingButton.Visible == false)
+                            {
+                                ReadOnlyButton.Visible = true;
+                                ReadOnlyButton.ForeColor = Color.Red;
+                            }
+                            else
+                            {
+                                ReadOnlyButton.Visible = false;
+                            }
+                            EditButton.Visible = false;
+                            EditRequestButton.Visible = false;
+                        }
+                        else
+                        {
+                            if (SaveAndCloseEditButton.Visible == false)
+                            {
+                                EditRequestButton.Visible = true;
+                                EditRequestButton.ForeColor = Color.Blue;
+                                EditButton.Visible = false;
+                                ReadOnlyButton.Visible = false;
+                            }
+                        }
                     }
                     else
                     {
-                        EditButton.Visible = false;
-                        ReadOnlyButton.Visible = true;
-                        EditRequestButton.Visible = false;
+                        if (ConfigValues.AllowEdit == true)
+                        {
+                            EditButton.Visible = true;
+                            ReadOnlyButton.Visible = false;
+                            EditRequestButton.Visible = false;
+                        }
+                        else
+                        {
+                            EditButton.Visible = false;
+                            ReadOnlyButton.Visible = true;
+                            EditRequestButton.Visible = false;
+                        }
                     }
                 }
             }

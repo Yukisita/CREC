@@ -36,8 +36,15 @@ namespace CREC
         {
             // 言語設定
             SetLanguage();
-            // 必要な項目を初期化
-            CompressTypeComboBox.SelectedIndex = 0;
+            // ComboBoxの選択肢を設定
+            SleepModeComboBox.Items.Clear();
+            foreach (SleepMode sleepMode in Enum.GetValues(typeof(SleepMode)))
+            {
+                SleepModeComboBox.Items.Add(sleepMode.ToString());
+            }
+        
+        // 必要な項目を初期化
+        CompressTypeComboBox.SelectedIndex = 0;
             FileFormatComboBox.SelectedIndex = 0;// 追加の場合はデフォルト値を各ラベルから取得してTextBoxに入れる
             if (TargetCRECPath.Length == 0)// 新規作成の場合はプロジェクト設定値を初期化
             {
@@ -91,6 +98,7 @@ namespace CREC
             ShowRealLocationLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.RealLocationVisible;
             EditDataLocationLabelTextBox.Text = CurrentProjectSettingValues.DataLocationLabel;
             ShowDataLocationLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.DataLocationVisible;
+            SleepModeComboBox.SelectedIndex = (int)CurrentProjectSettingValues.SleepMode;
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -147,6 +155,7 @@ namespace CREC
                 CurrentProjectSettingValues.RealLocationVisible = ShowRealLocationLabelVisibleCheckBox.Checked;
                 CurrentProjectSettingValues.DataLocationLabel = EditDataLocationLabelTextBox.Text;
                 CurrentProjectSettingValues.DataLocationVisible = ShowDataLocationLabelVisibleCheckBox.Checked;
+                CurrentProjectSettingValues.SleepMode = (SleepMode)SleepModeComboBox.SelectedIndex;
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (TargetCRECPath.Length == 0)// 新規プロジェクト作成の場合
                 {
@@ -208,7 +217,10 @@ namespace CREC
                         MessageBox.Show("既存の管理ファイルの削除に失敗しました。\n新規に管理ファイルを作成します。\n" + ex.Message, "CREC");
                     }
                 }
-                TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
+                else
+                {
+                    TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
+                }
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
                 ReturnTargetProject = TargetCRECPath;
                 this.Close();

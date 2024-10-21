@@ -122,6 +122,7 @@
             this.InventoryStatusList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ShowSelectedItemInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.AddContentsContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyAndAddContentsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListUpdateContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -220,7 +221,6 @@
             this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
-            this.ShowSelectedItemInformationToolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -996,6 +996,12 @@
             this.ShowSelectedItemInformationToolStripMenuItem.Text = "詳細表示";
             this.ShowSelectedItemInformationToolStripMenuItem.Visible = false;
             this.ShowSelectedItemInformationToolStripMenuItem.Click += new System.EventHandler(this.ShowSelectedItemInformationToolStripMenuItem_Click);
+            // 
+            // ShowSelectedItemInformationToolStripMenuItemSeparator
+            // 
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Name = "ShowSelectedItemInformationToolStripMenuItemSeparator";
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Size = new System.Drawing.Size(399, 6);
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = false;
             // 
             // AddContentsContextStripMenuItem
             // 
@@ -2193,12 +2199,6 @@
             this.SubtractQuantityButton.UseVisualStyleBackColor = true;
             this.SubtractQuantityButton.Visible = false;
             this.SubtractQuantityButton.Click += new System.EventHandler(this.SubtractQuantityButton_Click);
-            // 
-            // ShowSelectedItemInformationToolStripMenuItemSeparator
-            // 
-            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Name = "ShowSelectedItemInformationToolStripMenuItemSeparator";
-            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Size = new System.Drawing.Size(399, 6);
-            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = false;
             // 
             // MainForm
             // 

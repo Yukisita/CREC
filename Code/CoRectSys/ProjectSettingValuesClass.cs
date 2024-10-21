@@ -44,6 +44,16 @@ namespace CREC
         Sakura,
         Green
     }
+    
+    /// <summary>
+    /// SleepMode設定
+    /// </summary>
+    public enum SleepMode
+    {
+        Deep,
+        Normal,
+        Disable
+    }
 
     public class ProjectSettingValuesClass
     {
@@ -243,6 +253,10 @@ namespace CREC
         /// 検索方法の番号
         /// </summary>
         public int SearchMethodNumber { get; set; } = 0;
+        /// <summary>
+        /// SleepModeの設定
+        /// </summary>
+        public SleepMode SleepMode { get; set; } = SleepMode.Deep;
     }
 
     public class ProjectSettingClass
@@ -770,6 +784,16 @@ namespace CREC
                             projectSettingValues.SearchMethodNumber = 0;
                         }
                         break;
+                    case "SleepMode":
+                        try
+                        {
+                            projectSettingValues.SleepMode = (CREC.SleepMode)Convert.ToInt32(cols[1]);
+                        }
+                        catch
+                        {
+                            projectSettingValues.SleepMode = (CREC.SleepMode)0;
+                        }
+                        break;
                 }
             }
             CheckListVisibleColumnExist(ref projectSettingValues);
@@ -1001,6 +1025,7 @@ namespace CREC
                 {
                     streamWriter.WriteLine("InventoryInformationListVisible,false");
                 }
+                streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 returnValue = true;
             }
             catch
