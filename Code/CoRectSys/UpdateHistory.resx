@@ -436,7 +436,10 @@ ver8.1.2（2024/10/18）
 
 ver8.2.0（2024/10/21）
 アプリ非操作時のCPU負荷を低減するスリープ機能を追加
-不具合修正</value>
+不具合修正
+
+ver8.3.0（2024/10/24）
+データ監視間隔を設定する機能を追加</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

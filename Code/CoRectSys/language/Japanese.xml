@@ -779,6 +779,10 @@
 				<itemtext>データ保管場所</itemtext>
 			</item>
 			<item>
+				<itemname>DataCheckIntervalLabel</itemname>
+				<itemtext>データ監視間隔</itemtext>
+			</item>
+			<item>
 				<itemname>SleepModeLabel</itemname>
 				<itemtext>スリープ設定</itemtext>
 			</item>
@@ -843,6 +847,22 @@
 			<item>
 				<itemname>NoCompress</itemname>
 				<itemtext>圧縮なし</itemtext>
+			</item>
+			<item>
+				<itemname>LocalDataCheckInterval</itemname>
+				<itemtext>ローカル環境向け</itemtext>
+			</item>
+			<item>
+				<itemname>FastServerDataCheckInterval</itemname>
+				<itemtext>サーバ（高速環境）</itemtext>
+			</item>
+			<item>
+				<itemname>SlowServerDataCheckInterval</itemname>
+				<itemtext>サーバ（低速環境）</itemtext>
+			</item>
+			<item>
+				<itemname>CustomDataCheckInterval</itemname>
+				<itemtext>カスタム設定</itemtext>
 			</item>
 		</Other>
 	</MakeNewProject>

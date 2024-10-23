@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.2.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.3.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -4412,7 +4412,7 @@ namespace CREC
         {
             while (true)
             {
-                await Task.Delay(1);
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
                 if (Directory.Exists(TargetContentsPath) == false)
                 {
                     MessageBox.Show("IDが変更されました。\n再度読み込みを行ってください。", "CREC");
@@ -4495,7 +4495,7 @@ namespace CREC
         {
             while (File.Exists(TargetContentsPath + "\\SystemData\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
             {
-                await Task.Delay(1);
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
                 if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末から編集権限をリクエストされました。\nリクエストを許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
@@ -4593,7 +4593,7 @@ namespace CREC
         {
             while (true)
             {
-                await Task.Delay(1);
+                await Task.Delay(100);
                 if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
                 {
                     if (CurrentShownDataValues.ID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
@@ -4624,7 +4624,7 @@ namespace CREC
             bool activeForm = false;
             while (true)
             {
-                await Task.Delay(1);
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
                 switch (CurrentProjectSettingValues.SleepMode)
                 {
                     case SleepMode.Deep:
@@ -4635,13 +4635,13 @@ namespace CREC
                         else
                         {
                             activeForm = false;
-                            await Task.Delay(99);
                             try// 終了時にエラーが出るのでCatchするが、微妙
                             {
                                 ShowProjcetNameTextBox.Text = "Deep Sleep...";
                             }
                             catch
                             { }
+                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval*10);
                         }
                         break;
                     case SleepMode.Normal:
@@ -4652,13 +4652,13 @@ namespace CREC
                         else
                         {
                             activeForm = true;
-                            await Task.Delay(99);
                             try// 終了時にエラーが出るのでCatchするが、微妙
                             {
                                 ShowProjcetNameTextBox.Text = "Sleep...";
                             }
                             catch
                             { }
+                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval*10);
                         }
                         break;
                     case SleepMode.Disable:

@@ -779,6 +779,10 @@
 				<itemtext>Data location</itemtext>
 			</item>
 			<item>
+				<itemname>DataCheckIntervalLabel</itemname>
+				<itemtext>Check interval</itemtext>
+			</item>
+			<item>
 				<itemname>SleepModeLabel</itemname>
 				<itemtext>Sleep Mode</itemtext>
 			</item>
@@ -843,6 +847,22 @@
 			<item>
 				<itemname>NoCompress</itemname>
 				<itemtext>No compress</itemtext>
+			</item>
+			<item>
+				<itemname>LocalDataCheckInterval</itemname>
+				<itemtext>Local</itemtext>
+			</item>
+			<item>
+				<itemname>FastServerDataCheckInterval</itemname>
+				<itemtext>Server(Fast)</itemtext>
+			</item>
+			<item>
+				<itemname>SlowServerDataCheckInterval</itemname>
+				<itemtext>Server(Slow)</itemtext>
+			</item>
+			<item>
+				<itemname>CustomDataCheckInterval</itemname>
+				<itemtext>Custom</itemtext>
 			</item>
 		</Other>
 	</MakeNewProject>

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace CREC
 {
@@ -44,7 +45,7 @@ namespace CREC
         Sakura,
         Green
     }
-    
+
     /// <summary>
     /// SleepMode設定
     /// </summary>
@@ -257,6 +258,10 @@ namespace CREC
         /// SleepModeの設定
         /// </summary>
         public SleepMode SleepMode { get; set; } = SleepMode.Deep;
+        /// <summary>
+        /// データ監視の間隔
+        /// </summary>
+        public int DataCheckInterval { get; set; } = 100;
     }
 
     public class ProjectSettingClass
@@ -794,6 +799,17 @@ namespace CREC
                             projectSettingValues.SleepMode = (CREC.SleepMode)0;
                         }
                         break;
+                    case "DataCheckInterval":
+                        try
+                        {
+                            projectSettingValues.DataCheckInterval = Convert.ToInt32(cols[1]);
+                        }
+                        catch
+                        {
+                            projectSettingValues.DataCheckInterval = 100;
+                        }
+                        break;
+
                 }
             }
             CheckListVisibleColumnExist(ref projectSettingValues);
@@ -1026,6 +1042,7 @@ namespace CREC
                     streamWriter.WriteLine("InventoryInformationListVisible,false");
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
+                streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);
                 returnValue = true;
             }
             catch

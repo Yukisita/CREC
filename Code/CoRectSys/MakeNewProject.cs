@@ -42,9 +42,9 @@ namespace CREC
             {
                 SleepModeComboBox.Items.Add(sleepMode.ToString());
             }
-        
-        // 必要な項目を初期化
-        CompressTypeComboBox.SelectedIndex = 0;
+
+            // 必要な項目を初期化
+            CompressTypeComboBox.SelectedIndex = 0;
             FileFormatComboBox.SelectedIndex = 0;// 追加の場合はデフォルト値を各ラベルから取得してTextBoxに入れる
             if (TargetCRECPath.Length == 0)// 新規作成の場合はプロジェクト設定値を初期化
             {
@@ -99,6 +99,23 @@ namespace CREC
             EditDataLocationLabelTextBox.Text = CurrentProjectSettingValues.DataLocationLabel;
             ShowDataLocationLabelVisibleCheckBox.Checked = CurrentProjectSettingValues.DataLocationVisible;
             SleepModeComboBox.SelectedIndex = (int)CurrentProjectSettingValues.SleepMode;
+            DataCheckIntervalTextBox.Text = Convert.ToString(CurrentProjectSettingValues.DataCheckInterval);
+            switch (CurrentProjectSettingValues.DataCheckInterval)
+            {
+                case 100:
+                    DataCheckIntervalComboBox.SelectedIndex = 0;
+                    break;
+                case 500:
+                    DataCheckIntervalComboBox.SelectedIndex = 1;
+                    break;
+                case 1000:
+                    DataCheckIntervalComboBox.SelectedIndex = 2;
+                    break;
+                default:
+                    DataCheckIntervalComboBox.SelectedIndex = 3;
+                    break;
+
+            }
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -156,6 +173,14 @@ namespace CREC
                 CurrentProjectSettingValues.DataLocationLabel = EditDataLocationLabelTextBox.Text;
                 CurrentProjectSettingValues.DataLocationVisible = ShowDataLocationLabelVisibleCheckBox.Checked;
                 CurrentProjectSettingValues.SleepMode = (SleepMode)SleepModeComboBox.SelectedIndex;
+                try
+                {
+                    CurrentProjectSettingValues.DataCheckInterval = Convert.ToInt32(DataCheckIntervalTextBox.Text);
+                }
+                catch
+                {
+                    MessageBox.Show("データ監視間隔の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
+                }
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (TargetCRECPath.Length == 0)// 新規プロジェクト作成の場合
                 {
@@ -318,6 +343,42 @@ namespace CREC
             }
         }
 
+        private void EditUUIDLabelTextBox_Click(object sender, EventArgs e)// UUIDのラベルを変更可能に切り替える
+        {
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskChangeUUIDLabel", "MakeNewProject", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Yes)// 注意事項を確認してOKだった場合は、編集を許可する
+            {
+                EditUUIDLabelTextBox.ReadOnly = false;
+            }
+        }
+
+        /// <summary>
+        /// データ監視間隔のComboBox選択内容が変わった時の処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataCheckIntervalComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (DataCheckIntervalComboBox.SelectedIndex)
+            {
+                case 0:
+                    DataCheckIntervalTextBox.Text = "100";
+                    DataCheckIntervalTextBox.ReadOnly = true;
+                    break;
+                case 1:
+                    DataCheckIntervalTextBox.Text = "500";
+                    DataCheckIntervalTextBox.ReadOnly = true;
+                    break;
+                case 2:
+                    DataCheckIntervalTextBox.Text = "1000";
+                    DataCheckIntervalTextBox.ReadOnly = true;
+                    break;
+                case 3:
+                    DataCheckIntervalTextBox.ReadOnly = false;
+                    break;
+            }
+        }
+
         #region 言語設定
         private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
         {
@@ -391,16 +452,13 @@ namespace CREC
             CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SingleFile", "MakeNewProject", LanguageFile));
             CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ParData", "MakeNewProject", LanguageFile));
             CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("NoCompress", "MakeNewProject", LanguageFile));
+            // DataCheckIntervalComboBoxの内容を読み込み
+            DataCheckIntervalComboBox.Items.Clear();
+            DataCheckIntervalComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("LocalDataCheckInterval", "MakeNewProject", LanguageFile));
+            DataCheckIntervalComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("FastServerDataCheckInterval", "MakeNewProject", LanguageFile));
+            DataCheckIntervalComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SlowServerDataCheckInterval", "MakeNewProject", LanguageFile));
+            DataCheckIntervalComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("CustomDataCheckInterval", "MakeNewProject", LanguageFile));
         }
         #endregion
-
-        private void EditUUIDLabelTextBox_Click(object sender, EventArgs e)// UUIDのラベルを変更可能に切り替える
-        {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskChangeUUIDLabel", "MakeNewProject", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
-            if (result == System.Windows.MessageBoxResult.Yes)// 注意事項を確認してOKだった場合は、編集を許可する
-            {
-                EditUUIDLabelTextBox.ReadOnly = false;
-            }
-        }
     }
 }
