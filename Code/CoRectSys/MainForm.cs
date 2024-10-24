@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.3.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.3.1.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -2602,96 +2602,144 @@ namespace CREC
         #region 編集・データ追加・データ削除関係
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
-            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+            // 状態を確認、必要に応じてボタンを更新
+            if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ReadOnlyButton.Visible = true;
+                EditButton.Visible = false;
+                EditRequestButton.Visible = false;
                 return;
             }
-            if (TargetContentsPath.Length == 0)
+            else if (!File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
+                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+                if (TargetContentsPath.Length == 0)
+                {
+                    MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
+                    return;
+                }
+                StartEditForm();
+                // 詳細情報読み込み＆表示
+                StreamReader streamReaderDetailData = null;
+                try
+                {
+                    streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                    DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                    DetailsTextBox.Text = string.Empty;
+                }
+                finally
+                {
+                    streamReaderDetailData?.Close();
+                }
+                // 機密情報を読み込み
+                StreamReader streamReaderConfidentialData = null;
+                try
+                {
+                    streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
+                    ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                    ConfidentialDataTextBox.Text = string.Empty;
+                }
+                finally
+                {
+                    streamReaderConfidentialData?.Close();
+                }
+                EditNameTextBox.Text = CurrentShownDataValues.Name;
+                EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
+                EditIDTextBox.Text = CurrentShownDataValues.ID;
+                EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
+                EditMCTextBox.Text = CurrentShownDataValues.MC;
+                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
+                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
+                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
+                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
+                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
+            }
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            {
+                ReadOnlyButton.Visible = false;
+                EditButton.Visible = false;
+                EditRequestButton.Visible = true;
                 return;
             }
-            StartEditForm();
-            // 詳細情報読み込み＆表示
-            StreamReader streamReaderDetailData = null;
-            try
-            {
-                streamReaderDetailData = new StreamReader(TargetDetailsPath);
-                DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("DetailDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                DetailsTextBox.Text = string.Empty;
-            }
-            finally
-            {
-                streamReaderDetailData?.Close();
-            }
-            // 機密情報を読み込み
-            StreamReader streamReaderConfidentialData = null;
-            try
-            {
-                streamReaderConfidentialData = new StreamReader(TargetContentsPath + "\\confidentialdata.txt");
-                ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RestrictedDataLoadError", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                ConfidentialDataTextBox.Text = string.Empty;
-            }
-            finally
-            {
-                streamReaderConfidentialData?.Close();
-            }
-            EditNameTextBox.Text = CurrentShownDataValues.Name;
-            EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-            EditIDTextBox.Text = CurrentShownDataValues.ID;
-            EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-            EditMCTextBox.Text = CurrentShownDataValues.MC;
-            EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
-            EditCategoryTextBox.Text = CurrentShownDataValues.Category;
-            EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
-            EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
-            EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
-            EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
         }
         private void EditRequestButton_Click(object sender, EventArgs e)// 編集権限リクエスト
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中のため、ロックされています。\n編集権限をリクエストしますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
-            if (result == System.Windows.MessageBoxResult.Yes)
+            // 状態を確認、必要に応じてボタンを更新
+            if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                // 編集リクエストタグを作成
-                if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
-                {
-                    Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
-                }
-                FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\RED");
+                ReadOnlyButton.Visible = true;
+                EditButton.Visible = false;
                 EditRequestButton.Visible = false;
-                EditRequestingButton.Visible = true;
-                AwaitEdit();
+                return;
+            }
+            else if (!File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            {
+                ReadOnlyButton.Visible = false;
+                EditButton.Visible = true;
+                EditRequestButton.Visible = false;
+                return;
+            }
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            {
+                System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中のため、ロックされています。\n編集権限をリクエストしますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
+                if (result == System.Windows.MessageBoxResult.Yes)
+                {
+                    // 編集リクエストタグを作成
+                    if (!Directory.Exists(TargetContentsPath + "\\SystemData"))
+                    {
+                        Directory.CreateDirectory(TargetContentsPath + "\\SystemData");
+                    }
+                    FileOperationClass.AddBlankFile(TargetContentsPath + "\\SystemData\\RED");
+                    EditRequestButton.Visible = false;
+                    EditRequestingButton.Visible = true;
+                    AwaitEdit();
+                }
             }
         }
         private void ReadOnlyButton_Click(object sender, EventArgs e)// 編集不可
         {
+            // 状態を確認、必要に応じてボタンを更新
             if (ConfigValues.AllowEdit == false)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoEditingPermissions", "mainform", LanguageFile), "CREC");
                 return;
             }
-            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED"))
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && File.Exists(TargetContentsPath + "\\SystemData\\RED"))
             {
-                if (File.Exists(TargetContentsPath + "\\SystemData\\RED"))
-                {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EditWaitingUserExists", "mainform", LanguageFile), "CREC");
-                    return;
-                }
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EditWaitingUserExists", "mainform", LanguageFile), "CREC");
+                return;
+            }
+            else if (!File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            {
+                ReadOnlyButton.Visible = false;
+                EditButton.Visible = true;
+                EditRequestButton.Visible = false;
+                return;
+            }
+            else if (File.Exists(TargetContentsPath + "\\SystemData\\DED") && !File.Exists(TargetContentsPath + "\\SystemData\\RED"))
+            {
+                ReadOnlyButton.Visible = false;
+                EditButton.Visible = false;
+                EditRequestButton.Visible = true;
+                return;
             }
         }
         private void StartEditForm()// 編集画面に切り替え
         {
-            // 編集中の端末がいないか確認
+            // 編集中の端末がいないか再確認
             if (!File.Exists(TargetContentsPath + "\\SystemData\\FREE") && !File.Exists(TargetContentsPath + "\\SystemData\\ADD"))
             {
                 DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -4641,7 +4689,7 @@ namespace CREC
                             }
                             catch
                             { }
-                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval*10);
+                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 10);
                         }
                         break;
                     case SleepMode.Normal:
@@ -4658,7 +4706,7 @@ namespace CREC
                             }
                             catch
                             { }
-                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval*10);
+                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 10);
                         }
                         break;
                     case SleepMode.Disable:
