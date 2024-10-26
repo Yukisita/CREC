@@ -26,6 +26,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing.Imaging;
 
 namespace CREC
 {
@@ -33,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.3.1.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -2810,7 +2811,59 @@ namespace CREC
                 Thumbnail.ImageLocation = (openFolderDialog.FileName);// この時点で選択されたサムネイルを仮表示（未保存状態）
                 try
                 {
-                    File.Copy(openFolderDialog.FileName, TargetContentsPath + "\\pictures\\Thumbnail1.newjpg", true);
+                    // ここに画像サイズ変更処理を追加
+                    int TargetWidth = 400;
+                    int TargetHeight = 400;
+                    Bitmap TargetBitmap = new Bitmap(openFolderDialog.FileName);
+                    // 画素数設定
+                    if (Math.Max(TargetBitmap.Width, TargetBitmap.Height) < 400)// 画像サイズが元々規定サイズ以内だった場合
+                    {
+                        TargetWidth = TargetBitmap.Width;
+                        TargetHeight = TargetBitmap.Height;
+                    }
+                    else// 画像圧縮処理
+                    {
+                        // 長辺を取得してサイズを決定
+                        if (TargetBitmap.Width > TargetBitmap.Height)// 横長画像
+                        {
+                            TargetWidth = 400;
+                            TargetHeight = (int)(400.0 * TargetBitmap.Height / TargetBitmap.Width);
+                        }
+                        else if (TargetBitmap.Width < TargetBitmap.Height)// 縦長画像
+                        {
+                            TargetHeight = 400;
+                            TargetWidth = (int)(400.0 * TargetBitmap.Width / TargetBitmap.Height);
+                        }
+                    }
+                    Bitmap ConvertedBitmap = new Bitmap(TargetWidth, TargetHeight);
+                    // DPI設定
+                    if (Math.Max(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution) <= 72)
+                    {
+                        ConvertedBitmap.SetResolution(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution);
+                    }
+                    else
+                    {
+                        ConvertedBitmap.SetResolution(72.0F, 72.0F);
+                    }
+                    // エンコーダ設定
+                    EncoderParameters encoderParameters = new EncoderParameters(1);
+                    encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.ColorDepth, 24L);
+                    ImageCodecInfo imageCodecInfos = null;
+                    foreach (ImageCodecInfo imageCodecInfo in ImageCodecInfo.GetImageEncoders())
+                    {
+                        if (imageCodecInfo.FormatID == ImageFormat.Jpeg.Guid)
+                        {
+                            imageCodecInfos = imageCodecInfo;
+                            break;
+                        }
+                    }
+                    // 変換＆保存
+                    using (Graphics g = Graphics.FromImage(ConvertedBitmap))
+                    {
+                        g.DrawImage(TargetBitmap, 0, 0, TargetWidth, TargetHeight);
+                    }
+                    ConvertedBitmap.Save(TargetContentsPath + "\\pictures\\Thumbnail1.newjpg", imageCodecInfos, encoderParameters);
+                    ConvertedBitmap.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -4689,7 +4742,15 @@ namespace CREC
                             }
                             catch
                             { }
-                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 10);
+                            for (int i = 0; i < 10; i++)
+                            {
+                                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                                if (Form.ActiveForm == this)
+                                {
+                                    activeForm = true;
+                                    break;
+                                }
+                            }
                         }
                         break;
                     case SleepMode.Normal:
@@ -4706,7 +4767,15 @@ namespace CREC
                             }
                             catch
                             { }
-                            await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 10);
+                            for (int i = 0; i < 10; i++)
+                            {
+                                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                                if (Form.ActiveForm == this)
+                                {
+                                    activeForm = true;
+                                    break;
+                                }
+                            }
                         }
                         break;
                     case SleepMode.Disable:
