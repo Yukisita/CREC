@@ -2202,7 +2202,6 @@ namespace CREC
         private void ShowDetails()// 詳細情報の表示
         {
             // 読み込み中の画面に切り替え
-            NoImageLabel.Text = "Loading";
             NoImageLabel.Visible = true;
             Thumbnail.Image = null;
             Thumbnail.BackColor = menuStrip1.BackColor;
@@ -2212,6 +2211,8 @@ namespace CREC
             CheckSameMCButton.Visible = false;
             ConfidentialDataTextBox.Visible = false;
             DetailsTextBox.Visible = true;
+            // サムネイル表示処理を非同期で開始
+            LoadThnumbnailPicture();
             // 表示・非表示項目の設定
             ShowObjectName.Visible = CurrentProjectSettingValues.CollectionNameVisible;
             ShowID.Visible = CurrentProjectSettingValues.UUIDVisible;
@@ -2260,24 +2261,12 @@ namespace CREC
             RealLocationLabel.Text = CurrentProjectSettingValues.RealLocationLabel + "：";
             ShowRealLocation.Text = CurrentShownDataValues.RealLocation;
             ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
-            Thumbnail.ImageLocation = (TargetContentsPath + "\\pictures\\Thumbnail1.jpg");
-            TargetDetailsPath = (TargetContentsPath + "\\details.txt");
-            if (System.IO.File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.jpg"))
-            {
-                NoImageLabel.Text = "NO IMAGE";
-                NoImageLabel.Visible = false;
-                Thumbnail.BackColor = this.BackColor;
-            }
-            else
-            {
-                NoImageLabel.Text = "NO IMAGE";
-                NoImageLabel.Visible = true;
-                Thumbnail.BackColor = menuStrip1.BackColor;
-            }
+            Application.DoEvents();
             ShowPicturesButton.Visible = true;
             OpenPictureFolderButton.Visible = false;
 
             // 詳細情報読み込み
+            TargetDetailsPath = (TargetContentsPath + "\\details.txt");
             StreamReader streamReaderDetailData = null;
             try
             {
@@ -2453,6 +2442,7 @@ namespace CREC
             DetailsTextBox.ResetText();
             ConfidentialDataTextBox.ResetText();
         }
+
         #endregion
 
         #region 詳細画像表示関係
@@ -4913,6 +4903,29 @@ namespace CREC
             BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
             BackupToolStripMenuItem.Enabled = true;
             MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupCompleted", "mainform", LanguageFile), "CREC");
+        }
+        /// <summary>
+        /// サムネイル読み込み処理
+        /// </summary>
+        private async void LoadThnumbnailPicture()
+        {
+            NoImageLabel.Text = "Loading";
+            await Task.Run(() =>
+            {
+                Thumbnail.ImageLocation = (TargetContentsPath + "\\pictures\\Thumbnail1.jpg");
+            });
+
+            if (System.IO.File.Exists(TargetContentsPath + "\\pictures\\Thumbnail1.jpg"))
+            {
+                NoImageLabel.Visible = false;
+                Thumbnail.BackColor = this.BackColor;
+            }
+            else
+            {
+                NoImageLabel.Text = "NO IMAGE";
+                NoImageLabel.Visible = true;
+                Thumbnail.BackColor = menuStrip1.BackColor;
+            }
         }
         /// <summary>
         /// 更新確認
