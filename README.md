@@ -21,4 +21,7 @@ MITライセンスで公開しております。
 
 **豆知識**  
 Q：CRECの名前の由来は？  
-A：CollectとRecordを繋げてみました  
+A：CollectとRecordを繋げてみました。  
+  
+Q：CRECの読み方は？  
+A：某SNSのアンケートの結果「シーレック」になりました。  
