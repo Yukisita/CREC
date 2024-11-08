@@ -18,3 +18,10 @@ Wikiをご覧ください。
 MITライセンスで公開しております。  
 以下のリンクにてライセンスを記載してあります。  
 <https://github.com/Yukisita/CREC?tab=MIT-1-ov-file#readme>
+
+**豆知識**  
+Q：CRECの名前の由来は？  
+A：CollectとRecordを繋げてみました。  
+  
+Q：CRECの読み方は？  
+A：某SNSのアンケートの結果「シーレック」になりました。  
