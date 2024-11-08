@@ -539,12 +539,88 @@
 				<itemtext>ID for User</itemtext>
 			</item>
 			<item>
-				<itemname>EditQuantityTextBox</itemname>
-				<itemtext>Quantity</itemtext>
-			</item>
-			<item>
 				<itemname>SelectThumbnailButton</itemname>
 				<itemtext>Select Thumbnail</itemtext>
+			</item>
+			<item>
+				<itemname>AddContentsButton</itemname>
+				<itemtext>Add new collection to this project.</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateButton</itemname>
+				<itemtext>Update collection list.</itemtext>
+			</item>
+			<item>
+				<itemname>SearchButton</itemname>
+				<itemtext>Search collection.</itemtext>
+			</item>
+			<item>
+				<itemname>SearchFormTextBoxClearButton</itemname>
+				<itemtext>Clear search box.</itemtext>
+			</item>
+			<item>
+				<itemname>OpenDataLocation</itemname>
+				<itemtext>Open collection data folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CopyDataLocationPath</itemname>
+				<itemtext>Copy collection data folder path to clipboard.</itemtext>
+			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>Show pictures registered in this collection.</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>Open this collection's picture folder.</itemtext>
+			</item>
+			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>Start collection edit mode.</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>Save and close edit mode.</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>Start inventory management mode.</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>Close inventory management mode.</itemtext>
+			</item>
+			<item>
+				<itemname>ShowConfidentialDataButton</itemname>
+				<itemtext>Show restricted data.</itemtext>
+			</item>
+			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>Hide restricted data.</itemtext>
+			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>Start proper inventory settings.</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>Save proper inventory setting.</itemtext>
+			</item>
+			<item>
+				<itemname>OperationOptionComboBox</itemname>
+				<itemtext>Select inventory operation.</itemtext>
+			</item>
+			<item>
+				<itemname>EditQuantityTextBox</itemname>
+				<itemtext>Enter inventory operation quantity.</itemtext>
+			</item>
+			<item>
+				<itemname>EditInventoryOperationNoteTextBox</itemname>
+				<itemtext>Enter inventory operation's comment.(Optional)</itemtext>
+			</item>
+			<item>
+				<itemname>AddInventoryOperationButton</itemname>
+				<itemtext>Register entered inventory operation.</itemtext>
 			</item>
 		</ToolTip>
 		<Other>

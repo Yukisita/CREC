@@ -446,7 +446,11 @@ ver8.3.1（2024/10/25）
 
 ver8.4.0（2024/10/27）
 サムネイル画像生成時に圧縮する機能を追加
-スリープモードからの復帰速度を改善</value>
+スリープモードからの復帰速度を改善
+
+ver8.4.1（2024/11/08）
+UX改善のため、マウスホバリング時に表示する説明（ToolTip）を追加（一部）
+編集中に言語設定を変更した際に発生する不具合を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

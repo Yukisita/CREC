@@ -148,7 +148,7 @@
 			</item>
 			<item>
 				<itemname>AddInventoryOperationButton</itemname>
-				<itemtext>追加</itemtext>
+				<itemtext>登　録</itemtext>
 			</item>
 			<item>
 				<itemname>SelectThumbnailButton</itemname>
@@ -520,31 +520,107 @@
 		<ToolTip>
 			<item>
 				<itemname>SearchFormTextBox</itemname>
-				<itemtext>検索する文字列を入力</itemtext>
+				<itemtext>検索する文字列を入力してください。</itemtext>
 			</item>
 			<item>
 				<itemname>SearchOptionComboBox</itemname>
-				<itemtext>検索内容を選択</itemtext>
+				<itemtext>検索内容を選択してください。</itemtext>
 			</item>
 			<item>
 				<itemname>SearchMethodComboBox</itemname>
-				<itemtext>検索方法を選択</itemtext>
+				<itemtext>検索方法を選択してください。</itemtext>
 			</item>
 			<item>
 				<itemname>EditIDTextBox</itemname>
-				<itemtext>システムに必要な固有値</itemtext>
+				<itemtext>システムに必要な固有値です。</itemtext>
 			</item>
 			<item>
 				<itemname>EditMCTextBox</itemname>
-				<itemtext>JAN等の任意で管理コードを入力</itemtext>
-			</item>
-			<item>
-				<itemname>EditQuantityTextBox</itemname>
-				<itemtext>数字を入力</itemtext>
+				<itemtext>JAN等の任意で管理コードを入力してください。</itemtext>
 			</item>
 			<item>
 				<itemname>SelectThumbnailButton</itemname>
-				<itemtext>サムネイルを選択</itemtext>
+				<itemtext>サムネイルを選択してください。</itemtext>
+			</item>
+			<item>
+				<itemname>AddContentsButton</itemname>
+				<itemtext>新しいコレクションをプロジェクトに追加します。</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateButton</itemname>
+				<itemtext>コレクション一覧を更新します。</itemtext>
+			</item>
+			<item>
+				<itemname>SearchButton</itemname>
+				<itemtext>コレクションを検索します。</itemtext>
+			</item>
+			<item>
+				<itemname>SearchFormTextBoxClearButton</itemname>
+				<itemtext>検索ボックスの入力内容を削除します。</itemtext>
+			</item>
+			<item>
+				<itemname>OpenDataLocation</itemname>
+				<itemtext>コレクションのデータ保管場所を開きます。</itemtext>
+			</item>
+			<item>
+				<itemname>CopyDataLocationPath</itemname>
+				<itemtext>コレクションのデータ保管場所のパスをクリップボードにコピーします。</itemtext>
+			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>コレクションに登録されている画像を表示します。</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>コレクションの画像フォルダを開きます。</itemtext>
+			</item>
+			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>コレクションの編集を開始します。</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>コレクションを保存して編集を終了します。</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>在庫管理モードを開始します。</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>在庫管理モードを終了します。</itemtext>
+			</item>
+			<item>
+				<itemname>ShowConfidentialDataButton</itemname>
+				<itemtext>機密情報を表示します。</itemtext>
+			</item>
+			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>機密情報を非表示にします。</itemtext>
+			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>適正在庫数の設定を開始します。</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>入力された適正在庫の設定内容を保存します。</itemtext>
+			</item>
+			<item>
+				<itemname>OperationOptionComboBox</itemname>
+				<itemtext>在庫操作内容を選択してください。</itemtext>
+			</item>
+			<item>
+				<itemname>EditQuantityTextBox</itemname>
+				<itemtext>在庫操作数を入力してください。</itemtext>
+			</item>
+			<item>
+				<itemname>EditInventoryOperationNoteTextBox</itemname>
+				<itemtext>在庫操作のコメントを入力してください。(任意)</itemtext>
+			</item>
+			<item>
+				<itemname>AddInventoryOperationButton</itemname>
+				<itemtext>入力された在庫操作を登録します。</itemtext>
 			</item>
 		</ToolTip>
 		<Other>

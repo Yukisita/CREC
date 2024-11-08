@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.1.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -5582,11 +5582,14 @@ namespace CREC
             {
                 dataGridView1.CurrentCell = dataGridView1[TargetColumn, (int)SelectedRow];// 言語設定前に表示されている項目を復元
             }
-            ShowDetails();
             if (AddInventoryOperationButton.Visible)// 在庫管理モードだった場合はボタンを変更
             {
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = true;
+            }
+            if (!SaveAndCloseEditButton.Visible)// 編集モードでない場合は再読み込み
+            {
+                ShowDetails();
             }
         }
         private void SetLanguage(string targetLanguageFilePath)// 言語ファイル（xml）を読み込んで表示する処理
@@ -5759,8 +5762,28 @@ namespace CREC
                 UserAssistToolTip.SetToolTip(SearchMethodComboBox, LanguageSettingClass.GetToolTipMessage("SearchMethodComboBox", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(EditIDTextBox, LanguageSettingClass.GetToolTipMessage("EditIDTextBox", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(EditMCTextBox, LanguageSettingClass.GetToolTipMessage("EditMCTextBox", "mainform", LanguageFile));
-                UserAssistToolTip.SetToolTip(EditQuantityTextBox, LanguageSettingClass.GetToolTipMessage("EditQuantityTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(AddContentsButton, LanguageSettingClass.GetToolTipMessage("AddContentsButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(ListUpdateButton, LanguageSettingClass.GetToolTipMessage("ListUpdateButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SearchButton, LanguageSettingClass.GetToolTipMessage("SearchButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SearchFormTextBoxClearButton, LanguageSettingClass.GetToolTipMessage("SearchFormTextBoxClearButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(OpenDataLocation, LanguageSettingClass.GetToolTipMessage("OpenDataLocation", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(CopyDataLocationPath, LanguageSettingClass.GetToolTipMessage("CopyDataLocationPath", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(ShowPicturesButton, LanguageSettingClass.GetToolTipMessage("ShowPicturesButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(OpenPictureFolderButton, LanguageSettingClass.GetToolTipMessage("OpenPictureFolderButton", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(SelectThumbnailButton, LanguageSettingClass.GetToolTipMessage("SelectThumbnailButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditButton, LanguageSettingClass.GetToolTipMessage("EditButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(InventoryManagementModeButton, LanguageSettingClass.GetToolTipMessage("InventoryManagementModeButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(CloseInventoryManagementModeButton, LanguageSettingClass.GetToolTipMessage("CloseInventoryManagementModeButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(ShowConfidentialDataButton, LanguageSettingClass.GetToolTipMessage("ShowConfidentialDataButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(HideConfidentialDataButton, LanguageSettingClass.GetToolTipMessage("HideConfidentialDataButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SetProperInventorySettingsButton, LanguageSettingClass.GetToolTipMessage("SetProperInventorySettingsButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SaveProperInventorySettingsButton, LanguageSettingClass.GetToolTipMessage("SaveProperInventorySettingsButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(OperationOptionComboBox, LanguageSettingClass.GetToolTipMessage("OperationOptionComboBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditQuantityTextBox, LanguageSettingClass.GetToolTipMessage("EditQuantityTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(EditInventoryOperationNoteTextBox, LanguageSettingClass.GetToolTipMessage("EditInventoryOperationNoteTextBox", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(AddInventoryOperationButton, LanguageSettingClass.GetToolTipMessage("AddInventoryOperationButton", "mainform", LanguageFile));
+                UserAssistToolTip.SetToolTip(SaveAndCloseEditButton, LanguageSettingClass.GetToolTipMessage("SaveAndCloseEditButton", "mainform", LanguageFile));
+
             }
             else if (ConfigValues.ShowUserAssistToolTips == false)
             {
