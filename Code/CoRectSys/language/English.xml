@@ -906,6 +906,14 @@
 				<itemname>ProjectBackupDirectoryAlreadyExist</itemname>
 				<itemtext>Project backup directory already exist.</itemtext>
 			</item>
+			<item>
+				<itemname>EnterProjectNameError</itemname>
+				<itemtext>Enter project name.</itemtext>
+			</item>
+			<item>
+				<itemname>EnterProjectFolderPathError</itemname>
+				<itemtext>Enter project folder path.</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>

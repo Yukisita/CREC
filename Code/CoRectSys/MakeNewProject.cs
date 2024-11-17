@@ -20,10 +20,10 @@ namespace CREC
 {
     public partial class MakeNewProject : Form
     {
-        string TargetCRECPath = "";//管理ファイル（.crec）のファイルパス
+        string TargetCRECPath = string.Empty;//管理ファイル（.crec）のファイルパス
         readonly XElement LanguageFile;// 言語ファイル
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在編集中のプロジェクトの設定値
-        public string ReturnTargetProject { get; private set; } = "";
+        public string ReturnTargetProject { get; private set; } = string.Empty;
         public MakeNewProject(string tmp, ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
             InitializeComponent();
@@ -124,12 +124,12 @@ namespace CREC
             if (EditProjectNameTextBox.TextLength == 0)
             {
                 error = 1;
-                MessageBox.Show("プロジェクト名を空欄にすることはできません。", "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EnterProjectNameError", "MakeNewProject", LanguageFile), "CREC");
             }
             if (EditProjectLocationTextBox.TextLength == 0)
             {
                 error = 1;
-                MessageBox.Show("プロジェクトの作成場所を空欄にすることはできません。", "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EnterProjectFolderPathError", "MakeNewProject", LanguageFile), "CREC");
             }
 
             if (error == 0)// 記入内容に問題がなかった場合は.crecファイルを作成

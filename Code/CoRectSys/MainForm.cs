@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.2.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.3.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -2203,8 +2203,10 @@ namespace CREC
             NoImageLabel.Visible = true;
             Thumbnail.Image = null;
             Thumbnail.BackColor = menuStrip1.BackColor;
-            Application.DoEvents();
-            LoadDetails();
+            if (LoadDetails() != true)
+            {
+                return;
+            }
             AllowEditIDButton.Visible = false;
             CheckSameMCButton.Visible = false;
             ConfidentialDataTextBox.Visible = false;
@@ -2324,13 +2326,13 @@ namespace CREC
             // 最近表示した項目としてUUID、名称を保存<- 未実装項目
 
         }
-        private void LoadDetails()// 詳細情報を読み込み
+        private bool LoadDetails()// 詳細情報を読み込み
         {
             // 変数初期化
             ClearDetailsWindowMethod();
             if (dataGridView1.CurrentRow == null)
             {
-                return;
+                return false;
             }
             try
             {
@@ -2339,13 +2341,13 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("詳細情報の読み込みに失敗しました。\n" + ex.Message, "CREC");
-                return;
+                return false;
             }
 
             if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show("データが存在しません。", "CREC");
-                return;
+                return false;
             }
             // index読み込み
             TargetIndexPath = CurrentShownDataValues.CollectionFolderPath + "\\index.txt";
@@ -2397,7 +2399,9 @@ namespace CREC
                 CurrentShownDataValues.Name = " - ";
                 CurrentShownDataValues.ID = Path.GetFileName(CurrentShownDataValues.CollectionFolderPath);
                 CurrentShownDataValues.RegistrationDate = " - ";
+                return false;
             }
+            return true;
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
@@ -4695,7 +4699,6 @@ namespace CREC
                         {
                             if (CheckEditingContents() == true)
                             {
-                                LoadDetails();
                                 ShowDetails();
                             }
                             else
@@ -4705,7 +4708,6 @@ namespace CREC
                         }
                         else
                         {
-                            LoadDetails();
                             ShowDetails();
                         }
                     }

@@ -453,7 +453,11 @@ UX改善のため、マウスホバリング時に表示する説明（ToolTip�
 編集中に言語設定を変更した際に発生する不具合を修正
 
 ver8.4.2（2024/11/09）
-画像表示すると在庫管理モードボタンが消える不具合を修正</value>
+画像表示すると在庫管理モードボタンが消える不具合を修正
+
+ver8.4.3（2024/11/17）
+自動プロジェクト読み込み時にエラーがでる不具合を修正
+多言語対応</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

@@ -906,6 +906,14 @@
 				<itemname>ProjectBackupDirectoryAlreadyExist</itemname>
 				<itemtext>指定されたバックアップフォルダは既に存在しています。</itemtext>
 			</item>
+			<item>
+				<itemname>EnterProjectNameError</itemname>
+				<itemtext>プロジェクト名を入力してください。</itemtext>
+			</item>
+			<item>
+				<itemname>EnterProjectFolderPathError</itemname>
+				<itemtext>プロジェクトの作成場所を入力してください。</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>

@@ -38,11 +38,11 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::CREC.Properties.Resources.CREC256_icon;
-            this.pictureBox1.Location = new System.Drawing.Point(7, 7);
+            this.pictureBox1.Image = global::CREC.Properties.Resources.CREC128_icon;
+            this.pictureBox1.Location = new System.Drawing.Point(11, 11);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(140, 140);
+            this.pictureBox1.Size = new System.Drawing.Size(128, 128);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
@@ -56,7 +56,7 @@
             this.CRECVersionLabel.Name = "CRECVersionLabel";
             this.CRECVersionLabel.Size = new System.Drawing.Size(194, 36);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC Ver 8.4.2";
+            this.CRECVersionLabel.Text = "CREC Ver 8.4.3";
             // 
             // BootingProgressLabel
             // 
@@ -90,7 +90,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(116, 25);
             this.label2.TabIndex = 5;
-            this.label2.Text = "2024/11/09";
+            this.label2.Text = "2024/11/17";
             // 
             // BootingForm
             // 
