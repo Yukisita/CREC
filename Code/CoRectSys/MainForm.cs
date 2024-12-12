@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.3.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.4.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -952,9 +952,9 @@ namespace CREC
                     FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
                     FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
                     // サムネ画像が更新されていた場合は一時データをを削除
-                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg"))
+                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                     {
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg");
+                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                     }
                     // 新規作成の場合はデータを削除
                     if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))
@@ -1418,9 +1418,9 @@ namespace CREC
                         FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
                         FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
                         // サムネ画像が更新されていた場合は一時データをを削除
-                        if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg"))
+                        if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                         {
-                            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg");
+                            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                         }
                         if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))
                         {
@@ -2144,9 +2144,9 @@ namespace CREC
                 FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
                 FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
                 // サムネ画像が更新されていた場合は一時データをを削除
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg"))
+                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                 {
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg");
+                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                 }
                 if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))// データ追加時は削除
                 {
@@ -2473,7 +2473,13 @@ namespace CREC
             System.IO.FileInfo[] files;
             try
             {
-                files = di.GetFiles("*.jpg", System.IO.SearchOption.AllDirectories).Concat(di.GetFiles("*.png", System.IO.SearchOption.AllDirectories)).ToArray();
+                files = di.GetFiles("*.jpg", System.IO.SearchOption.AllDirectories).
+                    Concat(di.GetFiles("*.jpeg", System.IO.SearchOption.AllDirectories)).
+                    Concat(di.GetFiles("*.jfif", System.IO.SearchOption.AllDirectories)).
+                    Concat(di.GetFiles("*.jpe", System.IO.SearchOption.AllDirectories)).
+                    Concat(di.GetFiles("*.png", System.IO.SearchOption.AllDirectories)).
+                    Concat(di.GetFiles("*.gif", System.IO.SearchOption.AllDirectories)).
+                    Concat(di.GetFiles("*.ico", System.IO.SearchOption.AllDirectories)).ToArray();
             }
             catch (Exception ex)
             {
@@ -2498,10 +2504,7 @@ namespace CREC
             CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
             foreach (System.IO.FileInfo f in files)
             {
-                if (f.Name != "Thumbnail1.jpg")// サムネイル画像は除外する
-                {
-                    PicturesList.Add(f.FullName);
-                }
+                PicturesList.Add(f.FullName);
             }
             PictureCount = PicturesList.Count;
             PictureNumber = 0;
@@ -2753,9 +2756,9 @@ namespace CREC
             FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
             // サムネ用画像変更用データが残っていた場合削除
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg"))
+            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg");
+                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
             // 編集画面に必要な物を表示
             EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
@@ -2797,7 +2800,7 @@ namespace CREC
             OpenFileDialog openFolderDialog = new OpenFileDialog();
             openFolderDialog.InitialDirectory = CurrentShownDataValues.CollectionFolderPath + "\\pictures";
             openFolderDialog.Title = "画像を選択してください";
-            openFolderDialog.Filter = "|*.jpg;*.png";
+            openFolderDialog.Filter = "JPEG|*.jpg;*.jpeg;*.jfif;*.jpe" + "|PNG|*.png" + "|GIF|*.gif" + "|ICO|*.ico";
             if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
             {
                 Thumbnail.ImageLocation = (openFolderDialog.FileName);// この時点で選択されたサムネイルを仮表示（未保存状態）
@@ -2843,7 +2846,7 @@ namespace CREC
                     ImageCodecInfo imageCodecInfos = null;
                     foreach (ImageCodecInfo imageCodecInfo in ImageCodecInfo.GetImageEncoders())
                     {
-                        if (imageCodecInfo.FormatID == ImageFormat.Jpeg.Guid)
+                        if (imageCodecInfo.FormatID == ImageFormat.Png.Guid)
                         {
                             imageCodecInfos = imageCodecInfo;
                             break;
@@ -2854,7 +2857,7 @@ namespace CREC
                     {
                         g.DrawImage(TargetBitmap, 0, 0, TargetWidth, TargetHeight);
                     }
-                    ConvertedBitmap.Save(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg", imageCodecInfos, encoderParameters);
+                    ConvertedBitmap.Save(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png", imageCodecInfos, encoderParameters);
                     ConvertedBitmap.Dispose();
                 }
                 catch (Exception ex)
@@ -3238,10 +3241,10 @@ namespace CREC
             ConfidentialDataFile.Write(string.Format("{0}", ConfidentialDataTextBox.Text));
             ConfidentialDataFile.Close();
             // サムネ画像が更新されていた場合は上書きしキャッシュを削除
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg"))
+            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
-                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg", CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", true);
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.newjpg");
+                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true);
+                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
             if (PictureBox1.Visible == true)// 詳細画像表示されている場合は読み込み
             {
@@ -4914,12 +4917,13 @@ namespace CREC
         private async void LoadThnumbnailPicture()
         {
             NoImageLabel.Text = "Loading";
+
             await Task.Run(() =>
             {
-                Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg");
+                Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
             });
 
-            if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg"))
+            if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png"))
             {
                 NoImageLabel.Visible = false;
                 Thumbnail.BackColor = this.BackColor;
@@ -4929,6 +4933,15 @@ namespace CREC
                 NoImageLabel.Text = "NO IMAGE";
                 NoImageLabel.Visible = true;
                 Thumbnail.BackColor = menuStrip1.BackColor;
+                // 後方互換性(v8.4.3以前)のため、従来のJPGE形式のサムネイルを確認
+                if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg"))
+                {
+                    File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true);
+                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg");
+                    Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
+                    NoImageLabel.Visible = false;
+                    Thumbnail.BackColor = this.BackColor;
+                }
             }
         }
         /// <summary>

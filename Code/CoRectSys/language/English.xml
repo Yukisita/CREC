@@ -136,7 +136,7 @@
 			</item>
 			<item>
 				<itemname>OpenDataLocation</itemname>
-				<itemtext>Open</itemtext>
+				<itemtext>Open(&amp;O)</itemtext>
 			</item>
 			<item>
 				<itemname>CopyDataLocationPath</itemname>
@@ -164,7 +164,7 @@
 			</item>
 			<item>
 				<itemname>InventoryManagementModeButton</itemname>
-				<itemtext>Inventory</itemtext>
+				<itemtext>Inventory(&amp;I)</itemtext>
 			</item>
 			<item>
 				<itemname>CloseInventoryManagementModeButton</itemname>

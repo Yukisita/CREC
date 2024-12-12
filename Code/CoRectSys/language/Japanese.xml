@@ -136,7 +136,7 @@
 			</item>
 			<item>
 				<itemname>OpenDataLocation</itemname>
-				<itemtext>開く</itemtext>
+				<itemtext>開く(&amp;O)</itemtext>
 			</item>
 			<item>
 				<itemname>CopyDataLocationPath</itemname>
@@ -164,7 +164,7 @@
 			</item>
 			<item>
 				<itemname>InventoryManagementModeButton</itemname>
-				<itemtext>在庫数管理画面</itemtext>
+				<itemtext>在庫数管理(&amp;I)</itemtext>
 			</item>
 			<item>
 				<itemname>CloseInventoryManagementModeButton</itemname>

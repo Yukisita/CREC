@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectInfoForm));
             this.ProjcetNameLabel = new System.Windows.Forms.Label();
             this.ProjcetCreatedDateLabel = new System.Windows.Forms.Label();
             this.ProjcetModifiedDateLabel = new System.Windows.Forms.Label();
@@ -38,9 +39,10 @@
             // 
             this.ProjcetNameLabel.AutoSize = true;
             this.ProjcetNameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjcetNameLabel.Location = new System.Drawing.Point(12, 9);
+            this.ProjcetNameLabel.Location = new System.Drawing.Point(16, 11);
+            this.ProjcetNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProjcetNameLabel.Name = "ProjcetNameLabel";
-            this.ProjcetNameLabel.Size = new System.Drawing.Size(83, 30);
+            this.ProjcetNameLabel.Size = new System.Drawing.Size(104, 38);
             this.ProjcetNameLabel.TabIndex = 0;
             this.ProjcetNameLabel.Text = "label1";
             // 
@@ -48,9 +50,10 @@
             // 
             this.ProjcetCreatedDateLabel.AutoSize = true;
             this.ProjcetCreatedDateLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjcetCreatedDateLabel.Location = new System.Drawing.Point(12, 57);
+            this.ProjcetCreatedDateLabel.Location = new System.Drawing.Point(16, 71);
+            this.ProjcetCreatedDateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProjcetCreatedDateLabel.Name = "ProjcetCreatedDateLabel";
-            this.ProjcetCreatedDateLabel.Size = new System.Drawing.Size(55, 20);
+            this.ProjcetCreatedDateLabel.Size = new System.Drawing.Size(70, 25);
             this.ProjcetCreatedDateLabel.TabIndex = 0;
             this.ProjcetCreatedDateLabel.Text = "label1";
             this.ProjcetCreatedDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -59,9 +62,10 @@
             // 
             this.ProjcetModifiedDateLabel.AutoSize = true;
             this.ProjcetModifiedDateLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjcetModifiedDateLabel.Location = new System.Drawing.Point(12, 88);
+            this.ProjcetModifiedDateLabel.Location = new System.Drawing.Point(16, 110);
+            this.ProjcetModifiedDateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProjcetModifiedDateLabel.Name = "ProjcetModifiedDateLabel";
-            this.ProjcetModifiedDateLabel.Size = new System.Drawing.Size(55, 20);
+            this.ProjcetModifiedDateLabel.Size = new System.Drawing.Size(70, 25);
             this.ProjcetModifiedDateLabel.TabIndex = 0;
             this.ProjcetModifiedDateLabel.Text = "label1";
             this.ProjcetModifiedDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -70,23 +74,26 @@
             // 
             this.ProjcetAccessedDateLabel.AutoSize = true;
             this.ProjcetAccessedDateLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProjcetAccessedDateLabel.Location = new System.Drawing.Point(12, 119);
+            this.ProjcetAccessedDateLabel.Location = new System.Drawing.Point(16, 149);
+            this.ProjcetAccessedDateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProjcetAccessedDateLabel.Name = "ProjcetAccessedDateLabel";
-            this.ProjcetAccessedDateLabel.Size = new System.Drawing.Size(55, 20);
+            this.ProjcetAccessedDateLabel.Size = new System.Drawing.Size(70, 25);
             this.ProjcetAccessedDateLabel.TabIndex = 0;
             this.ProjcetAccessedDateLabel.Text = "label1";
             this.ProjcetAccessedDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // ProjectInfoForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(440, 148);
+            this.ClientSize = new System.Drawing.Size(587, 185);
             this.Controls.Add(this.ProjcetAccessedDateLabel);
             this.Controls.Add(this.ProjcetModifiedDateLabel);
             this.Controls.Add(this.ProjcetCreatedDateLabel);
             this.Controls.Add(this.ProjcetNameLabel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ProjectInfoForm";
             this.Text = "プロジェクト情報";
             this.ResumeLayout(false);

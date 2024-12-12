@@ -200,7 +200,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CREC.ico" />
     <None Include="Resources\CREC256_icon.png" />
     <None Include="Resources\2024-2-Spring.png" />
     <None Include="Resources\2023-autumn.png" />
@@ -208,6 +207,9 @@
     <None Include="Resources\Comic_0011.png" />
     <None Include="Resources\Comic_001.png" />
     <None Include="Resources\CREC128_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CREC.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
