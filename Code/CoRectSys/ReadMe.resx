@@ -122,22 +122,14 @@
 在庫管理するソフトです。
 
 ～動作環境～
-OS　　　　　Windows11（多分10でも動くけど未検証）
-必要なスペック　Windows11が動く、モニタはFHD以上推奨
-　　　　　　　（175%を超える高DPI環境ではレイアウトが崩れる場合があります。）
+OS　　　　　Windows11（多分以前のバージョンでも動くけど未検証）
+必要なスペック　モニタはFHD以上推奨
+　　　　　　　（高DPI環境ではレイアウトが崩れる場合があります。）
 
 ～使い方～
 考えるな。感じろ。
-１．プロジェクト作成
-　　ツールストリップのファイルから「新規プロジェクト作成」を選択してください。
-２．プロジェクトを開く
-　　ツールストリップのファイルから「開く」を選択し、開きたいプロジェクトを選択してください。
-３．環境設定
-　　ツールストリップのファイルから「環境設定」を選択してください。
-　　編集の可否、機密データ表示の可否を設定できます。
-
-～アンインストール～
-exeを削除してください。レジストリ等への書き込みは一切ありません。
+あと、ヘルプ内の「使用ガイド...」をクリックするとオンライン取扱説明書が見られます。
+URL：https://github.com/Yukisita/CREC/wiki
 
 ～利用について色々～
 １．元々は制作者個人が趣味で使用することを目的に作成したソフトです。
@@ -146,6 +138,7 @@ exeを削除してください。レジストリ等への書き込みは一切�
 　　こちらも同様一切の損失について責任は負いかねます。
 　　完全自己責任で使ってください。
 　　マジでデータ飛ぶことあるのでバックアップを取るなど対策をとってください。
+　　具体的な利用規約はMITライセンスに基づきます。
 ２．バグや要望、使用例を教えていただけると制作者が泣いて喜びます。
 　　ご声援いただけると制作者が号泣して喜びます。
 
@@ -153,7 +146,7 @@ exeを削除してください。レジストリ等への書き込みは一切�
 本ソフトウェアはMITライセンスの元で公開されています。
 This software is released under the MIT License.
 
-Copyright &lt;2022-2024&gt; &lt;S.Yukisita&gt;
+Copyright &lt;2023-2024&gt; &lt;S.Yukisita&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -161,10 +154,13 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+～本アプリケーションに記載の商標・名称等について～
+本アプリケーションでは、説明のため商標等の引用を行っている部分があります。
+本アプリケーションに記載の企業名・商品名・サービス名等は、各社、各団体若しくは個人等が権利を有する商標または登録商標です。
+
 ～連絡先～
 雪下
-Twitter：@Yukisita_Mfg
-（hを抜きました。Yuki"shit"aで垢バンされる恐れがあったので）
+X（旧Twitter）：@Yukisita_Mfg
 E-mail:contact.yukishita.mfg@gmail.com</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

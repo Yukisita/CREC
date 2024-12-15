@@ -93,9 +93,10 @@
             this.Controls.Add(this.ProjcetCreatedDateLabel);
             this.Controls.Add(this.ProjcetNameLabel);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ProjectInfoForm";
             this.Text = "プロジェクト情報";
+            this.Load += new System.EventHandler(this.ProjectInfoForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

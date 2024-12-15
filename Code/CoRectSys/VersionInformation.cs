@@ -35,10 +35,10 @@ namespace CREC
 
         // 表示関係
         double CurrentDPI = 1.0;// 現在のDPI値
-        public VersionInformation(string colorSetting, double MainFormCurrentDPI, XElement languageFile)
+        public VersionInformation(ProjectSettingValuesClass projectSettingValues, double MainFormCurrentDPI, XElement languageFile)
         {
             InitializeComponent();
-            ColorSetting = colorSetting;
+            ColorSetting = projectSettingValues.ColorSetting.ToString();
             mainFormCurrentDPI = (float)MainFormCurrentDPI;
             LanguageFile = languageFile;
             SetColorMethod();

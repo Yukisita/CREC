@@ -107,10 +107,72 @@ namespace CREC
             }
         }
         /// <summary>
+        /// ファイルを指定の場所に移動
+        /// </summary>
+        /// <param name="CurrentFileFullPath">移動元のファイルパス</param>
+        /// <param name="NewFileFullPath">移動先のファイルパス</param>
+        /// <param name="Overwriting">上書き許可</param>
+        /// <returns>移動成功：true、移動失敗：false</returns>
+        public static bool MoveFile(string CurrentFileFullPath, string NewFileFullPath, bool Overwriting)
+        {
+            // ファイルを移動
+            try
+            {
+                File.Copy(CurrentFileFullPath, NewFileFullPath, Overwriting);
+            }
+            catch (ArgumentNullException ex)// PathがNullぽ
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (ArgumentException ex)// Pathに不備がある
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (UnauthorizedAccessException ex)// 権限がない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (PathTooLongException ex)// パスが長すぎる
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (DirectoryNotFoundException ex)// ディレクトリが見つからない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (FileNotFoundException ex)// コピー元ファイルが見つからない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (IOException ex)// コピー先のファイルが存在し、上書き許可がない
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (NotSupportedException ex)// パスの名称がサポート外
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            catch (Exception ex)// 予期せぬエラー
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            // 移動前のファイルを削除
+            return DeleteFile(CurrentFileFullPath);
+        }
+        /// <summary>
         /// フォルダを指定の場所に移動
         /// </summary>
-        /// <param name="CurrentFolderFullPath"></param>
-        /// <param name="NewFolderFullPath"></param>
+        /// <param name="CurrentFolderFullPath">移動元のフォルダパス</param>
+        /// <param name="NewFolderFullPath">移動先のフォルダパス</param>
         /// <returns>移動成功：true、移動失敗：false</returns>
         public static bool MoveFolder(string CurrentFolderFullPath, string NewFolderFullPath)
         {

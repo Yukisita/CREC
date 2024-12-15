@@ -516,6 +516,10 @@
 				<itemname>UUIDChangeError</itemname>
 				<itemtext>Operation canceled because of UUID change error.</itemtext>
 			</item>
+			<item>
+				<itemname>ThumbnailVersionMigrationError</itemname>
+				<itemtext>Thumbnail version migration failed.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -1004,4 +1008,30 @@
 			</item>
 		</Other>
 	</VersionInformation>
+	<ProjectInfoForm>
+		<Label>
+			<item>
+				<itemname>ProjcetNameLabel</itemname>
+				<itemtext>Name : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetCreatedDateLabel</itemname>
+				<itemtext>Created : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetModifiedDateLabel</itemname>
+				<itemtext>Modified : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetAccessedDateLabel</itemname>
+				<itemtext>Accessed : </itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Project Information</itemtext>
+			</item>
+		</Other>
+	</ProjectInfoForm>
 </list>

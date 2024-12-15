@@ -516,6 +516,10 @@
 				<itemname>UUIDChangeError</itemname>
 				<itemtext>UUIDの変更に失敗したため、操作をキャンセルしました。</itemtext>
 			</item>
+			<item>
+				<itemname>ThumbnailVersionMigrationError</itemname>
+				<itemtext>サムネイル画像のバージョン移行に失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
@@ -1004,4 +1008,30 @@
 			</item>
 		</Other>
 	</VersionInformation>
+	<ProjectInfoForm>
+		<Label>
+			<item>
+				<itemname>ProjcetNameLabel</itemname>
+				<itemtext>　名　称　：</itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetCreatedDateLabel</itemname>
+				<itemtext>　作　成　日　：</itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetModifiedDateLabel</itemname>
+				<itemtext>　更　新　日　：</itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetAccessedDateLabel</itemname>
+				<itemtext>最終アクセス日：</itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>プロジェクト情報</itemtext>
+			</item>
+		</Other>
+	</ProjectInfoForm>
 </list>

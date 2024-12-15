@@ -42,7 +42,7 @@
             this.ReadMeTextBox.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.ReadMeTextBox.HideSelection = false;
             this.ReadMeTextBox.Location = new System.Drawing.Point(16, 15);
-            this.ReadMeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ReadMeTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.ReadMeTextBox.Multiline = true;
             this.ReadMeTextBox.Name = "ReadMeTextBox";
             this.ReadMeTextBox.ReadOnly = true;
@@ -54,7 +54,7 @@
             // DummyTextBox
             // 
             this.DummyTextBox.Location = new System.Drawing.Point(416, 376);
-            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.DummyTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.DummyTextBox.Name = "DummyTextBox";
             this.DummyTextBox.Size = new System.Drawing.Size(132, 22);
             this.DummyTextBox.TabIndex = 0;
@@ -67,7 +67,7 @@
             this.Controls.Add(this.ReadMeTextBox);
             this.Controls.Add(this.DummyTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "ReadMe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ReadMe";

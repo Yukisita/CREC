@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using CREC;
+using Microsoft.VisualBasic;
+using System.Xml.Linq;
 
 namespace CREC
 {
@@ -23,13 +25,20 @@ namespace CREC
         // 共用の変数
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
         string ColorSetting = "Blue";
+        readonly XElement LanguageFile;// 言語ファイル
 
-        public ProjectInfoForm(ProjectSettingValuesClass projectSettingValues)
+        public ProjectInfoForm(ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
             InitializeComponent();
             CurrentProjectSettingValues = projectSettingValues;
             ColorSetting = projectSettingValues.ColorSetting.ToString();
+            LanguageFile = languageFile;
             SetColorMethod();
+        }
+
+        private void ProjectInfoForm_Load(object sender, EventArgs e)
+        {
+            SetLanguage();
             ReadProjcetInformationMethod();
         }
 
@@ -37,10 +46,10 @@ namespace CREC
         {
             if (CurrentProjectSettingValues.Name.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
-                ProjcetNameLabel.Text = "　名　称　：" + CurrentProjectSettingValues.Name;
-                ProjcetCreatedDateLabel.Text = "　作　成　日　：" + CurrentProjectSettingValues.CreatedDate;
-                ProjcetModifiedDateLabel.Text = "　更　新　日　：" + CurrentProjectSettingValues.ModifiedDate;
-                ProjcetAccessedDateLabel.Text = "最終アクセス日：" + CurrentProjectSettingValues.AccessedDate;
+                ProjcetNameLabel.Text = ProjcetNameLabel.Text + CurrentProjectSettingValues.Name;
+                ProjcetCreatedDateLabel.Text = ProjcetCreatedDateLabel.Text + CurrentProjectSettingValues.CreatedDate;
+                ProjcetModifiedDateLabel.Text = ProjcetModifiedDateLabel.Text + CurrentProjectSettingValues.ModifiedDate;
+                ProjcetAccessedDateLabel.Text = ProjcetAccessedDateLabel.Text + CurrentProjectSettingValues.AccessedDate;
             }
         }
 
@@ -66,5 +75,35 @@ namespace CREC
                     break;
             }
         }
+
+        #region 言語設定
+        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            try
+            {
+                this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ProjectInfoForm", LanguageFile);
+                IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("ProjectInfoForm").Elements("Label").Elements("item") select item;
+                foreach (XElement itemData in labelItemDataList)
+                {
+                    try
+                    {
+                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                        if (targetContrl.Length > 0)
+                        {
+                            targetContrl[0].Text = itemData.Element("itemtext").Value;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC");
+            }
+        }
+        #endregion
     }
 }

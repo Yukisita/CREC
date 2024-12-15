@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.4.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.5.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -1288,7 +1288,7 @@ namespace CREC
         #endregion
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e)// バージョン情報表示
         {
-            VersionInformation VerInfo = new VersionInformation(CurrentProjectSettingValues.ColorSetting.ToString(), CurrentDPI, LanguageFile);
+            VersionInformation VerInfo = new VersionInformation(CurrentProjectSettingValues, CurrentDPI, LanguageFile);
             VerInfo.ShowDialog();
         }
         private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
@@ -1690,7 +1690,7 @@ namespace CREC
             }
             else
             {
-                ProjectInfoForm projectInfoForm = new ProjectInfoForm(CurrentProjectSettingValues);
+                ProjectInfoForm projectInfoForm = new ProjectInfoForm(CurrentProjectSettingValues, LanguageFile);
                 projectInfoForm.ShowDialog();
             }
         }
@@ -2011,7 +2011,7 @@ namespace CREC
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
         }
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
@@ -4936,8 +4936,16 @@ namespace CREC
                 // 後方互換性(v8.4.3以前)のため、従来のJPGE形式のサムネイルを確認
                 if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg"))
                 {
-                    File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true);
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg");
+                    if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))// SystemDataフォルダが存在しない場合は作成
+                    {
+                        Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                    }
+                    if(!FileOperationClass.MoveFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true))// サムネイルを移動
+                    {
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ThumbnailVersionMigrationError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                    // サムネイル再読み込み
                     Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
                     NoImageLabel.Visible = false;
                     Thumbnail.BackColor = this.BackColor;
