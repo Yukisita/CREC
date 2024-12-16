@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.4.5.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.5.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -86,6 +86,15 @@ namespace CREC
 
         public MainForm()
         {
+            // コマンドライン引数を取得
+            string commandLineProjectFile = string.Empty;
+            var commandLineArgument = System.Environment.GetCommandLineArgs();
+            try// コマンドライン引数2つ目から選択されたプロジェクトのパスを取得
+            {
+                commandLineProjectFile = commandLineArgument[1];
+            }
+            catch// 取得できなかったら諦める
+            { }
             // Boot画面を表示
             BootingForm bootingForm = new BootingForm();
             try
@@ -130,7 +139,8 @@ namespace CREC
             }
             bootingForm.BootingProgressLabel.Text = "設定ファイル読み込み中";
             Application.DoEvents();
-            ImportConfig();// configファイルの読み込み・自動生成
+            // configファイルの読み込み・自動生成
+            ImportConfig();
             // 言語ファイル読み込み
             bootingForm.BootingProgressLabel.Text = "言語ファイル読み込み中";
             Application.DoEvents();
@@ -174,8 +184,13 @@ namespace CREC
             // バックグラウンド処理の開始
             CheckContentsList();
             CheckEditing();
+            // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
+            if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
+            {
+                TargetCRECPath = commandLineProjectFile;
+            }
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
-            if (TargetCRECPath.Length > 0)
+            if (TargetCRECPath.Length > 0)// 自動読み込みプロジェクトが指定されている場合
             {
                 bootingForm.BootingProgressLabel.Text = "プロジェクト読み込み中";
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
@@ -4005,7 +4020,7 @@ namespace CREC
         {
             // 指定されていなかった場合のために初期化
             CurrentLanguageFileName = "Japanese";
-            if (File.Exists(ConfigFile))
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + ConfigFile))
             {
                 IEnumerable<string> tmp = null;
                 tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
@@ -4144,7 +4159,7 @@ namespace CREC
         }
         private void SaveConfig()// config.sysの保存
         {
-            StreamWriter configfile = new StreamWriter(Directory.GetCurrentDirectory() + "\\config.sys", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter configfile = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\config.sys", false, Encoding.GetEncoding("UTF-8"));
             try
             {
                 if (ConfigValues.AllowEdit == true)
@@ -4940,7 +4955,7 @@ namespace CREC
                     {
                         Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
                     }
-                    if(!FileOperationClass.MoveFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true))// サムネイルを移動
+                    if (!FileOperationClass.MoveFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true))// サムネイルを移動
                     {
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ThumbnailVersionMigrationError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
