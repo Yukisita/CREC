@@ -34,7 +34,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.5.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -46,6 +46,7 @@ namespace CREC
 
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
+        ToolStripMenuItem[] RecentShownCollectionsToolStripMenuItems;
         string CurrentLanguageFileName = string.Empty;
         // config.sys読み込み用Class
         ConfigValuesClass ConfigValues = new ConfigValuesClass();
@@ -333,6 +334,10 @@ namespace CREC
         private void LoadProjectFileMethod()// CREC読み込み用の処理メソッド
         {
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
+            SearchFormTextBox.Text = string.Empty;// 検索ボックスを初期化
+            // 最近開いたコレクションを初期化
+            RecentShownCollectionsToolStripMenuItems = new ToolStripMenuItem[10];
+            RecentShownContentsToolStripMenuItem.DropDownItems.Clear();
             // 画像表示モードを閉じる
             dataGridView1.Visible = true;
             dataGridView1BackgroundPictureBox.Visible = true;
@@ -2338,8 +2343,8 @@ namespace CREC
                     EditRequestButton.Visible = false;
                 }
             }
-            // 最近表示した項目としてUUID、名称を保存<- 未実装項目
-
+            // 最近表示した項目としてUUID、名称を保存
+            AddRecentShownCollectiontoToolStripMenuItem();
         }
         private bool LoadDetails()// 詳細情報を読み込み
         {
@@ -5529,10 +5534,151 @@ namespace CREC
         }
         #endregion
 
-        private void RecentShownContentsToolStripMenuItem_Click(object sender, EventArgs e)// 最近表示した項目
+        #region 最近表示した項目関連
+        /// <summary>
+        /// 最近表示した項目に追加する
+        /// </summary>
+        private void AddRecentShownCollectiontoToolStripMenuItem()
         {
-            // 実装検討中
+            try
+            {
+                ToolStripMenuItem[] OriginalRecentShownCollectionsToolStripMenuItems = RecentShownCollectionsToolStripMenuItems;// 既存の最近表示した項目を保存
+                RecentShownCollectionsToolStripMenuItems = new ToolStripMenuItem[11];// 一旦初期化
+                // 最近表示した項目を追加
+                RecentShownCollectionsToolStripMenuItems[0] = new ToolStripMenuItem();
+                RecentShownCollectionsToolStripMenuItems[0].Text = CurrentShownDataValues.Name;
+                RecentShownCollectionsToolStripMenuItems[0].ToolTipText = CurrentShownDataValues.CollectionFolderPath;
+                RecentShownCollectionsToolStripMenuItems[0].Click += new EventHandler(RecentShownCollectionsToolStripMenuItems_Click);
+                // 既存の最近表示した項目を追加
+                if (OriginalRecentShownCollectionsToolStripMenuItems != null)
+                {
+                    int count = 0;
+                    for (int i = 0; i < RecentShownCollectionsToolStripMenuItems.Length - 1; i++)
+                    {
+                        if (OriginalRecentShownCollectionsToolStripMenuItems[i] == null)
+                        {
+                            break;
+                        }
+                        else if (OriginalRecentShownCollectionsToolStripMenuItems[i].ToolTipText == RecentShownCollectionsToolStripMenuItems[0].ToolTipText)// 重複する場合は追加しない
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            count++;
+                            RecentShownCollectionsToolStripMenuItems[count] = new ToolStripMenuItem();
+                            RecentShownCollectionsToolStripMenuItems[count] = OriginalRecentShownCollectionsToolStripMenuItems[i];
+                            RecentShownCollectionsToolStripMenuItems[count].Click += new EventHandler(RecentShownCollectionsToolStripMenuItems_Click);
+                        }
+                    }
+                }
+                // ToolStripMenuItemに追加
+                RecentShownContentsToolStripMenuItem.DropDownItems.Clear();// 表示済みのMenuItemを削除
+                for (int i = 0; i < RecentShownCollectionsToolStripMenuItems.Length - 1; i++)
+                {
+                    if (RecentShownCollectionsToolStripMenuItems[i] == null)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        RecentShownContentsToolStripMenuItem.DropDownItems.Add(RecentShownCollectionsToolStripMenuItems[i]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RecentlyOpenedCollectionGetError", "mainform", LanguageFile) + ex.Message, "CREC");
+            }
         }
+        /// <summary>
+        /// 最近表示した項目がクリックされた時のイベント
+        /// </summary>
+        private void RecentShownCollectionsToolStripMenuItems_Click(object sender, EventArgs e)
+        {
+            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+            {
+                if (CheckEditingContents() != true)// 編集終了をキャンセルされた場合
+                {
+                    return;// 何もせず終了
+                }
+            }
+            if (InventoryModeDataGridView.Visible == true)// 在庫管理モードの場合は閉じる
+            {
+                CloseInventoryViewMethod();
+            }
+            if (PictureBox1.Visible == true)// 画像表示モードの場合は閉じる
+            {
+                ClosePicturesViewMethod();
+            }
+            if (CurrentShownDataValues.CollectionFolderPath != ((ToolStripItem)sender).ToolTipText)// 表示中の項目と選択された項目が異なる場合
+            {
+                try
+                {
+                    if (!Directory.Exists(((ToolStripItem)sender).ToolTipText))// 選択されたコレクションが存在しない場合
+                    {
+                        // 存在しないコレクションをToolStripMenuItemから削除
+                        foreach (var item in RecentShownCollectionsToolStripMenuItems)
+                        {
+                            if (item != null)
+                            {
+                                if (item.ToolTipText == ((ToolStripItem)sender).ToolTipText)
+                                {
+                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CantFindRecentlyOpenedCollection", "mainform", LanguageFile) + ((ToolStripItem)sender).Text, "CREC");
+                                    RecentShownContentsToolStripMenuItem.DropDownItems.Remove((ToolStripItem)sender);
+                                }
+                            }
+                        }
+                        ToolStripMenuItem[] OriginalRecentShownCollectionsToolStripMenuItems = RecentShownCollectionsToolStripMenuItems;// 既存の最近表示した項目を保存
+                        RecentShownCollectionsToolStripMenuItems = new ToolStripMenuItem[11];// 一旦初期化
+                        int count = 0;
+                        for (int i = 0; i < RecentShownCollectionsToolStripMenuItems.Length; i++)
+                        {
+                            if (OriginalRecentShownCollectionsToolStripMenuItems[i] == null)
+                            {
+                                break;
+                            }
+                            else if (OriginalRecentShownCollectionsToolStripMenuItems[i].ToolTipText != ((ToolStripItem)sender).ToolTipText)// 削除対象以外のコレクションを追加
+                            {
+                                RecentShownCollectionsToolStripMenuItems[count] = OriginalRecentShownCollectionsToolStripMenuItems[i];
+                                count++;
+                            }
+                        }
+                        // ToolStripMenuItemに追加
+                        RecentShownContentsToolStripMenuItem.DropDownItems.Clear();// 表示済みのMenuItemを削除
+                        for (int i = 0; i < RecentShownCollectionsToolStripMenuItems.Length - 1; i++)
+                        {
+                            if (RecentShownCollectionsToolStripMenuItems[i] == null)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                RecentShownContentsToolStripMenuItem.DropDownItems.Add(RecentShownCollectionsToolStripMenuItems[i]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        CurrentShownDataValues.CollectionFolderPath = ((ToolStripItem)sender).ToolTipText;
+                        CurrentShownDataValues.ID = Path.GetFileName(((ToolStripItem)sender).ToolTipText);
+                        SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
+                        SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+                        SearchFormTextBox.Text = CurrentShownDataValues.ID;
+                        SearchOptionComboBox.SelectedIndex = 0;
+                        SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+                        SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+                        LoadGrid();
+                        ShowDetails();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("RecentlyOpenedCollectionSetError", "mainform", LanguageFile) + ex.Message, "CREC");
+                }
+            }
+        }
+        #endregion
 
         #region 言語設定
         private void LanguageSettingToolStripMenuItem_MouseEnter(object sender, EventArgs e)// 表示言語リストを表示
@@ -5565,8 +5711,7 @@ namespace CREC
                         LanguageSettingToolStripMenuItem.Enabled = true;
                         count++;
                         LanguageSettingToolStripMenuItems[count] = new ToolStripMenuItem();
-                        LanguageFile = XElement.Load(fileInfo.FullName);
-                        IEnumerable<string> strings = from item in LanguageFile.Elements("metadata").Elements("name") select item.Value;
+                        IEnumerable<string> strings = from item in XElement.Load(fileInfo.FullName).Elements("metadata").Elements("name") select item.Value;
                         foreach (string s in strings)
                         {
                             LanguageSettingToolStripMenuItems[count].Text = s;
@@ -5831,6 +5976,5 @@ namespace CREC
             }
         }
         #endregion
-
     }
 }

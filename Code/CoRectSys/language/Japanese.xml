@@ -380,7 +380,7 @@
 			</item>
 			<item>
 				<itemname>RecentShownContentsToolStripMenuItem</itemname>
-				<itemtext>最近表示した項目（未実装）</itemtext>
+				<itemtext>最近表示したコレクション</itemtext>
 			</item>
 			<item>
 				<itemname>ProjectToolStripMenuItem</itemname>
@@ -519,6 +519,18 @@
 			<item>
 				<itemname>ThumbnailVersionMigrationError</itemname>
 				<itemtext>サムネイル画像のバージョン移行に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionGetError</itemname>
+				<itemtext>最近表示した項目の取得中にエラーが発生しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>CantFindRecentlyOpenedCollection</itemname>
+				<itemtext>コレクションが見つかりません。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionSetError</itemname>
+				<itemtext>最近表示した項目の表示中にエラーが発生しました。&#xD;&#xA;</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>

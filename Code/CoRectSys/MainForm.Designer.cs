@@ -693,11 +693,9 @@
             // 
             // RecentShownContentsToolStripMenuItem
             // 
-            this.RecentShownContentsToolStripMenuItem.Enabled = false;
             this.RecentShownContentsToolStripMenuItem.Name = "RecentShownContentsToolStripMenuItem";
             this.RecentShownContentsToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
             this.RecentShownContentsToolStripMenuItem.Text = "最近表示した項目（未実装）";
-            this.RecentShownContentsToolStripMenuItem.Click += new System.EventHandler(this.RecentShownContentsToolStripMenuItem_Click);
             // 
             // ProjectToolStripMenuItem
             // 

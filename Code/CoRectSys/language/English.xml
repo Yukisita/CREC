@@ -380,7 +380,7 @@
 			</item>
 			<item>
 				<itemname>RecentShownContentsToolStripMenuItem</itemname>
-				<itemtext>Recent Shown Contents(not able)</itemtext>
+				<itemtext>Recent Shown Collection</itemtext>
 			</item>
 			<item>
 				<itemname>ProjectToolStripMenuItem</itemname>
@@ -519,6 +519,18 @@
 			<item>
 				<itemname>ThumbnailVersionMigrationError</itemname>
 				<itemtext>Thumbnail version migration failed.</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionGetError</itemname>
+				<itemtext>Faild to get recently opened collection.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>CantFindRecentlyOpenedCollection</itemname>
+				<itemtext>Collection does not exits.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionSetError</itemname>
+				<itemtext>Faild to display recently opend collection.&#xD;&#xA;</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
