@@ -1,6 +1,6 @@
 ﻿/*
 Program
-Copyright (c) [2022-2024] [S.Yukisita]
+Copyright (c) [2022-2025] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
@@ -84,6 +84,7 @@ namespace CREC
                 return false;
             }
         }
+        
         /// <summary>
         /// ファイルを強制削除
         /// </summary>
@@ -106,6 +107,7 @@ namespace CREC
                 return false;
             }
         }
+        
         /// <summary>
         /// ファイルを指定の場所に移動
         /// </summary>
@@ -168,6 +170,7 @@ namespace CREC
             // 移動前のファイルを削除
             return DeleteFile(CurrentFileFullPath);
         }
+       
         /// <summary>
         /// フォルダを指定の場所に移動
         /// </summary>
@@ -217,6 +220,7 @@ namespace CREC
                 return false;
             }
         }
+        
         /// <summary>
         /// 指定された空ファイルを作成する処理
         /// </summary>

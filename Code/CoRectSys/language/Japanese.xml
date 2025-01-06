@@ -970,7 +970,7 @@
 		<Label>
 			<item>
 				<itemname>CopyrightLabel</itemname>
-				<itemtext>©　雪下 2024</itemtext>
+				<itemtext>©　雪下 2025</itemtext>
 			</item>
 			<item>
 				<itemname>SystemInformationsLabel</itemname>
@@ -1046,4 +1046,50 @@
 			</item>
 		</Other>
 	</ProjectInfoForm>
+	<CollectionDataClass>
+		<MessageBox>
+			<item>
+				<itemname>IndexFileReadFailed</itemname>
+				<itemtext>Indexファイルの読み込みに失敗しました。&#xD;&#xA;復元処理を開始します。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupData</itemname>
+				<itemtext>Indexファイルが見つかりません。&#xD;&#xA;バックアップデータからの復元を開始します。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataSuccessed</itemname>
+				<itemtext>バックアップデータからの復元に成功しました。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataFailed</itemname>
+				<itemtext>バックアップデータからの復元に失敗しました。&#xD;&#xA;Indexファイルを再生成します。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataBackupDataNotFound</itemname>
+				<itemtext>バックアップデータが見つかりませんでした。&#xD;&#xA;Indexファイルを再生成します。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoreFailed</itemname>
+				<itemtext>Indexファイルの復元に失敗しました。&#xD;&#xA;アプリケーションの再起動を推奨します。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileSaveFailed</itemname>
+				<itemtext>Indexファイルの保存に失敗しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileBackupFailed</itemname>
+				<itemtext>Indexファイルのバックアップに失敗しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>ThumbnailSetFaild</itemname>
+				<itemtext>サムネイルの設定に失敗しました。&#xD;&#xA;別の画像を選択してください。&#xD;&#xA;</itemtext>
+			</item>
+		</MessageBox>
+		<Other>
+			<item>
+				<itemname>SelectThumbnail</itemname>
+				<itemtext>サムネイル画像を選択してください。</itemtext>
+			</item>
+		</Other>
+	</CollectionDataClass>
 </list>

@@ -970,7 +970,7 @@
 		<Label>
 			<item>
 				<itemname>CopyrightLabel</itemname>
-				<itemtext>© Yukisita 2024</itemtext>
+				<itemtext>© Yukisita 2025</itemtext>
 			</item>
 			<item>
 				<itemname>SystemInformationsLabel</itemname>
@@ -1046,4 +1046,50 @@
 			</item>
 		</Other>
 	</ProjectInfoForm>
+	<CollectionDataClass>
+		<MessageBox>
+			<item>
+				<itemname>IndexFileReadFailed</itemname>
+				<itemtext>Failed to load file.&#xD;&#xA;Start the restore process.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupData</itemname>
+				<itemtext>The index file not found.&#xD;&#xA;Start restoring from backup data.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataSuccessed</itemname>
+				<itemtext>The index file was successfully restored from backup data.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataFailed</itemname>
+				<itemtext>The index file restoration failed.&#xD;&#xA;Regenerate the index file.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataBackupDataNotFound</itemname>
+				<itemtext>Backup data not found.&#xD;&#xA;Regenerate the index file.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoreFailed</itemname>
+				<itemtext>The index file restoration failed.&#xD;&#xA;We recommend restarting the application.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileSaveFailed</itemname>
+				<itemtext>The index file save failed.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileBackupFailed</itemname>
+				<itemtext>The index file backup failed.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>ThumbnailSetFaild</itemname>
+				<itemtext>Failed to set thumbnail.&#xD;&#xA;Please choose another image.&#xD;&#xA;</itemtext>
+			</item>
+		</MessageBox>
+		<Other>
+			<item>
+				<itemname>SelectThumbnail</itemname>
+				<itemtext>Sselect a thumbnail.</itemtext>
+			</item>
+		</Other>
+	</CollectionDataClass>
 </list>

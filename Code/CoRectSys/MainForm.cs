@@ -1,6 +1,6 @@
 ﻿/*
 MainForm
-Copyright (c) [2022-2024] [S.Yukisita]
+Copyright (c) [2022-2025] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
@@ -26,7 +26,6 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Policy;
 using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Imaging;
 
 namespace CREC
 {
@@ -34,40 +33,23 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.1.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
         string TargetCRECPath = string.Empty;// 管理ファイル（.crec）のファイルパス
-        string TargetIndexPath = string.Empty;// Indexの場所
+        //string TargetIndexPath = string.Empty;// Indexの場所
         string TargetDetailsPath = string.Empty;// 説明txtのパス
+        ConfigValuesClass ConfigValues = new ConfigValuesClass();// config.sys読み込み用Class
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
+        List<CollectionDataValuesClass> DataList = new List<CollectionDataValuesClass>();// コレクションの一覧
+        CollectionDataValuesClass CurrentShownCollectionData = new CollectionDataValuesClass();// 詳細表示中のコレクション
 
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
         ToolStripMenuItem[] RecentShownCollectionsToolStripMenuItems;
         string CurrentLanguageFileName = string.Empty;
-        // config.sys読み込み用Class
-        ConfigValuesClass ConfigValues = new ConfigValuesClass();
-        /// <summary>
-        /// 詳細データ読み込み用変数宣言、詳細表示している内容を入れておく
-        /// </summary>
-        class DataValuesClass
-        {
-            public string CollectionFolderPath { get; set; } = string.Empty;
-            public string Name { get; set; } = string.Empty;
-            public string ID { get; set; } = string.Empty;
-            public string MC { get; set; } = string.Empty;
-            public string RegistrationDate { get; set; } = string.Empty;
-            public string Category { get; set; } = string.Empty;
-            public string Tag1 { get; set; } = string.Empty;
-            public string Tag2 { get; set; } = string.Empty;
-            public string Tag3 { get; set; } = string.Empty;
-            public string RealLocation { get; set; } = string.Empty;
-        }
-        List<DataValuesClass> DataList = new List<DataValuesClass>();// 一覧表示しているデータ
-        DataValuesClass CurrentShownDataValues = new DataValuesClass();// 詳細表示中のデータ
 
         // データ一覧表示関係
         DataTable ContentsDataTable = new DataTable();
@@ -183,56 +165,21 @@ namespace CREC
             Application.DoEvents();
             SetFormLayout();
             // バックグラウンド処理の開始
-            CheckContentsList();
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);
             CheckEditing();
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
                 TargetCRECPath = commandLineProjectFile;
             }
-            // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
-            if (TargetCRECPath.Length > 0)// 自動読み込みプロジェクトが指定されている場合
+            // Boot画面を閉じる
+            try
             {
-                bootingForm.BootingProgressLabel.Text = "プロジェクト読み込み中";
-                LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                // Boot画面を閉じる
-                try
-                {
-                    bootingForm.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Empty + ex, "CREC");
-                }
-                if (CurrentProjectSettingValues.StartUpListOutput == true)
-                {
-                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-                }
-                if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
-                {
-                    BackUpMethod();
-                    MakeBackUpZip();// ZIP圧縮を非同期で開始
-                }
+                bootingForm.Close();
             }
-            else
+            catch (Exception ex)
             {
-                // Boot画面を閉じる
-                try
-                {
-                    bootingForm.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Empty + ex, "CREC");
-                }
-            }
-            if (ConfigValues.AutoSearch == true)
-            {
-                SearchButton.Visible = false;
-            }
-            else
-            {
-                SearchButton.Visible = true;
+                MessageBox.Show(string.Empty + ex, "CREC");
             }
         }
 
@@ -248,6 +195,28 @@ namespace CREC
             if (ConfigValues.BootUpdateCheck == true)
             {
                 CheckLatestVersion();// 更新の確認
+            }
+            // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
+            if (TargetCRECPath.Length > 0)// 自動読み込みプロジェクトが指定されている場合
+            {
+                LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                if (CurrentProjectSettingValues.StartUpListOutput == true)
+                {
+                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
+                }
+                if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
+                {
+                    BackUpMethod();
+                    MakeBackUpZip();// ZIP圧縮を非同期で開始
+                }
+            }
+            if (ConfigValues.AutoSearch == true)
+            {
+                SearchButton.Visible = false;
+            }
+            else
+            {
+                SearchButton.Visible = true;
             }
             // 英語モードだとボタンが表示されなくなる不具合対策、原因は不明
             ShowSelectedItemInformationButton.Visible = false;
@@ -302,7 +271,7 @@ namespace CREC
         /// </summary>
         private void OpenProjectMethod()
         {
-            if (CurrentShownDataValues.CollectionFolderPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
+            if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             }
@@ -599,7 +568,7 @@ namespace CREC
                 }
             }
             // 開いているプロジェクトがあった場合は内容を保存
-            if (CurrentShownDataValues.CollectionFolderPath.Length > 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             }
@@ -682,7 +651,7 @@ namespace CREC
         }
         private void OpenBackUpFolderToolStripMenuItem_Click(object sender, EventArgs e)// バックアップ保存場所を開く
         {
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -744,58 +713,17 @@ namespace CREC
                         {
                             string ListContentsPath = Convert.ToString(dataGridView1.Rows[i].Cells[0].Value);
                             // 変数初期化
-                            DataValuesClass thisDataValues = new DataValuesClass();
+                            CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();
                             string ListInventory = string.Empty;
                             string ListInventoryStatus = string.Empty;
                             int? ListSafetyStock = null;
                             int? ListReorderPoint = null;
                             int? ListMaximumLevel = null;
                             // index読み込み
-                            IEnumerable<string> tmp = null;
-                            try
-                            {
-                                tmp = File.ReadLines(ListContentsPath + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                                foreach (string line in tmp)
-                                {
-                                    cols = line.Split(',');
-                                    switch (cols[0])
-                                    {
-                                        case "名称":
-                                            thisDataValues.Name = line.Substring(3).Replace(",", string.Empty);
-                                            break;
-                                        case "ID":
-                                            thisDataValues.ID = line.Substring(3).Replace(",", string.Empty);
-                                            break;
-                                        case "MC":
-                                            thisDataValues.MC = line.Substring(3).Replace(",", string.Empty);
-                                            break;
-                                        case "登録日":
-                                            thisDataValues.RegistrationDate = line.Substring(4).Replace(",", string.Empty);
-                                            break;
-                                        case "カテゴリ":
-                                            thisDataValues.Category = line.Substring(5).Replace(",", string.Empty);
-                                            break;
-                                        case "タグ1":
-                                            thisDataValues.Tag1 = line.Substring(4).Replace(",", string.Empty);
-                                            break;
-                                        case "タグ2":
-                                            thisDataValues.Tag2 = line.Substring(4).Replace(",", string.Empty);
-                                            break;
-                                        case "タグ3":
-                                            thisDataValues.Tag3 = line.Substring(4).Replace(",", string.Empty);
-                                            break;
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                                thisDataValues.ID = Path.GetDirectoryName(ListContentsPath);
-                                thisDataValues.Name = "Status：Indexファイル破損";
-                                thisDataValues.Category = " - ";
-                            }
+                            CollectionDataClass.LoadCollectionIndexData(ListContentsPath, ref thisCollectionDataValues,LanguageFile);
                             // 在庫状態を取得
                             //invからデータを読み込んで表示
+                            IEnumerable<string> tmp = null;
                             if (File.Exists(ListContentsPath + "\\inventory.inv"))
                             {
                                 try
@@ -864,11 +792,11 @@ namespace CREC
                             // ファイル書き込み
                             if (CurrentProjectSettingValues.ListOutputFormat == ListOutputFormat.CSV)
                             {
-                                streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", ListContentsPath, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                             }
                             else
                             {
-                                streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", ListContentsPath, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                             }
                         }
                         streamWriter.Close();
@@ -964,26 +892,26 @@ namespace CREC
                 else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                 {
                     // 編集中タグを削除・解放をマーク
-                    if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+                    if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
                     {
-                        Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                        Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                     }
-                    FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
+                    FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
                     // サムネ画像が更新されていた場合は一時データをを削除
-                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                     {
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
+                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                     }
                     // 新規作成の場合はデータを削除
-                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD"))
                     {
                         DeleteContent();
                     }
                     else
                     {
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                     }
                 }
                 else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ再起動をキャンセル
@@ -1032,7 +960,7 @@ namespace CREC
                 StreamReader streamReaderConfidentialData = null;
                 try
                 {
-                    streamReaderConfidentialData = new StreamReader(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt");
+                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
                     ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -1044,19 +972,19 @@ namespace CREC
                 {
                     streamReaderConfidentialData?.Close();
                 }
-                EditNameTextBox.Text = CurrentShownDataValues.Name;
+                EditNameTextBox.Text = CurrentShownCollectionData.CollectionName;
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = CurrentShownDataValues.ID;
+                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                 AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
-                EditMCTextBox.Text = CurrentShownDataValues.MC;
-                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
-                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
-                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
-                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
-                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
-                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
+                EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
+                EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownCollectionData.CollectionCategory;
+                EditTag1TextBox.Text = CurrentShownCollectionData.CollectionTag1;
+                EditTag2TextBox.Text = CurrentShownCollectionData.CollectionTag2;
+                EditTag3TextBox.Text = CurrentShownCollectionData.CollectionTag3;
+                EditRealLocationTextBox.Text = CurrentShownCollectionData.CollectionRealLocation;
             }
         }
         private void AddInventoryModeToolStripMenuItem_Click(object sender, EventArgs e)// 在庫数管理モードを追加
@@ -1066,20 +994,20 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                 return;
             }
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
                 MessageBox.Show("在庫数管理ファイルは作成済みです。", "CREC");
             }
             else
             {
-                FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv");
-                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv");
-                InventoryManagementFile.WriteLine("{0},,,", CurrentShownDataValues.ID);
+                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
+                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
+                InventoryManagementFile.WriteLine("{0},,,", CurrentShownCollectionData.CollectionID);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
                 CloseInventoryManagementModeButton.Visible = false;
@@ -1430,25 +1358,25 @@ namespace CREC
                     else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                     {
                         // 編集中タグを削除・解放をマーク
-                        if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+                        if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
                         {
-                            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                         }
-                        FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
+                        FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
+                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
+                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
                         // サムネ画像が更新されていた場合は一時データをを削除
-                        if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
+                        if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                         {
-                            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
+                            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                         }
-                        if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))
+                        if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD"))
                         {
                             DeleteContent();
                         }
                         else
                         {
-                            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+                            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                         }
                         if (CurrentProjectSettingValues.CloseListOutput == true)
                         {
@@ -1598,12 +1526,12 @@ namespace CREC
         }
         private void DeleteContentToolStripMenuItem_Click(object sender, EventArgs e)// データ完全削除
         {
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(CurrentShownDataValues.Name + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(CurrentShownCollectionData.CollectionName + "を削除しますか？\nこの操作は取り消せません。", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
             if (result == System.Windows.MessageBoxResult.Yes)// 削除を実行
             {
                 DeleteContent();
@@ -1615,20 +1543,20 @@ namespace CREC
             {
                 MessageBox.Show("設定により編集が禁止されています。", "CREC");
             }
-            else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED"))
+            else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中の可能性があります。\n編集権限を強制的に取得しますか？\nなお、本操作によりデータ破損する可能性があります。", "CREC", System.Windows.MessageBoxButton.YesNo);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
                     // 編集リクエストタグを削除・解放を宣言
-                    if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+                    if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
                     {
-                        Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                        Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                     }
-                    FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+                    FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
                 else
                 {
@@ -1642,7 +1570,7 @@ namespace CREC
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+                if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
                 {
                     MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
                     return;
@@ -1650,17 +1578,17 @@ namespace CREC
                 StartEditForm();
                 // 現時点でのデータを読み込んで表示
                 LoadDetails();
-                EditNameTextBox.Text = CurrentShownDataValues.Name;
+                EditNameTextBox.Text = CurrentShownCollectionData.CollectionName;
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = CurrentShownDataValues.ID;
+                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                EditMCTextBox.Text = CurrentShownDataValues.MC;
-                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
-                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
-                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
-                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
-                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
-                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
+                EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
+                EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownCollectionData.CollectionCategory;
+                EditTag1TextBox.Text = CurrentShownCollectionData.CollectionTag1;
+                EditTag2TextBox.Text = CurrentShownCollectionData.CollectionTag2;
+                EditTag3TextBox.Text = CurrentShownCollectionData.CollectionTag3;
+                EditRealLocationTextBox.Text = CurrentShownCollectionData.CollectionRealLocation;
             }
         }
         private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト管理ファイルの編集
@@ -1760,7 +1688,7 @@ namespace CREC
                     IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
                     foreach (System.IO.DirectoryInfo subFolder in subFolders)
                     {
-                        DataValuesClass thisDataValues = new DataValuesClass();
+                        CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();
                         NoData = false;
                         if (DataLoadingStatus == "stop")
                         {
@@ -1774,50 +1702,9 @@ namespace CREC
                         int? ListReorderPoint = null;
                         int? ListMaximumLevel = null;
                         // index読み込み
-                        IEnumerable<string> tmp = null;
-                        try
-                        {
-                            tmp = File.ReadLines(subFolder.FullName + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                            foreach (string line in tmp)
-                            {
-                                cols = line.Split(',');
-                                switch (cols[0])
-                                {
-                                    case "名称":
-                                        thisDataValues.Name = line.Substring(3);
-                                        break;
-                                    case "ID":
-                                        thisDataValues.ID = line.Substring(3);
-                                        break;
-                                    case "MC":
-                                        thisDataValues.MC = line.Substring(3);
-                                        break;
-                                    case "登録日":
-                                        thisDataValues.RegistrationDate = line.Substring(4);
-                                        break;
-                                    case "カテゴリ":
-                                        thisDataValues.Category = line.Substring(5);
-                                        break;
-                                    case "タグ1":
-                                        thisDataValues.Tag1 = line.Substring(4);
-                                        break;
-                                    case "タグ2":
-                                        thisDataValues.Tag2 = line.Substring(4);
-                                        break;
-                                    case "タグ3":
-                                        thisDataValues.Tag3 = line.Substring(4);
-                                        break;
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                            thisDataValues.ID = subFolder.Name;
-                            thisDataValues.Name = "Status：Indexファイル破損";
-                            thisDataValues.Category = "　ー　";
-                        }
+                        CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues,LanguageFile);
                         // 在庫状態を取得、invからデータを読み込み
+                        IEnumerable<string> tmp = null;
                         if (File.Exists(subFolder.FullName + "\\inventory.inv"))
                         {
                             try
@@ -1850,7 +1737,7 @@ namespace CREC
                                     }
                                 }
                                 ListInventory = Convert.ToString(count);
-                                ListInventoryStatus = "　ー　";
+                                ListInventoryStatus = " - ";
                                 if (0 == count)
                                 {
                                     ListInventoryStatus = "欠品";
@@ -1880,8 +1767,8 @@ namespace CREC
                         }
                         else
                         {
-                            ListInventory = "　ー　";
-                            ListInventoryStatus = "　ー　";
+                            ListInventory = " - ";
+                            ListInventoryStatus = " - ";
                         }
                         //dataGridViewに追加、検索欄に文字が入力されている場合は絞り込み
                         if (SearchFormTextBox.TextLength == 0)
@@ -1890,12 +1777,12 @@ namespace CREC
                             {
                                 if (SearchMethod(ListInventoryStatus) == true)
                                 {
-                                    ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                    ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                 }
                             }
                             else
                             {
-                                ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                             }
                         }
                         else if (SearchFormTextBox.TextLength >= 1)
@@ -1904,51 +1791,51 @@ namespace CREC
                             switch (SearchOptionComboBox.SelectedIndex)
                             {
                                 case 0:
-                                    if (SearchMethod(thisDataValues.ID) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionID) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 1:
-                                    if (SearchMethod(thisDataValues.MC) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionMC) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 2:
-                                    if (SearchMethod(thisDataValues.Name) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionName) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 3:
-                                    if (SearchMethod(thisDataValues.Category) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionCategory) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 4:
-                                    if (SearchMethod(thisDataValues.Tag1) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionTag1) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 5:
-                                    if (SearchMethod(thisDataValues.Tag2) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionTag2) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 6:
-                                    if (SearchMethod(thisDataValues.Tag3) == true)
+                                    if (SearchMethod(thisCollectionDataValues.CollectionTag3) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                                 case 7:
                                     if (SearchMethod(ListInventoryStatus) == true)
                                     {
-                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                                        ContentsDataTable.Rows.Add(subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                                     }
                                     break;
                             }
@@ -1956,14 +1843,13 @@ namespace CREC
                         // 更新前に選択されていたデータの行番号を取得
                         if (CurrentSelectedContentsID.Length != 0)
                         {
-                            if (CurrentSelectedContentsID == thisDataValues.ID)
+                            if (CurrentSelectedContentsID == thisCollectionDataValues.CollectionID)
                             {
                                 dataGridView1.ClearSelection();
                                 CurrentSelectedContentsRows = dataGridView1.Rows.Count;
                             }
                         }
-
-                        DataList.Add(thisDataValues);// リストに追加
+                        DataList.Add(thisCollectionDataValues);// リストに追加
                     }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
                     dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
@@ -2046,7 +1932,7 @@ namespace CREC
         {
             try
             {
-                System.Diagnostics.Process.Start(CurrentShownDataValues.CollectionFolderPath + "\\data");
+                System.Diagnostics.Process.Start(CurrentShownCollectionData.CollectionFolderPath + "\\data");
             }
             catch (Exception ex)
             {
@@ -2057,7 +1943,7 @@ namespace CREC
         {
             try
             {
-                Clipboard.SetText(CurrentShownDataValues.CollectionFolderPath + "\\data");
+                Clipboard.SetText(CurrentShownCollectionData.CollectionFolderPath + "\\data");
             }
             catch (Exception ex)
             {
@@ -2077,7 +1963,7 @@ namespace CREC
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+                if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
                 {
                     MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                     return;
@@ -2156,25 +2042,25 @@ namespace CREC
             else if (result == System.Windows.MessageBoxResult.No)// 保存せず編集画面を閉じる
             {
                 // 編集中タグを削除
-                if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+                if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
                 {
-                    Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                    Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                 }
-                FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
+                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
+                FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
+                FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
                 // サムネ画像が更新されていた場合は一時データをを削除
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
                 {
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
                 }
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))// データ追加時は削除
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD"))// データ追加時は削除
                 {
                     DeleteContent();
                 }
                 else
                 {
-                    FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+                    FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
                 // 通常画面に不要な物を非表示に
                 EditNameTextBox.Visible = false;
@@ -2225,6 +2111,10 @@ namespace CREC
             Thumbnail.BackColor = menuStrip1.BackColor;
             if (LoadDetails() != true)
             {
+                ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
+                ShowObjectName.Text = CurrentShownCollectionData.CollectionName;
+                IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
+                ShowID.Text = CurrentShownCollectionData.CollectionID;
                 return;
             }
             AllowEditIDButton.Visible = false;
@@ -2245,7 +2135,7 @@ namespace CREC
             ShowRealLocation.Visible = CurrentProjectSettingValues.RealLocationVisible;
             ShowDataLocation.Visible = CurrentProjectSettingValues.DataLocationVisible;
 
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
                 if (CloseInventoryManagementModeButton.Visible == false)
                 {
@@ -2263,30 +2153,30 @@ namespace CREC
             ShowConfidentialDataButton.Visible = true;
             HideConfidentialDataButton.Visible = false;
             ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
-            ShowObjectName.Text = CurrentShownDataValues.Name;
+            ShowObjectName.Text = CurrentShownCollectionData.CollectionName;
             IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
-            ShowID.Text = CurrentShownDataValues.ID;
+            ShowID.Text = CurrentShownCollectionData.CollectionID;
             MCLabel.Text = CurrentProjectSettingValues.ManagementCodeLabel + "：";
-            ShowMC.Text = CurrentShownDataValues.MC;
+            ShowMC.Text = CurrentShownCollectionData.CollectionMC;
             RegistrationDateLabel.Text = CurrentProjectSettingValues.RegistrationDateLabel + "：";
-            ShowRegistrationDate.Text = CurrentShownDataValues.RegistrationDate;
+            ShowRegistrationDate.Text = CurrentShownCollectionData.CollectionRegistrationDate;
             CategoryLabel.Text = CurrentProjectSettingValues.CategoryLabel + "：";
-            ShowCategory.Text = CurrentShownDataValues.Category;
+            ShowCategory.Text = CurrentShownCollectionData.CollectionCategory;
             Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
-            ShowTag1.Text = CurrentShownDataValues.Tag1;
+            ShowTag1.Text = CurrentShownCollectionData.CollectionTag1;
             Tag2NameLabel.Text = CurrentProjectSettingValues.SecondTagLabel + "：";
-            ShowTag2.Text = CurrentShownDataValues.Tag2;
+            ShowTag2.Text = CurrentShownCollectionData.CollectionTag2;
             Tag3NameLabel.Text = CurrentProjectSettingValues.ThirdTagLabel + "：";
-            ShowTag3.Text = CurrentShownDataValues.Tag3;
+            ShowTag3.Text = CurrentShownCollectionData.CollectionTag3;
             RealLocationLabel.Text = CurrentProjectSettingValues.RealLocationLabel + "：";
-            ShowRealLocation.Text = CurrentShownDataValues.RealLocation;
+            ShowRealLocation.Text = CurrentShownCollectionData.CollectionRealLocation;
             ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             Application.DoEvents();
             ShowPicturesButton.Visible = true;
             OpenPictureFolderButton.Visible = false;
 
             // 詳細情報読み込み
-            TargetDetailsPath = (CurrentShownDataValues.CollectionFolderPath + "\\details.txt");
+            TargetDetailsPath = (CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
             StreamReader streamReaderDetailData = null;
             try
             {
@@ -2306,7 +2196,7 @@ namespace CREC
             StreamReader streamReaderConfidentialData = null;
             try
             {
-                streamReaderConfidentialData = new StreamReader(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt");
+                streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
                 ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
             }
             catch (Exception ex)
@@ -2320,7 +2210,7 @@ namespace CREC
             }
 
             // 編集ボタンの表示内容設定
-            if (ConfigValues.AllowEdit == false || File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            if (ConfigValues.AllowEdit == false || File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = true;
                 ReadOnlyButton.ForeColor = Color.Red;
@@ -2329,7 +2219,7 @@ namespace CREC
             }
             else
             {
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED"))
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
                 {
                     EditRequestButton.Visible = true;
                     EditRequestButton.ForeColor = Color.Blue;
@@ -2356,7 +2246,7 @@ namespace CREC
             }
             try
             {
-                CurrentShownDataValues.CollectionFolderPath = Convert.ToString(dataGridView1.CurrentRow.Cells[0].Value);
+                CurrentShownCollectionData.CollectionFolderPath = Convert.ToString(dataGridView1.CurrentRow.Cells[0].Value);
             }
             catch (Exception ex)
             {
@@ -2364,69 +2254,18 @@ namespace CREC
                 return false;
             }
 
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show("データが存在しません。", "CREC");
                 return false;
             }
             // index読み込み
-            TargetIndexPath = CurrentShownDataValues.CollectionFolderPath + "\\index.txt";
-            try
-            {
-                IEnumerable<string> tmp = File.ReadLines(TargetIndexPath, Encoding.GetEncoding("UTF-8"));
-                foreach (string line in tmp)
-                {
-                    cols = line.Split(',');
-                    if (cols[1].Length == 0)
-                    {
-                        cols[1] = "　ー　";
-                    }
-                    switch (cols[0])
-                    {
-                        case "名称":
-                            CurrentShownDataValues.Name = line.Substring(3);
-                            break;
-                        case "ID":
-                            CurrentShownDataValues.ID = line.Substring(3);
-                            break;
-                        case "MC":
-                            CurrentShownDataValues.MC = line.Substring(3);
-                            break;
-                        case "登録日":
-                            CurrentShownDataValues.RegistrationDate = line.Substring(4);
-                            break;
-                        case "カテゴリ":
-                            CurrentShownDataValues.Category = line.Substring(5);
-                            break;
-                        case "タグ1":
-                            CurrentShownDataValues.Tag1 = line.Substring(4);
-                            break;
-                        case "タグ2":
-                            CurrentShownDataValues.Tag2 = line.Substring(4);
-                            break;
-                        case "タグ3":
-                            CurrentShownDataValues.Tag3 = line.Substring(4);
-                            break;
-                        case "場所1(Real)":
-                            CurrentShownDataValues.RealLocation = cols[1];
-                            break;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                CurrentShownDataValues.Name = " - ";
-                CurrentShownDataValues.ID = Path.GetFileName(CurrentShownDataValues.CollectionFolderPath);
-                CurrentShownDataValues.RegistrationDate = " - ";
-                return false;
-            }
-            return true;
+            return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData,LanguageFile);
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
             // 詳細表示の表示内容を初期化
-            CurrentShownDataValues = new DataValuesClass();
+            CurrentShownCollectionData = new CollectionDataValuesClass();
             ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
             ShowObjectName.Text = string.Empty;
             IDLabel.Text = CurrentProjectSettingValues.UUIDLabel + "：";
@@ -2464,7 +2303,6 @@ namespace CREC
             DetailsTextBox.ResetText();
             ConfidentialDataTextBox.ResetText();
         }
-
         #endregion
 
         #region 詳細画像表示関係
@@ -2479,7 +2317,7 @@ namespace CREC
         {
             try
             {
-                System.Diagnostics.Process.Start("EXPLORER.EXE", CurrentShownDataValues.CollectionFolderPath + "\\pictures");
+                System.Diagnostics.Process.Start("EXPLORER.EXE", CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
             }
             catch (Exception ex)
             {
@@ -2489,7 +2327,7 @@ namespace CREC
         }
         private void ShowPicturesMethod()// 詳細画像表示用のメソッド
         {
-            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentShownDataValues.CollectionFolderPath + "\\pictures");
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
             System.IO.FileInfo[] files;
             try
             {
@@ -2619,21 +2457,21 @@ namespace CREC
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
             // 状態を確認、必要に応じてボタンを更新
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = true;
                 EditButton.Visible = false;
                 EditRequestButton.Visible = false;
                 return;
             }
-            else if (!File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
-                if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+                if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
                 {
                     MessageBox.Show("編集するデータを選択し、詳細表示してください。", "CREC");
                     return;
@@ -2659,7 +2497,7 @@ namespace CREC
                 StreamReader streamReaderConfidentialData = null;
                 try
                 {
-                    streamReaderConfidentialData = new StreamReader(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt");
+                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
                     ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -2671,19 +2509,19 @@ namespace CREC
                 {
                     streamReaderConfidentialData?.Close();
                 }
-                EditNameTextBox.Text = CurrentShownDataValues.Name;
+                EditNameTextBox.Text = CurrentShownCollectionData.CollectionName;
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                EditIDTextBox.Text = CurrentShownDataValues.ID;
+                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                EditMCTextBox.Text = CurrentShownDataValues.MC;
-                EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
-                EditCategoryTextBox.Text = CurrentShownDataValues.Category;
-                EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
-                EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
-                EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
-                EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
+                EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
+                EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
+                EditCategoryTextBox.Text = CurrentShownCollectionData.CollectionCategory;
+                EditTag1TextBox.Text = CurrentShownCollectionData.CollectionTag1;
+                EditTag2TextBox.Text = CurrentShownCollectionData.CollectionTag2;
+                EditTag3TextBox.Text = CurrentShownCollectionData.CollectionTag3;
+                EditRealLocationTextBox.Text = CurrentShownCollectionData.CollectionRealLocation;
             }
-            else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = false;
                 EditButton.Visible = false;
@@ -2694,31 +2532,31 @@ namespace CREC
         private void EditRequestButton_Click(object sender, EventArgs e)// 編集権限リクエスト
         {
             // 状態を確認、必要に応じてボタンを更新
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = true;
                 EditButton.Visible = false;
                 EditRequestButton.Visible = false;
                 return;
             }
-            else if (!File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = false;
                 EditButton.Visible = true;
                 EditRequestButton.Visible = false;
                 return;
             }
-            else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末で編集中のため、ロックされています。\n編集権限をリクエストしますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
                 if (result == System.Windows.MessageBoxResult.Yes)
                 {
                     // 編集リクエストタグを作成
-                    if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+                    if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
                     {
-                        Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                        Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                     }
-                    FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
+                    FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
                     EditRequestButton.Visible = false;
                     EditRequestingButton.Visible = true;
                     AwaitEdit();
@@ -2733,19 +2571,19 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoEditingPermissions", "mainform", LanguageFile), "CREC");
                 return;
             }
-            else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("EditWaitingUserExists", "mainform", LanguageFile), "CREC");
                 return;
             }
-            else if (!File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = false;
                 EditButton.Visible = true;
                 EditRequestButton.Visible = false;
                 return;
             }
-            else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+            else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
                 ReadOnlyButton.Visible = false;
                 EditButton.Visible = false;
@@ -2756,7 +2594,7 @@ namespace CREC
         private void StartEditForm()// 編集画面に切り替え
         {
             // 編集中の端末がいないか再確認
-            if (!File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE") && !File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD"))
+            if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD"))
             {
                 DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskStartEditWithoutCheckOtherEditing", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
@@ -2766,19 +2604,19 @@ namespace CREC
             }
             else
             {
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
+                FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
             }
             // 編集中タグを作成
-            if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+            if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
             {
-                Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
             }
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
             AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
             // サムネ用画像変更用データが残っていた場合削除
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
+                FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
             // 編集画面に必要な物を表示
             EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
@@ -2815,75 +2653,17 @@ namespace CREC
             // 一応ID重複確認イベントを開始
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;
         }
-        private void SelectThumbnailButton_Click(object sender, EventArgs e)// サムネイル選択
+        /// <summary>
+        /// サムネイル選択
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SelectThumbnailButton_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFolderDialog = new OpenFileDialog();
-            openFolderDialog.InitialDirectory = CurrentShownDataValues.CollectionFolderPath + "\\pictures";
-            openFolderDialog.Title = "画像を選択してください";
-            openFolderDialog.Filter = "JPEG|*.jpg;*.jpeg;*.jfif;*.jpe" + "|PNG|*.png" + "|GIF|*.gif" + "|ICO|*.ico";
-            if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
+            if (CollectionDataClass.MakeTumbnailPicture(CurrentShownCollectionData.CollectionFolderPath, LanguageFile))// サムネイル作成メソッドを呼び出し
             {
-                Thumbnail.ImageLocation = (openFolderDialog.FileName);// この時点で選択されたサムネイルを仮表示（未保存状態）
-                try
-                {
-                    // ここに画像サイズ変更処理を追加
-                    int TargetWidth = 400;
-                    int TargetHeight = 400;
-                    Bitmap TargetBitmap = new Bitmap(openFolderDialog.FileName);
-                    // 画素数設定
-                    if (Math.Max(TargetBitmap.Width, TargetBitmap.Height) < 400)// 画像サイズが元々規定サイズ以内だった場合
-                    {
-                        TargetWidth = TargetBitmap.Width;
-                        TargetHeight = TargetBitmap.Height;
-                    }
-                    else// 画像圧縮処理
-                    {
-                        // 長辺を取得してサイズを決定
-                        if (TargetBitmap.Width > TargetBitmap.Height)// 横長画像
-                        {
-                            TargetWidth = 400;
-                            TargetHeight = (int)(400.0 * TargetBitmap.Height / TargetBitmap.Width);
-                        }
-                        else if (TargetBitmap.Width < TargetBitmap.Height)// 縦長画像
-                        {
-                            TargetHeight = 400;
-                            TargetWidth = (int)(400.0 * TargetBitmap.Width / TargetBitmap.Height);
-                        }
-                    }
-                    Bitmap ConvertedBitmap = new Bitmap(TargetWidth, TargetHeight);
-                    // DPI設定
-                    if (Math.Max(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution) <= 72)
-                    {
-                        ConvertedBitmap.SetResolution(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution);
-                    }
-                    else
-                    {
-                        ConvertedBitmap.SetResolution(72.0F, 72.0F);
-                    }
-                    // エンコーダ設定
-                    EncoderParameters encoderParameters = new EncoderParameters(1);
-                    encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.ColorDepth, 24L);
-                    ImageCodecInfo imageCodecInfos = null;
-                    foreach (ImageCodecInfo imageCodecInfo in ImageCodecInfo.GetImageEncoders())
-                    {
-                        if (imageCodecInfo.FormatID == ImageFormat.Png.Guid)
-                        {
-                            imageCodecInfos = imageCodecInfo;
-                            break;
-                        }
-                    }
-                    // 変換＆保存
-                    using (Graphics g = Graphics.FromImage(ConvertedBitmap))
-                    {
-                        g.DrawImage(TargetBitmap, 0, 0, TargetWidth, TargetHeight);
-                    }
-                    ConvertedBitmap.Save(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png", imageCodecInfos, encoderParameters);
-                    ConvertedBitmap.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("サムネイルの設定に失敗しました。\n" + ex.Message, "CREC");
-                }
+                // 成功した場合
+                Thumbnail.ImageLocation = (CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");// 新たなサムネイルを表示
                 NoImageLabel.Visible = false;
             }
         }
@@ -2925,15 +2705,6 @@ namespace CREC
             EditRealLocationTextBox.Visible = false;
             SelectThumbnailButton.Visible = false;
             OpenPictureFolderButton.Visible = false;
-            // 再表示時に編集したデータを表示するための処理
-            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
-            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
-            SearchFormTextBox.Text = EditIDTextBox.Text;
-            SearchOptionComboBox.SelectedIndex = 0;
-            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
-            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
-            // 入力フォームをリセット
-            ClearDetailsWindowMethod();
             // 通常画面で必要なものを表示
             EditButton.Visible = true;
             // 詳細データおよび機密データを編集不可能に変更
@@ -2950,19 +2721,111 @@ namespace CREC
                 DataLoadingStatus = "stop";
             }
             CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            LoadGrid();
+            // 編集したデータを表示するための処理
+            ContentsDataTable.Rows.Clear();// 表示内容をクリア
+            CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();
+            if (DataLoadingStatus == "stop")
+            {
+                DataLoadingStatus = "false";
+            }
+            // 変数初期化「List読み込み内でのみ使用すること」
+            string ListInventory = string.Empty;
+            string ListInventoryStatus = string.Empty;
+            int? ListSafetyStock = null;
+            int? ListReorderPoint = null;
+            int? ListMaximumLevel = null;
+            // index読み込み
+            CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, LanguageFile);
+            // 在庫状態を取得、invからデータを読み込み
+            IEnumerable<string> tmp = null;
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))
+            {
+                try
+                {
+                    tmp = File.ReadLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                    bool firstline = true;
+                    int count = 0;
+                    foreach (string line in tmp)
+                    {
+                        cols = line.Split(',');
+                        if (firstline == true)
+                        {
+                            if (cols[1].Length != 0)
+                            {
+                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                            }
+                            if (cols[2].Length != 0)
+                            {
+                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                            }
+                            if (cols[3].Length != 0)
+                            {
+                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                            }
+                            firstline = false;
+                        }
+                        else
+                        {
+                            count = count + Convert.ToInt32(cols[2]);
+                        }
+                    }
+                    ListInventory = Convert.ToString(count);
+                    ListInventoryStatus = " - ";
+                    if (0 == count)
+                    {
+                        ListInventoryStatus = "欠品";
+                    }
+                    else if (0 < count && count < ListSafetyStock)
+                    {
+                        ListInventoryStatus = "不足";
+                    }
+                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                    {
+                        ListInventoryStatus = "不足";
+                    }
+                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                    {
+                        ListInventoryStatus = "適正";
+                    }
+                    else if (ListMaximumLevel < count)
+                    {
+                        ListInventoryStatus = "過剰";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ListInventory = "ERROR";
+                    ListInventoryStatus = ex.Message;
+                }
+            }
+            DataList.Add(thisCollectionDataValues);// リストに追加
+            dataGridView1.DataSource = ContentsDataTable;// ここでバインド
+            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
+            CheckContentsListCancellationTokenSource.Cancel();
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchOptionComboBox.SelectedIndex = 0;
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
+            SearchFormTextBox.Text = thisCollectionDataValues.CollectionID;
+            SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+            // 入力フォームをリセット
+            ClearDetailsWindowMethod();
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);
             ShowDetails();
         }
         private void DeleteContent()// データ完全削除用のメソッド
         {
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             try
             {
-                Directory.Delete(CurrentShownDataValues.CollectionFolderPath, true);
+                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath, true);
             }
             catch (Exception ex)
             {
@@ -3023,7 +2886,7 @@ namespace CREC
         {
             if (System.IO.Directory.Exists(CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))// ID重複確認
             {
-                if (CurrentShownDataValues.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+                if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                 {
                     UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
                     UUIDEditStatusLabel.ForeColor = Color.Red;
@@ -3044,7 +2907,7 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
-            if (CurrentShownDataValues.ID == EditIDTextBox.Text)
+            if (CurrentShownCollectionData.CollectionID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
                 UUIDEditStatusLabel.ForeColor = Color.Black;
@@ -3101,32 +2964,32 @@ namespace CREC
             }
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            CurrentShownDataValues.ID = Convert.ToString(Guid.NewGuid());
-            EditIDTextBox.Text = CurrentShownDataValues.ID;// UUIDを入力
+            CurrentShownCollectionData.CollectionID = Convert.ToString(Guid.NewGuid());
+            EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;// UUIDを入力
             DateTime DT = DateTime.Now;
             if (CurrentProjectSettingValues.ManagementCodeAutoFill == true)
             {
                 EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
             }
             EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
-            CurrentShownDataValues.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
+            CurrentShownCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath);
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\data");
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\pictures");
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\index.txt");
-            StreamWriter streamWriter = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\index.txt");
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath);
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\data");
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
+            StreamWriter streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
             streamWriter.Close();
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\details.txt");
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
             // 在庫管理を行うか確認
             DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv");
-                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv");
+                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
+                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
                 InventoryManagementFile.WriteLine("{0},,,", EditIDTextBox.Text);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
@@ -3138,7 +3001,7 @@ namespace CREC
                 CloseInventoryManagementModeButton.Visible = false;
             }
             // 新規作成タグを作成
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
@@ -3161,12 +3024,14 @@ namespace CREC
         }
         private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
+            CheckContentsListCancellationTokenSource.Cancel();
             // ID変更処理が必要な場合
-            if (CurrentShownDataValues.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+            if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
             {
-                if (FileOperationClass.MoveFolder(CurrentShownDataValues.CollectionFolderPath, CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))
+                if (FileOperationClass.MoveFolder(CurrentShownCollectionData.CollectionFolderPath, CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text))
                 {
-                    CurrentShownDataValues.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;// 移動先のパスで保存処理を続行
+                    CurrentShownCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;// 移動先のパスで保存処理を続行
+                    CurrentShownCollectionData.CollectionID = EditIDTextBox.Text;
                 }
                 else// 移動に失敗した場合
                 {
@@ -3175,21 +3040,13 @@ namespace CREC
                 }
             }
             // フォルダを作成
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath);
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\data");
-            Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\pictures");
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath);
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\data");
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
             // 変更前のデータをバックアップ
             try
             {
-                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\index.txt", CurrentShownDataValues.CollectionFolderPath + "\\index_old.txt", true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Indexファイルのバックアップ作成に失敗しました。\n" + ex.Message, "CREC");
-            }
-            try
-            {
-                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\details.txt", CurrentShownDataValues.CollectionFolderPath + "\\details_old.txt", true);
+                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt", CurrentShownCollectionData.CollectionFolderPath + "\\details_old.txt", true);
             }
             catch (Exception ex)
             {
@@ -3197,93 +3054,63 @@ namespace CREC
             }
             try
             {
-                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt", CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata_old.txt", true);
+                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt", CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata_old.txt", true);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("機密データのバックアップ作成に失敗しました。\n" + ex.Message, "CREC");
             }
+            // Indexデータをバックアップ
+            CollectionDataClass.BackupCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData,LanguageFile);
             // Indexデータを保存
-            StreamWriter Indexfile = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\index.txt", false, Encoding.GetEncoding("UTF-8"));
-            if (EditNameTextBox.Text.Length == 0)
+            CurrentShownCollectionData.CollectionName = EditNameTextBox.Text;
+            CurrentShownCollectionData.CollectionID = EditIDTextBox.Text;
+            CurrentShownCollectionData.CollectionMC = EditMCTextBox.Text;
+            CurrentShownCollectionData.CollectionRegistrationDate = EditRegistrationDateTextBox.Text;
+            CurrentShownCollectionData.CollectionCategory = EditCategoryTextBox.Text;
+            CurrentShownCollectionData.CollectionTag1 = EditTag1TextBox.Text;
+            CurrentShownCollectionData.CollectionTag2 = EditTag2TextBox.Text;
+            CurrentShownCollectionData.CollectionTag3 = EditTag3TextBox.Text;
+            CurrentShownCollectionData.CollectionRealLocation = EditRealLocationTextBox.Text;
+            if (!CollectionDataClass.SaveCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData,LanguageFile))
             {
-                EditNameTextBox.Text = "　ー　";
+                return false;
             }
-            if (EditIDTextBox.Text.Length == 0)
-            {
-                EditIDTextBox.Text = "　ー　";
-            }
-            if (EditMCTextBox.Text.Length == 0)
-            {
-                EditMCTextBox.Text = "　ー　";
-            }
-            if (EditRegistrationDateTextBox.Text.Length == 0)
-            {
-                EditRegistrationDateTextBox.Text = "　ー　";
-            }
-            if (EditCategoryTextBox.Text.Length == 0)
-            {
-                EditCategoryTextBox.Text = "　ー　";
-            }
-            if (EditTag1TextBox.Text.Length == 0)
-            {
-                EditTag1TextBox.Text = "　ー　";
-            }
-            if (EditTag2TextBox.Text.Length == 0)
-            {
-                EditTag2TextBox.Text = "　ー　";
-            }
-            if (EditTag3TextBox.Text.Length == 0)
-            {
-                EditTag3TextBox.Text = "　ー　";
-            }
-            if (EditRealLocationTextBox.Text.Length == 0)
-            {
-                EditRealLocationTextBox.Text = "　ー　";
-            }
-            Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}",
-                "名称," + EditNameTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "ID," + EditIDTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "MC," + EditMCTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "登録日," + EditRegistrationDateTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "カテゴリ," + EditCategoryTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "タグ1," + EditTag1TextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "タグ2," + EditTag2TextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "タグ3," + EditTag3TextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty),
-                "場所1(Real)," + EditRealLocationTextBox.Text.Replace("\r", string.Empty).Replace("\n", string.Empty)));
-            Indexfile.Close();
+
             // 詳細データの保存
-            StreamWriter Detailsfile = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\details.txt", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter Detailsfile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt", false, Encoding.GetEncoding("UTF-8"));
             Detailsfile.Write(string.Format("{0}", DetailsTextBox.Text));
             Detailsfile.Close();
             // 機密データの保存
-            StreamWriter ConfidentialDataFile = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter ConfidentialDataFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt", false, Encoding.GetEncoding("UTF-8"));
             ConfidentialDataFile.Write(string.Format("{0}", ConfidentialDataTextBox.Text));
             ConfidentialDataFile.Close();
             // サムネ画像が更新されていた場合は上書きしキャッシュを削除
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
-                File.Copy(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true);
-                FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
+                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png", CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true);
+                FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
             if (PictureBox1.Visible == true)// 詳細画像表示されている場合は読み込み
             {
                 ShowPicturesMethod();
             }
             // 編集中タグを削除・解放をマーク
-            if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))
+            if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))
             {
-                Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
             }
-            FileOperationClass.AddBlankFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE");
-            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED");
-            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
-            FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\ADD");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE");
+            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
+            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
+            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
 
+            // リスト出力
             if (CurrentProjectSettingValues.EditListOutput == true)
             {
                 ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
             }
+            // バックアップ
             if (CurrentProjectSettingValues.EditBackUp == true)
             {
                 BackUpMethod();
@@ -3321,7 +3148,7 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (CurrentShownDataValues.CollectionFolderPath.Length == 0)
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                 return;
@@ -3329,7 +3156,7 @@ namespace CREC
             //invからデータを読み込んで表示
             try
             {
-                reader = File.ReadAllText(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                reader = File.ReadAllText(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
                 rowsIM = reader.Trim().Replace("\r", string.Empty).Split('\n');
             }
             catch (Exception ex)
@@ -3370,7 +3197,7 @@ namespace CREC
             InventoryModeDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             // 1行目を読み込み
             row = rowsIM[0];
             cols = row.Split(',');
@@ -3470,7 +3297,7 @@ namespace CREC
                 return;
             }
             // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             string InventoryOperation = string.Empty;
             switch (OperationOptionComboBox.SelectedIndex)// 入力されたデータの整合性チェック
             {
@@ -3500,7 +3327,7 @@ namespace CREC
                     InventoryOperation = "Stocktaking";
                     break;
             }
-            StreamWriter sw = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter sw = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
             for (int i = 0; i <= Convert.ToInt32(tmp.Length); i++)
             {
                 if (i == 0)// .invのヘッダをコピー
@@ -3527,10 +3354,10 @@ namespace CREC
             string reader;
             string row;
             string[] cols;
-            reader = File.ReadAllText(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            reader = File.ReadAllText(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             rowsIM = reader.Trim().Replace("\r", string.Empty).Split('\n');
             // 行数を確認
-            tmp = File.ReadAllLines(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             // 1行目を読み込み
             row = rowsIM[0];
             inventory = 0;
@@ -3630,9 +3457,9 @@ namespace CREC
             SaveProperInventorySettingsButton.Visible = false;
             SetProperInventorySettingsButton.Visible = true;
             // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             StreamWriter streamWriter;
-            streamWriter = new StreamWriter(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+            streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
             try
             {
                 for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
@@ -3809,7 +3636,7 @@ namespace CREC
             SaveProperInventorySettingsButton.Visible = false;
             SetProperInventorySettingsButton.Visible = false;
             ProperInventorySettingsNotificationLabel.Visible = false;
-            if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\inventory.inv"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))
             {
                 InventoryManagementModeButton.Visible = true;
             }
@@ -4533,24 +4360,24 @@ namespace CREC
             while (true)
             {
                 await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                if (Directory.Exists(CurrentShownDataValues.CollectionFolderPath) == false)
+                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                 {
                     MessageBox.Show("IDが変更されました。\n再度読み込みを行ってください。", "CREC");
                     break;
                 }
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
                 {
                 }
                 else
                 {
-                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED"))
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
                     {
                         EditRequestingButton.Visible = false;
                         EditButton.Visible = true;
                         MessageBox.Show("拒否されました", "CREC");
                         return;
                     }
-                    else if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\FREE"))
+                    else if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\FREE"))
                     {
                         EditRequestButton.Visible = false;
                         EditRequestingButton.Visible = false;
@@ -4581,7 +4408,7 @@ namespace CREC
                         StreamReader streamReaderConfidentialData = null;
                         try
                         {
-                            streamReaderConfidentialData = new StreamReader(CurrentShownDataValues.CollectionFolderPath + "\\confidentialdata.txt");
+                            streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
                             ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                         }
                         catch (Exception ex)
@@ -4593,19 +4420,19 @@ namespace CREC
                         {
                             streamReaderConfidentialData?.Close();
                         }
-                        EditNameTextBox.Text = CurrentShownDataValues.Name;
+                        EditNameTextBox.Text = CurrentShownCollectionData.CollectionName;
                         EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                        EditIDTextBox.Text = CurrentShownDataValues.ID;
+                        EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                         EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
                         AllowEditIDButton.Visible = true;
                         UUIDEditStatusLabel.Visible = false;
-                        EditMCTextBox.Text = CurrentShownDataValues.MC;
-                        EditRegistrationDateTextBox.Text = CurrentShownDataValues.RegistrationDate;
-                        EditCategoryTextBox.Text = CurrentShownDataValues.Category;
-                        EditTag1TextBox.Text = CurrentShownDataValues.Tag1;
-                        EditTag2TextBox.Text = CurrentShownDataValues.Tag2;
-                        EditTag3TextBox.Text = CurrentShownDataValues.Tag3;
-                        EditRealLocationTextBox.Text = CurrentShownDataValues.RealLocation;
+                        EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
+                        EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
+                        EditCategoryTextBox.Text = CurrentShownCollectionData.CollectionCategory;
+                        EditTag1TextBox.Text = CurrentShownCollectionData.CollectionTag1;
+                        EditTag2TextBox.Text = CurrentShownCollectionData.CollectionTag2;
+                        EditTag3TextBox.Text = CurrentShownCollectionData.CollectionTag3;
+                        EditRealLocationTextBox.Text = CurrentShownCollectionData.CollectionRealLocation;
                         return;
                     }
                 }
@@ -4613,30 +4440,30 @@ namespace CREC
         }
         private async void AwaitEditRequest()// 編集リクエストを待機
         {
-            while (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
+            while (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
             {
                 await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末から編集権限をリクエストされました。\nリクエストを許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
                     if (result == System.Windows.MessageBoxResult.Yes)// 編集を権限を譲渡
                     {
                         // 保存関係の処理
-                        if (CurrentShownDataValues.CollectionFolderPath == CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+                        if (CurrentShownCollectionData.CollectionFolderPath == CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                         {
                             if (SaveContentsMethod() == false)
                             {
                                 return;
                             }
                         }
-                        else if (CurrentShownDataValues.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+                        else if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
                         {
                             result = System.Windows.MessageBox.Show("IDを変更した場合、他の端末へ編集権限を譲渡できなくなります。\nIDを変更前のものに戻して保存しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
                             if (result == System.Windows.MessageBoxResult.Yes)
                             {
-                                CurrentShownDataValues.ID = Path.GetFileName(CurrentShownDataValues.CollectionFolderPath);
-                                EditIDTextBox.Text = CurrentShownDataValues.ID;
-                                MessageBox.Show("IDを" + CurrentShownDataValues.ID + "に戻しました", "CREC");
+                                CurrentShownCollectionData.CollectionID = Path.GetFileName(CurrentShownCollectionData.CollectionFolderPath);
+                                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
+                                MessageBox.Show("IDを" + CurrentShownCollectionData.CollectionID + "に戻しました", "CREC");
                                 if (SaveContentsMethod() == false)
                                 {
                                     return;
@@ -4703,20 +4530,22 @@ namespace CREC
                     }
                     else
                     {
-                        FileOperationClass.DeleteFile(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED");
+                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
                         break;
                     }
                 }
             }
         }
-        private async void CheckContentsList()// ContentsListの状態をバックグラウンドで監視
+
+        CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの状態をバックグラウンドで監視
         {
             while (true)
             {
                 await Task.Delay(100);
                 if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
                 {
-                    if (CurrentShownDataValues.ID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                    if (CurrentShownCollectionData.CollectionID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
                     {
                         if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                         {
@@ -4810,9 +4639,9 @@ namespace CREC
                         }
                     }
                     catch { }
-                    if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\DED"))
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
                     {
-                        if (File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\RED"))
+                        if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
                         {
                             if (EditRequestingButton.Visible == false)
                             {
@@ -4940,10 +4769,10 @@ namespace CREC
 
             await Task.Run(() =>
             {
-                Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
+                Thumbnail.ImageLocation = (CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
             });
 
-            if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png"))
+            if (System.IO.File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\Thumbnail.png"))
             {
                 NoImageLabel.Visible = false;
                 Thumbnail.BackColor = this.BackColor;
@@ -4954,19 +4783,19 @@ namespace CREC
                 NoImageLabel.Visible = true;
                 Thumbnail.BackColor = menuStrip1.BackColor;
                 // 後方互換性(v8.4.3以前)のため、従来のJPGE形式のサムネイルを確認
-                if (System.IO.File.Exists(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg"))
+                if (System.IO.File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg"))
                 {
-                    if (!Directory.Exists(CurrentShownDataValues.CollectionFolderPath + "\\SystemData"))// SystemDataフォルダが存在しない場合は作成
+                    if (!Directory.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData"))// SystemDataフォルダが存在しない場合は作成
                     {
-                        Directory.CreateDirectory(CurrentShownDataValues.CollectionFolderPath + "\\SystemData");
+                        Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
                     }
-                    if (!FileOperationClass.MoveFile(CurrentShownDataValues.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true))// サムネイルを移動
+                    if (!FileOperationClass.MoveFile(CurrentShownCollectionData.CollectionFolderPath + "\\pictures\\Thumbnail1.jpg", CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\Thumbnail.png", true))// サムネイルを移動
                     {
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ThumbnailVersionMigrationError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                     // サムネイル再読み込み
-                    Thumbnail.ImageLocation = (CurrentShownDataValues.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
+                    Thumbnail.ImageLocation = (CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\Thumbnail.png");
                     NoImageLabel.Visible = false;
                     Thumbnail.BackColor = this.BackColor;
                 }
@@ -5185,58 +5014,17 @@ namespace CREC
                 foreach (System.IO.DirectoryInfo subFolder in subFolders)
                 {
                     // 変数初期化
-                    DataValuesClass thisDataValues = new DataValuesClass();
+                    CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();
                     string ListInventory = string.Empty;
                     string ListInventoryStatus = string.Empty;
                     int? ListSafetyStock = null;
                     int? ListReorderPoint = null;
                     int? ListMaximumLevel = null;
                     // index読み込み
-                    IEnumerable<string> tmp = null;
-                    try
-                    {
-                        tmp = File.ReadLines(subFolder.FullName + "\\index.txt", Encoding.GetEncoding("UTF-8"));
-                        foreach (string line in tmp)
-                        {
-                            cols = line.Split(',');
-                            switch (cols[0])
-                            {
-                                case "名称":
-                                    thisDataValues.Name = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "ID":
-                                    thisDataValues.ID = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "MC":
-                                    thisDataValues.MC = line.Substring(3).Replace(",", string.Empty);
-                                    break;
-                                case "登録日":
-                                    thisDataValues.RegistrationDate = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "カテゴリ":
-                                    thisDataValues.Category = line.Substring(5).Replace(",", string.Empty);
-                                    break;
-                                case "タグ1":
-                                    thisDataValues.Tag1 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "タグ2":
-                                    thisDataValues.Tag2 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                                case "タグ3":
-                                    thisDataValues.Tag3 = line.Substring(4).Replace(",", string.Empty);
-                                    break;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Indexファイルが破損しています。\n" + ex.Message, "CREC");
-                        thisDataValues.ID = subFolder.Name;
-                        thisDataValues.Name = "Status：Indexファイル破損";
-                        thisDataValues.Category = " - ";
-                    }
+                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues,LanguageFile);
                     // 在庫状態を取得
                     //invからデータを読み込んで表示
+                    IEnumerable<string> tmp = null;
                     if (File.Exists(subFolder.FullName + "\\inventory.inv"))
                     {
                         try
@@ -5305,11 +5093,11 @@ namespace CREC
                     // ファイル書き込み
                     if (listOutputFormat == CREC.ListOutputFormat.CSV)
                     {
-                        streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                        streamWriter.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}", subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                     }
                     else
                     {
-                        streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, thisDataValues.ID, thisDataValues.MC, thisDataValues.Name, thisDataValues.RegistrationDate, thisDataValues.Category, thisDataValues.Tag1, thisDataValues.Tag2, thisDataValues.Tag3, ListInventory, ListInventoryStatus);
+                        streamWriter.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}", subFolder.FullName, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
                     }
                 }
                 // 正常出力完了のメッセージ表示
@@ -5546,8 +5334,8 @@ namespace CREC
                 RecentShownCollectionsToolStripMenuItems = new ToolStripMenuItem[11];// 一旦初期化
                 // 最近表示した項目を追加
                 RecentShownCollectionsToolStripMenuItems[0] = new ToolStripMenuItem();
-                RecentShownCollectionsToolStripMenuItems[0].Text = CurrentShownDataValues.Name;
-                RecentShownCollectionsToolStripMenuItems[0].ToolTipText = CurrentShownDataValues.CollectionFolderPath;
+                RecentShownCollectionsToolStripMenuItems[0].Text = CurrentShownCollectionData.CollectionName;
+                RecentShownCollectionsToolStripMenuItems[0].ToolTipText = CurrentShownCollectionData.CollectionFolderPath;
                 RecentShownCollectionsToolStripMenuItems[0].Click += new EventHandler(RecentShownCollectionsToolStripMenuItems_Click);
                 // 既存の最近表示した項目を追加
                 if (OriginalRecentShownCollectionsToolStripMenuItems != null)
@@ -5611,7 +5399,7 @@ namespace CREC
             {
                 ClosePicturesViewMethod();
             }
-            if (CurrentShownDataValues.CollectionFolderPath != ((ToolStripItem)sender).ToolTipText)// 表示中の項目と選択された項目が異なる場合
+            if (CurrentShownCollectionData.CollectionFolderPath != ((ToolStripItem)sender).ToolTipText)// 表示中の項目と選択された項目が異なる場合
             {
                 try
                 {
@@ -5660,11 +5448,11 @@ namespace CREC
                     }
                     else
                     {
-                        CurrentShownDataValues.CollectionFolderPath = ((ToolStripItem)sender).ToolTipText;
-                        CurrentShownDataValues.ID = Path.GetFileName(((ToolStripItem)sender).ToolTipText);
+                        CurrentShownCollectionData.CollectionFolderPath = ((ToolStripItem)sender).ToolTipText;
+                        CurrentShownCollectionData.CollectionID = Path.GetFileName(((ToolStripItem)sender).ToolTipText);
                         SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
                         SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
-                        SearchFormTextBox.Text = CurrentShownDataValues.ID;
+                        SearchFormTextBox.Text = CurrentShownCollectionData.CollectionID;
                         SearchOptionComboBox.SelectedIndex = 0;
                         SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
                         SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;

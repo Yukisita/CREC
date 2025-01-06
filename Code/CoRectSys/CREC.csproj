@@ -89,6 +89,7 @@
     <Compile Include="CloseBackUpForm.Designer.cs">
       <DependentUpon>CloseBackUpForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CollectionDataClass.cs" />
     <Compile Include="ConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
