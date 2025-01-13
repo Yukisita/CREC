@@ -33,14 +33,12 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.1.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.2.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
         string TargetCRECPath = string.Empty;// 管理ファイル（.crec）のファイルパス
-        //string TargetIndexPath = string.Empty;// Indexの場所
-        string TargetDetailsPath = string.Empty;// 説明txtのパス
         ConfigValuesClass ConfigValues = new ConfigValuesClass();// config.sys読み込み用Class
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
         List<CollectionDataValuesClass> DataList = new List<CollectionDataValuesClass>();// コレクションの一覧
@@ -49,7 +47,6 @@ namespace CREC
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;
         ToolStripMenuItem[] RecentShownCollectionsToolStripMenuItems;
-        string CurrentLanguageFileName = string.Empty;
 
         // データ一覧表示関係
         DataTable ContentsDataTable = new DataTable();
@@ -137,15 +134,15 @@ namespace CREC
                     MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                     Environment.FailFast("Default language file can't find.");
                 }
-                CurrentLanguageFileName = "Japanese";
-                SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                ConfigValues.LanguageFileName = "Japanese";
+                SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
                 LanguageSettingClass.MakeDefaultLanguageFileEN();
             }
             else
             {
                 try
                 {
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
                 }
                 catch (Exception ex)
                 {
@@ -155,8 +152,8 @@ namespace CREC
                         MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                         Environment.FailFast("Default language file can't find.");
                     }
-                    CurrentLanguageFileName = "Japanese";
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                    ConfigValues.LanguageFileName = "Japanese";
+                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
                 }
             }
             SetColorMethod();// 色設定を反映
@@ -256,15 +253,6 @@ namespace CREC
         private void OpenMenu_Click(object sender, EventArgs e)// 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (CurrentProjectSettingValues.StartUpListOutput == true)
-            {
-                ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-            }
-            if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
-            {
-                BackUpMethod();
-                MakeBackUpZip();// ZIP圧縮を非同期で開始
-            }
         }
         /// <summary>
         /// 既存のプロジェクトを読み込むメソッド
@@ -294,6 +282,15 @@ namespace CREC
                 TargetCRECPath = openFolderDialog.FileName;
                 openFolderDialog.Dispose();
                 LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                if (CurrentProjectSettingValues.StartUpListOutput == true)// 自動リスト出力
+                {
+                    ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
+                }
+                if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
+                {
+                    BackUpMethod();
+                    MakeBackUpZip();// ZIP圧縮を非同期で開始
+                }
             }
             else
             {
@@ -720,7 +717,7 @@ namespace CREC
                             int? ListReorderPoint = null;
                             int? ListMaximumLevel = null;
                             // index読み込み
-                            CollectionDataClass.LoadCollectionIndexData(ListContentsPath, ref thisCollectionDataValues,LanguageFile);
+                            CollectionDataClass.LoadCollectionIndexData(ListContentsPath, ref thisCollectionDataValues, LanguageFile);
                             // 在庫状態を取得
                             //invからデータを読み込んで表示
                             IEnumerable<string> tmp = null;
@@ -859,7 +856,7 @@ namespace CREC
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(CurrentProjectSettingValues.ColorSetting.ToString(), CurrentLanguageFileName, LanguageFile, ConfigValues.FontsizeOffset);
+            ConfigForm configform = new ConfigForm(ref ConfigValues, CurrentProjectSettingValues.ColorSetting, LanguageFile);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -923,7 +920,7 @@ namespace CREC
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
             }
-            SaveConfig();
+            ConfigClass.SaveConfigValues(ref ConfigValues, TargetCRECPath);
             System.Windows.Forms.Application.Restart();
         }
         private void AddContentsToolStripMenuItem_Click(object sender, EventArgs e)// 新規追加
@@ -944,7 +941,7 @@ namespace CREC
                 StreamReader streamReaderDetailData = null;
                 try
                 {
-                    streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
                     DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -1239,7 +1236,7 @@ namespace CREC
             VersionInformation VerInfo = new VersionInformation(CurrentProjectSettingValues, CurrentDPI, LanguageFile);
             VerInfo.ShowDialog();
         }
-        private void readmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
+        private void ReadmeToolStripMenuItem_Click(object sender, EventArgs e)// ReadMe表示
         {
             ReadMe readme = new ReadMe(CurrentProjectSettingValues.ColorSetting.ToString());
             readme.ShowDialog();
@@ -1267,7 +1264,7 @@ namespace CREC
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
-            SaveConfig();
+            ConfigClass.SaveConfigValues(ref ConfigValues, TargetCRECPath);
             if (TargetCRECPath.Length != 0)
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
@@ -1702,7 +1699,7 @@ namespace CREC
                         int? ListReorderPoint = null;
                         int? ListMaximumLevel = null;
                         // index読み込み
-                        CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues,LanguageFile);
+                        CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues, LanguageFile);
                         // 在庫状態を取得、invからデータを読み込み
                         IEnumerable<string> tmp = null;
                         if (File.Exists(subFolder.FullName + "\\inventory.inv"))
@@ -2176,11 +2173,10 @@ namespace CREC
             OpenPictureFolderButton.Visible = false;
 
             // 詳細情報読み込み
-            TargetDetailsPath = (CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
             StreamReader streamReaderDetailData = null;
             try
             {
-                streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
                 DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
             }
             catch (Exception ex)
@@ -2254,13 +2250,8 @@ namespace CREC
                 return false;
             }
 
-            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
-            {
-                MessageBox.Show("データが存在しません。", "CREC");
-                return false;
-            }
             // index読み込み
-            return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData,LanguageFile);
+            return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData, LanguageFile);
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
@@ -2481,7 +2472,7 @@ namespace CREC
                 StreamReader streamReaderDetailData = null;
                 try
                 {
-                    streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
                     DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -2798,16 +2789,16 @@ namespace CREC
                     ListInventoryStatus = ex.Message;
                 }
             }
+            ContentsDataTable.Rows.Add(CurrentShownCollectionData.CollectionFolderPath, thisCollectionDataValues.CollectionID, thisCollectionDataValues.CollectionMC, thisCollectionDataValues.CollectionName, thisCollectionDataValues.CollectionRegistrationDate, thisCollectionDataValues.CollectionCategory, thisCollectionDataValues.CollectionTag1, thisCollectionDataValues.CollectionTag2, thisCollectionDataValues.CollectionTag3, ListInventory, ListInventoryStatus);
             DataList.Add(thisCollectionDataValues);// リストに追加
             dataGridView1.DataSource = ContentsDataTable;// ここでバインド
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = 0;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
-            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
-            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
             SearchFormTextBox.Text = thisCollectionDataValues.CollectionID;
             SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
@@ -3061,7 +3052,7 @@ namespace CREC
                 MessageBox.Show("機密データのバックアップ作成に失敗しました。\n" + ex.Message, "CREC");
             }
             // Indexデータをバックアップ
-            CollectionDataClass.BackupCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData,LanguageFile);
+            CollectionDataClass.BackupCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData, LanguageFile);
             // Indexデータを保存
             CurrentShownCollectionData.CollectionName = EditNameTextBox.Text;
             CurrentShownCollectionData.CollectionID = EditIDTextBox.Text;
@@ -3072,7 +3063,7 @@ namespace CREC
             CurrentShownCollectionData.CollectionTag2 = EditTag2TextBox.Text;
             CurrentShownCollectionData.CollectionTag3 = EditTag3TextBox.Text;
             CurrentShownCollectionData.CollectionRealLocation = EditRealLocationTextBox.Text;
-            if (!CollectionDataClass.SaveCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData,LanguageFile))
+            if (!CollectionDataClass.SaveCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData, LanguageFile))
             {
                 return false;
             }
@@ -3846,222 +3837,29 @@ namespace CREC
         }
         #endregion
 
-        #region Config読み込み・保存
-        private readonly string ConfigFile = "config.sys";
-        private void ImportConfig()// config.sysの読み込み
+        #region Config読み込み
+        /// <summary>
+        /// config.sysを読み込み、表示内容を更新
+        /// </summary>
+        private void ImportConfig()
         {
-            // 指定されていなかった場合のために初期化
-            CurrentLanguageFileName = "Japanese";
-            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + ConfigFile))
+            ConfigClass.LoadConfigValues(ref ConfigValues, ref TargetCRECPath);
+            // 開始済みのイベントを停止
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
+            SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
+            if (ConfigValues.AutoSearch == true)
             {
-                IEnumerable<string> tmp = null;
-                tmp = File.ReadLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
-                foreach (string line in tmp)
-                {
-                    cols = line.Split(',');
-                    switch (cols[0])
-                    {
-                        case "AllowEdit":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.AllowEdit = true;
-                            }
-                            else
-                            {
-                                ConfigValues.AllowEdit = false;
-                            }
-                            break;
-                        case "ShowConfidentialData":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.ShowConfidentialData = true;
-                            }
-                            else
-                            {
-                                ConfigValues.ShowConfidentialData = false;
-                            }
-                            break;
-                        case "ShowUserAssistToolTips":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.ShowUserAssistToolTips = true;
-                            }
-                            else
-                            {
-                                ConfigValues.ShowUserAssistToolTips = false;
-                            }
-                            break;
-                        case "AutoLoadProject":
-                            if (File.Exists(cols[1]))
-                            {
-                                if (TargetCRECPath.Length == 0)
-                                {
-                                    TargetCRECPath = cols[1];//CREC起動時のみ読み込み
-                                }
-                                ConfigValues.AutoLoadProjectPath = cols[1];
-                            }
-                            else if (cols[1].Length == 0)
-                            {
-                                ConfigValues.AutoLoadProjectPath = string.Empty;
-                            }
-                            else
-                            {
-                                MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
-                                TargetCRECPath = string.Empty;
-                                ConfigValues.AutoLoadProjectPath = string.Empty;
-                            }
-                            break;
-                        case "OpenLastTimeProject":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.OpenLastTimeProject = true;
-                            }
-                            else
-                            {
-                                ConfigValues.OpenLastTimeProject = false;
-                            }
-                            break;
-                        case "AutoSearch":
-                            if (cols[1] == "true")
-                            {
-                                SearchButton.Visible = false;
-                                ConfigValues.AutoSearch = true;
-                                SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
-                                SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
-                                SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
-                            }
-                            else
-                            {
-                                SearchButton.Visible = true;
-                                ConfigValues.AutoSearch = false;
-                                SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
-                                SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
-                                SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
-                            }
-                            break;
-                        case "RecentShownContents":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.RecentShownContents = true;
-                            }
-                            else
-                            {
-                                ConfigValues.RecentShownContents = false;
-                            }
-                            break;
-                        case "BootUpdateCheck":
-                            if (cols[1] == "true")
-                            {
-                                ConfigValues.BootUpdateCheck = true;
-                            }
-                            else
-                            {
-                                ConfigValues.BootUpdateCheck = false;
-                            }
-                            break;
-                        case "Language":
-                            if (cols[1].Length == 0)
-                            {
-                                CurrentLanguageFileName = "Japanese.xml";
-                            }
-                            else
-                            {
-                                CurrentLanguageFileName = cols[1];
-                            }
-                            break;
-                        case "FontsizeOffset":
-                            if (cols[1].Length == 0)
-                            {
-                                ConfigValues.FontsizeOffset = 0;
-                            }
-                            else
-                            {
-                                ConfigValues.FontsizeOffset = Convert.ToInt32(cols[1]);
-                            }
-                            break;
-                    }
-                }
+                SearchButton.Visible = false;
+                // 自動検索が有効な場合は検索窓の入力内容が変更された時に自動で検索を行う
+                SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
+                SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
+                SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
             }
             else
             {
-                MessageBox.Show("設定ファイルが見つかりません。\nデフォルト設定で起動します。", "CREC");
-                //Config.sysの作成
-                SaveConfig();
-            }
-        }
-        private void SaveConfig()// config.sysの保存
-        {
-            StreamWriter configfile = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\config.sys", false, Encoding.GetEncoding("UTF-8"));
-            try
-            {
-                if (ConfigValues.AllowEdit == true)
-                {
-                    configfile.WriteLine("AllowEdit,true");
-                }
-                else
-                {
-                    configfile.WriteLine("AllowEdit,false");
-                }
-                if (ConfigValues.ShowConfidentialData == true)
-                {
-                    configfile.WriteLine("ShowConfidentialData,true");
-                }
-                else
-                {
-                    configfile.WriteLine("ShowConfidentialData,false");
-                }
-                if (ConfigValues.ShowUserAssistToolTips == true)
-                {
-                    configfile.WriteLine("ShowUserAssistToolTips,true");
-                }
-                else
-                {
-                    configfile.WriteLine("ShowUserAssistToolTips,false");
-                }
-                if (ConfigValues.OpenLastTimeProject == true)
-                {
-                    configfile.WriteLine("AutoLoadProject,{0}", TargetCRECPath);
-                    configfile.WriteLine("OpenLastTimeProject,true");
-                }
-                else
-                {
-                    configfile.WriteLine("AutoLoadProject,{0}", ConfigValues.AutoLoadProjectPath);
-                    configfile.WriteLine("OpenLastTimeProject,false");
-                }
-                if (ConfigValues.AutoSearch == true)
-                {
-                    configfile.WriteLine("AutoSearch,true");
-                }
-                else
-                {
-                    configfile.WriteLine("AutoSearch,false");
-                }
-                if (ConfigValues.RecentShownContents == true)
-                {
-                    configfile.WriteLine("RecentShownContents,true");
-                }
-                else
-                {
-                    configfile.WriteLine("RecentShownContents,false");
-                }
-                if (ConfigValues.BootUpdateCheck == true)
-                {
-                    configfile.WriteLine("BootUpdateCheck,true");
-                }
-                else
-                {
-                    configfile.WriteLine("BootUpdateCheck,false");
-                }
-                configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
-                configfile.WriteLine("FontsizeOffset,{0}", ConfigValues.FontsizeOffset);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Config.sysの作成に失敗しました(´・ω・｀)\n" + ex.Message, "CREC");
-            }
-            finally
-            {
-                configfile.Close();
+                SearchButton.Visible = true;
+                SearchButton.BringToFront();// SearchButtonを最前面に移動
             }
         }
         #endregion
@@ -4392,7 +4190,7 @@ namespace CREC
                         StreamReader streamReaderDetailData = null;
                         try
                         {
-                            streamReaderDetailData = new StreamReader(TargetDetailsPath);
+                            streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
                             DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                         }
                         catch (Exception ex)
@@ -4537,7 +4335,7 @@ namespace CREC
             }
         }
 
-        CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+        CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
         private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの状態をバックグラウンドで監視
         {
             while (true)
@@ -4893,15 +4691,6 @@ namespace CREC
         private void OpenProjectContextStripMenuItem_Click(object sender, EventArgs e)// プロジェクトを開く、OpenMenu_Clickと同じ
         {
             OpenProjectMethod();// 既存の在庫管理プロジェクトを読み込むメソッドを呼び出し
-            if (CurrentProjectSettingValues.StartUpListOutput == true)
-            {
-                ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
-            }
-            if (CurrentProjectSettingValues.StartUpBackUp == true)// 自動バックアップ
-            {
-                BackUpMethod();
-                MakeBackUpZip();// ZIP圧縮を非同期で開始
-            }
         }
         #endregion
 
@@ -5021,7 +4810,7 @@ namespace CREC
                     int? ListReorderPoint = null;
                     int? ListMaximumLevel = null;
                     // index読み込み
-                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues,LanguageFile);
+                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref thisCollectionDataValues, LanguageFile);
                     // 在庫状態を取得
                     //invからデータを読み込んで表示
                     IEnumerable<string> tmp = null;
@@ -5485,8 +5274,8 @@ namespace CREC
                         MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                         Environment.FailFast("Default language file can't find.");
                     }
-                    CurrentLanguageFileName = "Japanese";
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                    ConfigValues.LanguageFileName = "Japanese";
+                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
                     LanguageSettingClass.MakeDefaultLanguageFileEN();
                     return;
                 }
@@ -5506,7 +5295,7 @@ namespace CREC
                             LanguageSettingToolStripMenuItems[count].ToolTipText = fileInfo.FullName;
                             LanguageSettingToolStripMenuItem.DropDownItems.Add(LanguageSettingToolStripMenuItems[count]);
                             LanguageSettingToolStripMenuItems[count].Click += new EventHandler(LanguageSettingToolStripMenuItems_Click);
-                            if (CurrentLanguageFileName == Path.GetFileNameWithoutExtension(fileInfo.FullName))
+                            if (ConfigValues.LanguageFileName == Path.GetFileNameWithoutExtension(fileInfo.FullName))
                             {
                                 LanguageSettingToolStripMenuItems[count].Checked = true;
                             }
@@ -5521,8 +5310,8 @@ namespace CREC
                         MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                         Environment.FailFast("Default language file can't find.");
                     }
-                    CurrentLanguageFileName = "Japanese";
-                    SetLanguage("language\\" + CurrentLanguageFileName + ".xml");
+                    ConfigValues.LanguageFileName = "Japanese";
+                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
                     LanguageSettingClass.MakeDefaultLanguageFileEN();
                     return;
                 }
@@ -5539,7 +5328,7 @@ namespace CREC
             {
                 SelectedRow = dataGridView1.SelectedRows[0].Index;// 表示中のコンテンツのIDを取得
             }
-            CurrentLanguageFileName = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
+            ConfigValues.LanguageFileName = Path.GetFileNameWithoutExtension(((ToolStripItem)sender).ToolTipText);
             SetLanguage(((ToolStripItem)sender).ToolTipText);
             int TargetColumn = 1;
             if (IDListVisibleToolStripMenuItem.Checked) { TargetColumn = 1; }

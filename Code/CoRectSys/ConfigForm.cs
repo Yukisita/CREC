@@ -6,234 +6,209 @@ https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections;
 using System.Xml.Linq;
 
 namespace CREC
 {
     public partial class ConfigForm : Form
     {
-        readonly string ConfigFile = "config.sys";
-        string reader;
-        string[] rows;
-        string row;
-        string[] cols;
-        string ColorSetting = "Blue";
-        string CurrentLanguageFileName = "";// 言語設定
-        int FontsizeOffset = 0;// 文字サイズオフセット量
-        int ConfigNumber;
+        ConfigValuesClass ConfigValues = new ConfigValuesClass();// 設定値
+        ColorValue ColorSetting = ColorValue.Blue;// 色設定
         readonly XElement LanguageFile;// 言語ファイル
         public bool ReturnConfigSaved { get; private set; } = false;// 保存されて終了した場合はTrue
 
-        public ConfigForm(string colorSetting, string currentLanguage, XElement languageFile, int fontsizeOffset)
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="configValues">設定値</param>
+        /// <param name="colorSetting">色設定</param>
+        /// <param name="languageFile">言語ファイル</param>
+        public ConfigForm(ref ConfigValuesClass configValues, ColorValue colorSetting, XElement languageFile)
         {
             InitializeComponent();
+            ConfigValues = configValues;
             ColorSetting = colorSetting;
-            CurrentLanguageFileName = currentLanguage;
-            FontsizeOffset = fontsizeOffset;
             SetColorMethod();
             LanguageFile = languageFile;
         }
 
-        private void ConfigForm_Load(object sender, EventArgs e)// 読み込み
+        /// <summary>
+        /// フォーム読み込み時の処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ConfigForm_Load(object sender, EventArgs e)
         {
             // 言語設定
             SetLanguage();
-            reader = File.ReadAllText(ConfigFile, Encoding.GetEncoding("UTF-8"));
-            string[] tmp = File.ReadAllLines(ConfigFile, Encoding.GetEncoding("UTF-8"));
-            rows = reader.Trim().Replace("\r", "").Split('\n');
-            // チェックボックスをデフォルト値で初期化
-            AllowEditRadioButton.Checked = true;
-            AllowConfidentialDataRadioButton.Checked = true;
-            ShowUserAssistRadioButton.Checked = true;
-            OpenLastTimeProjectCheckBox.Checked = false;
-            AllowAutoSearchRadioButton.Checked = true;
-            AllowBootUpdateCheckRadioButton.Checked = true;
-            // config.sysから該当項目読み込み
-            for (ConfigNumber = 0; ConfigNumber <= Convert.ToInt32(tmp.Length - 1); ConfigNumber++)
+            // 現在の設定値を反映
+            if (ConfigValues.AllowEdit)
             {
-                row = rows[ConfigNumber];
-                cols = row.Split(',');
-                switch (cols[0])
-                {
-                    case "AllowEdit":
-                        if (cols[1] == "true")
-                        {
-                            AllowEditRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            DenyEditRadioButton.Checked = true;
-                        }
-                        break;
-                    case "ShowConfidentialData":
-                        if (cols[1] == "true")
-                        {
-                            AllowConfidentialDataRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            DenyConfidentialDataRadioButton.Checked = true;
-                        }
-                        break;
-                    case "ShowUserAssistToolTips":
-                        if (cols[1] == "true")
-                        {
-                            ShowUserAssistRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            HideUserAssistRadioButton.Checked = true;
-                        }
-                        break;
-                    case "AutoLoadProject":
-                        SetAutoLoadProjectTextBox.Text = cols[1];
-                        break;
-                    case "OpenLastTimeProject":
-                        if (cols[1] == "true")
-                        {
-                            SetAutoLoadProjectTextBox.ReadOnly = true;
-                            OpenLastTimeProjectCheckBox.Checked = true;
-                        }
-                        else
-                        {
-                            SetAutoLoadProjectTextBox.ReadOnly = false;
-                            OpenLastTimeProjectCheckBox.Checked = false;
-                        }
-                        break;
-                    case "AutoSearch":
-                        if (cols[1] == "true")
-                        {
-                            AllowAutoSearchRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            DenyAutoSearchRadioButton.Checked = true;
-                        }
-                        break;
-                    case "RecentShownContents":
-                        if (cols[1] == "true")
-                        {
-                            SaveRecentShownContentsRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            DiscardRecentShownContentsRadioButton.Checked = true;
-                        }
-                        break;
-                    case "BootUpdateCheck":
-                        if (cols[1] == "true")
-                        {
-                            AllowBootUpdateCheckRadioButton.Checked = true;
-                        }
-                        else
-                        {
-                            DenyBootUpdateCheckRadioButton.Checked = true;
-                        }
-                        break;
-                }
-            }
-        }
-
-        private void SaveButton_Click(object sender, EventArgs e)// 保存して終了
-        {
-            StreamWriter configfile = new StreamWriter("config.sys", false, Encoding.GetEncoding("UTF-8"));
-            if (AllowEditRadioButton.Checked)
-            {
-                configfile.WriteLine("AllowEdit,true");
-            }
-            else if (DenyEditRadioButton.Checked)
-            {
-                configfile.WriteLine("AllowEdit,false");
-            }
-            if (AllowConfidentialDataRadioButton.Checked)
-            {
-                configfile.WriteLine("ShowConfidentialData,true");
-            }
-            else if (DenyConfidentialDataRadioButton.Checked)
-            {
-                configfile.WriteLine("ShowConfidentialData,false");
-            }
-            if (ShowUserAssistRadioButton.Checked)
-            {
-                configfile.WriteLine("ShowUserAssistToolTips,true");
-            }
-            else if (HideUserAssistRadioButton.Checked)
-            {
-                configfile.WriteLine("ShowUserAssistToolTips,false");
-            }
-            configfile.WriteLine("AutoLoadProject,{0}", SetAutoLoadProjectTextBox.Text);
-            if (OpenLastTimeProjectCheckBox.Checked)
-            {
-                configfile.WriteLine("OpenLastTimeProject,true");
+                AllowEditRadioButton.Checked = true;
             }
             else
             {
-                configfile.WriteLine("OpenLastTimeProject,false");
+                DenyEditRadioButton.Checked = true;
+            }
+            if (ConfigValues.ShowConfidentialData)
+            {
+                AllowConfidentialDataRadioButton.Checked = true;
+            }
+            else
+            {
+                DenyConfidentialDataRadioButton.Checked = true;
+            }
+            if (ConfigValues.ShowUserAssistToolTips)
+            {
+                ShowUserAssistRadioButton.Checked = true;
+            }
+            else
+            {
+                HideUserAssistRadioButton.Checked = true;
+            }
+            SetAutoLoadProjectTextBox.Text = ConfigValues.AutoLoadProjectPath;
+            if (ConfigValues.OpenLastTimeProject)
+            {
+                SetAutoLoadProjectTextBox.ReadOnly = true;
+                OpenLastTimeProjectCheckBox.Checked = true;
+            }
+            else
+            {
+                SetAutoLoadProjectTextBox.ReadOnly = false;
+                OpenLastTimeProjectCheckBox.Checked = false;
+            }
+            if (ConfigValues.AutoSearch)
+            {
+                AllowAutoSearchRadioButton.Checked = true;
+            }
+            else
+            {
+                DenyAutoSearchRadioButton.Checked = true;
+            }
+            if (ConfigValues.RecentShownContents)
+            {
+                SaveRecentShownContentsRadioButton.Checked = true;
+            }
+            else
+            {
+                DiscardRecentShownContentsRadioButton.Checked = true;
+            }
+            if (ConfigValues.BootUpdateCheck)
+            {
+                AllowBootUpdateCheckRadioButton.Checked = true;
+            }
+            else
+            {
+                DenyBootUpdateCheckRadioButton.Checked = true;
+            }
+        }
+
+        /// <summary>
+        /// 保存して終了
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            // 変更内容を反映
+            if (AllowEditRadioButton.Checked)
+            {
+                ConfigValues.AllowEdit = true;
+            }
+            else if (DenyEditRadioButton.Checked)
+            {
+                ConfigValues.AllowEdit = false;
+            }
+            if (AllowConfidentialDataRadioButton.Checked)
+            {
+                ConfigValues.ShowConfidentialData = true;
+            }
+            else if (DenyConfidentialDataRadioButton.Checked)
+            {
+                ConfigValues.ShowConfidentialData = false;
+            }
+            if (ShowUserAssistRadioButton.Checked)
+            {
+                ConfigValues.ShowUserAssistToolTips = true;
+            }
+            else if (HideUserAssistRadioButton.Checked)
+            {
+                ConfigValues.ShowUserAssistToolTips = false;
+            }
+            ConfigValues.AutoLoadProjectPath = SetAutoLoadProjectTextBox.Text;
+            if (OpenLastTimeProjectCheckBox.Checked)
+            {
+                ConfigValues.OpenLastTimeProject = true;
+            }
+            else
+            {
+                ConfigValues.OpenLastTimeProject = false;
             }
             if (AllowAutoSearchRadioButton.Checked)
             {
-                configfile.WriteLine("AutoSearch,true");
+                ConfigValues.AutoSearch = true;
             }
             else if (DenyAutoSearchRadioButton.Checked)
             {
-                configfile.WriteLine("AutoSearch,false");
+                ConfigValues.AutoSearch = false;
             }
             if (SaveRecentShownContentsRadioButton.Checked)
             {
-                configfile.WriteLine("RecentShownContents,true");
+                ConfigValues.RecentShownContents = true;
             }
             else if (DiscardRecentShownContentsRadioButton.Checked)
             {
-                configfile.WriteLine("RecentShownContents,false");
+                ConfigValues.RecentShownContents = false;
             }
             if (AllowBootUpdateCheckRadioButton.Checked)
             {
-                configfile.WriteLine("BootUpdateCheck,true");
+                ConfigValues.BootUpdateCheck = true;
             }
             else if (DenyBootUpdateCheckRadioButton.Checked)
             {
-                configfile.WriteLine("BootUpdateCheck,false");
+                ConfigValues.BootUpdateCheck = false;
             }
-            configfile.WriteLine("Language,{0}", CurrentLanguageFileName);
-            configfile.WriteLine("FontsizeOffset,{0}", FontsizeOffset);
-            configfile.Close();
-            ReturnConfigSaved = true;
+            // config.sysに保存
+            ReturnConfigSaved = ConfigClass.SaveConfigValues(ref ConfigValues, ConfigValues.AutoLoadProjectPath);
             this.Close();
         }
 
-        private void SetColorMethod()// 色設定のメソッド
+        /// <summary>
+        /// 色設定
+        /// </summary>
+        private void SetColorMethod()
         {
             switch (ColorSetting)
             {
-                case "Blue":
+                case ColorValue.Blue:
                     this.BackColor = Color.AliceBlue;
                     break;
-                case "White":
+                case ColorValue.White:
                     this.BackColor = Color.WhiteSmoke;
                     break;
-                case "Sakura":
+                case ColorValue.Sakura:
                     this.BackColor = Color.LavenderBlush;
                     break;
-                case "Green":
+                case ColorValue.Green:
                     this.BackColor = Color.Honeydew;
                     break;
                 default:
                     this.BackColor = Color.AliceBlue;
-                    ColorSetting = "Blue";
+                    ColorSetting = ColorValue.Blue;
                     break;
             }
         }
 
-        private void OpenLastTimeProjectCheckBox_CheckedChanged(object sender, EventArgs e)// 前回のプロジェクトを開くモードのときはSetAutoLoadProjectTextBoxを編集不可にする
+        /// <summary>
+        /// 前回のプロジェクトを開くモードのときはSetAutoLoadProjectTextBoxを編集不可にする
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenLastTimeProjectCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             if (OpenLastTimeProjectCheckBox.Checked)
             {
@@ -245,8 +220,10 @@ namespace CREC
             }
         }
 
-        #region 言語設定
-        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
+        /// <summary>
+        /// 言語設定
+        /// </summary>
+        private void SetLanguage()
         {
             this.Text = LanguageSettingClass.GetOtherMessage("FormName", "ConfigForm", LanguageFile);
             IEnumerable<XElement> buttonItemDataList = from item in LanguageFile.Elements("ConfigForm").Elements("Button").Elements("item") select item;
@@ -314,6 +291,5 @@ namespace CREC
                 }
             }
         }
-        #endregion
     }
 }

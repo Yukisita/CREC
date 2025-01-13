@@ -1049,6 +1049,14 @@
 	<CollectionDataClass>
 		<MessageBox>
 			<item>
+				<itemname>CollectionNotAssigned</itemname>
+				<itemtext>コレクションが指定されていません。</itemtext>
+			</item>
+			<item>
+				<itemname>CollectionNotExist</itemname>
+				<itemtext>コレクションが存在しません。&#xD;&#xA;再試行してください。</itemtext>
+			</item>
+			<item>
 				<itemname>IndexFileReadFailed</itemname>
 				<itemtext>Indexファイルの読み込みに失敗しました。&#xD;&#xA;復元処理を開始します。&#xD;&#xA;</itemtext>
 			</item>

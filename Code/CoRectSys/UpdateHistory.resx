@@ -482,7 +482,10 @@ ver8.6.1（2025/01/06）
 リファクタリング
 コレクションのIndexファイルが破損・損失した場合にバックアップから復元する機能を追加
 コレクション保存後の動作速度改善
-多言語対応</value>
+多言語対応
+
+ver8.6.2（2025/01/13）
+リファクタリング</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

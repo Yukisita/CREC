@@ -232,6 +232,19 @@ namespace CREC
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
         {
+
+            if (CollectionFolderPath.Length == 0)// コレクションのパスが指定されていない場合
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotAssigned", "CollectionDataClass", languageData), "CREC");
+                return false;
+            }
+
+            if(!System.IO.Directory.Exists(CollectionFolderPath))// コレクションのフォルダが存在しない場合
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotExist", "CollectionDataClass", languageData), "CREC");
+                return false;
+            }
+
             try
             {
                 string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";

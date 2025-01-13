@@ -1049,6 +1049,14 @@
 	<CollectionDataClass>
 		<MessageBox>
 			<item>
+				<itemname>CollectionNotAssigned</itemname>
+				<itemtext>No collection assigned.</itemtext>
+			</item>
+			<item>
+				<itemname>CollectionNotExist</itemname>
+				<itemtext>Collection does not exist.&#xD;&#xA;Please try again.</itemtext>
+			</item>
+			<item>
 				<itemname>IndexFileReadFailed</itemname>
 				<itemtext>Failed to load file.&#xD;&#xA;Start the restore process.&#xD;&#xA;</itemtext>
 			</item>

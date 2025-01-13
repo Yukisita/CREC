@@ -750,7 +750,7 @@
             this.readmeToolStripMenuItem.Name = "readmeToolStripMenuItem";
             this.readmeToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
             this.readmeToolStripMenuItem.Text = "ReadMe...";
-            this.readmeToolStripMenuItem.Click += new System.EventHandler(this.readmeToolStripMenuItem_Click);
+            this.readmeToolStripMenuItem.Click += new System.EventHandler(this.ReadmeToolStripMenuItem_Click);
             // 
             // UpdateHistoryToolStripMenuItem
             // 
@@ -2204,6 +2204,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
             this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.ShowSelectedItemInformationButton);
             this.Controls.Add(this.SubtractQuantityButton);
             this.Controls.Add(this.AddQuantityButton);
@@ -2217,7 +2218,6 @@
             this.Controls.Add(this.HideConfidentialDataButton);
             this.Controls.Add(this.ConfidentialDataLabel);
             this.Controls.Add(this.ShowPictureFileNameLabel);
-            this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.DataLoadingLabel);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.EditTag1TextBox);
