@@ -75,130 +75,138 @@ namespace CREC
             // 指定されていなかった場合のために初期化
             if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys"))
             {
-                IEnumerable<string> tmp = null;
-                tmp = File.ReadLines("config.sys", Encoding.GetEncoding("UTF-8"));
-                foreach (string line in tmp)
+                try
                 {
-                    string[] cols = line.Split(',');
-                    switch (cols[0])
+                    IEnumerable<string> tmp = null;
+                    tmp = File.ReadLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys", Encoding.GetEncoding("UTF-8"));
+                    foreach (string line in tmp)
                     {
-                        case "AllowEdit":
-                            if (cols[1] == "true")
-                            {
-                                configValues.AllowEdit = true;
-                            }
-                            else
-                            {
-                                configValues.AllowEdit = false;
-                            }
-                            break;
-                        case "ShowConfidentialData":
-                            if (cols[1] == "true")
-                            {
-                                configValues.ShowConfidentialData = true;
-                            }
-                            else
-                            {
-                                configValues.ShowConfidentialData = false;
-                            }
-                            break;
-                        case "ShowUserAssistToolTips":
-                            if (cols[1] == "true")
-                            {
-                                configValues.ShowUserAssistToolTips = true;
-                            }
-                            else
-                            {
-                                configValues.ShowUserAssistToolTips = false;
-                            }
-                            break;
-                        case "AutoLoadProject":
-                            if (File.Exists(cols[1]))
-                            {
-                                if (CurrentCRECPath.Length == 0)
+                        string[] cols = line.Split(',');
+                        switch (cols[0])
+                        {
+                            case "AllowEdit":
+                                if (cols[1] == "true")
                                 {
-                                    CurrentCRECPath = cols[1];//CREC起動時のみ読み込み
+                                    configValues.AllowEdit = true;
                                 }
-                                configValues.AutoLoadProjectPath = cols[1];
-                            }
-                            else if (cols[1].Length == 0)
-                            {
-                                configValues.AutoLoadProjectPath = string.Empty;
-                            }
-                            else
-                            {
-                                MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
-                                CurrentCRECPath = string.Empty;
-                                configValues.AutoLoadProjectPath = string.Empty;
-                            }
-                            break;
-                        case "OpenLastTimeProject":
-                            if (cols[1] == "true")
-                            {
-                                configValues.OpenLastTimeProject = true;
-                            }
-                            else
-                            {
-                                configValues.OpenLastTimeProject = false;
-                            }
-                            break;
-                        case "AutoSearch":
-                            if (cols[1] == "true")
-                            {
-                                configValues.AutoSearch = true;
-                            }
-                            else
-                            {
-                                configValues.AutoSearch = false;
-                            }
-                            break;
-                        case "RecentShownContents":
-                            if (cols[1] == "true")
-                            {
-                                configValues.RecentShownContents = true;
-                            }
-                            else
-                            {
-                                configValues.RecentShownContents = false;
-                            }
-                            break;
-                        case "BootUpdateCheck":
-                            if (cols[1] == "true")
-                            {
-                                configValues.BootUpdateCheck = true;
-                            }
-                            else
-                            {
-                                configValues.BootUpdateCheck = false;
-                            }
-                            break;
-                        case "Language":
-                            if (cols[1].Length == 0)
-                            {
-                                configValues.LanguageFileName = "Japanese.xml";
-                            }
-                            else
-                            {
-                                configValues.LanguageFileName = cols[1];
-                            }
-                            break;
-                        case "FontsizeOffset":
-                            if (cols[1].Length == 0)
-                            {
-                                configValues.FontsizeOffset = 0;
-                            }
-                            else
-                            {
-                                configValues.FontsizeOffset = Convert.ToInt32(cols[1]);
-                            }
-                            break;
+                                else
+                                {
+                                    configValues.AllowEdit = false;
+                                }
+                                break;
+                            case "ShowConfidentialData":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.ShowConfidentialData = true;
+                                }
+                                else
+                                {
+                                    configValues.ShowConfidentialData = false;
+                                }
+                                break;
+                            case "ShowUserAssistToolTips":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.ShowUserAssistToolTips = true;
+                                }
+                                else
+                                {
+                                    configValues.ShowUserAssistToolTips = false;
+                                }
+                                break;
+                            case "AutoLoadProject":
+                                if (File.Exists(cols[1]))
+                                {
+                                    if (CurrentCRECPath.Length == 0)
+                                    {
+                                        CurrentCRECPath = cols[1];//CREC起動時のみ読み込み
+                                    }
+                                    configValues.AutoLoadProjectPath = cols[1];
+                                }
+                                else if (cols[1].Length == 0)
+                                {
+                                    configValues.AutoLoadProjectPath = string.Empty;
+                                }
+                                else
+                                {
+                                    MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
+                                    CurrentCRECPath = string.Empty;
+                                    configValues.AutoLoadProjectPath = string.Empty;
+                                }
+                                break;
+                            case "OpenLastTimeProject":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.OpenLastTimeProject = true;
+                                }
+                                else
+                                {
+                                    configValues.OpenLastTimeProject = false;
+                                }
+                                break;
+                            case "AutoSearch":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.AutoSearch = true;
+                                }
+                                else
+                                {
+                                    configValues.AutoSearch = false;
+                                }
+                                break;
+                            case "RecentShownContents":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.RecentShownContents = true;
+                                }
+                                else
+                                {
+                                    configValues.RecentShownContents = false;
+                                }
+                                break;
+                            case "BootUpdateCheck":
+                                if (cols[1] == "true")
+                                {
+                                    configValues.BootUpdateCheck = true;
+                                }
+                                else
+                                {
+                                    configValues.BootUpdateCheck = false;
+                                }
+                                break;
+                            case "Language":
+                                if (cols[1].Length == 0)
+                                {
+                                    configValues.LanguageFileName = "Japanese.xml";
+                                }
+                                else
+                                {
+                                    configValues.LanguageFileName = cols[1];
+                                }
+                                break;
+                            case "FontsizeOffset":
+                                if (cols[1].Length == 0)
+                                {
+                                    configValues.FontsizeOffset = 0;
+                                }
+                                else
+                                {
+                                    configValues.FontsizeOffset = Convert.ToInt32(cols[1]);
+                                }
+                                break;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Config.sysの読み込みに失敗しました(´・ω・｀)\n" + ex.Message, "CREC");
+                    return false;
                 }
             }
             else
             {
                 MessageBox.Show("設定ファイルが見つかりません。\nデフォルト設定で起動します。", "CREC");
-                SaveConfigValues(ref configValues, string.Empty);// Config.sysの作成
+                return SaveConfigValues(ref configValues, string.Empty);// Config.sysの作成
             }
             return true;
         }
@@ -211,7 +219,7 @@ namespace CREC
         /// <returns></returns>
         public static bool SaveConfigValues(ref ConfigValuesClass configValues, string CurrentCRECPath)
         {
-            StreamWriter configfile = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\config.sys", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter configfile = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys", false, Encoding.GetEncoding("UTF-8"));
             try
             {
                 if (configValues.AllowEdit == true)

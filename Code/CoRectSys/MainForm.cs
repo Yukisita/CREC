@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.2.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.3.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -66,6 +66,8 @@ namespace CREC
 
         public MainForm()
         {
+            // カレントディレクトリを実行ファイルのディレクトリに変更
+            Directory.SetCurrentDirectory(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName));
             // コマンドライン引数を取得
             string commandLineProjectFile = string.Empty;
             var commandLineArgument = System.Environment.GetCommandLineArgs();
@@ -124,25 +126,25 @@ namespace CREC
             // 言語ファイル読み込み
             bootingForm.BootingProgressLabel.Text = "言語ファイル読み込み中";
             Application.DoEvents();
-            System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
+            System.IO.DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language");
             if (!directoryInfo.Exists)// 言語フォルダの存在確認
             {
                 MessageBox.Show("言語フォルダが見つかりません。デフォルトの言語ファイルを作成します。\nNo Language Folder.", "CREC");
-                Directory.CreateDirectory("language");
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language");
                 if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
                 {
                     MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                     Environment.FailFast("Default language file can't find.");
                 }
                 ConfigValues.LanguageFileName = "Japanese";
-                SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
+                SetLanguage(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language\\" + ConfigValues.LanguageFileName + ".xml");
                 LanguageSettingClass.MakeDefaultLanguageFileEN();
             }
             else
             {
                 try
                 {
-                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
+                    SetLanguage(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language\\" + ConfigValues.LanguageFileName + ".xml");
                 }
                 catch (Exception ex)
                 {
@@ -153,7 +155,7 @@ namespace CREC
                         Environment.FailFast("Default language file can't find.");
                     }
                     ConfigValues.LanguageFileName = "Japanese";
-                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
+                    SetLanguage(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language\\" + ConfigValues.LanguageFileName + ".xml");
                 }
             }
             SetColorMethod();// 色設定を反映
@@ -449,11 +451,11 @@ namespace CREC
             try
             {
                 IEnumerable<string> RecentlyOpendProjectList = null;
-                if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+                if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
-                    FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
-                    StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
+                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                     streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
                     int Count = 0;
                     foreach (string line in RecentlyOpendProjectList)
@@ -472,7 +474,7 @@ namespace CREC
                 }
                 else// 履歴存在しない場合は新規作成
                 {
-                    StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                     streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
                     streamWriter.Close();
                 }
@@ -488,11 +490,11 @@ namespace CREC
         {
             OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Clear();// 初期化
             string[] RecentlyOpendProjectList = null;
-            if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
             {
                 try
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                 }
                 catch (Exception ex)
                 {
@@ -578,15 +580,15 @@ namespace CREC
                 IEnumerable<string> RecentlyOpendProjectList = null;
                 try
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines("RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                 }
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
                     return;
                 }
-                FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
-                StreamWriter streamWriter = new StreamWriter("RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
+                StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in RecentlyOpendProjectList)
                 {
                     if (!line.Contains(TargetCRECPath))// 見つからなかったプロジェクト以外は書き込み
@@ -629,11 +631,11 @@ namespace CREC
         }
         private void DeleteRecentlyOpendProjectListToolStripMenuItem_Click(object sender, EventArgs e)// 最近使用したプロジェクトの履歴を削除（イベント）
         {
-            if (File.Exists("RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
             {
                 try
                 {
-                    FileOperationClass.DeleteFile("RecentlyOpenedProjectList.log");
+                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
                 }
                 catch (Exception ex)
                 {
@@ -1653,13 +1655,9 @@ namespace CREC
             this.Cursor = Cursors.WaitCursor;
             Application.DoEvents();
             // 現時点で選択されている情報を取得
-            string CurrentSelectedContentsID;// 現時点で表示されているデータのID
+            string CurrentSelectedContentsID = string.Empty;// 現時点で表示されているデータのID
             int CurrentSelectedContentsRows = 1;// 表示されていたデータのリスト更新後の列番号
-            if (dataGridView1.CurrentRow == null)
-            {
-                CurrentSelectedContentsID = string.Empty;
-            }
-            else
+            if (dataGridView1.CurrentRow != null)
             {
                 try
                 {
@@ -1667,7 +1665,6 @@ namespace CREC
                 }
                 catch (Exception ex)
                 {
-                    CurrentSelectedContentsID = string.Empty;
                     MessageBox.Show("現時点で表示されているデータのID取得に失敗しました。\n" + ex.Message, "CREC");
                 }
             }
@@ -1877,8 +1874,10 @@ namespace CREC
                     dataGridView1.ClearSelection();
                     try
                     {
+                        // 表示されている一番左のセルの番号を取得
+                        int firstVisibleColumnIndex = dataGridView1.FirstDisplayedCell.ColumnIndex;
                         dataGridView1.Rows[CurrentSelectedContentsRows - 1].Selected = true;
-                        dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[0];
+                        dataGridView1.CurrentCell = dataGridView1.Rows[CurrentSelectedContentsRows - 1].Cells[firstVisibleColumnIndex];
                     }
                     catch
                     {
@@ -1892,7 +1891,7 @@ namespace CREC
                     DataLoadingStatus = "false";
                 }
             }
-            else if (NoData == true)// データが１つも存在しない場合は新規データ作成するか確認
+            else// データが１つも存在しない場合は新規データ作成するか確認
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("このプロジェクトにはデータがありません。\nデータを作成しますか？", "CREC", System.Windows.MessageBoxButton.YesNo, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// データ作成
@@ -5264,18 +5263,18 @@ namespace CREC
             int count = -1;
             try
             {
-                System.IO.DirectoryInfo directoryInfo = new DirectoryInfo("language");
+                System.IO.DirectoryInfo directoryInfo = new DirectoryInfo(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language");
                 if (!directoryInfo.Exists)
                 {
                     MessageBox.Show("言語フォルダが見つかりません。デフォルトの言語ファイルを作成します。\nNo Language Folder.", "CREC");
-                    Directory.CreateDirectory("language");
+                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language");
                     if (!LanguageSettingClass.MakeDefaultLanguageFileJP())
                     {
                         MessageBox.Show("致命的なエラーが発生しました。アプリケーションを終了します。", "CREC");
                         Environment.FailFast("Default language file can't find.");
                     }
                     ConfigValues.LanguageFileName = "Japanese";
-                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
+                    SetLanguage(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language\\" + ConfigValues.LanguageFileName + ".xml");
                     LanguageSettingClass.MakeDefaultLanguageFileEN();
                     return;
                 }
@@ -5311,7 +5310,7 @@ namespace CREC
                         Environment.FailFast("Default language file can't find.");
                     }
                     ConfigValues.LanguageFileName = "Japanese";
-                    SetLanguage("language\\" + ConfigValues.LanguageFileName + ".xml");
+                    SetLanguage(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\language\\" + ConfigValues.LanguageFileName + ".xml");
                     LanguageSettingClass.MakeDefaultLanguageFileEN();
                     return;
                 }
