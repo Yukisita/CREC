@@ -33,12 +33,11 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.3.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.4.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
-        string TargetCRECPath = string.Empty;// 管理ファイル（.crec）のファイルパス
         ConfigValuesClass ConfigValues = new ConfigValuesClass();// config.sys読み込み用Class
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在表示中のプロジェクトの設定値
         List<CollectionDataValuesClass> DataList = new List<CollectionDataValuesClass>();// コレクションの一覧
@@ -169,7 +168,7 @@ namespace CREC
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
-                TargetCRECPath = commandLineProjectFile;
+                CurrentProjectSettingValues.ProjectSettingFilePath = commandLineProjectFile;
             }
             // Boot画面を閉じる
             try
@@ -196,9 +195,9 @@ namespace CREC
                 CheckLatestVersion();// 更新の確認
             }
             // 自動読み込み設定時は開始（例外処理はImportConfig内で実施済み）
-            if (TargetCRECPath.Length > 0)// 自動読み込みプロジェクトが指定されている場合
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length > 0)// 自動読み込みプロジェクトが指定されている場合
             {
-                LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                LoadProjectFileMethod(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                 if (CurrentProjectSettingValues.StartUpListOutput == true)
                 {
                     ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
@@ -226,30 +225,22 @@ namespace CREC
         {
             if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
             {
-                if (CheckEditingContents() == true)// 編集中のファイルへの操作が完了した場合
-                {
-                    MakeNewProject makenewproject = new MakeNewProject(string.Empty, CurrentProjectSettingValues, LanguageFile);
-                    makenewproject.ShowDialog();
-                    if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
-                    {
-                        TargetCRECPath = makenewproject.ReturnTargetProject;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    }
-                }
-                else// キャンセルされた場合
+                if (!CheckEditingContents() == true)// キャンセルされた場合
                 {
                     return;
                 }
             }
-            else// 編集中データがなかった場合
+            var previousProjectSettinValues = CurrentProjectSettingValues;// 現在開いているプロジェクトの設定値保持
+            CurrentProjectSettingValues = new ProjectSettingValuesClass();
+            MakeNewProject makenewproject = new MakeNewProject(CurrentProjectSettingValues, LanguageFile);
+            makenewproject.ShowDialog();
+            if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
             {
-                MakeNewProject makenewproject = new MakeNewProject(string.Empty, CurrentProjectSettingValues, LanguageFile);
-                makenewproject.ShowDialog();
-                if (makenewproject.ReturnTargetProject.Length != 0)// 新規作成されずにメインフォームに戻ってきた場合を除外
-                {
-                    TargetCRECPath = makenewproject.ReturnTargetProject;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                }
+                LoadProjectFileMethod(makenewproject.ReturnTargetProject);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+            }
+            else
+            {
+                LoadProjectFileMethod(previousProjectSettinValues.ProjectSettingFilePath);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
             }
         }
         private void OpenMenu_Click(object sender, EventArgs e)// 在庫管理プロジェクト読み込み、OpenProjectContextStripMenuItem_Clickと同じ
@@ -263,7 +254,7 @@ namespace CREC
         {
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             }
 
             if (SaveAndCloseEditButton.Visible == true && CheckEditingContents() != true)// 編集中の場合は警告を表示
@@ -281,9 +272,8 @@ namespace CREC
             if (openFolderDialog.ShowDialog() == DialogResult.OK)// OpenFileDialogでファイルが選択された場合
             {
                 DataLoadingStatus = "false";
-                TargetCRECPath = openFolderDialog.FileName;
                 openFolderDialog.Dispose();
-                LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                LoadProjectFileMethod(openFolderDialog.FileName);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                 if (CurrentProjectSettingValues.StartUpListOutput == true)// 自動リスト出力
                 {
                     ListOutputMethod(CurrentProjectSettingValues.ListOutputFormat);
@@ -299,8 +289,11 @@ namespace CREC
                 openFolderDialog.Dispose();
             }
         }
-        private void LoadProjectFileMethod()// CREC読み込み用の処理メソッド
+        private void LoadProjectFileMethod(string targetProjectSettingFilePath)// CREC読み込み用の処理メソッド
         {
+            var previousProjectSettinValues = CurrentProjectSettingValues; // 現在のプロジェクト設定値を保持
+            CurrentProjectSettingValues = new ProjectSettingValuesClass();// プロジェクト設定値を初期化
+            CurrentProjectSettingValues.ProjectSettingFilePath = targetProjectSettingFilePath;// プロジェクトファイルのパスを設定
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
             SearchFormTextBox.Text = string.Empty;// 検索ボックスを初期化
             // 最近開いたコレクションを初期化
@@ -322,7 +315,7 @@ namespace CREC
             ShowListButton.Visible = false;
             ClosePicturesViewMethod();
             // 読み込み処理呼び出し
-            if (!ProjectSettingClass.LoadProjectSetting(ref CurrentProjectSettingValues, TargetCRECPath))
+            if (!ProjectSettingClass.LoadProjectSetting(ref CurrentProjectSettingValues))
             {
                 // 読み込み失敗時
                 return;
@@ -456,11 +449,11 @@ namespace CREC
                     RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                     FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
                     StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
-                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + CurrentProjectSettingValues.ProjectSettingFilePath);// 今開いたプロジェクトを書き込み
                     int Count = 0;
                     foreach (string line in RecentlyOpendProjectList)
                     {
-                        if (line != CurrentProjectSettingValues.Name + "," + TargetCRECPath)// 重複を回避
+                        if (line != CurrentProjectSettingValues.Name + "," + CurrentProjectSettingValues.ProjectSettingFilePath)// 重複を回避
                         {
                             streamWriter.WriteLine(line);
                             Count++;
@@ -475,7 +468,7 @@ namespace CREC
                 else// 履歴存在しない場合は新規作成
                 {
                     StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
-                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + TargetCRECPath);// 今開いたプロジェクトを書き込み
+                    streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + CurrentProjectSettingValues.ProjectSettingFilePath);// 今開いたプロジェクトを書き込み
                     streamWriter.Close();
                 }
             }
@@ -569,11 +562,11 @@ namespace CREC
             // 開いているプロジェクトがあった場合は内容を保存
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             }
 
-            TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
-            if (!File.Exists(TargetCRECPath))
+            CurrentProjectSettingValues.ProjectSettingFilePath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
+            if (!File.Exists(CurrentProjectSettingValues.ProjectSettingFilePath))
             {
                 MessageBox.Show("プロジェクトファイルが見つかりませんでした。\nこの項目を「最近使用したプロジェクト」から削除します。", "CREC");
                 // 見つからなかったプロジェクトを履歴から削除
@@ -591,7 +584,7 @@ namespace CREC
                 StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in RecentlyOpendProjectList)
                 {
-                    if (!line.Contains(TargetCRECPath))// 見つからなかったプロジェクト以外は書き込み
+                    if (!line.Contains(CurrentProjectSettingValues.ProjectSettingFilePath))// 見つからなかったプロジェクト以外は書き込み
                     {
                         streamWriter.WriteLine(line);
                     }
@@ -603,28 +596,23 @@ namespace CREC
             {
                 case 0:
                     DataLoadingStatus = "false";
-                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                     break;
                 case 1:
                     DataLoadingStatus = "false";
-                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                     break;
                 case 2:
                     DataLoadingStatus = "false";
-                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                     break;
                 case 3:
                     DataLoadingStatus = "false";
-                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                     break;
                 case 4:
                     DataLoadingStatus = "false";
-                    TargetCRECPath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText;
-                    LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
+                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                     break;
             }
 
@@ -751,7 +739,7 @@ namespace CREC
                                         }
                                         else
                                         {
-                                            count = count + Convert.ToInt32(cols[2]);
+                                            count += Convert.ToInt32(cols[2]);
                                         }
                                     }
                                     ListInventory = Convert.ToString(count);
@@ -918,11 +906,11 @@ namespace CREC
                     return;
                 }
             }
-            if (TargetCRECPath.Length != 0)
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             }
-            ConfigClass.SaveConfigValues(ref ConfigValues, TargetCRECPath);
+            ConfigClass.SaveConfigValues(ref ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             System.Windows.Forms.Application.Restart();
         }
         private void AddContentsToolStripMenuItem_Click(object sender, EventArgs e)// 新規追加
@@ -988,7 +976,7 @@ namespace CREC
         }
         private void AddInventoryModeToolStripMenuItem_Click(object sender, EventArgs e)// 在庫数管理モードを追加
         {
-            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1266,10 +1254,10 @@ namespace CREC
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
-            ConfigClass.SaveConfigValues(ref ConfigValues, TargetCRECPath);
-            if (TargetCRECPath.Length != 0)
+            ConfigClass.SaveConfigValues(ref ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
                 if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
@@ -1317,7 +1305,7 @@ namespace CREC
                             {
                                 // バックアップ用フォルダ作成
                                 Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                                 try
                                 {
                                     System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
@@ -1408,7 +1396,7 @@ namespace CREC
                             {
                                 // バックアップ用フォルダ作成
                                 Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                                 try
                                 {
                                     System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
@@ -1484,7 +1472,7 @@ namespace CREC
                         {
                             // バックアップ用フォルダ作成
                             Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                            File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                             try
                             {
                                 System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
@@ -1564,7 +1552,7 @@ namespace CREC
             }
             else
             {
-                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -1592,7 +1580,7 @@ namespace CREC
         }
         private void EditProjectToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト管理ファイルの編集
         {
-            if (TargetCRECPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1601,36 +1589,22 @@ namespace CREC
             {
                 if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                 {
-                    if (CheckEditingContents() == true)
-                    {
-                        MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, CurrentProjectSettingValues, LanguageFile);
-                        makenewproject.ShowDialog();
-                        if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
-                        {
-                            TargetCRECPath = makenewproject.ReturnTargetProject;
-                            LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                        }
-                    }
-                    else
+                    if (CheckEditingContents() != true)
                     {
                         return;
                     }
                 }
-                else
+                MakeNewProject makenewproject = new MakeNewProject(CurrentProjectSettingValues, LanguageFile);
+                makenewproject.ShowDialog();
+                if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
                 {
-                    MakeNewProject makenewproject = new MakeNewProject(TargetCRECPath, CurrentProjectSettingValues, LanguageFile);
-                    makenewproject.ShowDialog();
-                    if (makenewproject.ReturnTargetProject.Length != 0)// メインフォームに戻ってきたときの処理
-                    {
-                        TargetCRECPath = makenewproject.ReturnTargetProject;
-                        LoadProjectFileMethod();// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    }
+                    LoadProjectFileMethod(makenewproject.ReturnTargetProject);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
                 }
             }
         }
         private void ProjectInformationToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクト情報の表示
         {
-            if (TargetCRECPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -1727,7 +1701,7 @@ namespace CREC
                                     }
                                     else
                                     {
-                                        count = count + Convert.ToInt32(cols[2]);
+                                        count += Convert.ToInt32(cols[2]);
                                     }
                                 }
                                 ListInventory = Convert.ToString(count);
@@ -1907,7 +1881,7 @@ namespace CREC
             }
             // アクセス日時を更新
             CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
+            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             // 一応読み込み終了を宣言
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
@@ -1954,7 +1928,7 @@ namespace CREC
             }
             else if (ConfigValues.ShowConfidentialData == true)
             {
-                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -2456,7 +2430,7 @@ namespace CREC
             }
             else if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED") && !File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
             {
-                if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
@@ -2756,7 +2730,7 @@ namespace CREC
                         }
                         else
                         {
-                            count = count + Convert.ToInt32(cols[2]);
+                            count += Convert.ToInt32(cols[2]);
                         }
                     }
                     ListInventory = Convert.ToString(count);
@@ -3133,7 +3107,7 @@ namespace CREC
             string reader;
             string row;
             string[] cols;
-            if (TargetCRECPath.Length == 0)// プロジェクトが開かれていない場合のエラー
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -3225,7 +3199,7 @@ namespace CREC
                         break;
                 }
                 InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
-                inventory = inventory + Convert.ToInt32(cols[2]);
+                inventory += Convert.ToInt32(cols[2]);
                 InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
             if (inventory < 0)
@@ -3348,8 +3322,6 @@ namespace CREC
             rowsIM = reader.Trim().Replace("\r", string.Empty).Split('\n');
             // 行数を確認
             tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            // 1行目を読み込み
-            row = rowsIM[0];
             inventory = 0;
             for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)
             {
@@ -3371,7 +3343,7 @@ namespace CREC
                         break;
                 }
                 InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
-                inventory = inventory + Convert.ToInt32(cols[2]);
+                inventory += Convert.ToInt32(cols[2]);
                 InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
             if (inventory < 0)
@@ -3842,7 +3814,7 @@ namespace CREC
         /// </summary>
         private void ImportConfig()
         {
-            ConfigClass.LoadConfigValues(ref ConfigValues, ref TargetCRECPath);
+            ConfigClass.LoadConfigValues(ref ConfigValues, ref CurrentProjectSettingValues);
             // 開始済みのイベントを停止
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
@@ -4511,7 +4483,7 @@ namespace CREC
                 {
                     // バックアップ用フォルダ作成
                     Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                    File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                    File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
                     try
                     {
                         System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
@@ -4697,7 +4669,7 @@ namespace CREC
         private void BackUpMethod()// バックアップ作成のメソッド、対象データをバックアップ
         {
             // ファイルが開いているか確認
-            if (TargetCRECPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4718,13 +4690,13 @@ namespace CREC
             if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
             {
                 FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp" + "\\backup.crec", true);
+                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp" + "\\backup.crec", true);
             }
             else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.NoCompress)
             {
                 DateTime DT = DateTime.Now;
                 FileSystem.CopyDirectory(CurrentProjectSettingValues.ProjectDataFolderPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"), Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                File.Copy(TargetCRECPath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);
+                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);
             }
         }
         #endregion
@@ -4737,7 +4709,7 @@ namespace CREC
         private void ListOutputMethod(CREC.ListOutputFormat listOutputFormat)
         {
             // ファイルが開いているか確認
-            if (TargetCRECPath.Length == 0)
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4841,7 +4813,7 @@ namespace CREC
                                 }
                                 else
                                 {
-                                    count = count + Convert.ToInt32(cols[2]);
+                                    count += Convert.ToInt32(cols[2]);
                                 }
                             }
                             ListInventory = Convert.ToString(count);

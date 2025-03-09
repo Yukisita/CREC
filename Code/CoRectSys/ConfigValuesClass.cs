@@ -70,7 +70,7 @@ namespace CREC
         /// <param name="configValues">config値</param>
         /// <param name="TargetCRECPath">現在開いているコレクションのパス</param>
         /// <returns></returns>
-        public static bool LoadConfigValues(ref ConfigValuesClass configValues, ref string CurrentCRECPath)
+        public static bool LoadConfigValues(ref ConfigValuesClass configValues, ref ProjectSettingValuesClass currentProjectSettingValues)
         {
             // 指定されていなかった場合のために初期化
             if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys"))
@@ -117,9 +117,9 @@ namespace CREC
                             case "AutoLoadProject":
                                 if (File.Exists(cols[1]))
                                 {
-                                    if (CurrentCRECPath.Length == 0)
+                                    if (currentProjectSettingValues.ProjectSettingFilePath.Length == 0)
                                     {
-                                        CurrentCRECPath = cols[1];//CREC起動時のみ読み込み
+                                        currentProjectSettingValues.ProjectSettingFilePath = cols[1];//CREC起動時のみ読み込み
                                     }
                                     configValues.AutoLoadProjectPath = cols[1];
                                 }
@@ -130,7 +130,7 @@ namespace CREC
                                 else
                                 {
                                     MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
-                                    CurrentCRECPath = string.Empty;
+                                    currentProjectSettingValues.ProjectSettingFilePath = string.Empty;
                                     configValues.AutoLoadProjectPath = string.Empty;
                                 }
                                 break;

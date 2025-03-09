@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
+using System.Xml.Linq;
 
 namespace CREC
 {
@@ -58,6 +59,10 @@ namespace CREC
 
     public class ProjectSettingValuesClass
     {
+        /// <summary>
+        /// プロジェクトセッティングファイルのパス
+        /// </summary>
+        public string ProjectSettingFilePath { get; set; } = string.Empty;
         /// <summary>
         /// プロジェクト名
         /// </summary>
@@ -272,14 +277,15 @@ namespace CREC
         /// <param name="projectSettingValues">読み込むプロジェクトの設定値、参照渡し</param>
         /// <param name="path">読み込むプロジェクトファイルのパス</param>
         /// <returns>読み込み成功：true、読み込み失敗：false</returns>
-        public static bool LoadProjectSetting(ref ProjectSettingValuesClass projectSettingValues, string path)
+        public static bool LoadProjectSetting(ref ProjectSettingValuesClass projectSettingValues)
         {
+            // 初期化
             IEnumerable<string> lines;
-            if (File.Exists(path))
+            if (File.Exists(projectSettingValues.ProjectSettingFilePath))
             {
                 try
                 {
-                    lines = File.ReadLines(path, Encoding.GetEncoding("UTF-8"));
+                    lines = File.ReadLines(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
                 }
                 catch
                 {
@@ -822,19 +828,28 @@ namespace CREC
         /// <param name="projectSettingValues">保存するプロジェクトの設定値</param>
         /// <param name="path">保存するプロジェクトファイルのパス</param>
         /// <returns>保存成功：true、保存失敗：false</returns>
-        public static bool SaveProjectSetting(ProjectSettingValuesClass projectSettingValues, string path)
+        public static bool SaveProjectSetting(ProjectSettingValuesClass projectSettingValues,  XElement languageData)
         {
             bool returnValue = false;
-            if (path.Length == 0)// pathが指定されているか確認
+            if (projectSettingValues.ProjectSettingFilePath.Length == 0)// pathが指定されているか確認
             {
                 MessageBox.Show("保存先が指定されていません。", "CREC");
                 return false;
             }
+            // プロジェクトファイル名と名前が一致しているか確認
+            if (Path.GetFileNameWithoutExtension(projectSettingValues.ProjectSettingFilePath) != projectSettingValues.Name)
+            {
+                // 一致していない場合は警告を表示して保存するか確認
+                MessageBoxResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData), "CREC", MessageBoxButton.YesNo);
+                 if (result == MessageBoxResult.No)
+                {
+                    return false;
+                }
+            }
             StreamWriter streamWriter;
-            streamWriter = new StreamWriter(path, false, Encoding.GetEncoding("UTF-8"));
+            streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
             try
             {
-
                 streamWriter.WriteLine("{0},{1}", "projectname", projectSettingValues.Name);
                 streamWriter.WriteLine("{0},{1}", "projectlocation", projectSettingValues.ProjectDataFolderPath);
                 streamWriter.WriteLine("{0},{1}", "backuplocation", projectSettingValues.ProjectBackupFolderPath);
@@ -1047,7 +1062,6 @@ namespace CREC
             }
             catch
             {
-
                 returnValue = false;
             }
             finally

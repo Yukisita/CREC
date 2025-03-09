@@ -20,14 +20,13 @@ namespace CREC
 {
     public partial class MakeNewProject : Form
     {
-        string TargetCRECPath = string.Empty;//管理ファイル（.crec）のファイルパス
+        //string TargetCRECPath = string.Empty;//管理ファイル（.crec）のファイルパス
         readonly XElement LanguageFile;// 言語ファイル
         ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 現在編集中のプロジェクトの設定値
         public string ReturnTargetProject { get; private set; } = string.Empty;
-        public MakeNewProject(string tmp, ProjectSettingValuesClass projectSettingValues, XElement languageFile)
+        public MakeNewProject(ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
             InitializeComponent();
-            TargetCRECPath = tmp;
             CurrentProjectSettingValues = projectSettingValues;
             SetColorMethod();
             LanguageFile = languageFile;
@@ -46,7 +45,7 @@ namespace CREC
             // 必要な項目を初期化
             CompressTypeComboBox.SelectedIndex = 0;
             FileFormatComboBox.SelectedIndex = 0;// 追加の場合はデフォルト値を各ラベルから取得してTextBoxに入れる
-            if (TargetCRECPath.Length == 0)// 新規作成の場合はプロジェクト設定値を初期化
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// 新規作成の場合はプロジェクト設定値を初期化
             {
                 CurrentProjectSettingValues = new ProjectSettingValuesClass();
                 CurrentProjectSettingValues.CollectionNameLabel = ObjectNameLabel.Text;
@@ -182,7 +181,7 @@ namespace CREC
                     MessageBox.Show("データ監視間隔の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
                 }
                 // プロジェクトデータ保管場所が存在するか判定し、作成
-                if (TargetCRECPath.Length == 0)// 新規プロジェクト作成の場合
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// 新規プロジェクト作成の場合
                 {
                     if (Directory.Exists(EditProjectLocationTextBox.Text))
                     {
@@ -231,11 +230,11 @@ namespace CREC
                         }
                     }
                 }
-                if (TargetCRECPath.Length > 0)// 編集時は既存の.crecを削除
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length > 0)// 編集時は既存の.crecを削除
                 {
                     try
                     {
-                        File.Delete(TargetCRECPath);
+                        File.Delete(CurrentProjectSettingValues.ProjectSettingFilePath);
                     }
                     catch (Exception ex)
                     {
@@ -244,10 +243,10 @@ namespace CREC
                 }
                 else
                 {
-                    TargetCRECPath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
+                    CurrentProjectSettingValues.ProjectSettingFilePath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
                 }
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, TargetCRECPath);
-                ReturnTargetProject = TargetCRECPath;
+                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ReturnTargetProject = CurrentProjectSettingValues.ProjectSettingFilePath;
                 this.Close();
             }
         }
@@ -266,7 +265,7 @@ namespace CREC
             openFolderDialog.CheckFileExists = false;
             if (openFolderDialog.ShowDialog() == DialogResult.OK)// ファイル読み込み成功
             {
-                if (TargetCRECPath.Length == 0)
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
                 {
                     EditProjectLocationTextBox.Text = Path.GetDirectoryName(openFolderDialog.FileName) + "\\" + EditProjectNameTextBox.Text;
                 }

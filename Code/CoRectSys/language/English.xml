@@ -1100,4 +1100,12 @@
 			</item>
 		</Other>
 	</CollectionDataClass>
+	<ProjectSettingClass>
+		<MessageBox>
+			<item>
+				<itemname>ProjectNameMatchError</itemname>
+				<itemtext>The project file name does not match the project name. &#xD;&#xA;Do you want to save it?</itemtext>
+			</item>
+		</MessageBox>
+	</ProjectSettingClass>
 </list>

@@ -118,7 +118,7 @@
     <Compile Include="ProjectInfoForm.Designer.cs">
       <DependentUpon>ProjectInfoForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProjectSettingValuesClass.cs" />
+    <Compile Include="ProjectSettingClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdateHistory.cs">
       <SubType>Form</SubType>
