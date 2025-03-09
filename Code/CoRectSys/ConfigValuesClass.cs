@@ -72,6 +72,7 @@ namespace CREC
         /// <returns></returns>
         public static bool LoadConfigValues(ref ConfigValuesClass configValues, ref ProjectSettingValuesClass currentProjectSettingValues)
         {
+            var loadingConfigValues = new ConfigValuesClass();// 読み込み用の一時変数
             // 指定されていなかった場合のために初期化
             if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys"))
             {
@@ -87,31 +88,31 @@ namespace CREC
                             case "AllowEdit":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.AllowEdit = true;
+                                    loadingConfigValues.AllowEdit = true;
                                 }
                                 else
                                 {
-                                    configValues.AllowEdit = false;
+                                    loadingConfigValues.AllowEdit = false;
                                 }
                                 break;
                             case "ShowConfidentialData":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.ShowConfidentialData = true;
+                                    loadingConfigValues.ShowConfidentialData = true;
                                 }
                                 else
                                 {
-                                    configValues.ShowConfidentialData = false;
+                                    loadingConfigValues.ShowConfidentialData = false;
                                 }
                                 break;
                             case "ShowUserAssistToolTips":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.ShowUserAssistToolTips = true;
+                                    loadingConfigValues.ShowUserAssistToolTips = true;
                                 }
                                 else
                                 {
-                                    configValues.ShowUserAssistToolTips = false;
+                                    loadingConfigValues.ShowUserAssistToolTips = false;
                                 }
                                 break;
                             case "AutoLoadProject":
@@ -121,77 +122,77 @@ namespace CREC
                                     {
                                         currentProjectSettingValues.ProjectSettingFilePath = cols[1];//CREC起動時のみ読み込み
                                     }
-                                    configValues.AutoLoadProjectPath = cols[1];
+                                    loadingConfigValues.AutoLoadProjectPath = cols[1];
                                 }
                                 else if (cols[1].Length == 0)
                                 {
-                                    configValues.AutoLoadProjectPath = string.Empty;
+                                    loadingConfigValues.AutoLoadProjectPath = string.Empty;
                                 }
                                 else
                                 {
                                     MessageBox.Show("自動読み込み設定されたプロジェクトが見つかりません。", "CREC");
                                     currentProjectSettingValues.ProjectSettingFilePath = string.Empty;
-                                    configValues.AutoLoadProjectPath = string.Empty;
+                                    loadingConfigValues.AutoLoadProjectPath = string.Empty;
                                 }
                                 break;
                             case "OpenLastTimeProject":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.OpenLastTimeProject = true;
+                                    loadingConfigValues.OpenLastTimeProject = true;
                                 }
                                 else
                                 {
-                                    configValues.OpenLastTimeProject = false;
+                                    loadingConfigValues.OpenLastTimeProject = false;
                                 }
                                 break;
                             case "AutoSearch":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.AutoSearch = true;
+                                    loadingConfigValues.AutoSearch = true;
                                 }
                                 else
                                 {
-                                    configValues.AutoSearch = false;
+                                    loadingConfigValues.AutoSearch = false;
                                 }
                                 break;
                             case "RecentShownContents":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.RecentShownContents = true;
+                                    loadingConfigValues.RecentShownContents = true;
                                 }
                                 else
                                 {
-                                    configValues.RecentShownContents = false;
+                                    loadingConfigValues.RecentShownContents = false;
                                 }
                                 break;
                             case "BootUpdateCheck":
                                 if (cols[1] == "true")
                                 {
-                                    configValues.BootUpdateCheck = true;
+                                    loadingConfigValues.BootUpdateCheck = true;
                                 }
                                 else
                                 {
-                                    configValues.BootUpdateCheck = false;
+                                    loadingConfigValues.BootUpdateCheck = false;
                                 }
                                 break;
                             case "Language":
                                 if (cols[1].Length == 0)
                                 {
-                                    configValues.LanguageFileName = "Japanese.xml";
+                                    loadingConfigValues.LanguageFileName = "Japanese.xml";
                                 }
                                 else
                                 {
-                                    configValues.LanguageFileName = cols[1];
+                                    loadingConfigValues.LanguageFileName = cols[1];
                                 }
                                 break;
                             case "FontsizeOffset":
                                 if (cols[1].Length == 0)
                                 {
-                                    configValues.FontsizeOffset = 0;
+                                    loadingConfigValues.FontsizeOffset = 0;
                                 }
                                 else
                                 {
-                                    configValues.FontsizeOffset = Convert.ToInt32(cols[1]);
+                                    loadingConfigValues.FontsizeOffset = Convert.ToInt32(cols[1]);
                                 }
                                 break;
                         }
@@ -206,8 +207,9 @@ namespace CREC
             else
             {
                 MessageBox.Show("設定ファイルが見つかりません。\nデフォルト設定で起動します。", "CREC");
-                return SaveConfigValues(ref configValues, string.Empty);// Config.sysの作成
+                return SaveConfigValues(loadingConfigValues, string.Empty);// Config.sysの作成
             }
+            configValues = loadingConfigValues;// 読み込み用の一時変数を反映する
             return true;
         }
 
@@ -217,7 +219,7 @@ namespace CREC
         /// <param name="configValues">config値</param>
         /// <param name="CurrentCRECPath">現在開いているコレクションのCRECパス</param>
         /// <returns></returns>
-        public static bool SaveConfigValues(ref ConfigValuesClass configValues, string CurrentCRECPath)
+        public static bool SaveConfigValues(ConfigValuesClass configValues, string CurrentCRECPath)
         {
             StreamWriter configfile = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\" + "config.sys", false, Encoding.GetEncoding("UTF-8"));
             try

@@ -27,7 +27,7 @@ namespace CREC
         /// <param name="configValues">設定値</param>
         /// <param name="colorSetting">色設定</param>
         /// <param name="languageFile">言語ファイル</param>
-        public ConfigForm(ref ConfigValuesClass configValues, ColorValue colorSetting, XElement languageFile)
+        public ConfigForm(ConfigValuesClass configValues, ColorValue colorSetting, XElement languageFile)
         {
             InitializeComponent();
             ConfigValues = configValues;
@@ -173,7 +173,7 @@ namespace CREC
                 ConfigValues.BootUpdateCheck = false;
             }
             // config.sysに保存
-            ReturnConfigSaved = ConfigClass.SaveConfigValues(ref ConfigValues, ConfigValues.AutoLoadProjectPath);
+            ReturnConfigSaved = ConfigClass.SaveConfigValues(ConfigValues, ConfigValues.AutoLoadProjectPath);
             this.Close();
         }
 

@@ -279,6 +279,7 @@ namespace CREC
         /// <returns>読み込み成功：true、読み込み失敗：false</returns>
         public static bool LoadProjectSetting(ref ProjectSettingValuesClass projectSettingValues)
         {
+            var loadingProjectSettingValues = new ProjectSettingValuesClass();// 読み込んだ設定値を一時保存する変数
             // 初期化
             IEnumerable<string> lines;
             if (File.Exists(projectSettingValues.ProjectSettingFilePath))
@@ -298,124 +299,125 @@ namespace CREC
                 MessageBox.Show("プロジェクトファイルが見つかりませんでした。", "CREC");
                 return false;
             }
+            loadingProjectSettingValues.ProjectSettingFilePath = projectSettingValues.ProjectSettingFilePath;
             foreach (string line in lines)
             {
                 string[] cols = line.Split(',');
                 switch (cols[0])
                 {
                     case "projectname":
-                        projectSettingValues.Name = cols[1];
+                        loadingProjectSettingValues.Name = cols[1];
                         break;
                     case "projectlocation":
-                        projectSettingValues.ProjectDataFolderPath = cols[1];
+                        loadingProjectSettingValues.ProjectDataFolderPath = cols[1];
                         break;
                     case "backuplocation":
-                        projectSettingValues.ProjectBackupFolderPath = cols[1];
+                        loadingProjectSettingValues.ProjectBackupFolderPath = cols[1];
                         break;
                     case "autobackup":
                         if (cols[1].Contains("S"))
                         {
-                            projectSettingValues.StartUpBackUp = true;
+                            loadingProjectSettingValues.StartUpBackUp = true;
                         }
                         else
                         {
-                            projectSettingValues.StartUpBackUp = false;
+                            loadingProjectSettingValues.StartUpBackUp = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            projectSettingValues.CloseBackUp = true;
+                            loadingProjectSettingValues.CloseBackUp = true;
                         }
                         else
                         {
-                            projectSettingValues.CloseBackUp = false;
+                            loadingProjectSettingValues.CloseBackUp = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            projectSettingValues.EditBackUp = true;
+                            loadingProjectSettingValues.EditBackUp = true;
                         }
                         else
                         {
-                            projectSettingValues.EditBackUp = false;
+                            loadingProjectSettingValues.EditBackUp = false;
                         }
                         break;
                     case "CompressType":
                         try
                         {
-                            projectSettingValues.CompressType = (CREC.CompressType)Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.CompressType = (CREC.CompressType)Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.CompressType = (CREC.CompressType)1;
+                            loadingProjectSettingValues.CompressType = (CREC.CompressType)1;
                         }
                         break;
                     case "Listoutputlocation":
-                        projectSettingValues.ListOutputPath = cols[1];
+                        loadingProjectSettingValues.ListOutputPath = cols[1];
                         break;
                     case "autoListoutput":
                         if (cols[1].Contains("S"))
                         {
-                            projectSettingValues.StartUpListOutput = true;
+                            loadingProjectSettingValues.StartUpListOutput = true;
                         }
                         else
                         {
-                            projectSettingValues.StartUpListOutput = false;
+                            loadingProjectSettingValues.StartUpListOutput = false;
                         }
                         if (cols[1].Contains("C"))
                         {
-                            projectSettingValues.CloseListOutput = true;
+                            loadingProjectSettingValues.CloseListOutput = true;
                         }
                         else
                         {
-                            projectSettingValues.CloseListOutput = false;
+                            loadingProjectSettingValues.CloseListOutput = false;
                         }
                         if (cols[1].Contains("E"))
                         {
-                            projectSettingValues.EditListOutput = true;
+                            loadingProjectSettingValues.EditListOutput = true;
                         }
                         else
                         {
-                            projectSettingValues.EditListOutput = false;
+                            loadingProjectSettingValues.EditListOutput = false;
                         }
                         break;
                     case "openListafteroutput":
                         if (cols[1].Contains("O"))
                         {
-                            projectSettingValues.OpenListAfterOutput = true;
+                            loadingProjectSettingValues.OpenListAfterOutput = true;
                         }
                         else
                         {
-                            projectSettingValues.OpenListAfterOutput = false;
+                            loadingProjectSettingValues.OpenListAfterOutput = false;
                         }
                         break;
                     case "ListOutputFormat":
                         if (cols[1] == "CSV")
                         {
-                            projectSettingValues.ListOutputFormat = ListOutputFormat.CSV;
+                            loadingProjectSettingValues.ListOutputFormat = ListOutputFormat.CSV;
                         }
                         else if (cols[1] == "TSV")
                         {
-                            projectSettingValues.ListOutputFormat = ListOutputFormat.TSV;
+                            loadingProjectSettingValues.ListOutputFormat = ListOutputFormat.TSV;
                         }
                         break;
                     case "created":
-                        projectSettingValues.CreatedDate = cols[1];
+                        loadingProjectSettingValues.CreatedDate = cols[1];
                         break;
                     case "modified":
-                        projectSettingValues.ModifiedDate = cols[1];
+                        loadingProjectSettingValues.ModifiedDate = cols[1];
                         break;
                     case "accessed":
                         // 現在時刻を取得 
                         DateTime dateTime = DateTime.Now;
-                        projectSettingValues.AccessedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                        loadingProjectSettingValues.AccessedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
                         break;
                     case "Color":
                         try
                         {
-                            projectSettingValues.ColorSetting = (ColorValue)Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.ColorSetting = (ColorValue)Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.ColorSetting = ColorValue.Blue;
+                            loadingProjectSettingValues.ColorSetting = ColorValue.Blue;
                         }
                         break;
                     case "ShowObjectNameLabel":
@@ -423,24 +425,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.CollectionNameLabel = cols[1];
+                                loadingProjectSettingValues.CollectionNameLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.CollectionNameLabel = "Name";
+                                loadingProjectSettingValues.CollectionNameLabel = "Name";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.CollectionNameVisible = false;
+                                loadingProjectSettingValues.CollectionNameVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.CollectionNameVisible = true;
+                                loadingProjectSettingValues.CollectionNameVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.CollectionNameVisible = true;
+                            loadingProjectSettingValues.CollectionNameVisible = true;
                         }
                         break;
                     case "ShowIDLabel":
@@ -448,24 +450,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.UUIDLabel = cols[1];
+                                loadingProjectSettingValues.UUIDLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.UUIDLabel = "UUID";
+                                loadingProjectSettingValues.UUIDLabel = "UUID";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.UUIDVisible = false;
+                                loadingProjectSettingValues.UUIDVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.UUIDVisible = true;
+                                loadingProjectSettingValues.UUIDVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.UUIDVisible = true;
+                            loadingProjectSettingValues.UUIDVisible = true;
                         }
                         break;
                     case "ShowMCLabel":
@@ -473,24 +475,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.ManagementCodeLabel = cols[1];
+                                loadingProjectSettingValues.ManagementCodeLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.ManagementCodeLabel = "管理コード";
+                                loadingProjectSettingValues.ManagementCodeLabel = "管理コード";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.ManagementCodeVisible = false;
+                                loadingProjectSettingValues.ManagementCodeVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.ManagementCodeVisible = true;
+                                loadingProjectSettingValues.ManagementCodeVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.ManagementCodeVisible = true;
+                            loadingProjectSettingValues.ManagementCodeVisible = true;
                         }
                         break;
                     case "ShowRegistrationDateLabel":
@@ -498,24 +500,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.RegistrationDateLabel = cols[1];
+                                loadingProjectSettingValues.RegistrationDateLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.RegistrationDateLabel = "登録日";
+                                loadingProjectSettingValues.RegistrationDateLabel = "登録日";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.RegistrationDateVisible = false;
+                                loadingProjectSettingValues.RegistrationDateVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.RegistrationDateVisible = true;
+                                loadingProjectSettingValues.RegistrationDateVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.RegistrationDateVisible = true;
+                            loadingProjectSettingValues.RegistrationDateVisible = true;
                         }
                         break;
                     case "AutoMCFill":
@@ -523,16 +525,16 @@ namespace CREC
                         {
                             if (cols[1] == "f")
                             {
-                                projectSettingValues.ManagementCodeAutoFill = false;
+                                loadingProjectSettingValues.ManagementCodeAutoFill = false;
                             }
                             else
                             {
-                                projectSettingValues.ManagementCodeAutoFill = true;
+                                loadingProjectSettingValues.ManagementCodeAutoFill = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.ManagementCodeAutoFill = true;
+                            loadingProjectSettingValues.ManagementCodeAutoFill = true;
                         }
                         break;
                     case "ShowCategoryLabel":
@@ -540,24 +542,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.CategoryLabel = cols[1];
+                                loadingProjectSettingValues.CategoryLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.CategoryLabel = "カテゴリ";
+                                loadingProjectSettingValues.CategoryLabel = "カテゴリ";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.CategoryVisible = false;
+                                loadingProjectSettingValues.CategoryVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.CategoryVisible = true;
+                                loadingProjectSettingValues.CategoryVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.CategoryVisible = true;
+                            loadingProjectSettingValues.CategoryVisible = true;
                         }
                         break;
                     case "Tag1Name":
@@ -565,24 +567,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.FirstTagLabel = cols[1];
+                                loadingProjectSettingValues.FirstTagLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.FirstTagLabel = "タグ１";
+                                loadingProjectSettingValues.FirstTagLabel = "タグ１";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.FirstTagVisible = false;
+                                loadingProjectSettingValues.FirstTagVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.FirstTagVisible = true;
+                                loadingProjectSettingValues.FirstTagVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.FirstTagVisible = true;
+                            loadingProjectSettingValues.FirstTagVisible = true;
                         }
                         break;
                     case "Tag2Name":
@@ -590,24 +592,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.SecondTagLabel = cols[1];
+                                loadingProjectSettingValues.SecondTagLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.SecondTagLabel = "タグ２";
+                                loadingProjectSettingValues.SecondTagLabel = "タグ２";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.SecondTagVisible = false;
+                                loadingProjectSettingValues.SecondTagVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.SecondTagVisible = true;
+                                loadingProjectSettingValues.SecondTagVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.SecondTagVisible = true;
+                            loadingProjectSettingValues.SecondTagVisible = true;
                         }
                         break;
                     case "Tag3Name":
@@ -615,24 +617,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.ThirdTagLabel = cols[1];
+                                loadingProjectSettingValues.ThirdTagLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.ThirdTagLabel = "タグ３";
+                                loadingProjectSettingValues.ThirdTagLabel = "タグ３";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.ThirdTagVisible = false;
+                                loadingProjectSettingValues.ThirdTagVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.ThirdTagVisible = true;
+                                loadingProjectSettingValues.ThirdTagVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.ThirdTagVisible = true;
+                            loadingProjectSettingValues.ThirdTagVisible = true;
                         }
                         break;
                     case "ShowRealLocationLabel":
@@ -640,24 +642,24 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.RealLocationLabel = cols[1];
+                                loadingProjectSettingValues.RealLocationLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.RealLocationLabel = "現物保管場所";
+                                loadingProjectSettingValues.RealLocationLabel = "現物保管場所";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.RealLocationVisible = false;
+                                loadingProjectSettingValues.RealLocationVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.RealLocationVisible = true;
+                                loadingProjectSettingValues.RealLocationVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.RealLocationVisible = true;
+                            loadingProjectSettingValues.RealLocationVisible = true;
                         }
                         break;
                     case "ShowDataLocationLabel":
@@ -665,160 +667,161 @@ namespace CREC
                         {
                             if (cols[1].Length > 0)
                             {
-                                projectSettingValues.DataLocationLabel = cols[1];
+                                loadingProjectSettingValues.DataLocationLabel = cols[1];
                             }
                             else
                             {
-                                projectSettingValues.DataLocationLabel = "データ保管場所";
+                                loadingProjectSettingValues.DataLocationLabel = "データ保管場所";
                             }
                             if (cols[2] == "f")
                             {
-                                projectSettingValues.DataLocationVisible = false;
+                                loadingProjectSettingValues.DataLocationVisible = false;
                             }
                             else
                             {
-                                projectSettingValues.DataLocationVisible = true;
+                                loadingProjectSettingValues.DataLocationVisible = true;
                             }
                         }
                         catch
                         {
-                            projectSettingValues.DataLocationVisible = true;
+                            loadingProjectSettingValues.DataLocationVisible = true;
                         }
                         break;
                     case "IDListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListUUIDVisible = false;
+                            loadingProjectSettingValues.CollectionListUUIDVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListUUIDVisible = true;
+                            loadingProjectSettingValues.CollectionListUUIDVisible = true;
                         }
                         break;
                     case "MCListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListManagementCodeVisible = false;
+                            loadingProjectSettingValues.CollectionListManagementCodeVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListManagementCodeVisible = true;
+                            loadingProjectSettingValues.CollectionListManagementCodeVisible = true;
                         }
                         break;
                     case "ObjectNameListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListNameVisible = false;
+                            loadingProjectSettingValues.CollectionListNameVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListNameVisible = true;
+                            loadingProjectSettingValues.CollectionListNameVisible = true;
                         }
                         break;
                     case "RegistrationDateListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListRegistrationDateVisible = false;
+                            loadingProjectSettingValues.CollectionListRegistrationDateVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListRegistrationDateVisible = true;
+                            loadingProjectSettingValues.CollectionListRegistrationDateVisible = true;
                         }
                         break;
                     case "CategoryListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListCategoryVisible = false;
+                            loadingProjectSettingValues.CollectionListCategoryVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListCategoryVisible = true;
+                            loadingProjectSettingValues.CollectionListCategoryVisible = true;
                         }
                         break;
                     case "Tag1ListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListFirstTagVisible = false;
+                            loadingProjectSettingValues.CollectionListFirstTagVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListFirstTagVisible = true;
+                            loadingProjectSettingValues.CollectionListFirstTagVisible = true;
                         }
                         break;
                     case "Tag2ListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListSecondTagVisible = false;
+                            loadingProjectSettingValues.CollectionListSecondTagVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListSecondTagVisible = true;
+                            loadingProjectSettingValues.CollectionListSecondTagVisible = true;
                         }
                         break;
                     case "Tag3ListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListThirdTagVisible = false;
+                            loadingProjectSettingValues.CollectionListThirdTagVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListThirdTagVisible = true;
+                            loadingProjectSettingValues.CollectionListThirdTagVisible = true;
                         }
                         break;
                     case "InventoryInformationListVisible":
                         if (cols[1] == "false")
                         {
-                            projectSettingValues.CollectionListInventoryInformationVisible = false;
+                            loadingProjectSettingValues.CollectionListInventoryInformationVisible = false;
                         }
                         else
                         {
-                            projectSettingValues.CollectionListInventoryInformationVisible = true;
+                            loadingProjectSettingValues.CollectionListInventoryInformationVisible = true;
                         }
                         break;
                     case "SearchOptionNumber":
                         try
                         {
-                            projectSettingValues.SearchOptionNumber = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.SearchOptionNumber = Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.SearchOptionNumber = 0;
+                            loadingProjectSettingValues.SearchOptionNumber = 0;
                         }
                         break;
                     case "SearchMethodNumber":
                         try
                         {
-                            projectSettingValues.SearchMethodNumber = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.SearchMethodNumber = Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.SearchMethodNumber = 0;
+                            loadingProjectSettingValues.SearchMethodNumber = 0;
                         }
                         break;
                     case "SleepMode":
                         try
                         {
-                            projectSettingValues.SleepMode = (CREC.SleepMode)Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.SleepMode = (CREC.SleepMode)Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.SleepMode = (CREC.SleepMode)0;
+                            loadingProjectSettingValues.SleepMode = (CREC.SleepMode)0;
                         }
                         break;
                     case "DataCheckInterval":
                         try
                         {
-                            projectSettingValues.DataCheckInterval = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.DataCheckInterval = Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            projectSettingValues.DataCheckInterval = 100;
+                            loadingProjectSettingValues.DataCheckInterval = 100;
                         }
                         break;
 
                 }
             }
-            CheckListVisibleColumnExist(ref projectSettingValues);
+            CheckListVisibleColumnExist(ref loadingProjectSettingValues);
+            projectSettingValues = loadingProjectSettingValues;// 読み込んだ設定値を渡す
             return true;
         }
 

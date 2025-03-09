@@ -232,7 +232,7 @@ namespace CREC
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
         {
-
+            var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
             if (CollectionFolderPath.Length == 0)// コレクションのパスが指定されていない場合
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotAssigned", "CollectionDataClass", languageData), "CREC");
@@ -244,7 +244,7 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotExist", "CollectionDataClass", languageData), "CREC");
                 return false;
             }
-
+            loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
             try
             {
                 string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
@@ -269,34 +269,35 @@ namespace CREC
                     {
                         // 後方互換用になる予定
                         case "名称":
-                            CollectionDataValues.CollectionName = line.Substring(3);
+                            loadingCollectionDataValues.CollectionName = line.Substring(3);
                             break;
                         case "ID":
-                            CollectionDataValues.CollectionID = line.Substring(3);
+                            loadingCollectionDataValues.CollectionID = line.Substring(3);
                             break;
                         case "MC":
-                            CollectionDataValues.CollectionMC = line.Substring(3);
+                            loadingCollectionDataValues.CollectionMC = line.Substring(3);
                             break;
                         case "登録日":
-                            CollectionDataValues.CollectionRegistrationDate = line.Substring(4);
+                            loadingCollectionDataValues.CollectionRegistrationDate = line.Substring(4);
                             break;
                         case "カテゴリ":
-                            CollectionDataValues.CollectionCategory = line.Substring(5);
+                            loadingCollectionDataValues.CollectionCategory = line.Substring(5);
                             break;
                         case "タグ1":
-                            CollectionDataValues.CollectionTag1 = line.Substring(4);
+                            loadingCollectionDataValues.CollectionTag1 = line.Substring(4);
                             break;
                         case "タグ2":
-                            CollectionDataValues.CollectionTag2 = line.Substring(4);
+                            loadingCollectionDataValues.CollectionTag2 = line.Substring(4);
                             break;
                         case "タグ3":
-                            CollectionDataValues.CollectionTag3 = line.Substring(4);
+                            loadingCollectionDataValues.CollectionTag3 = line.Substring(4);
                             break;
                         case "場所1(Real)":
-                            CollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
+                            loadingCollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
                             break;
                     }
                 }
+                CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
                 return true;
             }
             catch (Exception ex)

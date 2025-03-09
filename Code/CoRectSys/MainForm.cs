@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.4.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.5.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -444,11 +444,11 @@ namespace CREC
             try
             {
                 IEnumerable<string> RecentlyOpendProjectList = null;
-                if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+                if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
-                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
-                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log");
+                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                     streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + CurrentProjectSettingValues.ProjectSettingFilePath);// 今開いたプロジェクトを書き込み
                     int Count = 0;
                     foreach (string line in RecentlyOpendProjectList)
@@ -467,7 +467,7 @@ namespace CREC
                 }
                 else// 履歴存在しない場合は新規作成
                 {
-                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                    StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                     streamWriter.WriteLine(CurrentProjectSettingValues.Name + "," + CurrentProjectSettingValues.ProjectSettingFilePath);// 今開いたプロジェクトを書き込み
                     streamWriter.Close();
                 }
@@ -483,11 +483,11 @@ namespace CREC
         {
             OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Clear();// 初期化
             string[] RecentlyOpendProjectList = null;
-            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
             {
                 try
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                 }
                 catch (Exception ex)
                 {
@@ -564,27 +564,27 @@ namespace CREC
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             }
-
-            CurrentProjectSettingValues.ProjectSettingFilePath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
-            if (!File.Exists(CurrentProjectSettingValues.ProjectSettingFilePath))
+            // 次に読み込むプロジェクトファイルのパスを設定
+            string nextProjectSettingFilePath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
+            if (!File.Exists(nextProjectSettingFilePath))// プロジェクトファイルが存在しない場合
             {
                 MessageBox.Show("プロジェクトファイルが見つかりませんでした。\nこの項目を「最近使用したプロジェクト」から削除します。", "CREC");
                 // 見つからなかったプロジェクトを履歴から削除
-                IEnumerable<string> RecentlyOpendProjectList = null;
+                IEnumerable<string> RecentlyOpendProjectList;
                 try
                 {
-                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
+                    RecentlyOpendProjectList = File.ReadAllLines(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", Encoding.GetEncoding("UTF-8"));
                 }
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show("履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
                     return;
                 }
-                FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
-                StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
+                FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log");
+                StreamWriter streamWriter = new StreamWriter(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log", true, Encoding.GetEncoding("UTF-8"));
                 foreach (string line in RecentlyOpendProjectList)
                 {
-                    if (!line.Contains(CurrentProjectSettingValues.ProjectSettingFilePath))// 見つからなかったプロジェクト以外は書き込み
+                    if (!line.Contains(nextProjectSettingFilePath))// 見つからなかったプロジェクト以外は書き込み
                     {
                         streamWriter.WriteLine(line);
                     }
@@ -592,38 +592,17 @@ namespace CREC
                 streamWriter.Close();
                 return;
             }
-            switch (OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender))
-            {
-                case 0:
-                    DataLoadingStatus = "false";
-                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[0].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    break;
-                case 1:
-                    DataLoadingStatus = "false";
-                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[1].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    break;
-                case 2:
-                    DataLoadingStatus = "false";
-                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[2].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    break;
-                case 3:
-                    DataLoadingStatus = "false";
-                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[3].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    break;
-                case 4:
-                    DataLoadingStatus = "false";
-                    LoadProjectFileMethod(OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[4].ToolTipText);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
-                    break;
-            }
-
+            // 選択されたプロジェクトを読み込み
+            DataLoadingStatus = "false";
+            LoadProjectFileMethod(nextProjectSettingFilePath);// プロジェクトファイル(CREC)を読み込むメソッドの呼び出し
         }
         private void DeleteRecentlyOpendProjectListToolStripMenuItem_Click(object sender, EventArgs e)// 最近使用したプロジェクトの履歴を削除（イベント）
         {
-            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
+            if (File.Exists(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log"))// 履歴が既に存在する場合は読み込み
             {
                 try
                 {
-                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "RecentlyOpenedProjectList.log");
+                    FileOperationClass.DeleteFile(System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyOpenedProjectList.log");
                 }
                 catch (Exception ex)
                 {
@@ -846,7 +825,7 @@ namespace CREC
         }
         private void EditConfigSysToolStripMenuItem_Click(object sender, EventArgs e)// 環境設定編集画面
         {
-            ConfigForm configform = new ConfigForm(ref ConfigValues, CurrentProjectSettingValues.ColorSetting, LanguageFile);
+            ConfigForm configform = new ConfigForm(ConfigValues, CurrentProjectSettingValues.ColorSetting, LanguageFile);
             configform.ShowDialog();
             if (configform.ReturnConfigSaved)// configが保存された場合
             {
@@ -910,7 +889,7 @@ namespace CREC
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
             }
-            ConfigClass.SaveConfigValues(ref ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
+            ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             System.Windows.Forms.Application.Restart();
         }
         private void AddContentsToolStripMenuItem_Click(object sender, EventArgs e)// 新規追加
@@ -1254,7 +1233,7 @@ namespace CREC
         }
         private void Form1_Closing(object sender, CancelEventArgs e)// 終了時の処理
         {
-            ConfigClass.SaveConfigValues(ref ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
+            ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
                 ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
