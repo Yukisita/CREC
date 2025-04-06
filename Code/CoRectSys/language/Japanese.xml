@@ -461,22 +461,6 @@
 				<itemtext>他端末の編集状態を取得できません。&#xD;&#xA;無視して編集を開始しますか？</itemtext>
 			</item>
 			<item>
-				<itemname>CSVOutputFinish</itemname>
-				<itemtext>データ一覧を以下の場所にCSV形式で出力しました。</itemtext>
-			</item>
-			<item>
-				<itemname>CSVOutputError</itemname>
-				<itemtext>一覧のCSV出力に失敗しました。</itemtext>
-			</item>
-			<item>
-				<itemname>TSVOutputFinish</itemname>
-				<itemtext>データ一覧を以下の場所にTSV形式で出力しました。</itemtext>
-			</item>
-			<item>
-				<itemname>TSVOutputError</itemname>
-				<itemtext>一覧のTSV出力に失敗しました。</itemtext>
-			</item>
-			<item>
 				<itemname>BackupCompleted</itemname>
 				<itemtext>バックアップが完了しました。</itemtext>
 			</item>
@@ -531,6 +515,10 @@
 			<item>
 				<itemname>RecentlyOpenedCollectionSetError</itemname>
 				<itemtext>最近表示した項目の表示中にエラーが発生しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>SearchedCollectionNofFoundMessage</itemname>
+				<itemtext>検索されたコレクションんが見つかりません。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
@@ -1098,8 +1086,52 @@
 				<itemname>SelectThumbnail</itemname>
 				<itemtext>サムネイル画像を選択してください。</itemtext>
 			</item>
+			<item>
+				<itemname>InventoryStatus_StockOut</itemname>
+				<itemtext>在庫切れ</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_UnderStocked</itemname>
+				<itemtext>在庫不足</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_Appropriate</itemname>
+				<itemtext>在庫適正</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_OverStocked</itemname>
+				<itemtext>在庫過剰</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_NotSet</itemname>
+				<itemtext>未設定</itemtext>
+			</item>
 		</Other>
 	</CollectionDataClass>
+	<CollectionListClass>
+		<MessageBox>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>リスト出力するプロジェクトを開いてください。</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputFinish</itemname>
+				<itemtext>データ一覧を以下の場所にCSV形式で出力しました。</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputError</itemname>
+				<itemtext>一覧のCSV出力に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputFinish</itemname>
+				<itemtext>データ一覧を以下の場所にTSV形式で出力しました。</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputError</itemname>
+				<itemtext>一覧のTSV出力に失敗しました。</itemtext>
+			</item>
+		</MessageBox>
+	</CollectionListClass>
 	<ProjectSettingClass>
 		<MessageBox>
 			<item>

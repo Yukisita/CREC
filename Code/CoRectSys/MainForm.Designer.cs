@@ -1592,7 +1592,7 @@
             // 
             this.ProperInventorySettingsNotificationLabel.AutoSize = true;
             this.ProperInventorySettingsNotificationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(250, 71);
+            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(300, 71);
             this.ProperInventorySettingsNotificationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProperInventorySettingsNotificationLabel.Name = "ProperInventorySettingsNotificationLabel";
             this.ProperInventorySettingsNotificationLabel.Size = new System.Drawing.Size(0, 30);

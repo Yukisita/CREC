@@ -90,6 +90,7 @@
       <DependentUpon>CloseBackUpForm.cs</DependentUpon>
     </Compile>
     <Compile Include="CollectionDataClass.cs" />
+    <Compile Include="CollectionListClass.cs" />
     <Compile Include="ConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>

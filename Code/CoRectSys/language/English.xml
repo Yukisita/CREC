@@ -461,22 +461,6 @@
 				<itemtext>Can not check other editing.&#xD;&#xA;Start edit without check?</itemtext>
 			</item>
 			<item>
-				<itemname>CSVOutputFinish</itemname>
-				<itemtext>Contents list(csv) is outputted in this folder.</itemtext>
-			</item>
-			<item>
-				<itemname>CSVOutputError</itemname>
-				<itemtext>Can not output contents list(csv).</itemtext>
-			</item>
-			<item>
-				<itemname>TSVOutputFinish</itemname>
-				<itemtext>Contents list(tsv) is outputted in this folder.</itemtext>
-			</item>
-			<item>
-				<itemname>TSVOutputError</itemname>
-				<itemtext>Can not output contents list(tsv).</itemtext>
-			</item>
-			<item>
 				<itemname>BackupCompleted</itemname>
 				<itemtext>Backup completed.</itemtext>
 			</item>
@@ -531,6 +515,10 @@
 			<item>
 				<itemname>RecentlyOpenedCollectionSetError</itemname>
 				<itemtext>Faild to display recently opend collection.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>SearchedCollectionNofFoundMessage</itemname>
+				<itemtext>The searched collection cannot be found.</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
@@ -1098,8 +1086,52 @@
 				<itemname>SelectThumbnail</itemname>
 				<itemtext>Sselect a thumbnail.</itemtext>
 			</item>
+			<item>
+				<itemname>InventoryStatus_StockOut</itemname>
+				<itemtext>StockOut</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_UnderStocked</itemname>
+				<itemtext>UnderStocked</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_Appropriate</itemname>
+				<itemtext>Appropriate</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_OverStocked</itemname>
+				<itemtext>OverStocked</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_NotSet</itemname>
+				<itemtext>NotSet</itemtext>
+			</item>
 		</Other>
 	</CollectionDataClass>
+	<CollectionListClass>
+		<MessageBox>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>Open a project to output list.</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputFinish</itemname>
+				<itemtext>Contents list(csv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputError</itemname>
+				<itemtext>Can not output contents list(csv).</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputFinish</itemname>
+				<itemtext>Contents list(tsv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputError</itemname>
+				<itemtext>Can not output contents list(tsv).</itemtext>
+			</item>
+		</MessageBox>
+	</CollectionListClass>
 	<ProjectSettingClass>
 		<MessageBox>
 			<item>

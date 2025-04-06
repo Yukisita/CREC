@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using File = System.IO.File;
+using Microsoft.VisualBasic.FileIO;
 
 namespace CREC
 {
@@ -84,7 +85,7 @@ namespace CREC
                 return false;
             }
         }
-        
+
         /// <summary>
         /// ファイルを強制削除
         /// </summary>
@@ -107,15 +108,16 @@ namespace CREC
                 return false;
             }
         }
-        
+
         /// <summary>
         /// ファイルを指定の場所に移動
         /// </summary>
         /// <param name="CurrentFileFullPath">移動元のファイルパス</param>
         /// <param name="NewFileFullPath">移動先のファイルパス</param>
-        /// <param name="Overwriting">上書き許可</param>
+        /// <param name="Overwriting">上書き許可 true:上書き可, false:上書き禁止</param>
+        /// <param name="deleteCurrentFile">移動元のファイルを削除する true:削除, false:残す</param>
         /// <returns>移動成功：true、移動失敗：false</returns>
-        public static bool MoveFile(string CurrentFileFullPath, string NewFileFullPath, bool Overwriting)
+        public static bool MoveFile(string CurrentFileFullPath, string NewFileFullPath, bool Overwriting, bool deleteCurrentFile)
         {
             // ファイルを移動
             try
@@ -167,22 +169,52 @@ namespace CREC
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
             }
-            // 移動前のファイルを削除
-            return DeleteFile(CurrentFileFullPath);
+            // 移動元のファイルを削除
+            if (deleteCurrentFile)
+            {
+                return DeleteFile(CurrentFileFullPath);
+            }
+            return true;
         }
-       
+
         /// <summary>
         /// フォルダを指定の場所に移動
         /// </summary>
         /// <param name="CurrentFolderFullPath">移動元のフォルダパス</param>
         /// <param name="NewFolderFullPath">移動先のフォルダパス</param>
+        /// <param name="overwriteExistingFolder">既存フォルダの上書き許可 true:上書き可, false:上書き禁止</param>
+        /// <param name="cloneFolder">フォルダ内容を同一にする</param>
+        /// <param name="overwriteExistingFiles">既存ファイルの上書き許可 true:上書き可, false:上書き禁止</param>
+        /// <param name="deleteCurrentFolder">移動元のフォルダを削除する true:削除, false:残す</param>
         /// <returns>移動成功：true、移動失敗：false</returns>
-        public static bool MoveFolder(string CurrentFolderFullPath, string NewFolderFullPath)
+        public static bool MoveFolder(string CurrentFolderFullPath, string NewFolderFullPath, bool overwriteExistingFolder, bool cloneFolder, bool overwriteExistingFiles, bool deleteCurrentFolder)
         {
+            if (Directory.Exists(NewFolderFullPath) && !overwriteExistingFolder)// フォルダ上書き禁止
+            {
+                MessageBox.Show("指定されたフォルダは既に存在します。", "CREC");
+                return false;
+            }
+
+            if (cloneFolder)// フォルダをクローンする場合
+            {
+                // 移動先のフォルダが存在する場合は削除
+                if (Directory.Exists(NewFolderFullPath))
+                {
+                    try
+                    {
+                        Directory.Delete(NewFolderFullPath, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "CREC");
+                        return false;
+                    }
+                }
+            }
+
             try
             {
-                Directory.Move(CurrentFolderFullPath, NewFolderFullPath);
-                return true;
+                FileSystem.CopyDirectory(CurrentFolderFullPath, NewFolderFullPath, overwriteExistingFiles);
             }
             catch (UnauthorizedAccessException ex)// アクセス許可がない
             {
@@ -219,8 +251,23 @@ namespace CREC
                 MessageBox.Show(ex.Message, "CREC");
                 return false;
             }
+
+            if (deleteCurrentFolder)// 移動元のフォルダを削除
+            {
+                try
+                {
+                    Directory.Delete(CurrentFolderFullPath, true);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "CREC");
+                    return false;
+                }
+            }
+            return true;
         }
-        
+
         /// <summary>
         /// 指定された空ファイルを作成する処理
         /// </summary>

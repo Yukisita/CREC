@@ -18,6 +18,18 @@ using System.Xml.Linq;
 
 namespace CREC
 {
+    /// <summary>
+    /// 在庫状況の種類
+    /// </summary>
+    public enum InventoryStatus
+    {
+        StockOut,// 在庫切れ
+        UnderStocked,// 在庫不足
+        Appropriate,// 在庫適正
+        OverStocked,// 在庫過剰
+        NotSet// 未設定
+    }
+
     public class CollectionDataValuesClass
     {
         private string collectionFolderPath = string.Empty;
@@ -219,6 +231,35 @@ namespace CREC
                 }
             }
         }
+
+        private int? collectionCurrentInventory = null;
+        /// <summary>
+        /// CollectionCurrentInventory: Collection's current inventory
+        /// </summary>
+        public int? CollectionCurrentInventory
+        {
+            get
+            {
+                return collectionCurrentInventory;
+            }
+            set
+            {
+                collectionCurrentInventory = value;
+            }
+        }
+
+        private InventoryStatus collectionInventoryStatus = InventoryStatus.NotSet;
+        public InventoryStatus CollectionInventoryStatus
+        {
+            get
+            {
+                return collectionInventoryStatus;
+            }
+            set
+            {
+                collectionInventoryStatus = value;
+            }
+        }
     }
 
     public class CollectionDataClass
@@ -239,7 +280,7 @@ namespace CREC
                 return false;
             }
 
-            if(!System.IO.Directory.Exists(CollectionFolderPath))// コレクションのフォルダが存在しない場合
+            if (!System.IO.Directory.Exists(CollectionFolderPath))// コレクションのフォルダが存在しない場合
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotExist", "CollectionDataClass", languageData), "CREC");
                 return false;
@@ -248,6 +289,7 @@ namespace CREC
             try
             {
                 string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
+                CollectionDataValues.CollectionFolderPath = CollectionFolderPath;
                 if (!System.IO.File.Exists(CollectionDataFilePath))
                 {
                     if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
@@ -305,6 +347,91 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileReadFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                 return CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData);
             }
+        }
+
+        /// <summary>
+        /// コレクションの在庫情報読み込み
+        /// </summary>
+        /// <param name="CollectionFolderPath"></param>
+        /// <param name="CollectionDataValues"></param>
+        /// <param name="languageData"></param>
+        /// <returns></returns>
+        public static bool LoadCollectionInventoryData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        {
+            var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
+            // 在庫状態を取得、invからデータを読み込み
+            int? ListSafetyStock = null;
+            int? ListReorderPoint = null;
+            int? ListMaximumLevel = null;
+            if (File.Exists(CollectionFolderPath + "\\inventory.inv"))
+            {
+                string[] cols;// List等読み込み用
+                try
+                {
+                    IEnumerable<string> tmp = File.ReadLines(CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
+                    bool firstline = true;
+                    int count = 0;
+                    foreach (string line in tmp)
+                    {
+                        cols = line.Split(',');
+                        if (firstline == true)
+                        {
+                            if (cols[1].Length != 0)
+                            {
+                                ListSafetyStock = Convert.ToInt32(cols[1]);
+                            }
+                            if (cols[2].Length != 0)
+                            {
+                                ListReorderPoint = Convert.ToInt32(cols[2]);
+                            }
+                            if (cols[3].Length != 0)
+                            {
+                                ListMaximumLevel = Convert.ToInt32(cols[3]);
+                            }
+                            firstline = false;
+                        }
+                        else
+                        {
+                            count += Convert.ToInt32(cols[2]);
+                        }
+                    }
+                    // 在庫状況を設定
+                    if (0 == count)
+                    {
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.StockOut;
+                    }
+                    else if (0 < count && count < ListSafetyStock)
+                    {
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.UnderStocked;
+                    }
+                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
+                    {
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.UnderStocked;
+                    }
+                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
+                    {
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.Appropriate;
+                    }
+                    else if (ListMaximumLevel < count)
+                    {
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.OverStocked;
+                    }
+                    loadingCollectionDataValues.CollectionCurrentInventory = count;
+                }
+                catch
+                {
+                    loadingCollectionDataValues.CollectionCurrentInventory = null;
+                    loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet;
+                }
+            }
+            else
+            {
+                loadingCollectionDataValues.CollectionCurrentInventory = null;
+                loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet;
+            }
+            CollectionDataValues.CollectionInventoryStatus = loadingCollectionDataValues.CollectionInventoryStatus;
+            CollectionDataValues.CollectionCurrentInventory = loadingCollectionDataValues.CollectionCurrentInventory;
+            return true;
         }
 
         /// <summary>
@@ -489,6 +616,30 @@ namespace CREC
             else// 画像が選択されなかった場合
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// 在庫状況を文字列に変換
+        /// </summary>
+        /// <param name="inventoryStatus">在庫状況（enum）</param>
+        /// <returns>在庫状況（string）</returns>
+        public static string InventoryStatusToString(InventoryStatus inventoryStatus, XElement languageData)
+        {
+            switch (inventoryStatus)
+            {
+                case InventoryStatus.StockOut:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_StockOut", "CollectionDataClass", languageData);
+                case InventoryStatus.UnderStocked:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_UnderStocked", "CollectionDataClass", languageData);
+                case InventoryStatus.Appropriate:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_Appropriate", "CollectionDataClass", languageData);
+                case InventoryStatus.OverStocked:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_OverStocked", "CollectionDataClass", languageData);
+                case InventoryStatus.NotSet:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_NotSet", "CollectionDataClass", languageData);
+                default:
+                    return LanguageSettingClass.GetOtherMessage("InventoryStatus_NotSet", "CollectionDataClass", languageData);
             }
         }
     }
