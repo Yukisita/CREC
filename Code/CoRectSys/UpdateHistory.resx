@@ -499,7 +499,14 @@ ver8.6.5（2025/03/09）
 最近開いたプロジェクトを管理するファイルが間違えた場所で生成される不具合を修正
 
 ver8.6.6（2025/04/04）
-リファクタリング（コレクションリスト読み込み処理をメソッド化）</value>
+リファクタリング（コレクションリスト読み込み処理をメソッド化）
+
+ver8.6.7（2025/04/26）
+コレクション新規追加中に「一覧更新」した場合に、
+別のコレクションにフォーカスが当たり編集が中断される不具合を修正
+一覧のソートが「UUID・昇順」以外の場合に、
+一覧更新するとコレクションのフォーカスがズレる不具合を修正
+「編集中のデータを保存しますか？」のメッセージが繰り返し表示される不具合を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

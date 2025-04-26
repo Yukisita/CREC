@@ -33,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.6.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.7.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -1445,20 +1445,7 @@ namespace CREC
             DataLoadingLabel.Visible = true;
             this.Cursor = Cursors.WaitCursor;
             Application.DoEvents();
-            // 現時点で選択されている情報を取得
-            string currentSelectedCollectionID = string.Empty;// 現時点で表示されているデータのID
-            int currentSelectedCollectionRows = 1;// 表示されていたデータのリスト更新後の列番号
-            if (dataGridView1.CurrentRow != null)
-            {
-                try
-                {
-                    currentSelectedCollectionID = Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("現時点で表示されているデータのID取得に失敗しました。\n" + ex.Message, "CREC");
-                }
-            }
+            string currentSelectedCollectionID = CurrentShownCollectionData.CollectionID;// 現時点で表示されているデータのID
             // DataGridView関係
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -1489,15 +1476,6 @@ namespace CREC
                             thisCollectionDataValues.CollectionTag3,
                             thisCollectionDataValues.CollectionCurrentInventory,
                             CollectionDataClass.InventoryStatusToString(thisCollectionDataValues.CollectionInventoryStatus, LanguageFile));
-                        // 更新前に選択されていたコレクションの行番号を取得
-                        if (currentSelectedCollectionID.Length != 0)
-                        {
-                            if (currentSelectedCollectionID == thisCollectionDataValues.CollectionID)
-                            {
-                                dataGridView1.ClearSelection();
-                                currentSelectedCollectionRows = dataGridView1.Rows.Count;
-                            }
-                        }
                     }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
                     dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
@@ -1525,19 +1503,35 @@ namespace CREC
             {
                 if (searchedCollectionList.Count > 0)// 検索結果にコレクションが含まれている場合
                 {
-                    if (DataLoadingStatus == "true") // 更新前に選択されていたデータを選択
+                    if (DataLoadingStatus == "true") // 更新前にコレクションが選択されていた場合は、フォーカスを復元
                     {
                         dataGridView1.ClearSelection();
-                        try// 表示されている一番左のセルの番号を取得
+                        // dataGridView1で表示中の内容から、UUIDが一致するコレクションの場所を取得
+                        int currentSelectedCollectionRows = 0;// 表示されていたデータのリスト更新後の列番号
+                        foreach (DataGridViewRow collection in dataGridView1.Rows)
                         {
-                            int firstVisibleColumnIndex = dataGridView1.FirstDisplayedCell.ColumnIndex;
-                            dataGridView1.Rows[currentSelectedCollectionRows - 1].Selected = true;
-                            dataGridView1.CurrentCell = dataGridView1.Rows[currentSelectedCollectionRows - 1].Cells[firstVisibleColumnIndex];
+                            // 更新前に選択されていたコレクションの行番号を取得
+                            if (currentSelectedCollectionID.Length != 0)
+                            {
+                                if (currentSelectedCollectionID == Convert.ToString(collection.Cells[1].Value))
+                                {
+                                    currentSelectedCollectionRows = collection.Index;
+                                }
+                            }
                         }
-                        catch (Exception ex)// 取得に失敗した場合
+
+                        try// 表示されている一番左のセルの番号を取得して、コレクションのフォーカスを復元
+                        {
+                            dataGridView1.Rows[currentSelectedCollectionRows].Selected = true;
+                            dataGridView1.CurrentCell =
+                                dataGridView1.Rows[currentSelectedCollectionRows].
+                                Cells[dataGridView1.FirstDisplayedCell.ColumnIndex];
+                        }
+                        catch (Exception ex)// 失敗した場合
                         {
                             MessageBox.Show(ex.Message, "CREC");
                         }
+
                         DataLoadingLabel.Visible = false;
                         this.Cursor = Cursors.Default;
                         DataLoadingStatus = "false";
@@ -1753,7 +1747,12 @@ namespace CREC
                 LoadGrid();
                 return true;
             }
-            // 上記条件以外、処理せずに戻る場合
+            else if(result == System.Windows.MessageBoxResult.Cancel)// コレクションのフォーカスを解除して、そのまま続行
+            {
+                dataGridView1.ClearSelection();
+                return false;
+            }
+            // 上記条件以外、エラー発生時
             return false;
         }
         private void ShowDetails()// 詳細情報の表示
@@ -3837,7 +3836,7 @@ namespace CREC
         }
 
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
-        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの状態をバックグラウンドで監視
+        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
         {
             while (true)
             {
@@ -3886,7 +3885,7 @@ namespace CREC
                                 ShowProjcetNameTextBox.Text = "Deep Sleep...";
                             }
                             catch
-                            { }
+                            {}
                             for (int i = 0; i < 10; i++)
                             {
                                 await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
@@ -4027,7 +4026,7 @@ namespace CREC
                                 FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                                 ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
                                 File.Move(
-                                    "backuptmp\\" + subFolder.Name + "backupziptemp.zip", 
+                                    "backuptmp\\" + subFolder.Name + "backupziptemp.zip",
                                     CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
                                 Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
                                 CountBackupedData += 1;
