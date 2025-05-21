@@ -202,7 +202,7 @@ namespace CREC
                 {
                     try
                     {
-                        Directory.Delete(NewFolderFullPath, true);
+                        FileSystem.DeleteDirectory(NewFolderFullPath, DeleteDirectoryOption.DeleteAllContents);
                     }
                     catch (Exception ex)
                     {
@@ -256,7 +256,7 @@ namespace CREC
             {
                 try
                 {
-                    Directory.Delete(CurrentFolderFullPath, true);
+                    FileSystem.DeleteDirectory(CurrentFolderFullPath, DeleteDirectoryOption.DeleteAllContents);
                     return true;
                 }
                 catch (Exception ex)

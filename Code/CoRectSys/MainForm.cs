@@ -31,7 +31,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.8.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.9.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -161,9 +161,7 @@ namespace CREC
             bootingForm.BootingProgressLabel.Text = "ウインドウレイアウト調整中";
             Application.DoEvents();
             SetFormLayout();
-            // バックグラウンド処理の開始
-            CheckContentsList(CheckContentsListCancellationTokenSource.Token);
-            CheckEditing();
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// バックグラウンド処理の開始
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
@@ -290,7 +288,7 @@ namespace CREC
             // 最近開いたコレクションを初期化
             RecentShownCollectionsToolStripMenuItems = new ToolStripMenuItem[10];
             RecentShownContentsToolStripMenuItem.DropDownItems.Clear();
-            
+
             CollectionListIsShowing(true);// リスト表示
             ShowListButton.Visible = false;
             dataGridView1BackgroundPictureBox.Visible = true;
@@ -1072,72 +1070,6 @@ namespace CREC
                             e.Cancel = true;
                             return;
                         }
-                        if (CurrentProjectSettingValues.CloseListOutput == true)
-                        {
-                            CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力
-                        }
-                        if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                        {
-                            BackUpMethod();
-                            this.Hide();// メインフォームを消す
-                            CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                            Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                            DateTime DT = DateTime.Now;
-                            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
-                            {
-                                try
-                                {
-                                    ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                    BackupToolStripMenuItem.Enabled = true;
-                                    return;
-                                }
-                                Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
-                            }
-                            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
-                            {
-                                // バックアップ用フォルダ作成
-                                Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                                try
-                                {
-                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
-                                    {
-                                        try
-                                        {
-                                            FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                            ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                            File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
-                                        }
-                                        catch// バックアップ失敗時はログに書き込み
-                                        {
-                                            StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                            streamWriter.WriteLine(subFolder.FullName);
-                                            streamWriter.Close();
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                    BackupToolStripMenuItem.Enabled = true;
-                                    return;
-                                }
-                                Directory.Delete("backuptmp", true);// 削除
-                                if (File.Exists("BackupErrorLog.txt"))
-                                {
-                                    MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
-                                }
-                            }
-                        }
                     }
                     else if (result == System.Windows.MessageBoxResult.No)// 保存せずアプリを終了（一時データを削除）
                     {
@@ -1162,73 +1094,6 @@ namespace CREC
                         {
                             FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                         }
-                        if (CurrentProjectSettingValues.CloseListOutput == true)
-                        {
-                            CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力
-                        }
-                        if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                        {
-                            BackUpMethod();
-                            this.Hide();// メインフォームを消す
-                            CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                            Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                                                                              // バックアップ作成
-                            DateTime DT = DateTime.Now;
-                            if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
-                            {
-                                try
-                                {
-                                    ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                    BackupToolStripMenuItem.Enabled = true;
-                                    return;
-                                }
-                                Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
-                            }
-                            else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
-                            {
-                                // バックアップ用フォルダ作成
-                                Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                                File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                                try
-                                {
-                                    System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                                    IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                                    foreach (System.IO.DirectoryInfo subFolder in subFolders)
-                                    {
-                                        try
-                                        {
-                                            FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                            ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                            File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                            Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
-                                        }
-                                        catch// バックアップ失敗時はログに書き込み
-                                        {
-                                            StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                            streamWriter.WriteLine(subFolder.FullName);
-                                            streamWriter.Close();
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                    BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                    BackupToolStripMenuItem.Enabled = true;
-                                    return;
-                                }
-                                Directory.Delete("backuptmp", true);// 削除
-                                if (File.Exists("BackupErrorLog.txt"))
-                                {
-                                    MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
-                                }
-                            }
-                        }
                     }
                     else if (result == System.Windows.MessageBoxResult.Cancel)// アプリ終了をキャンセル
                     {
@@ -1236,73 +1101,73 @@ namespace CREC
                         return;
                     }
                 }
-                else
+                CollectionEditStatusWatcherStop();// データの監視を停止
+                collectionEditStatusWatcher.Dispose();// データの監視を破棄
+                CheckContentsListCancellationTokenSource.Dispose();// データ監視用のCancellationTokenSourceを破棄
+                // コレクション一覧を出力
+                if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
-                    if (CurrentProjectSettingValues.CloseListOutput == true)
+                    CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力
+                }
+                if (CurrentProjectSettingValues.CloseBackUp == true)
+                {
+                    BackUpMethod();
+                    this.Hide();// メインフォームを消す
+                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
+                    Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
+                    DateTime DT = DateTime.Now;
+                    if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
                     {
-                        CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力
-                    }
-                    if (CurrentProjectSettingValues.CloseBackUp == true)// 自動バックアップ
-                    {
-                        BackUpMethod();
-                        this.Hide();// メインフォームを消す
-                        CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                        Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                                                                          // バックアップ作成
-                        DateTime DT = DateTime.Now;
-                        if (CurrentProjectSettingValues.CompressType == CREC.CompressType.SingleFile)
+                        try
                         {
-                            try
-                            {
-                                ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
+                            ZipFile.CreateFromDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + ".zip");
                         }
-                        else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                        catch (Exception ex)
                         {
-                            // バックアップ用フォルダ作成
-                            Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
-                            File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
-                            try
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                            BackupToolStripMenuItem.Enabled = true;
+                            return;
+                        }
+                        Directory.Delete(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\backuptmp", true);
+                    }
+                    else if (CurrentProjectSettingValues.CompressType == CREC.CompressType.ParData)
+                    {
+                        // バックアップ用フォルダ作成
+                        Directory.CreateDirectory(CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss"));
+                        File.Copy(CurrentProjectSettingValues.ProjectSettingFilePath, CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\backup.crec", true);// crecファイルをバックアップ
+                        try
+                        {
+                            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                            IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+                            foreach (System.IO.DirectoryInfo subFolder in subFolders)
                             {
-                                System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
-                                IEnumerable<System.IO.DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-                                foreach (System.IO.DirectoryInfo subFolder in subFolders)
+                                try
                                 {
-                                    try
-                                    {
-                                        FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                                        ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
-                                        File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
-                                        Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
-                                    }
-                                    catch// バックアップ失敗時はログに書き込み
-                                    {
-                                        StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
-                                        streamWriter.WriteLine(subFolder.FullName);
-                                        streamWriter.Close();
-                                    }
+                                    FileSystem.CopyDirectory(subFolder.FullName, "backuptmp\\" + subFolder.Name + "\\datatemp", Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                    ZipFile.CreateFromDirectory("backuptmp\\" + subFolder.Name + "\\datatemp", "backuptmp\\" + subFolder.Name + "backupziptemp.zip");// 圧縮
+                                    File.Move("backuptmp\\" + subFolder.Name + "backupziptemp.zip", CurrentProjectSettingValues.ProjectBackupFolderPath + "\\" + CurrentProjectSettingValues.Name + "_backup_" + DT.ToString("yyyy-MM-dd_HH-mm-ss") + "\\" + subFolder.Name + "_backup-" + DT.ToString("yyyy-MM-dd-HH-mm-ss") + ".zip");// 移動
+                                    Directory.Delete("backuptmp\\" + subFolder.Name, true);// 削除
+                                }
+                                catch// バックアップ失敗時はログに書き込み
+                                {
+                                    StreamWriter streamWriter = new StreamWriter("BackupErrorLog.txt", true, Encoding.GetEncoding("UTF-8"));
+                                    streamWriter.WriteLine(subFolder.FullName);
+                                    streamWriter.Close();
                                 }
                             }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
-                                BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
-                                BackupToolStripMenuItem.Enabled = true;
-                                return;
-                            }
-                            Directory.Delete("backuptmp", true);// 削除
-                            if (File.Exists("BackupErrorLog.txt"))
-                            {
-                                MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("BackupFailed", "mainform", LanguageFile) + "\n" + ex.Message, "CREC");
+                            BackupToolStripMenuItem.Text = LanguageSettingClass.GetToolStripMenuItemMessage("BackupToolStripMenuItem", "mainform", LanguageFile);
+                            BackupToolStripMenuItem.Enabled = true;
+                            return;
+                        }
+                        Directory.Delete("backuptmp", true);// 削除
+                        if (File.Exists("BackupErrorLog.txt"))
+                        {
+                            MessageBox.Show("いくつかのファイルのバックアップ作成に失敗しました。\nログを確認してください。", "CREC");
                         }
                     }
                 }
@@ -1453,8 +1318,8 @@ namespace CREC
             this.Cursor = Cursors.WaitCursor;
 
             // 一覧読み込み中に禁止する操作
-            AddContentsButton.BackColor = Color.LightGray;
             AddContentsButton.Enabled = false;// コレクション追加ボタンを無効化
+            AddContentsButton.BackColor = System.Drawing.SystemColors.Control;// ボタンを無効状態の色に変更
             Application.DoEvents();
 
             string currentSelectedCollectionID = CurrentShownCollectionData.CollectionID;// 現時点で表示されているデータのID
@@ -1513,7 +1378,7 @@ namespace CREC
             // 一覧読み込み中に禁止した操作を復元
             Application.DoEvents();// 一覧読み込み中に発生していたイベントを削除
             AddContentsButton.Enabled = true;// コレクション追加ボタンを有効化
-            AddContentsButton.BackColor = Color.White;
+            AddContentsButton.UseVisualStyleBackColor = true;// ボタンを通常状態の色に変更
 
             // データが存在する/しないで場合分け
             if (allCollectionList.Count > 0)// データが存在する場合は更新前に選択されていたデータを復元
@@ -1922,8 +1787,10 @@ namespace CREC
                 return false;
             }
 
+            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
             // index読み込み
             return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData, LanguageFile);
+
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
@@ -2291,6 +2158,7 @@ namespace CREC
             ShowTag3.Visible = false;
             ShowRealLocation.Visible = false;
             ShowPicturesButton.Visible = false;
+            EditRequestButton.Visible = false;
 
             // 詳細データおよび機密データを編集可能に変更
             DetailsTextBox.ReadOnly = false;
@@ -2608,6 +2476,7 @@ namespace CREC
         }
         private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
+            CollectionEditStatusWatcherStop();// 既存の監視を停止
             CheckContentsListCancellationTokenSource.Cancel();
             // ID変更処理が必要な場合
             if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
@@ -2623,6 +2492,7 @@ namespace CREC
                 else// 移動に失敗した場合
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDChangeError", "mainform", LanguageFile), "CREC");
+                    CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
                     return false;
                 }
             }
@@ -2703,6 +2573,7 @@ namespace CREC
                 BackUpMethod();
                 MakeBackUpZip();// ZIP圧縮を非同期で開始
             }
+            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
             return true;
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -3624,7 +3495,123 @@ namespace CREC
         }
         #endregion
 
+        #region コレクションの編集状態を監視する処理
+        static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
+        delegate void DelegateProcess();//delegateを宣言
+        CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
+        /// <summary>
+        /// コレクションの編集状態を監視するメソッド
+        /// </summary>
+        /// <param name="targetPath">監視対象のコレクションパス</param>
+        private void CollectionEditStatusWatcherStart(ref CollectionDataValuesClass CollectionDataValues)
+        {
+            collectionEditStatusWatcher.EnableRaisingEvents = false; // 既存の監視を停止
+            if (Directory.Exists(CollectionDataValues.CollectionFolderPath + "\\SystemData") == false)
+            {
+                return;
+            }
+            collectionEditStatusWatcher.Path = CollectionDataValues.CollectionFolderPath + "\\SystemData";
+            collectionEditStatusWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size;
+            collectionEditStatusWatcher.Filter = "*.*";
+            // イベントハンドラを登録
+            collectionEditStatusWatcher.Created += CollectionEditStatusOnChanged;
+            collectionEditStatusWatcher.Changed += CollectionEditStatusOnChanged;
+            collectionEditStatusWatcher.Deleted += CollectionEditStatusOnChanged;
+            collectionEditStatusWatcher.EnableRaisingEvents = true; // 新しいフォルダの監視を開始
+        }
+        /// <summary>
+        /// コレクションの編集状態を監視するメソッドの停止
+        /// </summary>
+        private void CollectionEditStatusWatcherStop()
+        {
+            collectionEditStatusWatcher.EnableRaisingEvents = false;// イベントの監視を停止
+            // イベントハンドラを解除
+            collectionEditStatusWatcher.Created -= CollectionEditStatusOnChanged;
+            collectionEditStatusWatcher.Changed -= CollectionEditStatusOnChanged;
+            collectionEditStatusWatcher.Deleted -= CollectionEditStatusOnChanged;
+        }
+        /// <summary>
+        /// コレクションフォルダの変更を検知し、表示を変更する処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CollectionEditStatusOnChanged(object sender, FileSystemEventArgs e)
+        {
+            DelegateProcess delegateProcess = new DelegateProcess(CollectionEditStatusWatcher);//delegateにChangeTextBoxを登録
+            this.Invoke(delegateProcess);//DelegateProcessを実行
+        }
+        /// <summary>
+        /// コレクションの編集状態を取得する処理
+        /// </summary>
+        private void CollectionEditStatusWatcher()
+        {
+            // 編集中端末が存在する場合
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
+            {
+                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
+                {
+                    if (EditRequestingButton.Visible == false)
+                    {
+                        ReadOnlyButton.Visible = true;
+                        ReadOnlyButton.ForeColor = Color.Red;
+                    }
+                    else
+                    {
+                        ReadOnlyButton.Visible = false;
+                    }
+                    EditButton.Visible = false;
+                    EditRequestButton.Visible = false;
+                }
+                else
+                {
+                    if (SaveAndCloseEditButton.Visible == false)
+                    {
+                        EditRequestButton.Visible = true;
+                        EditRequestButton.ForeColor = Color.Blue;
+                        EditButton.Visible = false;
+                        ReadOnlyButton.Visible = false;
+                    }
+                }
+            }
+            // 編集中端末が存在しない場合
+            else
+            {
+                EditButton.Visible = ConfigValues.AllowEdit;
+                ReadOnlyButton.Visible = !ConfigValues.AllowEdit;
+                EditRequestButton.Visible = false;
+            }
+        }
+        #endregion
+
         #region 非同期処理置き場
+        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        {
+            while (true)
+            {
+                await Task.Delay(100);
+                if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
+                {
+                    if (CurrentShownCollectionData.CollectionID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                    {
+                        if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+                        {
+                            if (CheckEditingContents() == true)
+                            {
+                                ShowDetails();
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            ShowDetails();
+                        }
+                    }
+                }
+            }
+        }
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)
@@ -3802,154 +3789,6 @@ namespace CREC
                     {
                         FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
                         break;
-                    }
-                }
-            }
-        }
-
-        CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
-        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
-        {
-            while (true)
-            {
-                await Task.Delay(100);
-                if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
-                {
-                    if (CurrentShownCollectionData.CollectionID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
-                    {
-                        if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
-                        {
-                            if (CheckEditingContents() == true)
-                            {
-                                ShowDetails();
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            ShowDetails();
-                        }
-                    }
-                }
-            }
-        }
-        private async void CheckEditing()// 表示中のデータが他の端末で編集中かバックグラウンドで監視
-        {
-            bool activeForm = false;
-            while (true)
-            {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                switch (CurrentProjectSettingValues.SleepMode)
-                {
-                    case SleepMode.Deep:
-                        if (Form.ActiveForm == this)
-                        {
-                            activeForm = true;
-                        }
-                        else
-                        {
-                            activeForm = false;
-                            try// 終了時にエラーが出るのでCatchするが、微妙
-                            {
-                                ShowProjcetNameTextBox.Text = "Deep Sleep...";
-                            }
-                            catch
-                            { }
-                            for (int i = 0; i < 10; i++)
-                            {
-                                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                                if (Form.ActiveForm == this)
-                                {
-                                    activeForm = true;
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    case SleepMode.Normal:
-                        if (Form.ActiveForm == this)
-                        {
-                            activeForm = true;
-                        }
-                        else
-                        {
-                            activeForm = true;
-                            try// 終了時にエラーが出るのでCatchするが、微妙
-                            {
-                                ShowProjcetNameTextBox.Text = "Sleep...";
-                            }
-                            catch
-                            { }
-                            for (int i = 0; i < 10; i++)
-                            {
-                                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                                if (Form.ActiveForm == this)
-                                {
-                                    activeForm = true;
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    case SleepMode.Disable:
-                        activeForm = true;
-                        break;
-                }
-
-                if (activeForm == true)
-                {
-                    try// 終了時にエラーが出るのでCatchするが、微妙
-                    {
-                        if (ShowProjcetNameTextBox.Text.Contains("Sleep..."))
-                        {
-                            ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
-                        }
-                    }
-                    catch { }
-                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
-                    {
-                        if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
-                        {
-                            if (EditRequestingButton.Visible == false)
-                            {
-                                ReadOnlyButton.Visible = true;
-                                ReadOnlyButton.ForeColor = Color.Red;
-                            }
-                            else
-                            {
-                                ReadOnlyButton.Visible = false;
-                            }
-                            EditButton.Visible = false;
-                            EditRequestButton.Visible = false;
-                        }
-                        else
-                        {
-                            if (SaveAndCloseEditButton.Visible == false)
-                            {
-                                EditRequestButton.Visible = true;
-                                EditRequestButton.ForeColor = Color.Blue;
-                                EditButton.Visible = false;
-                                ReadOnlyButton.Visible = false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (ConfigValues.AllowEdit == true)
-                        {
-                            EditButton.Visible = true;
-                            ReadOnlyButton.Visible = false;
-                            EditRequestButton.Visible = false;
-                        }
-                        else
-                        {
-                            EditButton.Visible = false;
-                            ReadOnlyButton.Visible = true;
-                            EditRequestButton.Visible = false;
-                        }
                     }
                 }
             }
