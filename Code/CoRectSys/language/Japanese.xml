@@ -438,6 +438,10 @@
 				<itemname>ShowSelectedItemInformationToolStripMenuItem</itemname>
 				<itemtext>詳細情報表示</itemtext>
 			</item>
+			<item>
+				<itemname>OpenCollectionDataLocationToolStripMenuItem</itemname>
+				<itemtext>コレクションデータを開く</itemtext>
+			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>

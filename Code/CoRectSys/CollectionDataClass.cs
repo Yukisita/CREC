@@ -30,6 +30,19 @@ namespace CREC
         NotSet// 未設定
     }
 
+    /// <summary>
+    /// 詳細表示中のコレクションの状態
+    /// </summary>
+    public enum CollectionOperationStatus
+    {
+        Watching,// 閲覧中
+        Editing,// 編集中
+        EditRequesting,// 編集リクエスト中
+    }
+
+    /// <summary>
+    /// 各コレクションのデータを保持するクラス
+    /// </summary>
     public class CollectionDataValuesClass
     {
         private string collectionFolderPath = string.Empty;
@@ -352,9 +365,9 @@ namespace CREC
         /// <summary>
         /// コレクションの在庫情報読み込み
         /// </summary>
-        /// <param name="CollectionFolderPath"></param>
-        /// <param name="CollectionDataValues"></param>
-        /// <param name="languageData"></param>
+        /// <param name="CollectionFolderPath">対象のコレクションフォルダパス</param>
+        /// <param name="CollectionDataValues">対象のコレクションデータ</param>
+        /// <param name="languageData">言語ファイル</param>
         /// <returns></returns>
         public static bool LoadCollectionInventoryData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
         {
@@ -437,7 +450,7 @@ namespace CREC
         /// <summary>
         /// コレクションのIndexファイルが見つからない場合の処理
         /// </summary>
-        /// <param name="CollectionFolderPath"></param>
+        /// <param name="CollectionFolderPath">対象のコレクションフォルダパス</param>
         /// <param name="languageData">言語データ</param>
         /// <returns></returns>
         private static bool CollectionIndexRecovery_IndexFileNotFound(string CollectionFolderPath, XElement languageData)
@@ -508,6 +521,26 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileSaveFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// コレクションのデータフォルダを開く
+        /// </summary>
+        /// <param name="CollectionDataValues">対象のコレクションデータ</param>
+        /// <param name="languageData">言語ファイル</param>
+        /// <returns></returns>
+        public static bool OpenCollectionDataFolder(CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(CollectionDataValues.CollectionFolderPath + "\\data");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
+                return false;
+            }
+            return true;
         }
 
         /// <summary>

@@ -438,6 +438,10 @@
 				<itemname>ShowSelectedItemInformationToolStripMenuItem</itemname>
 				<itemtext>Show information.</itemtext>
 			</item>
+			<item>
+				<itemname>OpenCollectionDataLocationToolStripMenuItem</itemname>
+				<itemtext>Open Collection Data Location.</itemtext>
+			</item>
 		</ToolStripMenuItem>
 		<MessageBox>
 			<item>

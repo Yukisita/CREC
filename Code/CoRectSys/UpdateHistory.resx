@@ -514,7 +514,12 @@ ver8.6.8（2025/05/04）
 
 ver8.6.9（2025/05/21）
 追加ボタンがマウスオーバで色が変化しない不具合を修正
-他端末編集状況監視処理の負荷低減</value>
+他端末編集状況監視処理の負荷低減
+
+ver8.6.10（2025/06/05）
+編集リクエスト処理の負荷低減
+複数端末同時アクセス時の信頼性向上
+コレクションリストからコレクションデータを開くメニューを追加</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

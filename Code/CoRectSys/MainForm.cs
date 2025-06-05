@@ -24,6 +24,7 @@ using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
 using System.Net;
 using System.Net.Http;
+using System.Windows.Markup.Localizer;
 
 namespace CREC
 {
@@ -31,7 +32,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.9.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v8.6.10.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         #endregion
         #region 変数の宣言
@@ -41,6 +42,7 @@ namespace CREC
         List<CollectionDataValuesClass> allCollectionList = new List<CollectionDataValuesClass>();// 全データのコレクションリスト
         List<CollectionDataValuesClass> searchedCollectionList = new List<CollectionDataValuesClass>();// 検索結果のコレクションリスト
         CollectionDataValuesClass CurrentShownCollectionData = new CollectionDataValuesClass();// 詳細表示中のコレクション
+        CollectionOperationStatus CurrentShownCollectionOperationStatus = new CollectionOperationStatus();// 詳細表示中のコレクションの操作状況
 
         string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;// 言語リスト
@@ -161,7 +163,7 @@ namespace CREC
             bootingForm.BootingProgressLabel.Text = "ウインドウレイアウト調整中";
             Application.DoEvents();
             SetFormLayout();
-            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// バックグラウンド処理の開始
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を開始
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
@@ -1309,6 +1311,10 @@ namespace CREC
         }
         private async void LoadGrid()// データを読み込んでリストに表示
         {
+            // 表示内容整合性確認処理を停止
+            CheckContentsListCancellationTokenSource.Cancel();
+            CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+
             while (DataLoadingStatus != "false")
             {
                 await Task.Delay(1);
@@ -1445,6 +1451,7 @@ namespace CREC
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -1459,14 +1466,7 @@ namespace CREC
         }
         private void OpenDataLocation_Click(object sender, EventArgs e)// ファイルの場所を表示
         {
-            try
-            {
-                System.Diagnostics.Process.Start(CurrentShownCollectionData.CollectionFolderPath + "\\data");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
-            }
+            CollectionDataClass.OpenCollectionDataFolder(CurrentShownCollectionData, LanguageFile);
         }
         private void CopyDataLocationPath_Click(object sender, EventArgs e)// ファイルのパスをクリップボードにコピー
         {
@@ -1643,6 +1643,8 @@ namespace CREC
             NoImageLabel.Visible = true;
             Thumbnail.Image = null;
             Thumbnail.BackColor = menuStrip1.BackColor;
+
+            // 詳細情報読み込み
             if (LoadDetails() != true)
             {
                 ObjectNameLabel.Text = CurrentProjectSettingValues.CollectionNameLabel + "：";
@@ -1669,6 +1671,7 @@ namespace CREC
             ShowRealLocation.Visible = CurrentProjectSettingValues.RealLocationVisible;
             ShowDataLocation.Visible = CurrentProjectSettingValues.DataLocationVisible;
 
+            // 在庫管理データ読み込み
             if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
             {
                 if (CloseInventoryManagementModeButton.Visible == false)
@@ -1682,6 +1685,7 @@ namespace CREC
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = false;
             }
+
             DetailsLabel.Visible = true;
             ConfidentialDataLabel.Visible = false;
             ShowConfidentialDataButton.Visible = true;
@@ -1742,37 +1746,15 @@ namespace CREC
                 streamReaderConfidentialData?.Close();
             }
 
-            // 編集ボタンの表示内容設定
-            if (ConfigValues.AllowEdit == false || File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
-            {
-                ReadOnlyButton.Visible = true;
-                ReadOnlyButton.ForeColor = Color.Red;
-                EditButton.Visible = false;
-                EditRequestButton.Visible = false;
-            }
-            else
-            {
-                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
-                {
-                    EditRequestButton.Visible = true;
-                    EditRequestButton.ForeColor = Color.Blue;
-                    ReadOnlyButton.Visible = false;
-                    EditButton.Visible = false;
-                }
-                else
-                {
-                    EditButton.Visible = true;
-                    ReadOnlyButton.Visible = false;
-                    EditRequestButton.Visible = false;
-                }
-            }
-            // 最近表示した項目としてUUID、名称を保存
-            AddRecentShownCollectiontoToolStripMenuItem();
+            CurrentShownCollectionOperationStatus = CollectionOperationStatus.Watching;// 現在の操作ステータスを監視中に設定
+            CollectionOperationStatusManager();// 編集ボタンの表示内容設定
+            AddRecentShownCollectiontoToolStripMenuItem();// 最近表示した項目としてUUID、名称を保存
         }
         private bool LoadDetails()// 詳細情報を読み込み
         {
             // 変数初期化
             ClearDetailsWindowMethod();
+            // dataGridViewで選択されている項目があるか確認
             if (dataGridView1.CurrentRow == null)
             {
                 return false;
@@ -1786,11 +1768,9 @@ namespace CREC
                 MessageBox.Show("詳細情報の読み込みに失敗しました。\n" + ex.Message, "CREC");
                 return false;
             }
-
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
             // index読み込み
             return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData, LanguageFile);
-
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
@@ -2124,7 +2104,7 @@ namespace CREC
                 Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
             }
             FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
-            AwaitEditRequest();// 編集リクエスト待機非同期処理を開始
+            CurrentShownCollectionOperationStatus = CollectionOperationStatus.Editing;// 現在の操作ステータスを編集中に設定
             // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
@@ -2260,6 +2240,7 @@ namespace CREC
             dataGridView1.DataSource = ContentsDataTable;// ここでバインド
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
+            CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = 0;
             SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
@@ -2270,7 +2251,7 @@ namespace CREC
             SearchFormTextBox.TextChanged += SearchFormTextBox_TextChanged;
             // 入力フォームをリセット
             ClearDetailsWindowMethod();
-            CheckContentsList(CheckContentsListCancellationTokenSource.Token);
+            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
             ShowDetails();
         }
         private void DeleteContent()// データ完全削除用のメソッド
@@ -2355,6 +2336,16 @@ namespace CREC
         }
         private void AllowEditIDButton_Click(object sender, EventArgs e)// ID手動設定の可否
         {
+            System.Windows.MessageBoxResult result =
+                System.Windows.MessageBox.Show(
+                    "UUIDの変更は、不具合の原因となる可能性があります。\n変更作業を中止しますか？",
+                    "CREC",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Warning);
+            if(result == System.Windows.MessageBoxResult.Yes)
+            {
+                return;
+            }
             ConfigValues.AllowEditID = true;
             AllowEditIDButton.Visible = false;
             UUIDEditStatusLabel.Visible = true;
@@ -2477,7 +2468,9 @@ namespace CREC
         private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
             CollectionEditStatusWatcherStop();// 既存の監視を停止
+            // 表示内容整合性確認処理を停止し、キャンセルトークンをリセット
             CheckContentsListCancellationTokenSource.Cancel();
+            CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             // ID変更処理が必要な場合
             if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
             {
@@ -3453,6 +3446,7 @@ namespace CREC
             ListUpdateContextStripMenuItem.Font = new Font(fontName, smallfontsize);
             OpenProjectContextStripMenuItem.Font = new Font(fontName, smallfontsize);
             ShowSelectedItemInformationToolStripMenuItem.Font = new Font(fontName, smallfontsize);
+            OpenCollectionDataLocationToolStripMenuItem.Font = new Font(fontName, smallfontsize);
             // PictureBox1ContextMenuStripの文字サイズ
             OpenPicturewithAppToolStripMenuItem.Font = new Font(fontName, mainfontsize);
             AddContentsButton.Font = new Font(fontName, smallfontsize);
@@ -3531,54 +3525,150 @@ namespace CREC
             collectionEditStatusWatcher.Deleted -= CollectionEditStatusOnChanged;
         }
         /// <summary>
-        /// コレクションフォルダの変更を検知し、表示を変更する処理
+        /// コレクションフォルダの変更を検知する処理
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void CollectionEditStatusOnChanged(object sender, FileSystemEventArgs e)
         {
-            DelegateProcess delegateProcess = new DelegateProcess(CollectionEditStatusWatcher);//delegateにChangeTextBoxを登録
+            DelegateProcess delegateProcess = new DelegateProcess(CollectionOperationStatusManager);//delegateにChangeTextBoxを登録
             this.Invoke(delegateProcess);//DelegateProcessを実行
         }
         /// <summary>
-        /// コレクションの編集状態を取得する処理
+        /// コレクションの編集状態を取得し描画を変更する処理
         /// </summary>
-        private void CollectionEditStatusWatcher()
+        private void CollectionOperationStatusManager()
         {
-            // 編集中端末が存在する場合
-            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
+            switch (CurrentShownCollectionOperationStatus)
             {
-                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
-                {
-                    if (EditRequestingButton.Visible == false)
+                case CollectionOperationStatus.Watching:
+                    // 編集中端末が存在する場合
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))
                     {
-                        ReadOnlyButton.Visible = true;
-                        ReadOnlyButton.ForeColor = Color.Red;
+                        if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
+                        {
+                            if (EditRequestingButton.Visible == false)
+                            {
+                                ReadOnlyButton.Visible = true;
+                                ReadOnlyButton.ForeColor = Color.Red;
+                            }
+                            else
+                            {
+                                ReadOnlyButton.Visible = false;
+                            }
+                            EditButton.Visible = false;
+                            EditRequestButton.Visible = false;
+                        }
+                        else
+                        {
+                            EditRequestButton.Visible = true;
+                            EditRequestButton.ForeColor = Color.Blue;
+                            EditButton.Visible = false;
+                            ReadOnlyButton.Visible = false;
+                        }
+                    }
+                    // 編集中端末が存在しない場合
+                    else
+                    {
+                        EditButton.Visible = ConfigValues.AllowEdit;
+                        ReadOnlyButton.Visible = !ConfigValues.AllowEdit;
+                        EditRequestButton.Visible = false;
+                    }
+                    break;
+                case CollectionOperationStatus.Editing:
+                    // 編集リクエストされた場合
+                    if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
+                    {
+                        System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末から編集権限をリクエストされました。\nリクエストを許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
+                        
+                        // 権限を譲渡しない場合は抜ける
+                        if (result == System.Windows.MessageBoxResult.No || result == System.Windows.MessageBoxResult.None)
+                        {
+                            FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
+                            break;
+                        }
+
+                        // 保存関係の処理
+                        if (CurrentShownCollectionData.CollectionFolderPath == CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+                        {
+                            if (SaveContentsMethod() == false)
+                            {
+                                return;
+                            }
+                        }
+                        else if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
+                        {
+                            result = System.Windows.MessageBox.Show("IDを変更した場合、他の端末へ編集権限を譲渡できなくなります。\nIDを変更前のものに戻して保存しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
+                            if (result == System.Windows.MessageBoxResult.Yes)
+                            {
+                                CurrentShownCollectionData.CollectionID = Path.GetFileName(CurrentShownCollectionData.CollectionFolderPath);
+                                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
+                                MessageBox.Show("IDを" + CurrentShownCollectionData.CollectionID + "に戻しました", "CREC");
+                            }
+                            if (SaveContentsMethod() == false)
+                            {
+                                return;
+                            }
+                        }
+                        // 通常画面に不要な物を非表示に
+                        EditNameTextBox.Visible = false;
+                        EditIDTextBox.Visible = false;
+                        AllowEditIDButton.Visible = false;
+                        EditMCTextBox.Visible = false;
+                        CheckSameMCButton.Visible = false;
+                        EditRegistrationDateTextBox.Visible = false;
+                        EditCategoryTextBox.Visible = false;
+                        EditTag1TextBox.Visible = false;
+                        EditTag2TextBox.Visible = false;
+                        EditTag3TextBox.Visible = false;
+                        EditRealLocationTextBox.Visible = false;
+                        SaveAndCloseEditButton.Visible = false;
+                        SelectThumbnailButton.Visible = false;
+                        OpenPictureFolderButton.Visible = false;
+                        //　再表示時に編集したデータを表示するための処理
+                        SearchFormTextBox.Text = EditIDTextBox.Text;
+                        SearchOptionComboBox.SelectedIndex = 0;
+                        // 入力フォームをリセット
+                        EditNameTextBox.ResetText();
+                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
+                        EditIDTextBox.ResetText();
+                        EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを再開
+                        EditMCTextBox.ResetText();
+                        EditRegistrationDateTextBox.ResetText();
+                        EditCategoryTextBox.ResetText();
+                        EditTag1TextBox.ResetText();
+                        EditTag2TextBox.ResetText();
+                        EditTag3TextBox.ResetText();
+                        EditRealLocationTextBox.ResetText();
+                        DetailsTextBox.ResetText();
+                        ConfidentialDataTextBox.ResetText();
+                        // 通常画面で必要なものを表示
+                        EditButton.Visible = true;
+                        ShowTag1.Visible = true;
+                        ShowTag2.Visible = true;
+                        ShowTag3.Visible = true;
+                        ShowPicturesButton.Visible = true;
+                        // 詳細データおよび機密データを編集不可能に変更
+                        DetailsTextBox.ReadOnly = true;
+                        ConfidentialDataTextBox.ReadOnly = true;
+                        // 再度詳細情報を表示
+                        if (DataLoadingStatus == "true")
+                        {
+                            DataLoadingStatus = "stop";
+                        }
+                        LoadGrid();
+                        ShowDetails();
+                        break;
                     }
                     else
                     {
-                        ReadOnlyButton.Visible = false;
-                    }
-                    EditButton.Visible = false;
-                    EditRequestButton.Visible = false;
-                }
-                else
-                {
-                    if (SaveAndCloseEditButton.Visible == false)
-                    {
-                        EditRequestButton.Visible = true;
-                        EditRequestButton.ForeColor = Color.Blue;
+                        SaveAndCloseEditButton.Visible = true;
                         EditButton.Visible = false;
-                        ReadOnlyButton.Visible = false;
+                        EditRequestButton.Visible = false;
                     }
-                }
-            }
-            // 編集中端末が存在しない場合
-            else
-            {
-                EditButton.Visible = ConfigValues.AllowEdit;
-                ReadOnlyButton.Visible = !ConfigValues.AllowEdit;
-                EditRequestButton.Visible = false;
+                    break;
+                case CollectionOperationStatus.EditRequesting:
+                    break;
             }
         }
         #endregion
@@ -3588,28 +3678,45 @@ namespace CREC
         {
             while (true)
             {
-                await Task.Delay(100);
-                if (dataGridView1.CurrentRow != null)// セル未選択時は何もしない
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+
+                // キャンセルトークンが要求された場合はループを抜ける
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    if (CurrentShownCollectionData.CollectionID != Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                    break;
+                }
+
+                // セル未選択時は何もしない
+                if (dataGridView1.CurrentRow == null)
+                {
+                    continue;
+                }
+
+                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み
+                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false
+                    && CurrentShownCollectionData.CollectionFolderPath != string.Empty)
+                {
+                    MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadGrid();// リストを更新
+                    ShowDetails();
+                    continue;
+                }
+
+                // 表示中コレクションと選択が一致する場合は続行
+                if (CurrentShownCollectionData.CollectionID == Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                {
+                    continue;
+                }
+
+                // 差分がある場合なので、リストで選択されている内容の表示に変更する
+                if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+                {
+                    if (CheckEditingContents() != true)
                     {
-                        if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
-                        {
-                            if (CheckEditingContents() == true)
-                            {
-                                ShowDetails();
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            ShowDetails();
-                        }
+                        continue;
                     }
                 }
+                ShowDetails();
             }
         }
         private async void AwaitEdit()// 編集許可を待機
@@ -3691,104 +3798,6 @@ namespace CREC
                         EditTag3TextBox.Text = CurrentShownCollectionData.CollectionTag3;
                         EditRealLocationTextBox.Text = CurrentShownCollectionData.CollectionRealLocation;
                         return;
-                    }
-                }
-            }
-        }
-        private async void AwaitEditRequest()// 編集リクエストを待機
-        {
-            while (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED"))// DEDがある（編集中）のみ実施、消えたら終わる
-            {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-                if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED"))
-                {
-                    System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show("他の端末から編集権限をリクエストされました。\nリクエストを許可しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
-                    if (result == System.Windows.MessageBoxResult.Yes)// 編集を権限を譲渡
-                    {
-                        // 保存関係の処理
-                        if (CurrentShownCollectionData.CollectionFolderPath == CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
-                        {
-                            if (SaveContentsMethod() == false)
-                            {
-                                return;
-                            }
-                        }
-                        else if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
-                        {
-                            result = System.Windows.MessageBox.Show("IDを変更した場合、他の端末へ編集権限を譲渡できなくなります。\nIDを変更前のものに戻して保存しますか？", "CREC", System.Windows.MessageBoxButton.YesNo);
-                            if (result == System.Windows.MessageBoxResult.Yes)
-                            {
-                                CurrentShownCollectionData.CollectionID = Path.GetFileName(CurrentShownCollectionData.CollectionFolderPath);
-                                EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
-                                MessageBox.Show("IDを" + CurrentShownCollectionData.CollectionID + "に戻しました", "CREC");
-                                if (SaveContentsMethod() == false)
-                                {
-                                    return;
-                                }
-                            }
-                            else
-                            {
-                                if (SaveContentsMethod() == false)
-                                {
-                                    return;
-                                }
-                            }
-
-                        }
-                        // 通常画面に不要な物を非表示に
-                        EditNameTextBox.Visible = false;
-                        EditIDTextBox.Visible = false;
-                        AllowEditIDButton.Visible = false;
-                        EditMCTextBox.Visible = false;
-                        CheckSameMCButton.Visible = false;
-                        EditRegistrationDateTextBox.Visible = false;
-                        EditCategoryTextBox.Visible = false;
-                        EditTag1TextBox.Visible = false;
-                        EditTag2TextBox.Visible = false;
-                        EditTag3TextBox.Visible = false;
-                        EditRealLocationTextBox.Visible = false;
-                        SaveAndCloseEditButton.Visible = false;
-                        SelectThumbnailButton.Visible = false;
-                        OpenPictureFolderButton.Visible = false;
-                        //　再表示時に編集したデータを表示するための処理
-                        SearchFormTextBox.Text = EditIDTextBox.Text;
-                        SearchOptionComboBox.SelectedIndex = 0;
-                        // 入力フォームをリセット
-                        EditNameTextBox.ResetText();
-                        EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
-                        EditIDTextBox.ResetText();
-                        EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを再開
-                        EditMCTextBox.ResetText();
-                        EditRegistrationDateTextBox.ResetText();
-                        EditCategoryTextBox.ResetText();
-                        EditTag1TextBox.ResetText();
-                        EditTag2TextBox.ResetText();
-                        EditTag3TextBox.ResetText();
-                        EditRealLocationTextBox.ResetText();
-                        DetailsTextBox.ResetText();
-                        ConfidentialDataTextBox.ResetText();
-                        // 通常画面で必要なものを表示
-                        EditButton.Visible = true;
-                        ShowTag1.Visible = true;
-                        ShowTag2.Visible = true;
-                        ShowTag3.Visible = true;
-                        ShowPicturesButton.Visible = true;
-                        // 詳細データおよび機密データを編集不可能に変更
-                        DetailsTextBox.ReadOnly = true;
-                        ConfidentialDataTextBox.ReadOnly = true;
-                        // 再度詳細情報を表示
-                        if (DataLoadingStatus == "true")
-                        {
-                            DataLoadingStatus = "stop";
-                        }
-                        LoadGrid();
-                        ShowDetails();
-                        break;
-                    }
-                    else
-                    {
-                        FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\RED");
-                        break;
                     }
                 }
             }
@@ -3966,6 +3975,15 @@ namespace CREC
             dataGridView1BackgroundPictureBox.Visible = false;
             ShowPicturesMethod();
         }
+        /// <summary>
+        /// 選択中のコレクションのデータフォルダを開く
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenCollectionDataLocationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CollectionDataClass.OpenCollectionDataFolder(CurrentShownCollectionData, LanguageFile);
+        }
         private void AddContentsContextStripMenuItem_Click(object sender, EventArgs e)// データ追加
         {
             AddContentsMethod();// 新規にデータを追加するメソッドを呼び出し
@@ -4046,7 +4064,6 @@ namespace CREC
             StandardDisplayModeToolStripMenuItem.Checked = true;
             FullDisplayModeToolStripMenuItem.Checked = false;
             ShowSelectedItemInformationToolStripMenuItem.Visible = false;
-            ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = false;
             ShowSelectedItemInformationButton.Visible = false;
             ShowListButton.Visible = false;
             ClosePicturesButton.Visible = PictureBox1.Visible;// 画像が表示されている場合は閉じるボタンを表示
@@ -4057,7 +4074,6 @@ namespace CREC
             StandardDisplayModeToolStripMenuItem.Checked = false;
             FullDisplayModeToolStripMenuItem.Checked = true;
             ShowSelectedItemInformationToolStripMenuItem.Visible = true;
-            ShowSelectedItemInformationToolStripMenuItemSeparator.Visible = true;
             if (SaveAndCloseEditButton.Visible == true)// 編集中に切り替えた場合の処理
             {
                 CollectionListIsShowing(false);
