@@ -3574,6 +3574,7 @@ namespace CREC
                         ReadOnlyButton.Visible = !ConfigValues.AllowEdit;
                         EditRequestButton.Visible = false;
                     }
+                    SaveAndCloseEditButton.Visible = false;
                     break;
                 case CollectionOperationStatus.Editing:
                     // 編集リクエストされた場合
