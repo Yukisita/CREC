@@ -4,16 +4,18 @@ Copyright (c) [2022-2025] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Shapes;
 using System.Windows.Forms;
-using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
+using System.Windows.Shapes;
 using System.Xml.Linq;
 
 namespace CREC
@@ -674,6 +676,221 @@ namespace CREC
                 default:
                     return LanguageSettingClass.GetOtherMessage("InventoryStatus_NotSet", "CollectionDataClass", languageData);
             }
+        }
+
+        /// <summary>
+        /// コレクションのバックアップ
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="collectionDataValues">コレクションデータ値</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>バックアップ結果</returns>
+        public static bool BackupCollection(
+            ProjectSettingValuesClass projectSettingValues,
+            CollectionDataValuesClass collectionDataValues,
+            XElement languageData
+            )
+        {
+            // バックアップ場所が指定されていない場合はエラー
+            if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
+            {
+                MessageBox.Show("バックアップ先が指定されていません。", "CREC");
+                return false;
+            }
+
+            // プロジェクトバックアップフォルダの存在確認、なければ作成
+            if (!Directory.Exists(projectSettingValues.ProjectBackupFolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(projectSettingValues.ProjectBackupFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("バックアップフォルダの作成に失敗しました。\n" + ex.Message, "CREC");
+                    return false;
+                }
+            }
+
+            // コレクションバックアップフォルダの存在確認、なければ作成
+            string backupFolderPath = System.IO.Path.Combine(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID);
+            if (!Directory.Exists(backupFolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(backupFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("コレクションバックアップフォルダの作成に失敗しました。\n" + ex.Message, "CREC");
+                    return false;
+                }
+            }
+
+            // バックアップデータの名称用に現在日時をミリ秒まで取得
+            string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
+
+            // コレクションをローカルに複製（キャッシュ用）
+            try
+            {
+                FileSystem.CopyDirectory(
+                    collectionDataValues.CollectionFolderPath,// コレクションのフォルダパス
+                    "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
+                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
+                    Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                    );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("コレクションのバックアップ用キャッシュ作成に失敗しました。\n" + ex.Message, "CREC");
+                return false;
+            }
+
+            // バックアップ時の圧縮有無で処理切り替え
+            switch (projectSettingValues.BackupCompressionType)
+            {
+                case BackupCompressionType.NoCompress:
+                    // 圧縮なしの場合はそのまま移動
+                    try
+                    {
+                        FileSystem.CopyDirectory(
+                        "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
+                        backupFolderPath + "\\" + currentDateTime,// バックアップ先フォルダ
+                        Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
+                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                        );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("コレクションのバックアップに失敗しました。\n" + ex.Message, "CREC");
+                        return false;
+                    }
+                    break;
+                case BackupCompressionType.Zip:
+                    // 圧縮ありの場合はbackuptemp内でZipファイルに圧縮
+                    try
+                    {
+                        ZipFile.CreateFromDirectory(
+                            "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
+                            "backuptmp\\" + collectionDataValues.CollectionID + ".zip",// バックアップ先Zipファイル
+                            CompressionLevel.Optimal,// 圧縮レベルは最適化
+                            false// サブディレクトリは含めない
+                            );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("コレクションのバックアップデータ圧縮に失敗しました。\n" + ex.Message, "CREC");
+                        return false;
+                    }
+
+                    // 指定のフォルダに圧縮したZipファイルを移動
+                    try
+                    {
+                        FileSystem.MoveFile(
+                            "backuptmp\\" + collectionDataValues.CollectionID + ".zip",// 一時的なZipファイル
+                            backupFolderPath + "\\" + currentDateTime + ".zip",// バックアップ先Zipファイル
+                            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
+                            Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                            );
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("コレクションのバックアップZipファイル移動に失敗しました。\n" + ex.Message, "CREC");
+                        return false;
+                    }
+                    break;
+                default:
+                    MessageBox.Show("不明な圧縮設定です。", "CREC");
+                    return false;
+            }
+
+            // 一時的なバックアップフォルダを削除(バックアップ後のクリーンアップ)
+            try
+            {
+                // バックアップフォルダの存在確認
+                if (!Directory.Exists("backuptmp\\" + collectionDataValues.CollectionID))
+                {
+                    return true; // フォルダが存在しない場合は何もしない
+                }
+                Directory.Delete("backuptmp\\" + collectionDataValues.CollectionID, true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message, "CREC");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// プロジェクトの全データをバックアップ（並列数を任意または自動で切り替え可能）
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>成功：true / 失敗：false</returns>
+        public static bool BackupProjectData(
+            ProjectSettingValuesClass projectSettingValues,
+            XElement languageData
+            )
+        {
+            DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
+            IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+
+            // 並列処理用リスト
+            var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
+            ParallelOptions options = new ParallelOptions();
+            // MaxDegreeOfBackUpProcessParallelismがnullまたは0以下の場合は自動（デフォルト）
+            if (projectSettingValues.MaxDegreeOfBackUpProcessParallelism.HasValue 
+                && projectSettingValues.MaxDegreeOfBackUpProcessParallelism.Value > 0)
+            {
+                options.MaxDegreeOfParallelism = projectSettingValues.MaxDegreeOfBackUpProcessParallelism.Value;
+            }
+            // 論理CPUコア数より設定値が多い場合は制限する
+            if (options.MaxDegreeOfParallelism > Environment.ProcessorCount)
+            {
+                options.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            }
+            // 非同期でコレクションのバックアップを実行
+            System.Threading.Tasks.Parallel.ForEach(subFolders, options, subFolder =>
+            {
+                // Index読み込み
+                CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
+                if(!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, languageData))
+                {
+                    // 読み込み失敗した場合はコレクションIDをリストに追加
+                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                    return; // 次のコレクションへ
+                }
+                // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
+                if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
+                {
+                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                }
+            });
+
+            // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
+            if (backupFailedCollectionList.Count > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// プロジェクトの全データを非同期処理でバックアップ（並列数を任意または自動で切り替え可能）
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>成功：true / 失敗：false</returns>
+        public static async Task<bool> BackupProjectDataAsync(
+            ProjectSettingValuesClass projectSettingValues,
+            XElement languageData
+            )
+        {
+            return await Task.Run(() => BackupProjectData(
+                projectSettingValues,
+                languageData));
         }
     }
 }

@@ -20,11 +20,10 @@ namespace CREC
     /// <summary>
     /// バックアップ時のファイル圧縮方法
     /// </summary>
-    public enum CompressType
+    public enum BackupCompressionType
     {
-        SingleFile,
-        ParData,
-        NoCompress
+        NoCompress, // 圧縮なし
+        Zip,        // Zip圧縮
     }
 
     /// <summary>
@@ -88,9 +87,13 @@ namespace CREC
         /// </summary>
         public bool EditBackUp { get; set; } = false;
         /// <summary>
-        /// 圧縮方法
+        /// バックアップ時の並列処理の最大数
         /// </summary>
-        public CompressType CompressType { get; set; } = CompressType.NoCompress;
+        public int? MaxDegreeOfBackUpProcessParallelism { get; set; } = null; // バックアップ時の並列処理の最大数。nullの場合はデフォルト値を使用。
+        /// <summary>
+        /// バックアップのデータ圧縮方法
+        /// </summary>
+        public BackupCompressionType BackupCompressionType { get; set; } = BackupCompressionType.Zip;
         /// <summary>
         /// リスト出力フォルダのパス
         /// </summary>
@@ -340,14 +343,31 @@ namespace CREC
                             loadingProjectSettingValues.EditBackUp = false;
                         }
                         break;
-                    case "CompressType":
+                    case "BackupCompressionType":
                         try
                         {
-                            loadingProjectSettingValues.CompressType = (CREC.CompressType)Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.BackupCompressionType = (CREC.BackupCompressionType)Convert.ToInt32(cols[1]);
                         }
                         catch
                         {
-                            loadingProjectSettingValues.CompressType = (CREC.CompressType)1;
+                            loadingProjectSettingValues.BackupCompressionType = (CREC.BackupCompressionType)1;
+                        }
+                        break;
+                    case "MaxDegreeOfBackUpProcessParallelism":
+                        try
+                        {
+                            if (cols[1] == "null")
+                            {
+                                loadingProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = null;
+                            }
+                            else
+                            {
+                                loadingProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = Convert.ToInt32(cols[1]);
+                            }
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = null;
                         }
                         break;
                     case "Listoutputlocation":
@@ -870,7 +890,15 @@ namespace CREC
                     streamWriter.Write("E");
                 }
                 streamWriter.Write('\n');
-                streamWriter.WriteLine("CompressType,{0}", (int)projectSettingValues.CompressType);
+                streamWriter.WriteLine("BackupCompressionType,{0}", (int)projectSettingValues.BackupCompressionType);
+                if (projectSettingValues.MaxDegreeOfBackUpProcessParallelism == null)
+                {
+                    streamWriter.WriteLine("MaxDegreeOfBackUpProcessParallelism,null");
+                }
+                else
+                {
+                    streamWriter.WriteLine("MaxDegreeOfBackUpProcessParallelism,{0}", projectSettingValues.MaxDegreeOfBackUpProcessParallelism);
+                }
                 streamWriter.WriteLine("{0},{1}", "Listoutputlocation", projectSettingValues.ListOutputPath);
                 streamWriter.Write("autoListoutput,");
                 if (projectSettingValues.StartUpListOutput == true)

@@ -779,6 +779,10 @@
 				<itemtext>自動バックアップのスケジュール</itemtext>
 			</item>
 			<item>
+				<itemname>MaxDegreeOfBackUpProcessParallelismLabel</itemname>
+				<itemtext>バックアップ並列数</itemtext>
+			</item>
+			<item>
 				<itemname>ListOutputLocation</itemname>
 				<itemtext>データ一覧作成場所</itemtext>
 			</item>
@@ -874,15 +878,15 @@
 		<CheckBox>
 			<item>
 				<itemname>StartUpBackUpCheckBox</itemname>
-				<itemtext>起動時</itemtext>
+				<itemtext>起動時（全コレクション）</itemtext>
 			</item>
 			<item>
 				<itemname>CloseBackUpCheckBox</itemname>
-				<itemtext>終了時</itemtext>
+				<itemtext>終了時（全コレクション）</itemtext>
 			</item>
 			<item>
 				<itemname>EditedBackUpCheckBox</itemname>
-				<itemtext>データ追加時</itemtext>
+				<itemtext>コレクション編集後</itemtext>
 			</item>
 			<item>
 				<itemname>StartUpListOutputCheckBox</itemname>
@@ -929,12 +933,8 @@
 				<itemtext>プロジェクト作成/編集</itemtext>
 			</item>
 			<item>
-				<itemname>SingleFile</itemname>
-				<itemtext>単一ファイルに圧縮</itemtext>
-			</item>
-			<item>
-				<itemname>ParData</itemname>
-				<itemtext>項目ごとに圧縮</itemtext>
+				<itemname>Zip</itemname>
+				<itemtext>Zipファイルに圧縮</itemtext>
 			</item>
 			<item>
 				<itemname>NoCompress</itemname>

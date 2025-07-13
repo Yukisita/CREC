@@ -69,7 +69,26 @@ namespace CREC
             StartUpBackUpCheckBox.Checked = CurrentProjectSettingValues.StartUpBackUp;
             CloseBackUpCheckBox.Checked = CurrentProjectSettingValues.CloseBackUp;
             EditedBackUpCheckBox.Checked = CurrentProjectSettingValues.EditBackUp;
-            CompressTypeComboBox.SelectedIndex = (int)CurrentProjectSettingValues.CompressType;
+            CompressTypeComboBox.SelectedIndex = (int)CurrentProjectSettingValues.BackupCompressionType;
+            // backupの並列処理
+            switch (CurrentProjectSettingValues.MaxDegreeOfBackUpProcessParallelism)
+            {
+                case null:
+                case 0:
+                    MaxDegreeOfBackUpProcessParallelismComboBox.SelectedIndex = 0;
+                    break;
+                default:
+                    try
+                    {
+                        MaxDegreeOfBackUpProcessParallelismComboBox.SelectedIndex
+                            = Convert.ToInt32(CurrentProjectSettingValues.MaxDegreeOfBackUpProcessParallelism);
+                    }
+                    catch
+                    {
+                        MaxDegreeOfBackUpProcessParallelismComboBox.SelectedIndex = 0;
+                    }
+                    break;
+            }
             EditListOutputLocationTextBox.Text = CurrentProjectSettingValues.ListOutputPath;
             StartUpListOutputCheckBox.Checked = CurrentProjectSettingValues.StartUpListOutput;
             CloseListOutputCheckBox.Checked = CurrentProjectSettingValues.CloseListOutput;
@@ -113,7 +132,6 @@ namespace CREC
                 default:
                     DataCheckIntervalComboBox.SelectedIndex = 3;
                     break;
-
             }
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
@@ -143,7 +161,15 @@ namespace CREC
                 CurrentProjectSettingValues.StartUpBackUp = StartUpBackUpCheckBox.Checked;
                 CurrentProjectSettingValues.CloseBackUp = CloseBackUpCheckBox.Checked;
                 CurrentProjectSettingValues.EditBackUp = EditedBackUpCheckBox.Checked;
-                CurrentProjectSettingValues.CompressType = (CompressType)CompressTypeComboBox.SelectedIndex;
+                CurrentProjectSettingValues.BackupCompressionType = (BackupCompressionType)CompressTypeComboBox.SelectedIndex;
+                if (MaxDegreeOfBackUpProcessParallelismComboBox.SelectedIndex == 0)
+                {
+                    CurrentProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = null;
+                }
+                else
+                {
+                    CurrentProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = MaxDegreeOfBackUpProcessParallelismComboBox.SelectedIndex;
+                }
                 CurrentProjectSettingValues.ListOutputPath = EditListOutputLocationTextBox.Text;
                 CurrentProjectSettingValues.StartUpListOutput = StartUpListOutputCheckBox.Checked;
                 CurrentProjectSettingValues.CloseListOutput = CloseListOutputCheckBox.Checked;
@@ -448,9 +474,8 @@ namespace CREC
             }
             // CompressTypeComboBoxの内容を読み込み
             CompressTypeComboBox.Items.Clear();
-            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("SingleFile", "MakeNewProject", LanguageFile));
-            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ParData", "MakeNewProject", LanguageFile));
             CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("NoCompress", "MakeNewProject", LanguageFile));
+            CompressTypeComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("Zip", "MakeNewProject", LanguageFile));
             // DataCheckIntervalComboBoxの内容を読み込み
             DataCheckIntervalComboBox.Items.Clear();
             DataCheckIntervalComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("LocalDataCheckInterval", "MakeNewProject", LanguageFile));

@@ -779,6 +779,10 @@
 				<itemtext>Automatic backup scheduling</itemtext>
 			</item>
 			<item>
+				<itemname>MaxDegreeOfBackUpProcessParallelismLabel</itemname>
+				<itemtext>Backup process</itemtext>
+			</item>
+			<item>
 				<itemname>ListOutputLocation</itemname>
 				<itemtext>Contents list output location</itemtext>
 			</item>
@@ -874,15 +878,15 @@
 		<CheckBox>
 			<item>
 				<itemname>StartUpBackUpCheckBox</itemname>
-				<itemtext>StartUp</itemtext>
+				<itemtext>StartUp(All collections)</itemtext>
 			</item>
 			<item>
 				<itemname>CloseBackUpCheckBox</itemname>
-				<itemtext>Close</itemtext>
+				<itemtext>Close(All collections)</itemtext>
 			</item>
 			<item>
 				<itemname>EditedBackUpCheckBox</itemname>
-				<itemtext>After data added</itemtext>
+				<itemtext>After collection edited</itemtext>
 			</item>
 			<item>
 				<itemname>StartUpListOutputCheckBox</itemname>
@@ -929,12 +933,8 @@
 				<itemtext>Make/Edit project</itemtext>
 			</item>
 			<item>
-				<itemname>SingleFile</itemname>
-				<itemtext>Single file</itemtext>
-			</item>
-			<item>
-				<itemname>ParData</itemname>
-				<itemtext>Par data</itemtext>
+				<itemname>Zip</itemname>
+				<itemtext>Zip file</itemtext>
 			</item>
 			<item>
 				<itemname>NoCompress</itemname>

@@ -519,7 +519,11 @@ ver8.6.9（2025/05/21）
 ver8.6.10（2025/06/05）
 編集リクエスト処理の負荷低減
 複数端末同時アクセス時の信頼性向上
-コレクションリストからコレクションデータを開くメニューを追加</value>
+コレクションリストからコレクションデータを開くメニューを追加
+
+ver9.0.0（2025/07/13）
+バックアップ処理を変更（構造変更等含む、破壊的変更です）
+</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

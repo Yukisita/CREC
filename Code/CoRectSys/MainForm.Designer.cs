@@ -122,6 +122,7 @@
             this.InventoryStatusList = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ShowSelectedItemInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenCollectionDataLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ShowSelectedItemInformationToolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.AddContentsContextStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CopyAndAddContentsContextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -221,7 +222,6 @@
             this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
-            this.OpenCollectionDataLocationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -987,7 +987,7 @@
             this.toolStripSeparator10,
             this.OpenProjectContextStripMenuItem});
             this.dataGridViewContextMenuStrip.Name = "dataGridViewContextMenuStrip";
-            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(403, 284);
+            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(403, 256);
             // 
             // ShowSelectedItemInformationToolStripMenuItem
             // 
@@ -996,6 +996,13 @@
             this.ShowSelectedItemInformationToolStripMenuItem.Text = "詳細表示";
             this.ShowSelectedItemInformationToolStripMenuItem.Visible = false;
             this.ShowSelectedItemInformationToolStripMenuItem.Click += new System.EventHandler(this.ShowSelectedItemInformationToolStripMenuItem_Click);
+            // 
+            // OpenCollectionDataLocationToolStripMenuItem
+            // 
+            this.OpenCollectionDataLocationToolStripMenuItem.Name = "OpenCollectionDataLocationToolStripMenuItem";
+            this.OpenCollectionDataLocationToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.OpenCollectionDataLocationToolStripMenuItem.Text = "コレクションデータを開く";
+            this.OpenCollectionDataLocationToolStripMenuItem.Click += new System.EventHandler(this.OpenCollectionDataLocationToolStripMenuItem_Click);
             // 
             // ShowSelectedItemInformationToolStripMenuItemSeparator
             // 
@@ -2198,13 +2205,6 @@
             this.SubtractQuantityButton.UseVisualStyleBackColor = true;
             this.SubtractQuantityButton.Visible = false;
             this.SubtractQuantityButton.Click += new System.EventHandler(this.SubtractQuantityButton_Click);
-            // 
-            // OpenCollectionDataLocationToolStripMenuItem
-            // 
-            this.OpenCollectionDataLocationToolStripMenuItem.Name = "OpenCollectionDataLocationToolStripMenuItem";
-            this.OpenCollectionDataLocationToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
-            this.OpenCollectionDataLocationToolStripMenuItem.Text = "コレクションデータを開く";
-            this.OpenCollectionDataLocationToolStripMenuItem.Click += new System.EventHandler(this.OpenCollectionDataLocationToolStripMenuItem_Click);
             // 
             // MainForm
             // 
