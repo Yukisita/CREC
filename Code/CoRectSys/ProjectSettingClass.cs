@@ -374,6 +374,17 @@ namespace CREC
                             loadingProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = null;
                         }
                         break;
+                    case "MaxBackupCount":
+                        try
+                        {
+                            int maxBackupCount = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 256;
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.MaxBackupCount = 256;
+                        }
+                        break;
                     case "Listoutputlocation":
                         loadingProjectSettingValues.ListOutputPath = cols[1];
                         break;
@@ -841,18 +852,6 @@ namespace CREC
                             loadingProjectSettingValues.DataCheckInterval = 100;
                         }
                         break;
-                    case "MaxBackupCount":
-                        try
-                        {
-                            int maxBackupCount = Convert.ToInt32(cols[1]);
-                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 256;
-                        }
-                        catch
-                        {
-                            loadingProjectSettingValues.MaxBackupCount = 256;
-                        }
-                        break;
-
                 }
             }
             CheckListVisibleColumnExist(ref loadingProjectSettingValues);
@@ -914,6 +913,7 @@ namespace CREC
                 {
                     streamWriter.WriteLine("MaxDegreeOfBackUpProcessParallelism,{0}", projectSettingValues.MaxDegreeOfBackUpProcessParallelism);
                 }
+                streamWriter.WriteLine("MaxBackupCount,{0}", (int)projectSettingValues.MaxBackupCount);
                 streamWriter.WriteLine("{0},{1}", "Listoutputlocation", projectSettingValues.ListOutputPath);
                 streamWriter.Write("autoListoutput,");
                 if (projectSettingValues.StartUpListOutput == true)
@@ -1104,7 +1104,6 @@ namespace CREC
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);
-                streamWriter.WriteLine("MaxBackupCount,{0}", (int)projectSettingValues.MaxBackupCount);
                 returnValue = true;
             }
             catch
