@@ -273,7 +273,7 @@ namespace CREC
         /// <summary>
         /// バックアップ保持数（各コレクションの最大バックアップ数）
         /// </summary>
-        public int MaxBackupCount { get; set; } = 5;
+        public int MaxBackupCount { get; set; } = 256;
     }
 
     public class ProjectSettingClass
@@ -845,11 +845,11 @@ namespace CREC
                         try
                         {
                             int maxBackupCount = Convert.ToInt32(cols[1]);
-                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 5;
+                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 256;
                         }
                         catch
                         {
-                            loadingProjectSettingValues.MaxBackupCount = 5;
+                            loadingProjectSettingValues.MaxBackupCount = 256;
                         }
                         break;
 
