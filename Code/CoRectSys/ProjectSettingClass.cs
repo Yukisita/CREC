@@ -270,6 +270,10 @@ namespace CREC
         /// データ監視の間隔
         /// </summary>
         public int DataCheckInterval { get; set; } = 100;
+        /// <summary>
+        /// バックアップ保持数（各コレクションの最大バックアップ数）
+        /// </summary>
+        public int MaxBackupCount { get; set; } = 5;
     }
 
     public class ProjectSettingClass
@@ -837,6 +841,17 @@ namespace CREC
                             loadingProjectSettingValues.DataCheckInterval = 100;
                         }
                         break;
+                    case "MaxBackupCount":
+                        try
+                        {
+                            int maxBackupCount = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 5;
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.MaxBackupCount = 5;
+                        }
+                        break;
 
                 }
             }
@@ -1089,6 +1104,7 @@ namespace CREC
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);
+                streamWriter.WriteLine("MaxBackupCount,{0}", (int)projectSettingValues.MaxBackupCount);
                 returnValue = true;
             }
             catch

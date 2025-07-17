@@ -820,7 +820,86 @@ namespace CREC
                 return false;
             }
 
+            // バックアップ数管理処理（バックアップ作成後に実行）
+            ManageBackupCount(projectSettingValues, collectionDataValues, backupFolderPath);
+
             return true;
+        }
+
+        /// <summary>
+        /// 指定したコレクションのバックアップ数を管理し、古いバックアップを削除する
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="collectionDataValues">コレクションデータ値</param>
+        /// <param name="backupFolderPath">バックアップフォルダのパス</param>
+        private static void ManageBackupCount(
+            ProjectSettingValuesClass projectSettingValues,
+            CollectionDataValuesClass collectionDataValues,
+            string backupFolderPath)
+        {
+            try
+            {
+                // バックアップフォルダが存在しない場合は何もしない
+                if (!Directory.Exists(backupFolderPath))
+                {
+                    return;
+                }
+
+                // バックアップファイル/フォルダのリストを取得
+                List<FileSystemInfo> backupItems = new List<FileSystemInfo>();
+                
+                // 圧縮設定に応じてファイルまたはフォルダを取得
+                switch (projectSettingValues.BackupCompressionType)
+                {
+                    case BackupCompressionType.NoCompress:
+                        // フォルダバックアップの場合
+                        DirectoryInfo backupDir = new DirectoryInfo(backupFolderPath);
+                        backupItems.AddRange(backupDir.GetDirectories());
+                        break;
+                    case BackupCompressionType.Zip:
+                        // Zipファイルバックアップの場合
+                        DirectoryInfo backupDirZip = new DirectoryInfo(backupFolderPath);
+                        backupItems.AddRange(backupDirZip.GetFiles("*.zip"));
+                        break;
+                }
+
+                // 作成日時順でソート（古い順）
+                backupItems.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));
+
+                // 設定された最大バックアップ数を超えている場合、古いものから削除
+                int maxBackupCount = projectSettingValues.MaxBackupCount;
+                if (maxBackupCount < 1) maxBackupCount = 1; // 最小値は1
+
+                while (backupItems.Count > maxBackupCount)
+                {
+                    FileSystemInfo oldestBackup = backupItems[0];
+                    backupItems.RemoveAt(0);
+
+                    try
+                    {
+                        if (oldestBackup is DirectoryInfo)
+                        {
+                            // フォルダの場合
+                            Directory.Delete(oldestBackup.FullName, true);
+                        }
+                        else if (oldestBackup is FileInfo)
+                        {
+                            // ファイルの場合
+                            File.Delete(oldestBackup.FullName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // 個別のバックアップ削除失敗は警告のみ表示して続行
+                        MessageBox.Show($"古いバックアップの削除に失敗しました: {oldestBackup.Name}\n{ex.Message}", "CREC");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // バックアップ管理処理の失敗は警告のみ表示
+                MessageBox.Show($"バックアップ数管理処理でエラーが発生しました: {ex.Message}", "CREC");
+            }
         }
 
         /// <summary>
