@@ -900,7 +900,7 @@ namespace CREC
         }
 
         /// <summary>
-        /// バックアップ形式変更時の古い形式のバックアップファイル/フォルダを確認し、ユーザーの確認の上で削除する
+        /// バックアップ形式変更時の以前の形式のバックアップファイル/フォルダを確認し、ユーザーの確認の上で削除する
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="backupFolderPath">バックアップフォルダのパス</param>
@@ -916,25 +916,23 @@ namespace CREC
                 // 現在の設定と異なる形式のバックアップを検索
                 switch (projectSettingValues.BackupCompressionType)
                 {
-                    case BackupCompressionType.NoCompress:
-                        // 現在は非圧縮設定なので、古いZipファイルを検索
+                    case BackupCompressionType.NoCompress:// 現在は非圧縮設定なので、Zipファイルを検索
                         oldFormatBackups.AddRange(backupDir.GetFiles("*.zip"));
                         break;
-                    case BackupCompressionType.Zip:
-                        // 現在はZip圧縮設定なので、古いフォルダを検索
+                    case BackupCompressionType.Zip:// 現在はZip圧縮設定なので、フォルダを検索
                         oldFormatBackups.AddRange(backupDir.GetDirectories());
                         break;
                 }
 
-                // 古い形式のバックアップが見つかった場合、ユーザーに確認
+                // 以前の形式のバックアップが見つかった場合、ユーザーに確認
                 if (oldFormatBackups.Count > 0)
                 {
                     string formatName = projectSettingValues.BackupCompressionType == BackupCompressionType.NoCompress ? "Zipファイル" : "フォルダ";
-                    string message = $"バックアップ形式が変更されたため、古い形式の{formatName}バックアップが{oldFormatBackups.Count}個見つかりました。\n" +
-                                   $"これらの古いバックアップを削除しますか？\n\n" +
+                    string message = $"バックアップ形式が変更されたため、以前に設定された形式の{formatName}バックアップが{oldFormatBackups.Count}個見つかりました。\n" +
+                                   $"これらのバックアップを削除しますか？\n\n" +
                                    $"※安全のため、デフォルトは「いいえ」です。";
 
-                    DialogResult result = MessageBox.Show(message, "CREC - 古いバックアップの削除確認", 
+                    DialogResult result = MessageBox.Show(message, "CREC - 以前の形式のバックアップの削除確認", 
                                                          MessageBoxButtons.YesNo, 
                                                          MessageBoxIcon.Question, 
                                                          MessageBoxDefaultButton.Button2);
@@ -961,25 +959,25 @@ namespace CREC
                             catch (Exception ex)
                             {
                                 errorCount++;
-                                MessageBox.Show($"古いバックアップの削除に失敗しました: {oldBackup.Name}\n{ex.Message}", "CREC");
+                                MessageBox.Show($"以前の形式のバックアップの削除に失敗しました: {oldBackup.Name}\n{ex.Message}", "CREC");
                             }
                         }
 
                         // 削除結果を報告
                         if (errorCount == 0)
                         {
-                            MessageBox.Show($"古い形式のバックアップ{deletedCount}個を正常に削除しました。", "CREC");
+                            MessageBox.Show($"以前の形式のバックアップ{deletedCount}個を正常に削除しました。", "CREC");
                         }
                         else
                         {
-                            MessageBox.Show($"古い形式のバックアップの削除が完了しました。\n成功: {deletedCount}個\n失敗: {errorCount}個", "CREC");
+                            MessageBox.Show($"以前の形式のバックアップの削除が完了しました。\n成功: {deletedCount}個\n失敗: {errorCount}個", "CREC");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"古い形式のバックアップ確認処理でエラーが発生しました: {ex.Message}", "CREC");
+                MessageBox.Show($"以前の形式のバックアップ確認処理でエラーが発生しました: {ex.Message}", "CREC");
             }
         }
 
