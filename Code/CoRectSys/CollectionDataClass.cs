@@ -849,12 +849,12 @@ namespace CREC
                 switch (projectSettingValues.BackupCompressionType)
                 {
                     case BackupCompressionType.NoCompress:// フォルダバックアップの場合
-                        DirectoryInfo backupDir = new DirectoryInfo(backupFolderPath);
-                        backupItems.AddRange(backupDir.GetDirectories());
+                        DirectoryInfo backupDirectoryInfo = new DirectoryInfo(backupFolderPath);
+                        backupItems.AddRange(backupDirectoryInfo.GetDirectories());
                         break;
                     case BackupCompressionType.Zip:// Zipファイルバックアップの場合
-                        DirectoryInfo backupDirZip = new DirectoryInfo(backupFolderPath);
-                        backupItems.AddRange(backupDirZip.GetFiles("*.zip"));
+                        DirectoryInfo backupDirectoryInfoZip = new DirectoryInfo(backupFolderPath);
+                        backupItems.AddRange(backupDirectoryInfoZip.GetFiles("*.zip"));
                         break;
                 }
 
@@ -890,8 +890,8 @@ namespace CREC
                     }
                 }
 
-                // バックアップ形式が変更された場合の古い形式のバックアップを確認
-                CheckAndCleanupOldFormatBackups(projectSettingValues, backupFolderPath);
+                // バックアップ形式が変更された場合の以前の形式のバックアップを確認
+                CheckAndCleanupPreviousTypeBackupItems(projectSettingValues,  backupFolderPath);
             }
             catch (Exception ex)// バックアップ管理処理の失敗は警告のみ表示
             {
@@ -904,80 +904,84 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="backupFolderPath">バックアップフォルダのパス</param>
-        private static void CheckAndCleanupOldFormatBackups(
+        private static void CheckAndCleanupPreviousTypeBackupItems(
             ProjectSettingValuesClass projectSettingValues,
             string backupFolderPath)
         {
             try
             {
-                List<FileSystemInfo> oldFormatBackups = new List<FileSystemInfo>();
-                DirectoryInfo backupDir = new DirectoryInfo(backupFolderPath);
+                DirectoryInfo backupDirectoryInfo = new DirectoryInfo(backupFolderPath);// バックアップフォルダの情報を取得
 
                 // 現在の設定と異なる形式のバックアップを検索
+                List<FileSystemInfo> previousTypeBackupItems = new List<FileSystemInfo>();// 以前の形式のバックアップを格納するリスト
                 switch (projectSettingValues.BackupCompressionType)
                 {
                     case BackupCompressionType.NoCompress:// 現在は非圧縮設定なので、Zipファイルを検索
-                        oldFormatBackups.AddRange(backupDir.GetFiles("*.zip"));
+                        previousTypeBackupItems.AddRange(backupDirectoryInfo.GetFiles("*.zip"));
                         break;
                     case BackupCompressionType.Zip:// 現在はZip圧縮設定なので、フォルダを検索
-                        oldFormatBackups.AddRange(backupDir.GetDirectories());
+                        previousTypeBackupItems.AddRange(backupDirectoryInfo.GetDirectories());
                         break;
                 }
 
-                // 以前の形式のバックアップが見つかった場合、ユーザーに確認
-                if (oldFormatBackups.Count > 0)
+                // 以前の形式のバックアップがない場合は何も行わず終了する
+                if (previousTypeBackupItems.Count == 0)
                 {
-                    string formatName = projectSettingValues.BackupCompressionType == BackupCompressionType.NoCompress ? "Zipファイル" : "フォルダ";
-                    string message = $"バックアップ形式が変更されたため、以前に設定された形式の{formatName}バックアップが{oldFormatBackups.Count}個見つかりました。\n" +
-                                   $"これらのバックアップを削除しますか？\n\n" +
-                                   $"※安全のため、デフォルトは「いいえ」です。";
+                    return; 
+                }
 
-                    DialogResult result = MessageBox.Show(message, "CREC - 以前の形式のバックアップの削除確認", 
-                                                         MessageBoxButtons.YesNo, 
-                                                         MessageBoxIcon.Question, 
-                                                         MessageBoxDefaultButton.Button2);
+                // ユーザーに以前の形式のバックアップ削除確認を行う
+                string formatName = projectSettingValues.BackupCompressionType == BackupCompressionType.NoCompress ? "Zipファイル" : "フォルダ";
+                string message = $"以前に設定された形式の{formatName}バックアップが見つかりました。\n" +
+                               $"これらのバックアップを削除しますか？";
 
-                    if (result == DialogResult.Yes)
+                DialogResult result = MessageBox.Show(message, "CREC - 以前の形式のバックアップの削除確認",
+                                                     MessageBoxButtons.YesNo,
+                                                     MessageBoxIcon.Question,
+                                                     MessageBoxDefaultButton.Button2);
+
+                // ユーザーが「いいえ」を選択した場合は何も行わず終了する
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+
+                int errorCount = 0;// 削除失敗数
+                foreach (FileSystemInfo previousTypeBackupItem in previousTypeBackupItems)
+                {
+                    try
                     {
-                        int deletedCount = 0;
-                        int errorCount = 0;
-
-                        foreach (FileSystemInfo oldBackup in oldFormatBackups)
+                        if (previousTypeBackupItem is DirectoryInfo)
                         {
-                            try
-                            {
-                                if (oldBackup is DirectoryInfo)
-                                {
-                                    Directory.Delete(oldBackup.FullName, true);
-                                }
-                                else if (oldBackup is FileInfo)
-                                {
-                                    File.Delete(oldBackup.FullName);
-                                }
-                                deletedCount++;
-                            }
-                            catch (Exception ex)
-                            {
-                                errorCount++;
-                                MessageBox.Show($"以前の形式のバックアップの削除に失敗しました: {oldBackup.Name}\n{ex.Message}", "CREC");
-                            }
+                            Directory.Delete(previousTypeBackupItem.FullName, true);
                         }
-
-                        // 削除結果を報告
-                        if (errorCount == 0)
+                        else if (previousTypeBackupItem is FileInfo)
                         {
-                            MessageBox.Show($"以前の形式のバックアップ{deletedCount}個を正常に削除しました。", "CREC");
-                        }
-                        else
-                        {
-                            MessageBox.Show($"以前の形式のバックアップの削除が完了しました。\n成功: {deletedCount}個\n失敗: {errorCount}個", "CREC");
+                            File.Delete(previousTypeBackupItem.FullName);
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        MessageBox.Show($"以前の形式のバックアップの削除に失敗しました: {previousTypeBackupItem.Name}\n{ex.Message}", "CREC");
+                    }
+                }
+
+                // 削除結果をメッセージボックスで表示
+                if (errorCount == 0)// 削除失敗数がゼロの場合
+                {
+                    MessageBox.Show($"以前の形式のバックアップ{previousTypeBackupItems.Count}個を正常に削除しました。", "CREC");
+                }
+                else// 削除失敗したバックアップがある場合
+                {
+                    MessageBox.Show($"以前の形式のバックアップの削除が完了しました。" +
+                        $"\n成功: {previousTypeBackupItems.Count - errorCount}個" +
+                        $"\n失敗: {errorCount}個", "CREC");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"以前の形式のバックアップ確認処理でエラーが発生しました: {ex.Message}", "CREC");
+                MessageBox.Show($"以前の形式のバックアップ削除処理でエラーが発生しました: {ex.Message}", "CREC");
             }
         }
 
