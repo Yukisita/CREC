@@ -819,9 +819,8 @@ namespace CREC
                 MessageBox.Show("一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message, "CREC");
                 return false;
             }
-
-            // バックアップ数管理処理
-            ManageBackupCount(projectSettingValues, backupFolderPath);
+            
+            ManageBackupCount(projectSettingValues, backupFolderPath);// バックアップ数管理処理
 
             return true;
         }
@@ -855,17 +854,17 @@ namespace CREC
 
                 backupedCollectionItems.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));// 作成日時順でソート（古い順）
 
-                // バックアップ数を取得
+                // バックアップ上限数を取得
                 int maxBackupCount = projectSettingValues.MaxBackupCount;
                 // パラメータチェック
                 if (maxBackupCount < 1)
                 {
                     maxBackupCount
                         = projectSettingValues.MaxBackupCount
-                        = 1; // 最大バックアップ数が1未満の場合は1に設定
+                        = 1; // バックアップ上限数が1未満の場合は1に設定
                 }
 
-                // 設定された最大バックアップ数を超えている場合、古いものから削除
+                // 設定されたバックアップ上限数を超えている場合、古いものから削除
                 while (backupedCollectionItems.Count > maxBackupCount)
                 {
                     FileSystemInfo oldestBackupedCollectionItem = backupedCollectionItems[0];// 最も古いバックアップをリストから取得
