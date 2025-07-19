@@ -270,6 +270,10 @@ namespace CREC
         /// データ監視の間隔
         /// </summary>
         public int DataCheckInterval { get; set; } = 100;
+        /// <summary>
+        /// バックアップ保持数（各コレクションの最大バックアップ数）
+        /// </summary>
+        public int MaxBackupCount { get; set; } = 256;
     }
 
     public class ProjectSettingClass
@@ -368,6 +372,17 @@ namespace CREC
                         catch
                         {
                             loadingProjectSettingValues.MaxDegreeOfBackUpProcessParallelism = null;
+                        }
+                        break;
+                    case "MaxBackupCount":
+                        try
+                        {
+                            int maxBackupCount = Convert.ToInt32(cols[1]);
+                            loadingProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 256;
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.MaxBackupCount = 256;
                         }
                         break;
                     case "Listoutputlocation":
@@ -837,7 +852,6 @@ namespace CREC
                             loadingProjectSettingValues.DataCheckInterval = 100;
                         }
                         break;
-
                 }
             }
             CheckListVisibleColumnExist(ref loadingProjectSettingValues);
@@ -899,6 +913,7 @@ namespace CREC
                 {
                     streamWriter.WriteLine("MaxDegreeOfBackUpProcessParallelism,{0}", projectSettingValues.MaxDegreeOfBackUpProcessParallelism);
                 }
+                streamWriter.WriteLine("MaxBackupCount,{0}", (int)projectSettingValues.MaxBackupCount);
                 streamWriter.WriteLine("{0},{1}", "Listoutputlocation", projectSettingValues.ListOutputPath);
                 streamWriter.Write("autoListoutput,");
                 if (projectSettingValues.StartUpListOutput == true)
