@@ -133,6 +133,7 @@ namespace CREC
                     DataCheckIntervalComboBox.SelectedIndex = 3;
                     break;
             }
+            MaxBackupCountTextBox.Text = Convert.ToString(CurrentProjectSettingValues.MaxBackupCount);
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -205,6 +206,16 @@ namespace CREC
                 catch
                 {
                     MessageBox.Show("データ監視間隔の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
+                }
+                try
+                {
+                    int maxBackupCount = Convert.ToInt32(MaxBackupCountTextBox.Text);
+                    CurrentProjectSettingValues.MaxBackupCount = maxBackupCount >= 1 ? maxBackupCount : 256;
+                }
+                catch
+                {
+                    MessageBox.Show("バックアップ保持数の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
+                    return;
                 }
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// 新規プロジェクト作成の場合
