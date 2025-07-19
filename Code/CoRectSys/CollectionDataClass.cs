@@ -842,48 +842,42 @@ namespace CREC
                     return;
                 }
                 
-                List<FileSystemInfo> backupedCollectionItems = new List<FileSystemInfo>();// バックアップファイル/フォルダのリストを取得
+                List<FileSystemInfo> backedUpCollectionItems = new List<FileSystemInfo>();// バックアップファイル/フォルダのリストを取得
 
                 // 圧縮設定に応じてファイルまたはフォルダを取得
                 // フォルダバックアップを取得
                 DirectoryInfo backupDirectoryInfo = new DirectoryInfo(backupFolderPath);
-                backupedCollectionItems.AddRange(backupDirectoryInfo.GetDirectories());
+                backedUpCollectionItems.AddRange(backupDirectoryInfo.GetDirectories());
                 // 圧縮バックアップを取得（.zipファイル）
-                DirectoryInfo backupDirectoryInfoZip = new DirectoryInfo(backupFolderPath);
-                backupedCollectionItems.AddRange(backupDirectoryInfoZip.GetFiles("*.zip"));
+                backedUpCollectionItems.AddRange(backupDirectoryInfo.GetFiles("*.zip"));
 
-                backupedCollectionItems.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));// 作成日時順でソート（古い順）
+                backedUpCollectionItems.Sort((x, y) => x.CreationTime.CompareTo(y.CreationTime));// 作成日時順でソート（古い順）
 
-                // バックアップ上限数を取得
-                int maxBackupCount = projectSettingValues.MaxBackupCount;
-                // パラメータチェック
-                if (maxBackupCount < 1)
-                {
-                    maxBackupCount
-                        = projectSettingValues.MaxBackupCount
-                        = 1; // バックアップ上限数が1未満の場合は1に設定
-                }
+                // バックアップ上限数を取得(パラメータチェック含む)
+                int maxBackupCount
+                        = projectSettingValues.MaxBackupCount 
+                        = Math.Max(projectSettingValues.MaxBackupCount, 1);// バックアップ上限数が1未満の場合は1に設定
 
                 // 設定されたバックアップ上限数を超えている場合、古いものから削除
-                while (backupedCollectionItems.Count > maxBackupCount)
+                while (backedUpCollectionItems.Count > maxBackupCount)
                 {
-                    FileSystemInfo oldestBackupedCollectionItem = backupedCollectionItems[0];// 最も古いバックアップをリストから取得
-                    backupedCollectionItems.RemoveAt(0);// 最も古いバックアップをリストから削除
+                    FileSystemInfo oldestBackedUpCollectionItem = backedUpCollectionItems[0];// 最も古いバックアップをリストから取得
+                    backedUpCollectionItems.RemoveAt(0);// 最も古いバックアップをリストから削除
 
                     try
                     {
-                        if (oldestBackupedCollectionItem is DirectoryInfo)// フォルダの場合
+                        if (oldestBackedUpCollectionItem is DirectoryInfo)// フォルダの場合
                         {
-                            Directory.Delete(oldestBackupedCollectionItem.FullName, true);
+                            Directory.Delete(oldestBackedUpCollectionItem.FullName, true);
                         }
-                        else if (oldestBackupedCollectionItem is FileInfo)// ファイルの場合
+                        else if (oldestBackedUpCollectionItem is FileInfo)// ファイルの場合
                         {
-                            File.Delete(oldestBackupedCollectionItem.FullName);
+                            File.Delete(oldestBackedUpCollectionItem.FullName);
                         }
                     }
                     catch (Exception ex)// 個別のバックアップ削除失敗は警告のみ表示して終了
                     {
-                        MessageBox.Show($"古いバックアップの削除に失敗しました: {oldestBackupedCollectionItem.Name}\n{ex.Message}", "CREC");
+                        MessageBox.Show($"古いバックアップの削除に失敗しました: {oldestBackedUpCollectionItem.Name}\n{ex.Message}", "CREC");
                         return;
                     }
                 }
