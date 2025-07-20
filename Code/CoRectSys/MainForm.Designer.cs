@@ -1358,7 +1358,6 @@
             this.InventoryModeDataGridView.RowHeadersVisible = false;
             this.InventoryModeDataGridView.RowHeadersWidth = 48;
             this.InventoryModeDataGridView.RowTemplate.Height = 28;
-            this.InventoryModeDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.InventoryModeDataGridView.Size = new System.Drawing.Size(1125, 925);
             this.InventoryModeDataGridView.TabIndex = 48;
             this.InventoryModeDataGridView.Visible = false;
@@ -1386,10 +1385,11 @@
             // 
             // note
             // 
-            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.note.HeaderText = "コメント";
             this.note.MinimumWidth = 6;
             this.note.Name = "note";
+            this.note.Width = 582;
             // 
             // InventoryLabel
             // 
@@ -2497,10 +2497,6 @@
         private System.Windows.Forms.Button EditRequestButton;
         private System.Windows.Forms.Button ReadOnlyButton;
         private System.Windows.Forms.Label UUIDEditStatusLabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn operation;
-        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.ToolStripMenuItem CopyAndAddContentsContextToolStripMenuItem;
         private System.Windows.Forms.Button AddQuantityButton;
         private System.Windows.Forms.Button SubtractQuantityButton;
@@ -2510,6 +2506,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripSeparator ShowSelectedItemInformationToolStripMenuItemSeparator;
         private System.Windows.Forms.ToolStripMenuItem OpenCollectionDataLocationToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn operation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn note;
     }
 }
 

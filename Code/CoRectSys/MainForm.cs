@@ -34,10 +34,9 @@ namespace CREC
         #region 定数の宣言
         readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.0.1.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
-
-        // Windows メッセージ定数（水平スクロール対応用）
-        private const int WM_MOUSEHWHEEL = 0x020E;
+        private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
         #endregion
+
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
         ConfigValuesClass ConfigValues = new ConfigValuesClass();// config.sys読み込み用Class
@@ -100,8 +99,6 @@ namespace CREC
             PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
             dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
-
-            dataGridView1.MouseWheel += DataGridView_MouseWheelControl;// 水平スクロール対応のためのマウスホイールイベントハンドラを追加
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
             ContentsDataTable.Columns.Add("IDList");
@@ -114,6 +111,9 @@ namespace CREC
             ContentsDataTable.Columns.Add("Tag3List");
             ContentsDataTable.Columns.Add("InventoryList");
             ContentsDataTable.Columns.Add("InventoryStatusList");
+            // DataGridViewに横スクロールを設定
+            dataGridView1.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
+            InventoryModeDataGridView.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
             // モニタ情報を取得
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
