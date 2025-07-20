@@ -98,6 +98,7 @@ namespace CREC
             dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
             // 水平スクロール対応のためのマウスホイールイベントハンドラを追加
+            // Shift+マウスホイール または Ctrl+マウスホイール で水平スクロールが可能
             dataGridView1.MouseWheel += DataGridView1_MouseWheel;
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
@@ -1421,24 +1422,47 @@ namespace CREC
             if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
             {
                 // 水平スクロール量を計算 (マウスホイールの方向を考慮)
-                int scrollAmount = e.Delta > 0 ? -3 : 3; // スクロール量を調整
+                int scrollAmount = e.Delta > 0 ? -1 : 1; // より細かいスクロール制御
                 
                 // 現在の表示されている最初の列のインデックスを取得
                 int currentColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
                 
                 // 新しい列インデックスを計算
-                int newColumnIndex = Math.Max(0, Math.Min(dgv.ColumnCount - 1, currentColumnIndex + scrollAmount));
+                int newColumnIndex = currentColumnIndex + scrollAmount;
+                
+                // 範囲チェック: 表示可能な列の範囲内に制限
+                if (newColumnIndex < 0)
+                {
+                    newColumnIndex = 0;
+                }
+                else if (newColumnIndex >= dgv.ColumnCount)
+                {
+                    newColumnIndex = dgv.ColumnCount - 1;
+                }
                 
                 // 水平スクロールを実行
                 try
                 {
-                    if (newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount && newColumnIndex != currentColumnIndex)
+                    if (newColumnIndex != currentColumnIndex && newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount)
                     {
-                        // 指定した列が見える範囲にあることを確認
+                        // 指定した列が見える状態であることを確認
                         var targetColumn = dgv.Columns[newColumnIndex];
-                        if (targetColumn.Visible)
+                        if (targetColumn != null && targetColumn.Visible)
                         {
                             dgv.FirstDisplayedScrollingColumnIndex = newColumnIndex;
+                        }
+                        else
+                        {
+                            // 非表示列をスキップして次の表示列を探す
+                            int direction = scrollAmount > 0 ? 1 : -1;
+                            for (int i = newColumnIndex; i >= 0 && i < dgv.ColumnCount; i += direction)
+                            {
+                                if (dgv.Columns[i].Visible)
+                                {
+                                    dgv.FirstDisplayedScrollingColumnIndex = i;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
