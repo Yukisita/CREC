@@ -101,7 +101,7 @@ namespace CREC
             dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
             
-            dataGridView1.MouseWheel += DataGridView_MouseWheel;// 水平スクロール対応のためのマウスホイールイベントハンドラを追加
+            dataGridView1.MouseWheel += DataGridView_MouseWheelControl;// 水平スクロール対応のためのマウスホイールイベントハンドラを追加
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
             ContentsDataTable.Columns.Add("IDList");
@@ -1442,17 +1442,24 @@ namespace CREC
             ShowDetails();
         }
 
-        private void DataGridView_MouseWheel(object sender, MouseEventArgs e)// 水平スクロール対応
+        /// <summary>
+        /// ShiftまたはCtrl押下時のDataGridViewの水平スクロール対応
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridView_MouseWheelControl(object sender, MouseEventArgs e)
         {
-            DataGridView dgv = sender as DataGridView;
-            if (dgv == null) return;
+            // DataGridViewでない場合は何もしない
+            if (!(sender is DataGridView dgv))
+            {
+                return;
+            }
 
-            // Shiftキーが押されているか、またはCtrlキーが押されている場合に水平スクロールを実行
+            // ShiftまたはCtrl押下時は水平スクロールを実行
             if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
             {
-                PerformHorizontalScroll(dgv, e.Delta);
-                // イベントを処理済みとしてマークし、縦スクロールを防ぐ
-                ((HandledMouseEventArgs)e).Handled = true;
+                PerformHorizontalScroll(dgv, e.Delta);// 横スクロールを実行
+                ((HandledMouseEventArgs)e).Handled = true;// イベントを処理済みとしてマークし、縦スクロールを防ぐ
             }
         }
 
@@ -1465,37 +1472,21 @@ namespace CREC
         {
             try
             {
-                // スクロール量を計算（滑らかな移動のため）
-                int scrollPixels = (Math.Abs(delta) / 120) * 30; // 標準的なマウスホイールの1ステップで30ピクセル移動
-                if (scrollPixels < 30) scrollPixels = 30; // 最小スクロール量を確保
+                // 水平スクロールに必要な値を取得
+                int horizontalScrollPixels = Math.Max(30, Math.Abs(delta) / 120 * 30); // スクロール量を計算、マウスホイールの1ステップで30ピクセル移動、最小30ピクセル
+                int horizontalScrollPixelsWithDirection = delta > 0 ? -horizontalScrollPixels : horizontalScrollPixels;// スクロール方向を決定
+                int currentHorizontalScrollOffset = dgv.HorizontalScrollingOffset;// 現在の水平スクロール位置を取得
+                int newHorizontalScrollOffset = currentHorizontalScrollOffset + horizontalScrollPixelsWithDirection;// 新しいスクロール位置を計算
+                int maxScrollOffset = Math.Max(0, dgv.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) - dgv.ClientSize.Width);// スクロール可能な範囲を計算
+
+                // 移動を範囲内に制限
+                newHorizontalScrollOffset = Math.Max(0, newHorizontalScrollOffset);// スクロール位置が0未満にならないように制限
+                newHorizontalScrollOffset = Math.Min(maxScrollOffset, newHorizontalScrollOffset);// スクロール位置が最大値を超えないように制限
                 
-                // スクロール方向を決定
-                int scrollDirection = delta > 0 ? -scrollPixels : scrollPixels;
-                
-                // 現在の水平スクロール位置を取得
-                int currentScrollOffset = dgv.HorizontalScrollingOffset;
-                
-                // 新しいスクロール位置を計算
-                int newScrollOffset = currentScrollOffset + scrollDirection;
-                
-                // スクロール可能な範囲を計算
-                int maxScrollOffset = dgv.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) - dgv.ClientSize.Width;
-                if (maxScrollOffset < 0) maxScrollOffset = 0;
-                
-                // 範囲内に制限
-                if (newScrollOffset < 0)
+                // 移動がある場合は水平スクロールを実行
+                if (newHorizontalScrollOffset != currentHorizontalScrollOffset)
                 {
-                    newScrollOffset = 0;
-                }
-                else if (newScrollOffset > maxScrollOffset)
-                {
-                    newScrollOffset = maxScrollOffset;
-                }
-                
-                // 水平スクロールを実行
-                if (newScrollOffset != currentScrollOffset)
-                {
-                    dgv.HorizontalScrollingOffset = newScrollOffset;
+                    dgv.HorizontalScrollingOffset = newHorizontalScrollOffset;
                 }
             }
             catch
