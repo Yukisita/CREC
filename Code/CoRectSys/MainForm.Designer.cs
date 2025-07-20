@@ -1354,6 +1354,7 @@
             this.InventoryModeDataGridView.AllowUserToDeleteRows = false;
             this.InventoryModeDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.InventoryModeDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.InventoryModeDataGridView.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
             this.InventoryModeDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.InventoryModeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
