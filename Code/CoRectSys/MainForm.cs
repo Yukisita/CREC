@@ -97,6 +97,8 @@ namespace CREC
             PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
             dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
+            // 水平スクロール対応のためのマウスホイールイベントハンドラを追加
+            dataGridView1.MouseWheel += DataGridView1_MouseWheel;
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
             ContentsDataTable.Columns.Add("IDList");
@@ -1408,6 +1410,46 @@ namespace CREC
                 }
             }
             ShowDetails();
+        }
+
+        private void DataGridView1_MouseWheel(object sender, MouseEventArgs e)// 水平スクロール対応
+        {
+            DataGridView dgv = sender as DataGridView;
+            if (dgv == null) return;
+
+            // Shiftキーが押されているか、またはCtrlキーが押されている場合に水平スクロールを実行
+            if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
+            {
+                // 水平スクロール量を計算 (マウスホイールの方向を考慮)
+                int scrollAmount = e.Delta > 0 ? -3 : 3; // スクロール量を調整
+                
+                // 現在の表示されている最初の列のインデックスを取得
+                int currentColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
+                
+                // 新しい列インデックスを計算
+                int newColumnIndex = Math.Max(0, Math.Min(dgv.ColumnCount - 1, currentColumnIndex + scrollAmount));
+                
+                // 水平スクロールを実行
+                try
+                {
+                    if (newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount && newColumnIndex != currentColumnIndex)
+                    {
+                        // 指定した列が見える範囲にあることを確認
+                        var targetColumn = dgv.Columns[newColumnIndex];
+                        if (targetColumn.Visible)
+                        {
+                            dgv.FirstDisplayedScrollingColumnIndex = newColumnIndex;
+                        }
+                    }
+                }
+                catch
+                {
+                    // スクロール操作でエラーが発生した場合は無視
+                }
+                
+                // イベントを処理済みとしてマークし、縦スクロールを防ぐ
+                ((HandledMouseEventArgs)e).Handled = true;
+            }
         }
         private void OpenDataLocation_Click(object sender, EventArgs e)// ファイルの場所を表示
         {
