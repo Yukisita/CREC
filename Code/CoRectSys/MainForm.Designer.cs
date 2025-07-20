@@ -809,6 +809,7 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -858,6 +859,7 @@
             // 
             // IDList
             // 
+            this.IDList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.IDList.DataPropertyName = "IDList";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
@@ -866,10 +868,10 @@
             this.IDList.Name = "IDList";
             this.IDList.ReadOnly = true;
             this.IDList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.IDList.Width = 125;
             // 
             // MCList
             // 
+            this.MCList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.MCList.DataPropertyName = "MCList";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
@@ -881,6 +883,7 @@
             // 
             // ObjectNameList
             // 
+            this.ObjectNameList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.ObjectNameList.DataPropertyName = "ObjectNameList";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
@@ -889,10 +892,11 @@
             this.ObjectNameList.Name = "ObjectNameList";
             this.ObjectNameList.ReadOnly = true;
             this.ObjectNameList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ObjectNameList.Width = 125;
+            this.ObjectNameList.Width = 101;
             // 
             // RegistrationDateList
             // 
+            this.RegistrationDateList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.RegistrationDateList.DataPropertyName = "RegistrationDateList";
             this.RegistrationDateList.HeaderText = "登録日";
             this.RegistrationDateList.MinimumWidth = 6;
@@ -903,6 +907,7 @@
             // 
             // CategoryList
             // 
+            this.CategoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.CategoryList.DataPropertyName = "CategoryList";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
@@ -911,10 +916,11 @@
             this.CategoryList.Name = "CategoryList";
             this.CategoryList.ReadOnly = true;
             this.CategoryList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CategoryList.Width = 128;
+            this.CategoryList.Width = 155;
             // 
             // Tag1List
             // 
+            this.Tag1List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag1List.DataPropertyName = "Tag1List";
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
             this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
@@ -927,6 +933,7 @@
             // 
             // Tag2List
             // 
+            this.Tag2List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag2List.DataPropertyName = "Tag2List";
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
@@ -939,6 +946,7 @@
             // 
             // Tag3List
             // 
+            this.Tag3List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag3List.DataPropertyName = "Tag3List";
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
@@ -951,6 +959,7 @@
             // 
             // InventoryList
             // 
+            this.InventoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.InventoryList.DataPropertyName = "InventoryList";
             dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
@@ -963,6 +972,7 @@
             // 
             // InventoryStatusList
             // 
+            this.InventoryStatusList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.InventoryStatusList.DataPropertyName = "InventoryStatusList";
             dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
@@ -1344,6 +1354,7 @@
             this.InventoryModeDataGridView.AllowUserToDeleteRows = false;
             this.InventoryModeDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
+            this.InventoryModeDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.InventoryModeDataGridView.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
             this.InventoryModeDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.InventoryModeDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -1358,38 +1369,41 @@
             this.InventoryModeDataGridView.RowHeadersVisible = false;
             this.InventoryModeDataGridView.RowHeadersWidth = 48;
             this.InventoryModeDataGridView.RowTemplate.Height = 28;
-            this.InventoryModeDataGridView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.InventoryModeDataGridView.Size = new System.Drawing.Size(1125, 925);
             this.InventoryModeDataGridView.TabIndex = 48;
             this.InventoryModeDataGridView.Visible = false;
             // 
             // date
             // 
+            this.date.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.date.HeaderText = "日付";
             this.date.MinimumWidth = 6;
             this.date.Name = "date";
-            this.date.Width = 180;
+            this.date.Width = 101;
             // 
             // operation
             // 
+            this.operation.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.operation.HeaderText = "詳細";
             this.operation.MinimumWidth = 6;
             this.operation.Name = "operation";
-            this.operation.Width = 180;
+            this.operation.Width = 101;
             // 
             // quantity
             // 
+            this.quantity.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.quantity.HeaderText = "数量";
             this.quantity.MinimumWidth = 6;
             this.quantity.Name = "quantity";
-            this.quantity.Width = 180;
+            this.quantity.Width = 101;
             // 
             // note
             // 
-            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.note.HeaderText = "コメント";
             this.note.MinimumWidth = 6;
             this.note.Name = "note";
+            this.note.Width = 155;
             // 
             // InventoryLabel
             // 
@@ -2460,17 +2474,6 @@
         private System.Windows.Forms.Label MCLabel;
         private System.Windows.Forms.Label RealLocationLabel;
         private System.Windows.Forms.Label DataLoadingLabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn TargetPath;
-        private System.Windows.Forms.DataGridViewTextBoxColumn IDList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn MCList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ObjectNameList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RegistrationDateList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn CategoryList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag1List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag2List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
-        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
-        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
         private System.Windows.Forms.ToolStripMenuItem ProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ProjectInformationToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
@@ -2497,10 +2500,6 @@
         private System.Windows.Forms.Button EditRequestButton;
         private System.Windows.Forms.Button ReadOnlyButton;
         private System.Windows.Forms.Label UUIDEditStatusLabel;
-        private System.Windows.Forms.DataGridViewTextBoxColumn date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn operation;
-        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.ToolStripMenuItem CopyAndAddContentsContextToolStripMenuItem;
         private System.Windows.Forms.Button AddQuantityButton;
         private System.Windows.Forms.Button SubtractQuantityButton;
@@ -2510,6 +2509,21 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripSeparator ShowSelectedItemInformationToolStripMenuItemSeparator;
         private System.Windows.Forms.ToolStripMenuItem OpenCollectionDataLocationToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TargetPath;
+        private System.Windows.Forms.DataGridViewTextBoxColumn IDList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MCList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ObjectNameList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn RegistrationDateList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn CategoryList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag1List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag2List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tag3List;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn InventoryStatusList;
+        private System.Windows.Forms.DataGridViewTextBoxColumn date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn operation;
+        private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn note;
     }
 }
 

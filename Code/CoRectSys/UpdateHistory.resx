@@ -525,7 +525,11 @@ ver9.0.0（2025/07/13）
 バックアップ処理を変更（構造変更等含む、破壊的変更です）
 
 ver9.0.1.0（2025/07/19）
-バックアップ上限数設定機能を追加（デフォルト256個）</value>
+バックアップ上限数設定機能を追加（デフォルト256個）
+
+ver9.1.0.0（2025/07/20）
+コレクション一覧及び在庫管理一覧に横スクロール機能を追加
+コレクション一覧及び在庫管理一覧描画時に幅を自動調整するよう変更</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
