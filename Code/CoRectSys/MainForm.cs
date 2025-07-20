@@ -1282,7 +1282,11 @@ namespace CREC
             // DataGridView関係
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
+            // 表示直後、セルの幅が適切になるようDataGridViewAutoSizeRowsModeをDisplayedCellsに設定
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
             try
             {
                 try
@@ -1402,6 +1406,14 @@ namespace CREC
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            // 手動でセルの幅を変えられるようにDataGridViewAutoSizeRowsModeをNoneに戻す。ただし、現在の列幅は維持する。
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                int currentWidth = column.Width;// リセットする前の列幅を取得
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
+                column.Width = currentWidth;// リセット前の列幅に戻す
+            }
+
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -2605,7 +2617,11 @@ namespace CREC
             // DataGridView関係
             InventoryModeDataGridView.Rows.Clear();
             InventoryModeDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
+            // 表示直後、セルの幅が適切になるようDataGridViewAutoSizeRowsModeをDisplayedCellsに設定
+            foreach(DataGridViewColumn column in InventoryModeDataGridView.Columns)
+            {
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
             // 行数を確認
             string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             // 1行目を読み込み
@@ -2664,6 +2680,13 @@ namespace CREC
                 ProperInventorySettingsTextBox.Text = Convert.ToString(SafetyStock);
             }
             ProperInventoryNotification();// 適正在庫設定と比較
+            // 手動でセルの幅を変えられるようにDataGridViewAutoSizeRowsModeをNoneに戻す。ただし、現在の列幅は維持する。
+            foreach (DataGridViewColumn column in InventoryModeDataGridView.Columns)
+            {
+                int currentWidth = column.Width;// リセットする前の列幅を取得
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
+                column.Width = currentWidth;// リセット前の列幅に戻す
+            }
         }
         private void CloseInventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード終了
         {
