@@ -1457,55 +1457,45 @@ namespace CREC
         }
 
         /// <summary>
-        /// 水平スクロールを実行するヘルパーメソッド
+        /// 水平スクロールを実行するヘルパーメソッド（滑らかなスクロールバー移動）
         /// </summary>
         /// <param name="dgv">対象のDataGridView</param>
         /// <param name="delta">スクロール量（正の値で左、負の値で右）</param>
         private void PerformHorizontalScroll(DataGridView dgv, int delta)
         {
-            // 水平スクロール量を計算 (マウスホイールの方向を考慮)
-            int scrollAmount = delta > 0 ? -1 : 1; // より細かいスクロール制御
-            
-            // 現在の表示されている最初の列のインデックスを取得
-            int currentColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
-            
-            // 新しい列インデックスを計算
-            int newColumnIndex = currentColumnIndex + scrollAmount;
-            
-            // 範囲チェック: 表示可能な列の範囲内に制限
-            if (newColumnIndex < 0)
-            {
-                newColumnIndex = 0;
-            }
-            else if (newColumnIndex >= dgv.ColumnCount)
-            {
-                newColumnIndex = dgv.ColumnCount - 1;
-            }
-            
-            // 水平スクロールを実行
             try
             {
-                if (newColumnIndex != currentColumnIndex && newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount)
+                // スクロール量を計算（滑らかな移動のため）
+                int scrollPixels = (Math.Abs(delta) / 120) * 30; // 標準的なマウスホイールの1ステップで30ピクセル移動
+                if (scrollPixels < 30) scrollPixels = 30; // 最小スクロール量を確保
+                
+                // スクロール方向を決定
+                int scrollDirection = delta > 0 ? -scrollPixels : scrollPixels;
+                
+                // 現在の水平スクロール位置を取得
+                int currentScrollOffset = dgv.HorizontalScrollingOffset;
+                
+                // 新しいスクロール位置を計算
+                int newScrollOffset = currentScrollOffset + scrollDirection;
+                
+                // スクロール可能な範囲を計算
+                int maxScrollOffset = dgv.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) - dgv.ClientSize.Width;
+                if (maxScrollOffset < 0) maxScrollOffset = 0;
+                
+                // 範囲内に制限
+                if (newScrollOffset < 0)
                 {
-                    // 指定した列が見える状態であることを確認
-                    var targetColumn = dgv.Columns[newColumnIndex];
-                    if (targetColumn != null && targetColumn.Visible)
-                    {
-                        dgv.FirstDisplayedScrollingColumnIndex = newColumnIndex;
-                    }
-                    else
-                    {
-                        // 非表示列をスキップして次の表示列を探す
-                        int direction = scrollAmount > 0 ? 1 : -1;
-                        for (int i = newColumnIndex; i >= 0 && i < dgv.ColumnCount; i += direction)
-                        {
-                            if (dgv.Columns[i].Visible)
-                            {
-                                dgv.FirstDisplayedScrollingColumnIndex = i;
-                                break;
-                            }
-                        }
-                    }
+                    newScrollOffset = 0;
+                }
+                else if (newScrollOffset > maxScrollOffset)
+                {
+                    newScrollOffset = maxScrollOffset;
+                }
+                
+                // 水平スクロールを実行
+                if (newScrollOffset != currentScrollOffset)
+                {
+                    dgv.HorizontalScrollingOffset = newScrollOffset;
                 }
             }
             catch
