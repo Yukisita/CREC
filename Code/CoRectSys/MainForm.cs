@@ -100,10 +100,8 @@ namespace CREC
             PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
             dgvPropertyInfo.SetValue(dataGridView1, true, null);
             dataGridView1.Refresh();
-            // 水平スクロール対応のためのマウスホイールイベントハンドラを追加
-            // Shift+マウスホイール または Ctrl+マウスホイール で水平スクロールが可能
-            // タッチパッドの水平スクロールジェスチャーも自動的に検出して対応
-            dataGridView1.MouseWheel += DataGridView1_MouseWheel;
+            
+            dataGridView1.MouseWheel += DataGridView_MouseWheel;// 水平スクロール対応のためのマウスホイールイベントハンドラを追加
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
             ContentsDataTable.Columns.Add("IDList");
@@ -1444,7 +1442,7 @@ namespace CREC
             ShowDetails();
         }
 
-        private void DataGridView1_MouseWheel(object sender, MouseEventArgs e)// 水平スクロール対応
+        private void DataGridView_MouseWheel(object sender, MouseEventArgs e)// 水平スクロール対応
         {
             DataGridView dgv = sender as DataGridView;
             if (dgv == null) return;
