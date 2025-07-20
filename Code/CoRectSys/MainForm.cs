@@ -1411,7 +1411,7 @@ namespace CREC
             {
                 int currentWidth = column.Width;// リセットする前の列幅を取得
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
-                column.Width = currentWidth;// リセット前の列幅に戻す
+                column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
             }
 
         }
@@ -2685,7 +2685,7 @@ namespace CREC
             {
                 int currentWidth = column.Width;// リセットする前の列幅を取得
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
-                column.Width = currentWidth;// リセット前の列幅に戻す
+                column.Width = currentWidth +(int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
             }
         }
         private void CloseInventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード終了
