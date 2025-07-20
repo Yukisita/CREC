@@ -34,6 +34,9 @@ namespace CREC
         #region 定数の宣言
         readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.0.1.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
+        
+        // Windows メッセージ定数（水平スクロール対応用）
+        private const int WM_MOUSEHWHEEL = 0x020E;
         #endregion
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
@@ -99,6 +102,7 @@ namespace CREC
             dataGridView1.Refresh();
             // 水平スクロール対応のためのマウスホイールイベントハンドラを追加
             // Shift+マウスホイール または Ctrl+マウスホイール で水平スクロールが可能
+            // タッチパッドの水平スクロールジェスチャーも自動的に検出して対応
             dataGridView1.MouseWheel += DataGridView1_MouseWheel;
             ContentsDataTable.Rows.Clear();
             ContentsDataTable.Columns.Add("TargetPath");
@@ -181,6 +185,33 @@ namespace CREC
             {
                 MessageBox.Show(string.Empty + ex, "CREC");
             }
+        }
+
+        /// <summary>
+        /// Windowsメッセージを処理してタッチパッドの水平スクロールを検出
+        /// </summary>
+        /// <param name="m">メッセージ</param>
+        protected override void WndProc(ref Message m)
+        {
+            // 水平マウスホイール（タッチパッドの水平スクロール）を検出
+            if (m.Msg == WM_MOUSEHWHEEL)
+            {
+                // DataGridViewが表示されていて、フォーカスされている場合のみ処理
+                if (dataGridView1.Visible && dataGridView1.Focused)
+                {
+                    // WPARAMから水平スクロール量を取得
+                    int delta = (short)((m.WParam.ToInt32() >> 16) & 0xFFFF);
+                    
+                    // 水平スクロールを実行（タッチパッドでは左右が逆になることがあるので調整）
+                    PerformHorizontalScroll(dataGridView1, -delta);
+                    
+                    // メッセージを処理済みとしてマーク
+                    return;
+                }
+            }
+            
+            // その他のメッセージは通常通り処理
+            base.WndProc(ref m);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)// フォームが開いた直後の処理
@@ -1421,58 +1452,67 @@ namespace CREC
             // Shiftキーが押されているか、またはCtrlキーが押されている場合に水平スクロールを実行
             if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
             {
-                // 水平スクロール量を計算 (マウスホイールの方向を考慮)
-                int scrollAmount = e.Delta > 0 ? -1 : 1; // より細かいスクロール制御
-                
-                // 現在の表示されている最初の列のインデックスを取得
-                int currentColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
-                
-                // 新しい列インデックスを計算
-                int newColumnIndex = currentColumnIndex + scrollAmount;
-                
-                // 範囲チェック: 表示可能な列の範囲内に制限
-                if (newColumnIndex < 0)
+                PerformHorizontalScroll(dgv, e.Delta);
+                // イベントを処理済みとしてマークし、縦スクロールを防ぐ
+                ((HandledMouseEventArgs)e).Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// 水平スクロールを実行するヘルパーメソッド
+        /// </summary>
+        /// <param name="dgv">対象のDataGridView</param>
+        /// <param name="delta">スクロール量（正の値で左、負の値で右）</param>
+        private void PerformHorizontalScroll(DataGridView dgv, int delta)
+        {
+            // 水平スクロール量を計算 (マウスホイールの方向を考慮)
+            int scrollAmount = delta > 0 ? -1 : 1; // より細かいスクロール制御
+            
+            // 現在の表示されている最初の列のインデックスを取得
+            int currentColumnIndex = dgv.FirstDisplayedScrollingColumnIndex;
+            
+            // 新しい列インデックスを計算
+            int newColumnIndex = currentColumnIndex + scrollAmount;
+            
+            // 範囲チェック: 表示可能な列の範囲内に制限
+            if (newColumnIndex < 0)
+            {
+                newColumnIndex = 0;
+            }
+            else if (newColumnIndex >= dgv.ColumnCount)
+            {
+                newColumnIndex = dgv.ColumnCount - 1;
+            }
+            
+            // 水平スクロールを実行
+            try
+            {
+                if (newColumnIndex != currentColumnIndex && newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount)
                 {
-                    newColumnIndex = 0;
-                }
-                else if (newColumnIndex >= dgv.ColumnCount)
-                {
-                    newColumnIndex = dgv.ColumnCount - 1;
-                }
-                
-                // 水平スクロールを実行
-                try
-                {
-                    if (newColumnIndex != currentColumnIndex && newColumnIndex >= 0 && newColumnIndex < dgv.ColumnCount)
+                    // 指定した列が見える状態であることを確認
+                    var targetColumn = dgv.Columns[newColumnIndex];
+                    if (targetColumn != null && targetColumn.Visible)
                     {
-                        // 指定した列が見える状態であることを確認
-                        var targetColumn = dgv.Columns[newColumnIndex];
-                        if (targetColumn != null && targetColumn.Visible)
+                        dgv.FirstDisplayedScrollingColumnIndex = newColumnIndex;
+                    }
+                    else
+                    {
+                        // 非表示列をスキップして次の表示列を探す
+                        int direction = scrollAmount > 0 ? 1 : -1;
+                        for (int i = newColumnIndex; i >= 0 && i < dgv.ColumnCount; i += direction)
                         {
-                            dgv.FirstDisplayedScrollingColumnIndex = newColumnIndex;
-                        }
-                        else
-                        {
-                            // 非表示列をスキップして次の表示列を探す
-                            int direction = scrollAmount > 0 ? 1 : -1;
-                            for (int i = newColumnIndex; i >= 0 && i < dgv.ColumnCount; i += direction)
+                            if (dgv.Columns[i].Visible)
                             {
-                                if (dgv.Columns[i].Visible)
-                                {
-                                    dgv.FirstDisplayedScrollingColumnIndex = i;
-                                    break;
-                                }
+                                dgv.FirstDisplayedScrollingColumnIndex = i;
+                                break;
                             }
                         }
                     }
                 }
-                catch
-                {
-                    // スクロール操作でエラーが発生した場合は無視
-                }
-                
-                // イベントを処理済みとしてマークし、縦スクロールを防ぐ
-                ((HandledMouseEventArgs)e).Handled = true;
+            }
+            catch
+            {
+                // スクロール操作でエラーが発生した場合は無視
             }
         }
         private void OpenDataLocation_Click(object sender, EventArgs e)// ファイルの場所を表示
