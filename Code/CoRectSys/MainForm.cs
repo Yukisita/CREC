@@ -186,28 +186,25 @@ namespace CREC
         }
 
         /// <summary>
-        /// Windowsメッセージを処理してタッチパッドの水平スクロールを検出
+        /// Windowsメッセージの処理をオーバーライドする処理
         /// </summary>
         /// <param name="m">メッセージ</param>
         protected override void WndProc(ref Message m)
         {
-            // 水平マウスホイール（タッチパッドの水平スクロール）を検出
+            // 水平マウスホイール及びタッチパッドの水平スクロールを検出
             if (m.Msg == WM_MOUSEHWHEEL)
             {
-                // DataGridViewが表示されていて、フォーカスされている場合のみ処理
-                if (dataGridView1.Visible && dataGridView1.Focused)
+                Control activeControl = this.ActiveControl;// アクティブなコントロールを取得
+                // アクティブなコントロールがDataGridViewかつ表示状態の時は水平スクロール処理を実行
+                if (activeControl != null
+                    && activeControl is DataGridView dgv
+                    && activeControl.Visible)
                 {
-                    // WPARAMから水平スクロール量を取得
-                    int delta = (short)((m.WParam.ToInt32() >> 16) & 0xFFFF);
-                    
-                    // 水平スクロールを実行（タッチパッドでは左右が逆になることがあるので調整）
-                    PerformHorizontalScroll(dataGridView1, -delta);
-                    
-                    // メッセージを処理済みとしてマーク
-                    return;
+                    int delta = (short)((m.WParam.ToInt32() >> 16) & 0xFFFF);// WParamから水平スクロール量を取得
+                    PerformHorizontalScroll(dgv, -delta);// 水平スクロールを実行（タッチパッドでは左右が逆になることがあるので調整）
+                    return;// メッセージを処理済みとしてマーク
                 }
             }
-            
             // その他のメッセージは通常通り処理
             base.WndProc(ref m);
         }
