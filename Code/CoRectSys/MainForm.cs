@@ -113,7 +113,7 @@ namespace CREC
             ContentsDataTable.Columns.Add("InventoryStatusList");
             // DataGridViewに横スクロールを設定
             dataGridView1.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
-            InventoryModeDataGridView.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
+            InventoryModeDataGridView.MouseWheel += DataGridView_MouseWheelControl;// 在庫数一覧
             // モニタ情報を取得
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
