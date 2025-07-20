@@ -1282,7 +1282,7 @@ namespace CREC
             // DataGridView関係
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             try
             {
                 try
@@ -2605,7 +2605,7 @@ namespace CREC
             // DataGridView関係
             InventoryModeDataGridView.Rows.Clear();
             InventoryModeDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
+            InventoryModeDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
             // 行数を確認
             string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             // 1行目を読み込み
