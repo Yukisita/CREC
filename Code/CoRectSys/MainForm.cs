@@ -34,7 +34,9 @@ namespace CREC
         #region 定数の宣言
         readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.0.1.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
+        private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
         #endregion
+
         #region 変数の宣言
         // プロジェクトファイル読み込み用変数
         ConfigValuesClass ConfigValues = new ConfigValuesClass();// config.sys読み込み用Class
@@ -109,6 +111,9 @@ namespace CREC
             ContentsDataTable.Columns.Add("Tag3List");
             ContentsDataTable.Columns.Add("InventoryList");
             ContentsDataTable.Columns.Add("InventoryStatusList");
+            // DataGridViewに横スクロールを設定
+            dataGridView1.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
+            InventoryModeDataGridView.MouseWheel += DataGridView_MouseWheelControl;// コレクション一覧
             // モニタ情報を取得
             int ScreenWidth = System.Windows.Forms.Screen.GetBounds(this).Width;
             int ScreenHeight = System.Windows.Forms.Screen.GetBounds(this).Height;
@@ -3145,6 +3150,85 @@ namespace CREC
             {
                 SearchButton.Visible = true;
                 SearchButton.BringToFront();// SearchButtonを最前面に移動
+            }
+        }
+        #endregion
+
+        #region 描画関連の処理
+        /// <summary>
+        /// Windowsメッセージの処理をオーバーライドする処理
+        /// </summary>
+        /// <param name="m">メッセージ</param>
+        protected override void WndProc(ref Message m)
+        {
+            // 水平マウスホイール及びタッチパッドの水平スクロールを検出
+            if (m.Msg == WM_MOUSEHWHEEL)
+            {
+                Control activeControl = this.ActiveControl;// アクティブなコントロールを取得
+                // アクティブなコントロールがDataGridViewかつ表示状態の時は水平スクロール処理を実行
+                if (activeControl != null
+                    && activeControl is DataGridView dgv
+                    && activeControl.Visible)
+                {
+                    int delta = (short)((m.WParam.ToInt32() >> 16) & 0xFFFF);// WParamから水平スクロール量を取得
+                    DataGridViewHorizontalScroll(dgv, -delta);// 水平スクロールを実行（タッチパッドでは左右が逆になることがあるので調整）
+                    return;// メッセージを処理済みとしてマーク
+                }
+            }
+            // その他のメッセージは通常通り処理
+            base.WndProc(ref m);
+        }
+
+        /// <summary>
+        /// ShiftまたはCtrl押下時のDataGridViewの水平スクロール対応
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridView_MouseWheelControl(object sender, MouseEventArgs e)
+        {
+            // DataGridViewでない場合は何もしない
+            if (!(sender is DataGridView dgv))
+            {
+                return;
+            }
+
+            // ShiftまたはCtrl押下時は水平スクロールを実行
+            if (ModifierKeys == Keys.Shift || ModifierKeys == Keys.Control)
+            {
+                DataGridViewHorizontalScroll(dgv, e.Delta);// 横スクロールを実行
+                ((HandledMouseEventArgs)e).Handled = true;// イベントを処理済みとしてマークし、縦スクロールを防ぐ
+            }
+        }
+
+        /// <summary>
+        /// 水平スクロールを実行するヘルパーメソッド（滑らかなスクロールバー移動）
+        /// </summary>
+        /// <param name="dgv">対象のDataGridView</param>
+        /// <param name="delta">スクロール量（正の値で左、負の値で右）</param>
+        private void DataGridViewHorizontalScroll(DataGridView dgv, int delta)
+        {
+            try
+            {
+                // 水平スクロールに必要な値を取得
+                int horizontalScrollPixels = Math.Max(30, Math.Abs(delta) / 120 * 30); // スクロール量を計算、マウスホイールの1ステップで30ピクセル移動、最小30ピクセル
+                int horizontalScrollPixelsWithDirection = delta > 0 ? -horizontalScrollPixels : horizontalScrollPixels;// スクロール方向を決定
+                int currentHorizontalScrollOffset = dgv.HorizontalScrollingOffset;// 現在の水平スクロール位置を取得
+                int newHorizontalScrollOffset = currentHorizontalScrollOffset + horizontalScrollPixelsWithDirection;// 新しいスクロール位置を計算
+                int maxScrollOffset = Math.Max(0, dgv.Columns.GetColumnsWidth(DataGridViewElementStates.Visible) - dgv.ClientSize.Width);// スクロール可能な範囲を計算
+
+                // 移動を範囲内に制限
+                newHorizontalScrollOffset = Math.Max(0, newHorizontalScrollOffset);// スクロール位置が0未満にならないように制限
+                newHorizontalScrollOffset = Math.Min(maxScrollOffset, newHorizontalScrollOffset);// スクロール位置が最大値を超えないように制限
+
+                // 移動がある場合は水平スクロールを実行
+                if (newHorizontalScrollOffset != currentHorizontalScrollOffset)
+                {
+                    dgv.HorizontalScrollingOffset = newHorizontalScrollOffset;
+                }
+            }
+            catch
+            {
+                // スクロール操作でエラーが発生した場合は無視
             }
         }
         #endregion
