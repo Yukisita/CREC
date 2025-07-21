@@ -894,14 +894,24 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="languageData">言語データ</param>
+        /// <param name="progress">進捗報告用（完了数、総数）</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static bool BackupProjectData(
             ProjectSettingValuesClass projectSettingValues,
-            XElement languageData
+            XElement languageData,
+            IProgress<(int completed, int total)> progress = null
             )
         {
             DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
             IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+            
+            // 総コレクション数を取得
+            var subFolderArray = subFolders.ToArray();
+            int totalCollections = subFolderArray.Length;
+            
+            // 進捗初期化
+            int completedCount = 0;
+            progress?.Report((completedCount, totalCollections));
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
@@ -918,7 +928,7 @@ namespace CREC
                 options.MaxDegreeOfParallelism = Environment.ProcessorCount;
             }
             // 非同期でコレクションのバックアップを実行
-            System.Threading.Tasks.Parallel.ForEach(subFolders, options, subFolder =>
+            System.Threading.Tasks.Parallel.ForEach(subFolderArray, options, subFolder =>
             {
                 // Index読み込み
                 CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
@@ -926,13 +936,19 @@ namespace CREC
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
-                    return; // 次のコレクションへ
                 }
-                // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
-                if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
+                else
                 {
-                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                    // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
+                    if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
+                    {
+                        backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                    }
                 }
+                
+                // 進捗更新（スレッドセーフにカウンタを更新）
+                int currentCompleted = System.Threading.Interlocked.Increment(ref completedCount);
+                progress?.Report((currentCompleted, totalCollections));
             });
 
             // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
@@ -948,15 +964,18 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="languageData">言語データ</param>
+        /// <param name="progress">進捗報告用（完了数、総数）</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static async Task<bool> BackupProjectDataAsync(
             ProjectSettingValuesClass projectSettingValues,
-            XElement languageData
+            XElement languageData,
+            IProgress<(int completed, int total)> progress = null
             )
         {
             return await Task.Run(() => BackupProjectData(
                 projectSettingValues,
-                languageData));
+                languageData,
+                progress));
         }
     }
 }
