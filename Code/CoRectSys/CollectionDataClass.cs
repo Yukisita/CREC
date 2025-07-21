@@ -910,8 +910,8 @@ namespace CREC
             int totalCollections = subFolderArray.Length;
             
             // 進捗初期化
-            int backedUpCount = 0;
-            progress?.Report((backedUpCount, totalCollections));
+            int backedUpCount = 0;// バックアップ完了数を初期化
+            progress?.Report((backedUpCount, totalCollections));// 進捗を初期化
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
