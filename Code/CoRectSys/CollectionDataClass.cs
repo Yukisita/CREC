@@ -910,8 +910,8 @@ namespace CREC
             int totalCollections = subFolderArray.Length;
             
             // 進捗初期化
-            int completedCount = 0;
-            progress?.Report((completedCount, totalCollections));
+            int backedUpCount = 0;
+            progress?.Report((backedUpCount, totalCollections));
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
@@ -936,10 +936,6 @@ namespace CREC
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
-                    
-                    // 進捗更新（スレッドセーフにカウンタを更新）
-                    int currentCompleted = System.Threading.Interlocked.Increment(ref completedCount);
-                    progress?.Report((currentCompleted, totalCollections));
                     return; // 次のコレクションへ
                 }
                 // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
@@ -948,9 +944,9 @@ namespace CREC
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
                 }
                 
-                // 進捗更新（スレッドセーフにカウンタを更新）
-                int currentCompleted = System.Threading.Interlocked.Increment(ref completedCount);
-                progress?.Report((currentCompleted, totalCollections));
+                // 進捗更新
+                int currentbackedUpCount = System.Threading.Interlocked.Increment(ref backedUpCount);// 完了数をインクリメント
+                progress?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
             });
 
             // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
