@@ -4026,7 +4026,7 @@ namespace CREC
             // 進捗報告用のProgressオブジェクトを作成
             var backUpProgressReport = new Progress<(int completed, int total)>(backUpData =>
             {
-                // UIスレッドで実行されるため、Invokeは不要
+                // バックアップ進捗を表示
                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage(
                     "BackupToolStripMenuItemBackupInProgressMessage",
                     "mainform",
