@@ -4031,11 +4031,10 @@ namespace CREC
             var progress = new Progress<(int completed, int total)>(progressData =>
             {
                 // UIスレッドで実行されるため、Invokeは不要
-                string progressText = LanguageSettingClass.GetOtherMessage(
+                BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage(
                     "BackupToolStripMenuItemBackupInProgressMessage",
                     "mainform",
                     LanguageFile) + $" ({progressData.completed}/{progressData.total})";
-                BackupToolStripMenuItem.Text = progressText;
             });
             
             // プロジェクトのバックアップ処理を開始

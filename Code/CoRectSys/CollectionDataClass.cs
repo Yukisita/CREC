@@ -936,14 +936,16 @@ namespace CREC
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                    
+                    // 進捗更新（スレッドセーフにカウンタを更新）
+                    int currentCompleted = System.Threading.Interlocked.Increment(ref completedCount);
+                    progress?.Report((currentCompleted, totalCollections));
+                    return; // 次のコレクションへ
                 }
-                else
+                // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
+                if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
                 {
-                    // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
-                    if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
-                    {
-                        backupFailedCollectionList.Add(collectionDataValues.CollectionID);
-                    }
+                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
                 }
                 
                 // 進捗更新（スレッドセーフにカウンタを更新）
