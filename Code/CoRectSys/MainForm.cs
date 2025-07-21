@@ -4028,20 +4028,20 @@ namespace CREC
             BackupToolStripMenuItem.Enabled = false;// バックアップ中は無効化
             
             // 進捗報告用のProgressオブジェクトを作成
-            var progress = new Progress<(int completed, int total)>(progressData =>
+            var backUpProgressReport = new Progress<(int completed, int total)>(backUpData =>
             {
                 // UIスレッドで実行されるため、Invokeは不要
                 BackupToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage(
                     "BackupToolStripMenuItemBackupInProgressMessage",
                     "mainform",
-                    LanguageFile) + $" ({progressData.completed}/{progressData.total})";
+                    LanguageFile) + $" ({backUpData.completed}/{backUpData.total})";
             });
             
             // プロジェクトのバックアップ処理を開始
             Task<bool> task = CollectionDataClass.BackupProjectDataAsync(
                 CurrentProjectSettingValues,
                 LanguageFile,
-                progress);
+                backUpProgressReport);
             // タスクの完了を待機し、結果に応じてメッセージを表示
             task.ContinueWith(t =>
             {

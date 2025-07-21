@@ -894,7 +894,7 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="languageData">言語データ</param>
-        /// <param name="progress">進捗報告用（完了数、総数）</param>
+        /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static bool BackupProjectData(
             ProjectSettingValuesClass projectSettingValues,
@@ -969,18 +969,18 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="languageData">言語データ</param>
-        /// <param name="progress">進捗報告用（完了数、総数）</param>
+        /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static async Task<bool> BackupProjectDataAsync(
             ProjectSettingValuesClass projectSettingValues,
             XElement languageData,
-            IProgress<(int completed, int total)> progress = null
+            IProgress<(int completed, int total)> backUpProgressReport = null
             )
         {
             return await Task.Run(() => BackupProjectData(
                 projectSettingValues,
                 languageData,
-                progress));
+                backUpProgressReport));
         }
     }
 }
