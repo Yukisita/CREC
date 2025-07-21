@@ -1116,12 +1116,8 @@ namespace CREC
                 if (CurrentProjectSettingValues.CloseBackUp == true)
                 {
                     this.Hide();// メインフォームを消す
-                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues.ColorSetting.ToString());
-                    Task.Run(() => { closeBackUpForm.ShowDialog(); });// 別プロセスでバックアップ中のプログレスバー表示ウインドウを開く
-                    // バックアップを実行し、その終了を待機
-                    CollectionDataClass.BackupProjectData(
-                        CurrentProjectSettingValues,
-                        LanguageFile);
+                    CloseBackUpForm closeBackUpForm = new CloseBackUpForm(CurrentProjectSettingValues, LanguageFile);// バックアップ中のプログレスバー表示ウインドウ
+                    closeBackUpForm.ShowDialog();// バックアップ中のプログレスバー表示ウインドウを開く
                 }
             }
         }
@@ -4026,7 +4022,7 @@ namespace CREC
                 "mainform",
                 LanguageFile);
             BackupToolStripMenuItem.Enabled = false;// バックアップ中は無効化
-            
+
             // 進捗報告用のProgressオブジェクトを作成
             var backUpProgressReport = new Progress<(int completed, int total)>(backUpData =>
             {
@@ -4036,7 +4032,7 @@ namespace CREC
                     "mainform",
                     LanguageFile) + $" ({backUpData.completed}/{backUpData.total})";
             });
-            
+
             // プロジェクトのバックアップ処理を開始
             Task<bool> task = CollectionDataClass.BackupProjectDataAsync(
                 CurrentProjectSettingValues,
