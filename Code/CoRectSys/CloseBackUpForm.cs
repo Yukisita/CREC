@@ -73,8 +73,8 @@ namespace CREC
             // プロジェクトのバックアップ処理を開始
             Task<bool> task = CollectionDataClass.BackupProjectDataAsync(
                 CurrentProjectSettingValues,
-                LanguageFile,
-                backUpProgressReport);
+                backUpProgressReport,
+                LanguageFile);
             // タスクの完了を待機し、結果に応じてメッセージを表示
             task.ContinueWith(t =>
             {

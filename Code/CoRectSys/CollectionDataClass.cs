@@ -893,13 +893,13 @@ namespace CREC
         /// プロジェクトの全データをバックアップ（並列数を任意または自動で切り替え可能）
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
-        /// <param name="languageData">言語データ</param>
         /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static bool BackupProjectData(
             ProjectSettingValuesClass projectSettingValues,
-            XElement languageData,
-            IProgress<(int completed, int total)> backUpProgressReport = null
+            IProgress<(int completed, int total)> backUpProgressReport,
+            XElement languageData
             )
         {
             // バックアップ対象及び総コレクション数を取得
@@ -968,19 +968,19 @@ namespace CREC
         /// プロジェクトの全データを非同期処理でバックアップ（並列数を任意または自動で切り替え可能）
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
-        /// <param name="languageData">言語データ</param>
         /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static async Task<bool> BackupProjectDataAsync(
             ProjectSettingValuesClass projectSettingValues,
-            XElement languageData,
-            IProgress<(int completed, int total)> backUpProgressReport = null
+            IProgress<(int completed, int total)> backUpProgressReport,
+            XElement languageData
             )
         {
             return await Task.Run(() => BackupProjectData(
                 projectSettingValues,
-                languageData,
-                backUpProgressReport));
+                backUpProgressReport,
+                languageData));
         }
     }
 }
