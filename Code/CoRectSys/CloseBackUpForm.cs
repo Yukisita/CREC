@@ -13,38 +13,85 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace CREC
 {
     public partial class CloseBackUpForm : Form
     {
-        string ColorSetting = "Blue";
-        public CloseBackUpForm(string colorSetting)
+        readonly XElement LanguageFile;// 言語ファイル
+        ProjectSettingValuesClass CurrentProjectSettingValues = new ProjectSettingValuesClass();// 終了時に開いていたプロジェクトの設定値
+
+        public CloseBackUpForm(ProjectSettingValuesClass projectSettingValues, XElement languageFile)
         {
-            InitializeComponent(); ColorSetting = colorSetting;
+            InitializeComponent();
+            CurrentProjectSettingValues = projectSettingValues;
+            LanguageFile = languageFile;
             SetColorMethod();
         }
-        private void SetColorMethod()// 色設定のメソッド
+
+        /// <summary>
+        /// 色設定のメソッド
+        /// </summary>
+        private void SetColorMethod()
         {
-            switch (ColorSetting)
+            switch (CurrentProjectSettingValues.ColorSetting)
             {
-                case "Blue":
+                case ColorValue.Blue:
                     this.BackColor = Color.AliceBlue;
                     break;
-                case "White":
+                case ColorValue.White:
                     this.BackColor = Color.WhiteSmoke;
                     break;
-                case "Sakura":
+                case ColorValue.Sakura:
                     this.BackColor = Color.LavenderBlush;
                     break;
-                case "Green":
+                case ColorValue.Green:
                     this.BackColor = Color.Honeydew;
                     break;
                 default:
                     this.BackColor = Color.AliceBlue;
-                    ColorSetting = "Blue";
                     break;
             }
+        }
+
+        /// <summary>
+        /// フォームが表示されたときに呼び出されるイベントハンドラー
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseBackUpForm_Shown(object sender, EventArgs e)
+        {
+            // バックアップ処理の進捗表示のみを行うフォームのため、この中で処理を記述する
+            // 進捗報告用のProgressオブジェクトを作成
+            var backUpProgressReport = new Progress<(int completed, int total)>(backUpData =>
+            {
+                // CloseBackUpProgressBar呼び出してプログレスバーを更新
+                CloseBackUpProgressBar.Maximum = backUpData.total;
+                CloseBackUpProgressBar.Value = backUpData.completed;
+            });
+            // プロジェクトのバックアップ処理を開始
+            Task<bool> task = CollectionDataClass.BackupProjectDataAsync(
+                CurrentProjectSettingValues,
+                backUpProgressReport,
+                LanguageFile);
+            // タスクの完了を待機し、結果に応じてメッセージを表示
+            task.ContinueWith(t =>
+            {
+                this.Invoke((Action)(() =>
+                {
+                    if (t.Result == true)
+                    {
+                        // バックアップ完了メッセージを表示
+                        backUpStatusLabel.Text = "バックアップが終了しました。";
+                    }
+                    else
+                    {
+                        // バックアップ失敗メッセージを表示
+                        backUpStatusLabel.Text = "一部または全てのデータのバックアップに失敗しました。";
+                    }
+                }));
+            });
         }
     }
 }
