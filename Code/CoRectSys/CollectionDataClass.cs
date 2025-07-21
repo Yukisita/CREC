@@ -899,19 +899,26 @@ namespace CREC
         public static bool BackupProjectData(
             ProjectSettingValuesClass projectSettingValues,
             XElement languageData,
-            IProgress<(int completed, int total)> progress = null
+            IProgress<(int completed, int total)> backUpProgressReport = null
             )
         {
-            DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
-            IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
-            
-            // 総コレクション数を取得
-            var subFolderArray = subFolders.ToArray();
-            int totalCollections = subFolderArray.Length;
-            
+            // バックアップ対象及び総コレクション数を取得
+            DirectoryInfo[] subFolderArray = null;
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
+                subFolderArray = di.EnumerateDirectories("*").ToArray();
+            }
+            catch
+            {
+                MessageBox.Show("プロジェクトのコレクションフォルダの取得に失敗しました。", "CREC");
+                return false;
+            }
+            int totalCollections = subFolderArray.Length;// 総コレクション数を取得
+
             // 進捗初期化
             int backedUpCount = 0;// バックアップ完了数を初期化
-            progress?.Report((backedUpCount, totalCollections));// 進捗を初期化
+            backUpProgressReport?.Report((backedUpCount, totalCollections));// 進捗を初期化
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
@@ -946,7 +953,7 @@ namespace CREC
                 
                 // 進捗更新
                 int currentbackedUpCount = System.Threading.Interlocked.Increment(ref backedUpCount);// 完了数をインクリメント
-                progress?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
+                backUpProgressReport?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
             });
 
             // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
