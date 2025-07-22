@@ -893,15 +893,32 @@ namespace CREC
         /// プロジェクトの全データをバックアップ（並列数を任意または自動で切り替え可能）
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static bool BackupProjectData(
             ProjectSettingValuesClass projectSettingValues,
+            IProgress<(int completed, int total)> backUpProgressReport,
             XElement languageData
             )
         {
-            DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
-            IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
+            // バックアップ対象及び総コレクション数を取得
+            DirectoryInfo[] subFolderArray = null;
+            try
+            {
+                DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
+                subFolderArray = di.EnumerateDirectories("*").ToArray();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "CollectionDataClass", languageData) + ex.Message, "CREC");
+                return false;
+            }
+            int totalCollections = subFolderArray.Length;// 総コレクション数を取得
+
+            // 進捗初期化
+            int backedUpCount = 0;// バックアップ完了数を初期化
+            backUpProgressReport?.Report((backedUpCount, totalCollections));// 進捗を初期化
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
@@ -918,7 +935,7 @@ namespace CREC
                 options.MaxDegreeOfParallelism = Environment.ProcessorCount;
             }
             // 非同期でコレクションのバックアップを実行
-            System.Threading.Tasks.Parallel.ForEach(subFolders, options, subFolder =>
+            System.Threading.Tasks.Parallel.ForEach(subFolderArray, options, subFolder =>
             {
                 // Index読み込み
                 CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
@@ -933,6 +950,10 @@ namespace CREC
                 {
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
                 }
+                
+                // 進捗更新
+                int currentbackedUpCount = System.Threading.Interlocked.Increment(ref backedUpCount);// 完了数をインクリメント
+                backUpProgressReport?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
             });
 
             // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
@@ -947,15 +968,18 @@ namespace CREC
         /// プロジェクトの全データを非同期処理でバックアップ（並列数を任意または自動で切り替え可能）
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="backUpProgressReport">進捗報告用（完了数、総数）</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static async Task<bool> BackupProjectDataAsync(
             ProjectSettingValuesClass projectSettingValues,
+            IProgress<(int completed, int total)> backUpProgressReport,
             XElement languageData
             )
         {
             return await Task.Run(() => BackupProjectData(
                 projectSettingValues,
+                backUpProgressReport,
                 languageData));
         }
     }
