@@ -909,9 +909,9 @@ namespace CREC
                 DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
                 subFolderArray = di.EnumerateDirectories("*").ToArray();
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show("プロジェクトのコレクションフォルダの取得に失敗しました。", "CREC");
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "CollectionDataClass", languageData) + ex.Message, "CREC");
                 return false;
             }
             int totalCollections = subFolderArray.Length;// 総コレクション数を取得

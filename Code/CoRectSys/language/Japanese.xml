@@ -1084,6 +1084,10 @@
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>サムネイルの設定に失敗しました。&#xD;&#xA;別の画像を選択してください。&#xD;&#xA;</itemtext>
 			</item>
+			<item>
+				<itemname>FailedToRetrieveCollectionFolder</itemname>
+				<itemtext>プロジェクトのコレクションフォルダの取得に失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>

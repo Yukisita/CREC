@@ -1084,6 +1084,10 @@
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>Failed to set thumbnail.&#xD;&#xA;Please choose another image.&#xD;&#xA;</itemtext>
 			</item>
+			<item>
+				<itemname>FailedToRetrieveCollectionFolder</itemname>
+				<itemtext>Failed to retrieve collection folder.</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>
