@@ -532,7 +532,8 @@ ver9.1.0.0（2025/07/20）
 コレクション一覧及び在庫管理一覧描画時に幅を自動調整するよう変更
 
 ver9.2.0.0（2025/07/22）
-コレクション全データバックアップ中に進捗を表示する機能を追加</value>
+コレクション全データバックアップ中に進捗を表示する機能を追加
+コレクション一覧出力時のヘッダ情報をプロジェクト設定値となるよう変更</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

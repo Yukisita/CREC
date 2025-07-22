@@ -250,7 +250,7 @@ namespace CREC
             // 出力形式に合わせて出力
             if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV || currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.TSV)
             {
-                ListOutputMethod(listOutputPath, currentProjectSettingValues.ListOutputFormat, collectionList, languageData);
+                ListOutputMethod(currentProjectSettingValues, listOutputPath, collectionList, languageData);
             }
             else
             {
@@ -275,22 +275,46 @@ namespace CREC
         /// <summary>
         /// 一覧出力する処理
         /// </summary>
+        /// <param name="currentProjectSettingValues">プロジェクト設定値</param>
         /// <param name="listOutputPath">出力パス</param>
-        /// <param name="listOutputFormat">フォーマット</param>
         /// <param name="collectionList">リスト出力するコレクションのリスト</param>
-        private static void ListOutputMethod(string listOutputPath, CREC.ListOutputFormat listOutputFormat, List<CollectionDataValuesClass> collectionList, XElement languageData)
+        private static void ListOutputMethod(ProjectSettingValuesClass currentProjectSettingValues, string listOutputPath, List<CollectionDataValuesClass> collectionList, XElement languageData)
         {
             StreamWriter streamWriter;
             // ヘッダ書き込み
-            if (listOutputFormat == CREC.ListOutputFormat.CSV)
+            if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
             {
                 streamWriter = new StreamWriter(listOutputPath + "\\InventoryOutput.csv", false, Encoding.GetEncoding("shift-jis"));
-                streamWriter.WriteLine("データ保存場所のパス,ID,管理コード,名称,登録日,カテゴリー,タグ1,タグ2,タグ3,在庫数,在庫状況");
+                streamWriter.WriteLine(
+                            "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
+                            currentProjectSettingValues.DataLocationLabel,
+                            currentProjectSettingValues.UUIDLabel,
+                            currentProjectSettingValues.ManagementCodeLabel,
+                            currentProjectSettingValues.CollectionNameLabel,
+                            currentProjectSettingValues.RegistrationDateLabel,
+                            currentProjectSettingValues.CategoryLabel,
+                            currentProjectSettingValues.FirstTagLabel,
+                            currentProjectSettingValues.SecondTagLabel,
+                            currentProjectSettingValues.ThirdTagLabel,
+                            "在庫数",
+                            "在庫状況");
             }
             else
             {
                 streamWriter = new StreamWriter(listOutputPath + "\\InventoryOutput.tsv", false, Encoding.GetEncoding("shift-jis"));
-                streamWriter.WriteLine("データ保存場所のパス\tID\t管理コード\t名称\t登録日\tカテゴリー\tタグ1\tタグ2\tタグ3\t在庫数\t在庫状況");
+                streamWriter.WriteLine(
+                            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}",
+                            currentProjectSettingValues.DataLocationLabel,
+                            currentProjectSettingValues.UUIDLabel,
+                            currentProjectSettingValues.ManagementCodeLabel,
+                            currentProjectSettingValues.CollectionNameLabel,
+                            currentProjectSettingValues.RegistrationDateLabel,
+                            currentProjectSettingValues.CategoryLabel,
+                            currentProjectSettingValues.FirstTagLabel,
+                            currentProjectSettingValues.SecondTagLabel,
+                            currentProjectSettingValues.ThirdTagLabel,
+                            "在庫数",
+                            "在庫状況");
             }
 
             try
@@ -298,7 +322,7 @@ namespace CREC
                 foreach (var thisCollectionDataValues in collectionList)
                 {
                     // ファイル書き込み
-                    if (listOutputFormat == CREC.ListOutputFormat.CSV)
+                    if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                     {
                         streamWriter.WriteLine(
                             "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10}",
@@ -332,7 +356,7 @@ namespace CREC
                     }
                 }
                 // 正常出力完了のメッセージ表示
-                if (listOutputFormat == CREC.ListOutputFormat.CSV)
+                if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputFinish", "CollectionListClass", languageData) + "\n" + listOutputPath + "\\InventoryOutput.csv", "CREC");
                 }
@@ -344,7 +368,7 @@ namespace CREC
             catch (Exception ex)
             {
                 // エラーメッセージ表示
-                if (listOutputFormat == CREC.ListOutputFormat.CSV)
+                if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CSVOutputError", "CollectionListClass", languageData) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
