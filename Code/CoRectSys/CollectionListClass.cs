@@ -62,7 +62,7 @@ namespace CREC
                 //dataGridViewに追加、検索欄に文字が入力されている場合は絞り込み
                 if (searchKeyWords.Length == 0)
                 {
-                    if (searchOption == 7)
+                    if (searchOption == 8)
                     {
                         if (SearchMethod(item, searchKeyWords, searchOption, searchMethod) == true)
                         {
@@ -96,37 +96,51 @@ namespace CREC
         /// <returns>検索Hit：true、それ以外：false</returns>
         private static bool SearchMethod(CollectionDataValuesClass item, string searchKeyWords, int SearchOption, int SearchMethod)
         {
-            string TargetWords = string.Empty;
+            // 検索対象の文字列を取得（配列とする）
+            string[] TargetWords = Array.Empty<string>();
             switch (SearchOption)
             {
                 case 0:
-                    TargetWords = item.CollectionID;
+                    // 全部追加する
+                    TargetWords = new[]
+                    {
+                        item.CollectionID,
+                        item.CollectionMC,
+                        item.CollectionName,
+                        item.CollectionCategory,
+                        item.CollectionTag1,
+                        item.CollectionTag2,
+                        item.CollectionTag3
+                    };
                     break;
                 case 1:
-                    TargetWords = item.CollectionMC;
+                    TargetWords = new[] { item.CollectionID };
                     break;
                 case 2:
-                    TargetWords = item.CollectionName;
+                    TargetWords = new[] { item.CollectionMC };
                     break;
                 case 3:
-                    TargetWords = item.CollectionCategory;
+                    TargetWords = new[] { item.CollectionName };
                     break;
                 case 4:
-                    TargetWords = item.CollectionTag1;
+                    TargetWords = new[] { item.CollectionCategory };
                     break;
                 case 5:
-                    TargetWords = item.CollectionTag2;
+                    TargetWords = new[] { item.CollectionTag1 };
                     break;
                 case 6:
-                    TargetWords = item.CollectionTag3;
+                    TargetWords = new[] { item.CollectionTag2 };
                     break;
                 case 7:
+                    TargetWords = new[] { item.CollectionTag3 };
+                    break;
+                case 8:// 在庫状況検索用
                     break;
             }
             switch (SearchMethod)
             {
                 case 0:
-                    if (SearchOption == 7)
+                    if (SearchOption == 8)
                     {
                         if (item.CollectionInventoryStatus == InventoryStatus.StockOut)
                         {
@@ -139,7 +153,8 @@ namespace CREC
                     }
                     else
                     {
-                        if (TargetWords.StartsWith(searchKeyWords))// 前方一致
+                        // 前方一致検索
+                        if (TargetWords.Any(word => word.StartsWith(searchKeyWords)))
                         {
                             return true;
                         }
@@ -149,7 +164,7 @@ namespace CREC
                         }
                     }
                 case 1:
-                    if (SearchOption == 7)
+                    if (SearchOption == 8)
                     {
                         if (item.CollectionInventoryStatus == InventoryStatus.UnderStocked)
                         {
@@ -162,7 +177,8 @@ namespace CREC
                     }
                     else
                     {
-                        if (TargetWords.Contains(searchKeyWords))// 部分一致
+                        // 部分一致検索
+                        if (TargetWords.Any(word => word.Contains(searchKeyWords)))
                         {
                             return true;
                         }
@@ -172,7 +188,7 @@ namespace CREC
                         }
                     }
                 case 2:
-                    if (SearchOption == 7)
+                    if (SearchOption == 8)
                     {
                         if (item.CollectionInventoryStatus == InventoryStatus.Appropriate)
                         {
@@ -185,7 +201,8 @@ namespace CREC
                     }
                     else
                     {
-                        if (TargetWords.EndsWith(searchKeyWords))// 後方一致
+                        // 後方一致検索
+                        if (TargetWords.Any(word => word.EndsWith(searchKeyWords)))
                         {
                             return true;
                         }
@@ -195,7 +212,7 @@ namespace CREC
                         }
                     }
                 case 3:
-                    if (SearchOption == 7)
+                    if (SearchOption == 8)
                     {
                         if (item.CollectionInventoryStatus == InventoryStatus.OverStocked)
                         {
@@ -208,7 +225,8 @@ namespace CREC
                     }
                     else
                     {
-                        if (TargetWords == searchKeyWords)// 完全一致
+                        // 完全一致検索
+                        if (TargetWords.Any(word => word == searchKeyWords))
                         {
                             return true;
                         }

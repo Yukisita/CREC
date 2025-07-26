@@ -320,6 +320,7 @@ namespace CREC
             ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             // ラベルの名称を読み込んで検索ボックスに設定、順番注意
             SearchOptionComboBox.Items.Clear();
+            SearchOptionComboBox.Items.Add("すべての項目");
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ManagementCodeLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CollectionNameLabel);
@@ -417,7 +418,7 @@ namespace CREC
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = CurrentProjectSettingValues.SearchOptionNumber;
             SearchMethodComboBox.Items.Clear();
-            if (SearchOptionComboBox.SelectedIndex == 7)
+            if (SearchOptionComboBox.SelectedIndex == 8)
             {
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.StockOut, LanguageFile));
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.UnderStocked, LanguageFile));
@@ -3081,7 +3082,7 @@ namespace CREC
             CurrentProjectSettingValues.SearchOptionNumber = SearchOptionComboBox.SelectedIndex;
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             SearchMethodComboBox.Items.Clear();
-            if (SearchOptionComboBox.SelectedIndex == 7)
+            if (SearchOptionComboBox.SelectedIndex == 8)
             {
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.StockOut, LanguageFile));
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.UnderStocked, LanguageFile));
@@ -3099,7 +3100,7 @@ namespace CREC
             SearchMethodComboBox.SelectedIndex = 0;
             CurrentProjectSettingValues.SearchMethodNumber = SearchMethodComboBox.SelectedIndex;
             SearchMethodComboBox.SelectedIndexChanged += SearchMethodComboBox_SelectedIndexChanged;
-            if (SearchOptionComboBox.SelectedIndex == 7)
+            if (SearchOptionComboBox.SelectedIndex == 8)
             {
                 if (DataLoadingStatus == "true")
                 {
@@ -4594,7 +4595,7 @@ namespace CREC
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
             int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
             SearchMethodComboBox.Items.Clear();
-            if (SearchOptionComboBox.SelectedIndex == 7)
+            if (SearchOptionComboBox.SelectedIndex == 8)
             {
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.StockOut, LanguageFile));
                 SearchMethodComboBox.Items.Add(CollectionDataClass.InventoryStatusToString(InventoryStatus.UnderStocked, LanguageFile));
