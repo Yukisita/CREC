@@ -262,11 +262,11 @@ namespace CREC
             {
                 if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(listOutputPath + "\\InventoryOutput.csv");
+                    System.Diagnostics.Process.Start(listOutputPath + "\\InventoryOutput.csv");
                 }
                 else if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.TSV)
                 {
-                    System.Diagnostics.Process process = System.Diagnostics.Process.Start(listOutputPath + "\\InventoryOutput.tsv");
+                    System.Diagnostics.Process.Start(listOutputPath + "\\InventoryOutput.tsv");
                 }
             }
             return true;
