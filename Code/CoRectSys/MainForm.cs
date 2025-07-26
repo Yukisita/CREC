@@ -2516,7 +2516,13 @@ namespace CREC
             // リスト出力
             if (CurrentProjectSettingValues.EditListOutput == true)
             {
-                CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力
+                // 別スレッドでリスト作成を実行
+                Task.Run(() =>
+                {
+                    List<CollectionDataValuesClass> temporaryCollectionList = new List<CollectionDataValuesClass>();// コレクション一覧を格納するリスト
+                    CollectionListClass.LoadCollectionList(CurrentProjectSettingValues, ref temporaryCollectionList, LanguageFile);// 一覧出力用にプロジェクトフォルダ内のコレクションを全検索
+                    CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, temporaryCollectionList, LanguageFile);// 一覧を出力
+                });
             }
             // バックアップ
             if (CurrentProjectSettingValues.EditBackUp == true)
