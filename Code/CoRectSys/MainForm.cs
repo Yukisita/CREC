@@ -546,9 +546,9 @@ namespace CREC
             }
             else
             {
-                ToolStripItem NoRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
-                NoRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("NoRecentlyOpendProjectList", "mainform", LanguageFile);
-                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(NoRecentlyOpendProjectListToolStripMenuItem);
+                ToolStripItem NoRecentlyOpenedProjectListToolStripMenuItem = new ToolStripMenuItem();
+                NoRecentlyOpenedProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("NoRecentlyOpenedProjectList", "mainform", LanguageFile);
+                OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(NoRecentlyOpenedProjectListToolStripMenuItem);
             }
         }
         private void OpenRecentlyOpendProjectToolStripMenuItemSub_Click(object sender, EventArgs e)// 最近使用したプロジェクト表示（イベント）

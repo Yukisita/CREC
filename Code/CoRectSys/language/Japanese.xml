@@ -645,7 +645,7 @@
 				<itemtext>履歴を削除</itemtext>
 			</item>
 			<item>
-				<itemname>NoRecentlyOpendProjectList</itemname>
+				<itemname>NoRecentlyOpenedProjectList</itemname>
 				<itemtext>履歴はありません</itemtext>
 			</item>
 			<item>
