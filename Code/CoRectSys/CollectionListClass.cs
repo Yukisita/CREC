@@ -85,9 +85,7 @@ namespace CREC
                 }
             }
             // 検索結果をSearchedCollectionListに複製
-            SearchedCollectionList = new List<CollectionDataValuesClass>(loadingCollectionList);
-            // loadingCollectionListをメモリから解放
-            loadingCollectionList.Clear();
+            SearchedCollectionList = loadingCollectionList;
         }
 
         /// <summary>
