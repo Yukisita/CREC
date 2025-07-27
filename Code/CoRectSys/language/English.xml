@@ -649,6 +649,14 @@
 				<itemtext>No recently opend project.</itemtext>
 			</item>
 			<item>
+				<itemname>FullSearchComboBoxItem</itemname>
+				<itemtext>Full search</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus</itemname>
+				<itemtext>Inventory</itemtext>
+			</item>
+			<item>
 				<itemname>SearchMethodForwardMatch</itemname>
 				<itemtext>Forward match</itemtext>
 			</item>

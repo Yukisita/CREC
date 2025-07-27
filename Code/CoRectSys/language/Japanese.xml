@@ -649,6 +649,14 @@
 				<itemtext>履歴はありません</itemtext>
 			</item>
 			<item>
+				<itemname>FullSearchComboBoxItem</itemname>
+				<itemtext>全検索</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus</itemname>
+				<itemtext>在庫状況</itemtext>
+			</item>
+			<item>
 				<itemname>SearchMethodForwardMatch</itemname>
 				<itemtext>前方一致</itemtext>
 			</item>
