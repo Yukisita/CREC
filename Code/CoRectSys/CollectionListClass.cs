@@ -50,14 +50,14 @@ namespace CREC
         /// <summary>
         ///  CollectionDataTableから検索
         /// </summary>
-        /// <param name="SearchedCollectionList"></param>
-        /// <param name="currentProjectSettingValues"></param>
-        /// <param name="searchKeyWords"></param>
-        /// <param name="searchOption"></param>
-        /// <param name="searchMethod"></param>
-        /// <param name="LanguageData"></param>
+        /// <param name="SearchedCollectionList">検索対象のリスト</param>
+        /// <param name="currentProjectSettingValues">現在のプロジェクト設定値</param>
+        /// <param name="searchKeyWords">検索キーワード</param>
+        /// <param name="searchOption">検索オプション</param>
+        /// <param name="searchMethod">検索方法</param>
+        /// <param name="LanguageData">言語情報</param>
         /// <returns></returns>
-        public static bool SearchCollectionFromList(
+        public static void SearchCollectionFromList(
             ref List<CollectionDataValuesClass> SearchedCollectionList,
             ProjectSettingValuesClass currentProjectSettingValues,
             string searchKeyWords,
@@ -65,54 +65,39 @@ namespace CREC
             int searchMethod,
             XElement LanguageData)
         {
-            // 読み込んだコレクションリストを格納するリスト
-            var loadingCollectionList = new List<CollectionDataValuesClass>();
+            // 検索欄が空かつ在庫検索以外の場合はそのままとする
+            if (searchKeyWords.Length == 0 && searchOption != 8)
+            {
+                return;
+            }
+
+            var loadingCollectionList = new List<CollectionDataValuesClass>();// 読み込んだコレクションリストを格納するリスト
             foreach (var item in SearchedCollectionList)
             {
-                //dataGridViewに追加、検索欄に文字が入力されている場合は絞り込み
-                if (searchKeyWords.Length == 0)
+                if (SearchMethod(
+                    item,
+                    currentProjectSettingValues,
+                    searchKeyWords,
+                    searchOption,
+                    searchMethod))
                 {
-                    if (searchOption == 8)
-                    {
-                        if (SearchMethod(
-                            item,
-                            currentProjectSettingValues,
-                            searchKeyWords,
-                            searchOption,
-                            searchMethod) == true)
-                        {
-                            loadingCollectionList.Add(item);
-                        }
-                    }
-                    else
-                    {
-                        loadingCollectionList.Add(item);
-                    }
-                }
-                else if (searchKeyWords.Length >= 1)
-                {
-                    if (SearchMethod(
-                        item,
-                        currentProjectSettingValues,
-                        searchKeyWords,
-                        searchOption,
-                        searchMethod) == true)
-                    {
-                        loadingCollectionList.Add(item);
-                    }
+                    loadingCollectionList.Add(item);
                 }
             }
-            SearchedCollectionList = loadingCollectionList;// SearchCollectionListに読み込んだデータリストを反映
-            return true;
+            // 検索結果をSearchedCollectionListに複製
+            SearchedCollectionList = new List<CollectionDataValuesClass>(loadingCollectionList);
+            // loadingCollectionListをメモリから解放
+            loadingCollectionList.Clear();
         }
 
         /// <summary>
         /// 検索窓の入力内容とキーワードが指定の検索方法で一致するか判定
         /// </summary>
         /// <param name="item">検索対象のコレクション</param>
+        /// <param name="currentProjectSettingValues">現在のプロジェクト設定値</param>
         /// <param name="searchKeyWords">検索ワード</param>
-        /// <param name="SearchOption"></param>
-        /// <param name="SearchMethod"></param>
+        /// <param name="SearchOption">検索オプション</param>
+        /// <param name="SearchMethod">検索方法</param>
         /// <returns>検索Hit：true、それ以外：false</returns>
         private static bool SearchMethod(
             CollectionDataValuesClass item,
@@ -187,6 +172,8 @@ namespace CREC
                 case 8:// 在庫状況検索用
                     break;
             }
+
+            //検索方法に合わせて検索
             switch (SearchMethod)
             {
                 case 0:
@@ -204,14 +191,7 @@ namespace CREC
                     else
                     {
                         // 前方一致検索
-                        if (TargetWords.Any(word => word.StartsWith(searchKeyWords)))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return TargetWords.Any(word => word.StartsWith(searchKeyWords));
                     }
                 case 1:
                     if (SearchOption == 8)
@@ -228,14 +208,7 @@ namespace CREC
                     else
                     {
                         // 部分一致検索
-                        if (TargetWords.Any(word => word.Contains(searchKeyWords)))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return TargetWords.Any(word => word.Contains(searchKeyWords));
                     }
                 case 2:
                     if (SearchOption == 8)
@@ -252,14 +225,7 @@ namespace CREC
                     else
                     {
                         // 後方一致検索
-                        if (TargetWords.Any(word => word.EndsWith(searchKeyWords)))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return TargetWords.Any(word => word.EndsWith(searchKeyWords));
                     }
                 case 3:
                     if (SearchOption == 8)
@@ -276,14 +242,7 @@ namespace CREC
                     else
                     {
                         // 完全一致検索
-                        if (TargetWords.Any(word => word == searchKeyWords))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        return TargetWords.Any(word => word == searchKeyWords);
                     }
                 default:
                     return false;
