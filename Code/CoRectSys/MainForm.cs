@@ -320,7 +320,7 @@ namespace CREC
             ShowDataLocation.Text = CurrentProjectSettingValues.DataLocationLabel + "：";
             // ラベルの名称を読み込んで検索ボックスに設定、順番注意
             SearchOptionComboBox.Items.Clear();
-            SearchOptionComboBox.Items.Add("すべての項目");
+            SearchOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("FullSearchComboBoxItem", "mainform", LanguageFile));
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ManagementCodeLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CollectionNameLabel);
@@ -328,7 +328,7 @@ namespace CREC
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.FirstTagLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.SecondTagLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ThirdTagLabel);
-            SearchOptionComboBox.Items.Add("在庫状況");
+            SearchOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("InventoryStatus", "mainform", LanguageFile));
             // ラベルの名称を読み込んでDGVに設定
             dataGridView1.Refresh();
             dataGridView1.Columns["IDList"].HeaderText = CurrentProjectSettingValues.UUIDLabel;
@@ -4597,9 +4597,60 @@ namespace CREC
             SetUserAssistToolTips();
             ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
             ShowListButton.Text = LanguageSettingClass.GetOtherMessage("ShowListButton", "mainform", LanguageFile);
+            // 検索オプションの表示更新
+            SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
+            int CurrentSelectedIndex = SearchOptionComboBox.SelectedIndex;
+            SearchOptionComboBox.Items.Clear();
+            // ラベルの名称を読み込んで検索ボックスに設定、順番注意
+            SearchOptionComboBox.Items.Clear();
+            SearchOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("FullSearchComboBoxItem", "mainform", LanguageFile));
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ManagementCodeLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CollectionNameLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.CategoryLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.FirstTagLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.SecondTagLabel);
+            SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ThirdTagLabel);
+            SearchOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("InventoryStatus", "mainform", LanguageFile));
+            // 表示中の項目を変更
+            if (CurrentSelectedIndex != -1)// 表示中の項目を変更
+            {
+                switch (CurrentSelectedIndex)
+                {
+                    case 0:
+                        SearchOptionComboBox.Text = LanguageSettingClass.GetOtherMessage("FullSearchComboBoxItem", "mainform", LanguageFile);
+                        break;
+                    case 1:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.UUIDLabel;
+                        break;
+                    case 2:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.ManagementCodeLabel;
+                        break;
+                    case 3:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.CollectionNameLabel;
+                        break;
+                    case 4:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.CategoryLabel;
+                        break;
+                    case 5:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.FirstTagLabel;
+                        break;
+                    case 6:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.SecondTagLabel;
+                        break;
+                    case 7:
+                        SearchOptionComboBox.Text = CurrentProjectSettingValues.ThirdTagLabel;
+                        break;
+                    case 8:
+                        SearchOptionComboBox.Text = LanguageSettingClass.GetOtherMessage("InventoryStatus", "mainform", LanguageFile);
+                        break;
+                }
+            }
+            SearchOptionComboBox.SelectedIndex = CurrentSelectedIndex;
+            SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
             // 検索方法の表示更新
             SearchMethodComboBox.SelectedIndexChanged -= SearchMethodComboBox_SelectedIndexChanged;
-            int CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
+            CurrentSelectedIndex = SearchMethodComboBox.SelectedIndex;
             SearchMethodComboBox.Items.Clear();
             if (SearchOptionComboBox.SelectedIndex == 8)
             {
