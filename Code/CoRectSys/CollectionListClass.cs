@@ -48,12 +48,22 @@ namespace CREC
         }
 
         /// <summary>
-        /// CollectionDataTableから検索
+        ///  CollectionDataTableから検索
         /// </summary>
-        /// <param name="CollectionDataTable"></param>
+        /// <param name="SearchedCollectionList"></param>
+        /// <param name="currentProjectSettingValues"></param>
+        /// <param name="searchKeyWords"></param>
+        /// <param name="searchOption"></param>
+        /// <param name="searchMethod"></param>
         /// <param name="LanguageData"></param>
         /// <returns></returns>
-        public static bool SearchCollectionFromList(ref List<CollectionDataValuesClass> SearchedCollectionList, string searchKeyWords, int searchOption, int searchMethod, XElement LanguageData)
+        public static bool SearchCollectionFromList(
+            ref List<CollectionDataValuesClass> SearchedCollectionList,
+            ProjectSettingValuesClass currentProjectSettingValues,
+            string searchKeyWords,
+            int searchOption,
+            int searchMethod,
+            XElement LanguageData)
         {
             // 読み込んだコレクションリストを格納するリスト
             var loadingCollectionList = new List<CollectionDataValuesClass>();
@@ -64,7 +74,12 @@ namespace CREC
                 {
                     if (searchOption == 8)
                     {
-                        if (SearchMethod(item, searchKeyWords, searchOption, searchMethod) == true)
+                        if (SearchMethod(
+                            item,
+                            currentProjectSettingValues,
+                            searchKeyWords,
+                            searchOption,
+                            searchMethod) == true)
                         {
                             loadingCollectionList.Add(item);
                         }
@@ -76,7 +91,12 @@ namespace CREC
                 }
                 else if (searchKeyWords.Length >= 1)
                 {
-                    if (SearchMethod(item, searchKeyWords, searchOption, searchMethod) == true)
+                    if (SearchMethod(
+                        item,
+                        currentProjectSettingValues,
+                        searchKeyWords,
+                        searchOption,
+                        searchMethod) == true)
                     {
                         loadingCollectionList.Add(item);
                     }
@@ -94,24 +114,54 @@ namespace CREC
         /// <param name="SearchOption"></param>
         /// <param name="SearchMethod"></param>
         /// <returns>検索Hit：true、それ以外：false</returns>
-        private static bool SearchMethod(CollectionDataValuesClass item, string searchKeyWords, int SearchOption, int SearchMethod)
+        private static bool SearchMethod(
+            CollectionDataValuesClass item,
+            ProjectSettingValuesClass currentProjectSettingValues,
+            string searchKeyWords,
+            int SearchOption,
+            int SearchMethod)
         {
             // 検索対象の文字列を取得（配列とする）
             string[] TargetWords = Array.Empty<string>();
             switch (SearchOption)
             {
                 case 0:
-                    // 全部追加する
-                    TargetWords = new[]
+                    // currentProjectSettingValuesで表示状態のものを検索対象として追加する
+                    if (currentProjectSettingValues.CollectionListUUIDVisible)
                     {
-                        item.CollectionID,
-                        item.CollectionMC,
-                        item.CollectionName,
-                        item.CollectionCategory,
-                        item.CollectionTag1,
-                        item.CollectionTag2,
-                        item.CollectionTag3
-                    };
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionID;
+                    }
+                    if (currentProjectSettingValues.CollectionListManagementCodeVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionMC;
+                    }
+                    if (currentProjectSettingValues.CollectionListNameVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionName;
+                    }
+                    if (currentProjectSettingValues.CollectionListCategoryVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionCategory;
+                    }
+                    if (currentProjectSettingValues.CollectionListFirstTagVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionTag1;
+                    }
+                    if (currentProjectSettingValues.CollectionListSecondTagVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionTag2;
+                    }
+                    if (currentProjectSettingValues.CollectionListThirdTagVisible)
+                    {
+                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
+                        TargetWords[TargetWords.Length - 1] = item.CollectionTag3;
+                    }
                     break;
                 case 1:
                     TargetWords = new[] { item.CollectionID };

@@ -1293,7 +1293,13 @@ namespace CREC
 
                     // 検索処理
                     searchedCollectionList = allCollectionList;
-                    CollectionListClass.SearchCollectionFromList(ref searchedCollectionList, SearchFormTextBox.Text, SearchOptionComboBox.SelectedIndex, SearchMethodComboBox.SelectedIndex, LanguageFile);
+                    CollectionListClass.SearchCollectionFromList(
+                        ref searchedCollectionList,
+                        CurrentProjectSettingValues,
+                        SearchFormTextBox.Text,
+                        SearchOptionComboBox.SelectedIndex,
+                        SearchMethodComboBox.SelectedIndex,
+                        LanguageFile);
 
                     // ContentsDataTable.Rowsに追加
                     foreach (var thisCollectionDataValues in searchedCollectionList)
