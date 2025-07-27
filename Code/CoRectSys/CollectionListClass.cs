@@ -84,7 +84,7 @@ namespace CREC
                     loadingCollectionList.Add(item);
                 }
             }
-            // 検索結果をSearchedCollectionListに複製
+            // 検索結果をSearchedCollectionListに反映
             SearchedCollectionList = loadingCollectionList;
         }
 
@@ -165,79 +165,62 @@ namespace CREC
             }
 
             //検索方法に合わせて検索
+            bool returnValue = false;
             switch (SearchMethod)
             {
                 case 0:
                     if (SearchOption == 8)
                     {
-                        if (item.CollectionInventoryStatus == InventoryStatus.StockOut)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        // 在庫切れ検索
+                        returnValue = (item.CollectionInventoryStatus == InventoryStatus.StockOut);
                     }
                     else
                     {
                         // 前方一致検索
-                        return TargetWords.Any(word => word.StartsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => word.StartsWith(searchKeyWords));
                     }
+                    break;
                 case 1:
                     if (SearchOption == 8)
                     {
-                        if (item.CollectionInventoryStatus == InventoryStatus.UnderStocked)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        // 在庫不足検索
+                        returnValue = (item.CollectionInventoryStatus == InventoryStatus.UnderStocked);
                     }
                     else
                     {
                         // 部分一致検索
-                        return TargetWords.Any(word => word.Contains(searchKeyWords));
+                        returnValue = TargetWords.Any(word => word.Contains(searchKeyWords));
                     }
+                    break;
                 case 2:
                     if (SearchOption == 8)
                     {
-                        if (item.CollectionInventoryStatus == InventoryStatus.Appropriate)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        // 在庫適正検索
+                        returnValue = (item.CollectionInventoryStatus == InventoryStatus.Appropriate);
                     }
                     else
                     {
                         // 後方一致検索
-                        return TargetWords.Any(word => word.EndsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => word.EndsWith(searchKeyWords));
                     }
+                    break;
                 case 3:
                     if (SearchOption == 8)
                     {
-                        if (item.CollectionInventoryStatus == InventoryStatus.OverStocked)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        // 在庫過多検索
+                        returnValue = (item.CollectionInventoryStatus == InventoryStatus.OverStocked);
                     }
                     else
                     {
                         // 完全一致検索
-                        return TargetWords.Any(word => word == searchKeyWords);
+                        returnValue = TargetWords.Any(word => word == searchKeyWords);
                     }
+                    break;
                 default:
-                    return false;
+                    returnValue = false;
+                    break;
             }
+            return returnValue;
         }
 
         /// <summary>
