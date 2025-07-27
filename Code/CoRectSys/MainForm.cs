@@ -4602,7 +4602,6 @@ namespace CREC
             int CurrentSelectedIndex = SearchOptionComboBox.SelectedIndex;
             SearchOptionComboBox.Items.Clear();
             // ラベルの名称を読み込んで検索ボックスに設定、順番注意
-            SearchOptionComboBox.Items.Clear();
             SearchOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("FullSearchComboBoxItem", "mainform", LanguageFile));
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.UUIDLabel);
             SearchOptionComboBox.Items.Add(CurrentProjectSettingValues.ManagementCodeLabel);

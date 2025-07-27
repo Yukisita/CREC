@@ -106,68 +106,61 @@ namespace CREC
             int SearchOption,
             int SearchMethod)
         {
-            // 検索対象の文字列を取得（配列とする）
-            string[] TargetWords = Array.Empty<string>();
+            // 検索対象の文字列を取得（List配列とする）
+            List<string> TargetWords = new List<string>();
             switch (SearchOption)
             {
                 case 0:
                     // currentProjectSettingValuesで表示状態のものを検索対象として追加する
                     if (currentProjectSettingValues.CollectionListUUIDVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionID;
+                        TargetWords.Add(item.CollectionID);
                     }
                     if (currentProjectSettingValues.CollectionListManagementCodeVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionMC;
+                        TargetWords.Add(item.CollectionMC);
                     }
                     if (currentProjectSettingValues.CollectionListNameVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionName;
+                        TargetWords.Add(item.CollectionName);
                     }
                     if (currentProjectSettingValues.CollectionListCategoryVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionCategory;
+                        TargetWords.Add(item.CollectionCategory);
                     }
                     if (currentProjectSettingValues.CollectionListFirstTagVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionTag1;
+                        TargetWords.Add(item.CollectionTag1);
                     }
                     if (currentProjectSettingValues.CollectionListSecondTagVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionTag2;
+                        TargetWords.Add(item.CollectionTag2);
                     }
                     if (currentProjectSettingValues.CollectionListThirdTagVisible)
                     {
-                        Array.Resize(ref TargetWords, TargetWords.Length + 1);
-                        TargetWords[TargetWords.Length - 1] = item.CollectionTag3;
+                        TargetWords.Add(item.CollectionTag3);
                     }
                     break;
                 case 1:
-                    TargetWords = new[] { item.CollectionID };
+                    TargetWords.Add(item.CollectionID);
                     break;
                 case 2:
-                    TargetWords = new[] { item.CollectionMC };
+                    TargetWords.Add(item.CollectionMC);
                     break;
                 case 3:
-                    TargetWords = new[] { item.CollectionName };
+                    TargetWords.Add(item.CollectionName);
                     break;
                 case 4:
-                    TargetWords = new[] { item.CollectionCategory };
+                    TargetWords.Add(item.CollectionCategory);
                     break;
                 case 5:
-                    TargetWords = new[] { item.CollectionTag1 };
+                    TargetWords.Add(item.CollectionTag1);
                     break;
                 case 6:
-                    TargetWords = new[] { item.CollectionTag2 };
+                    TargetWords.Add(item.CollectionTag2);
                     break;
                 case 7:
-                    TargetWords = new[] { item.CollectionTag3 };
+                    TargetWords.Add(item.CollectionTag3);
                     break;
                 case 8:// 在庫状況検索用
                     break;
