@@ -64,7 +64,7 @@
             this.CloseAftertheBackupFinished.AutoSize = true;
             this.CloseAftertheBackupFinished.Checked = true;
             this.CloseAftertheBackupFinished.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CloseAftertheBackupFinished.Location = new System.Drawing.Point(24, 156);
+            this.CloseAftertheBackupFinished.Location = new System.Drawing.Point(24, 160);
             this.CloseAftertheBackupFinished.Margin = new System.Windows.Forms.Padding(4);
             this.CloseAftertheBackupFinished.Name = "CloseAftertheBackupFinished";
             this.CloseAftertheBackupFinished.Size = new System.Drawing.Size(18, 17);
@@ -74,12 +74,12 @@
             // autoCloseLabel
             // 
             this.autoCloseLabel.AutoSize = true;
+            this.autoCloseLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.autoCloseLabel.Location = new System.Drawing.Point(50, 157);
             this.autoCloseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.autoCloseLabel.Name = "autoCloseLabel";
-            this.autoCloseLabel.Size = new System.Drawing.Size(217, 15);
+            this.autoCloseLabel.Size = new System.Drawing.Size(0, 23);
             this.autoCloseLabel.TabIndex = 3;
-            this.autoCloseLabel.Text = "バックアップ終了後に自動終了する";
             // 
             // CloseBackUpForm
             // 

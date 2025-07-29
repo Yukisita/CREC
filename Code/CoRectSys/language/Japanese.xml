@@ -1046,6 +1046,14 @@
 			</item>
 		</Other>
 	</ProjectInfoForm>
+	<CloseBackupForm>
+		<Label>
+			<item>
+				<itemname>autoCloseLabel</itemname>
+				<itemtext>バックアップ終了後に自動終了する。</itemtext>
+			</item>
+		</Label>
+	</CloseBackupForm>
 	<CollectionDataClass>
 		<MessageBox>
 			<item>
