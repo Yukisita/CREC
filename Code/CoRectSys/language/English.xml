@@ -1046,6 +1046,14 @@
 			</item>
 		</Other>
 	</ProjectInfoForm>
+	<CloseBackupForm>
+		<Label>
+			<item>
+				<itemname>autoCloseLabel</itemname>
+				<itemtext>Close the application automatically after backup.</itemtext>
+			</item>
+		</Label>
+	</CloseBackupForm>
 	<CollectionDataClass>
 		<MessageBox>
 			<item>

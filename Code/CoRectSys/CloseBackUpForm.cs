@@ -63,6 +63,8 @@ namespace CREC
         private void CloseBackUpForm_Shown(object sender, EventArgs e)
         {
             // バックアップ処理の進捗表示のみを行うフォームのため、この中で処理を記述する
+            SetLanguage(); // 言語設定を適用
+
             // 進捗報告用のProgressオブジェクトを作成
             var backUpProgressReport = new Progress<(int completed, int total)>(backUpData =>
             {
@@ -70,11 +72,13 @@ namespace CREC
                 CloseBackUpProgressBar.Maximum = backUpData.total;
                 CloseBackUpProgressBar.Value = backUpData.completed;
             });
+
             // プロジェクトのバックアップ処理を開始
             Task<bool> task = CollectionDataClass.BackupProjectDataAsync(
                 CurrentProjectSettingValues,
                 backUpProgressReport,
                 LanguageFile);
+
             // タスクの完了を待機し、結果に応じてメッセージを表示
             task.ContinueWith(t =>
             {
@@ -90,8 +94,43 @@ namespace CREC
                         // バックアップ失敗メッセージを表示
                         backUpStatusLabel.Text = "一部または全てのデータのバックアップに失敗しました。";
                     }
+
+                    // チェックボックスがチェックされている場合、フォームを自動で閉じてアプリケーションを終了する
+                    if (CloseAftertheBackupFinished.Checked)
+                    {
+                        this.Close();
+                    }
                 }));
             });
         }
+
+        #region 言語設定
+        private void SetLanguage()// 言語ファイル（xml）を読み込んで表示する処理
+        {
+            try
+            {
+                IEnumerable<XElement> labelItemDataList = from item in LanguageFile.Elements("CloseBackupForm").Elements("Label").Elements("item") select item;
+                foreach (XElement itemData in labelItemDataList)
+                {
+                    try
+                    {
+                        Control[] targetContrl = Controls.Find(itemData.Element("itemname").Value, true);
+                        if (targetContrl.Length > 0)
+                        {
+                            targetContrl[0].Text = itemData.Element("itemtext").Value;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC");
+            }
+        }
+        #endregion
     }
 }
