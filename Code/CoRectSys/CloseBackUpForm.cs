@@ -4,7 +4,6 @@ Copyright (c) [2022-2025] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
-using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -96,7 +95,7 @@ namespace CREC
                         backUpStatusLabel.Text = "一部または全てのデータのバックアップに失敗しました。";
                     }
 
-                    // チェックボックスがチェックされている場合、フォームを自動で閉てアプリケーションを終了する
+                    // チェックボックスがチェックされている場合、フォームを自動で閉じてアプリケーションを終了する
                     if (CloseAftertheBackupFinished.Checked)
                     {
                         this.Close();
