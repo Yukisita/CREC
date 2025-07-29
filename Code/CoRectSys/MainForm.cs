@@ -3073,8 +3073,6 @@ namespace CREC
         {
             if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
-                // 現時点での文字列を保存
-
                 // 検索
                 if (DataLoadingStatus == "true")
                 {
