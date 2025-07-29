@@ -90,6 +90,12 @@ namespace CREC
                         // バックアップ失敗メッセージを表示
                         backUpStatusLabel.Text = "一部または全てのデータのバックアップに失敗しました。";
                     }
+
+                    // チェックボックスがチェックされている場合、フォームを自動で閉じる
+                    if (CloseAftertheBackupFinished.Checked)
+                    {
+                        this.Close();
+                    }
                 }));
             });
         }
