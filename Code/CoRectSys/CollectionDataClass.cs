@@ -684,13 +684,20 @@ namespace CREC
         /// <param name="backupFolderPath">バックアップフォルダのパス</param>
         /// <param name="collectionId">コレクションのUUID</param>
         /// <param name="isSuccess">バックアップ成功フラグ</param>
-        /// <param name="backupDateTime">バックアップ日時</param>
-        private static void WriteBackupLog(string backupFolderPath, string collectionId, bool isSuccess, string backupDateTime)
+        private static void WriteBackupLog(string backupFolderPath, string collectionId, bool isSuccess)
         {
             try
             {
-                string logFileName = $"BackupLog.txt";
-                string logFilePath = System.IO.Path.Combine(backupFolderPath, logFileName);
+                // BackupLogフォルダを作成
+                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "BackupLog");
+                if (!Directory.Exists(backupLogFolderPath))
+                {
+                    Directory.CreateDirectory(backupLogFolderPath);
+                }
+
+                // ログファイル名：BackupLog_yyyyMMdd.txt
+                string logFileName = $"BackupLog_{DateTime.Now:yyyyMMdd}.txt";
+                string logFilePath = System.IO.Path.Combine(backupLogFolderPath, logFileName);
                 string logEntry = $"{collectionId}, {(isSuccess ? "Success" : "Fail")}";
                 
                 // ログファイルに追記
@@ -722,7 +729,6 @@ namespace CREC
             if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
             {
                 MessageBox.Show("バックアップ先が指定されていません。", "CREC");
-                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath ?? "", collectionDataValues.CollectionID, false, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
                 return false;
             }
 
@@ -736,7 +742,6 @@ namespace CREC
                 catch (Exception ex)
                 {
                     MessageBox.Show("バックアップフォルダの作成に失敗しました。\n" + ex.Message, "CREC");
-                    WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
                     return false;
                 }
             }
@@ -752,7 +757,6 @@ namespace CREC
                 catch (Exception ex)
                 {
                     MessageBox.Show("コレクションバックアップフォルダの作成に失敗しました。\n" + ex.Message, "CREC");
-                    WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
                     return false;
                 }
             }
@@ -773,7 +777,6 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("コレクションのバックアップ用キャッシュ作成に失敗しました。\n" + ex.Message, "CREC");
-                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, currentDateTime);
                 return false;
             }
 
@@ -794,7 +797,6 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップに失敗しました。\n" + ex.Message, "CREC");
-                        WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, currentDateTime);
                         return false;
                     }
                     break;
@@ -812,7 +814,6 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップデータ圧縮に失敗しました。\n" + ex.Message, "CREC");
-                        WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, currentDateTime);
                         return false;
                     }
 
@@ -829,13 +830,11 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップZipファイル移動に失敗しました。\n" + ex.Message, "CREC");
-                        WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, currentDateTime);
                         return false;
                     }
                     break;
                 default:
                     MessageBox.Show("不明な圧縮設定です。", "CREC");
-                    WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, false, currentDateTime);
                     return false;
             }
 
@@ -845,8 +844,6 @@ namespace CREC
                 // バックアップフォルダの存在確認
                 if (!Directory.Exists("backuptmp\\" + collectionDataValues.CollectionID))
                 {
-                    // バックアップ成功をログ出力
-                    WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, true, currentDateTime);
                     return true; // フォルダが存在しない場合は何もしない
                 }
                 Directory.Delete("backuptmp\\" + collectionDataValues.CollectionID, true);
@@ -854,15 +851,12 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message, "CREC");
-                // クリーンアップの失敗は、データバックアップは成功しているので成功としてログ出力
-                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, true, currentDateTime);
+                // クリーンアップの失敗は、データバックアップは成功しているので成功として処理
                 return false;
             }
             
             ManageBackupCount(projectSettingValues, backupFolderPath);// バックアップ数管理処理
 
-            // バックアップ成功をログ出力
-            WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionDataValues.CollectionID, true, currentDateTime);
             return true;
         }
 
@@ -1012,11 +1006,11 @@ namespace CREC
             // ログ出力
             foreach (var collectionId in backupFailedCollectionList)
             {
-                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, false, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, false);
             }
             foreach (var collectionId in backupSuccessedCollectionList)
             {
-                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, true, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, true);
             }
 
             return true;
