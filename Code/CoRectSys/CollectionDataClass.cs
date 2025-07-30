@@ -689,7 +689,7 @@ namespace CREC
         {
             try
             {
-                string logFileName = $"BackupLog_{backupDateTime}.txt";
+                string logFileName = $"BackupLog.txt";
                 string logFilePath = System.IO.Path.Combine(backupFolderPath, logFileName);
                 string logEntry = $"{collectionId}, {(isSuccess ? "Success" : "Fail")}";
                 
@@ -699,10 +699,9 @@ namespace CREC
                     writer.WriteLine(logEntry);
                 }
             }
-            catch (Exception)
+            catch
             {
-                // ログ出力の失敗はバックアップ処理には影響させない
-                // エラーは無視する
+
             }
         }
 
@@ -964,6 +963,7 @@ namespace CREC
 
             // 並列処理用リスト
             var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
+            var backupSuccessedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
             ParallelOptions options = new ParallelOptions();
             // MaxDegreeOfBackUpProcessParallelismがnullまたは0以下の場合は自動（デフォルト）
             if (projectSettingValues.MaxDegreeOfBackUpProcessParallelism.HasValue 
@@ -992,7 +992,12 @@ namespace CREC
                 {
                     backupFailedCollectionList.Add(collectionDataValues.CollectionID);
                 }
-                
+                else
+                {
+                    // バックアップ成功した場合はコレクションIDをリストに追加
+                    backupSuccessedCollectionList.Add(collectionDataValues.CollectionID);
+                }
+
                 // 進捗更新
                 int currentbackedUpCount = System.Threading.Interlocked.Increment(ref backedUpCount);// 完了数をインクリメント
                 backUpProgressReport?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
@@ -1003,6 +1008,17 @@ namespace CREC
             {
                 return false;
             }
+
+            // ログ出力
+            foreach (var collectionId in backupFailedCollectionList)
+            {
+                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, false, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+            }
+            foreach (var collectionId in backupSuccessedCollectionList)
+            {
+                WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, collectionId, true, DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+            }
+
             return true;
         }
 
