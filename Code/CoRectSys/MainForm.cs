@@ -2535,10 +2535,16 @@ namespace CREC
             if (CurrentProjectSettingValues.EditBackUp == true)
             {
                 // バックアップメソッドを呼び出し
-                CollectionDataClass.BackupCollection(
+                bool BackupResult = CollectionDataClass.BackupCollection(
                     CurrentProjectSettingValues,// プロジェクト設定値
                     CurrentShownCollectionData, // 現在表示中のコレクションデータ
                     LanguageFile// 言語ファイル
+                    );
+                // バックアップログを記録
+                CollectionDataClass.WriteBackupLog(
+                    CurrentProjectSettingValues.ProjectBackupFolderPath,// バックアップフォルダパス
+                    CurrentShownCollectionData.CollectionID,// コレクションID
+                    BackupResult// バックアップ結果
                     );
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開

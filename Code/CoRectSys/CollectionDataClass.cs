@@ -684,7 +684,7 @@ namespace CREC
         /// <param name="backupFolderPath">バックアップフォルダのパス</param>
         /// <param name="collectionId">コレクションのUUID</param>
         /// <param name="isSuccess">バックアップ成功フラグ</param>
-        private static void WriteBackupLog(string backupFolderPath, string collectionId, bool isSuccess)
+        public static void WriteBackupLog(string backupFolderPath, string collectionId, bool isSuccess)
         {
             try
             {
@@ -695,8 +695,8 @@ namespace CREC
                     Directory.CreateDirectory(backupLogFolderPath);
                 }
 
-                // ログファイル名：BackupLog_yyyyMMdd.txt
-                string logFileName = $"BackupLog_{DateTime.Now:yyyyMMdd}.txt";
+                // ログファイル名：BackupLog_yyyyMMdd-hhmmss.txt
+                string logFileName = $"BackupLog_{DateTime.Now:yyyyMMdd-HHmmss}.txt";
                 string logFilePath = System.IO.Path.Combine(backupLogFolderPath, logFileName);
                 string logEntry = $"{collectionId}, {(isSuccess ? "Success" : "Fail")}";
                 
