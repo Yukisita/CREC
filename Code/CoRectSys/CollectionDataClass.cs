@@ -6,6 +6,7 @@ https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using Microsoft.VisualBasic.FileIO;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -16,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Shapes;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace CREC
@@ -679,6 +681,71 @@ namespace CREC
         }
 
         /// <summary>
+        /// バックアップログを出力する
+        /// </summary>
+        /// <param name="backupFolderPath">バックアップフォルダのパス</param>
+        /// <param name="collectionId">コレクションのUUID</param>
+        /// <param name="isSuccess">バックアップ成功フラグ</param>
+        public static void WriteBackupLog(
+            string backupFolderPath,
+            ConcurrentBag<(string collectionId, bool isSuccess)> backupLog,
+            XElement languageData)
+        {
+            if (backupLog.Count == 0)
+            {
+                return; // バックアップリストが空の場合はログ出力しない
+            }
+            try
+            {
+                // BackupLogフォルダを作成(名前順で冒頭に表示されるよう、フォルダ名に感嘆符を付ける)
+                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "!BackupLog");
+                if (!Directory.Exists(backupLogFolderPath))
+                {
+                    Directory.CreateDirectory(backupLogFolderPath);
+                }
+
+                // ログファイル名：BackupLog_yyyyMMdd-hhmmss.txt
+                string logName = $"BackupLog_{DateTime.Now:yyyyMMdd-HHmmss}";
+                string logFilePath = System.IO.Path.Combine(backupLogFolderPath, logName);
+
+                // ログファイルに追記
+                using (StreamWriter writer = new StreamWriter(logFilePath + ".txt", true, Encoding.GetEncoding("UTF-8")))
+                {
+                    writer.WriteLine(logName);// logNameを書き込む
+                    // バックアップに失敗したコレクションをログ出力
+                    foreach (var (id, isSuccess) in backupLog)
+                    {
+                        if (!isSuccess)
+                        {
+                            string logEntry = $"{id}, Fail";
+                            writer.WriteLine(logEntry);
+                        }
+                    }
+                    // バックアップに成功したコレクションをログ出力
+                    foreach (var (id, isSuccess) in backupLog)
+                    {
+                        if (isSuccess)
+                        {
+                            string logEntry = $"{id}, Success";
+                            writer.WriteLine(logEntry);
+                        }
+                    }
+                    writer.WriteLine(string.Empty);// 改行を追加
+                }
+            }
+            catch (Exception ex)
+            {
+                // ログ出力失敗をメッセージボックスで表示
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupLogOutputFailed", "CollectionDataClass", languageData) + ex.Message,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                    );
+            }
+        }
+
+        /// <summary>
         /// コレクションのバックアップ
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
@@ -816,10 +883,15 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message, "CREC");
-                return false;
+                MessageBox.Show(
+                    "一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                // クリーンアップの失敗は、データバックアップは成功しているので成功として処理
+                return true;
             }
-            
+
             ManageBackupCount(projectSettingValues, backupFolderPath);// バックアップ数管理処理
 
             return true;
@@ -841,7 +913,7 @@ namespace CREC
                 {
                     return;
                 }
-                
+
                 List<FileSystemInfo> backedUpCollectionItems = new List<FileSystemInfo>();// バックアップファイル/フォルダのリストを取得
 
                 // 圧縮設定に応じてファイルまたはフォルダを取得
@@ -855,7 +927,7 @@ namespace CREC
 
                 // バックアップ上限数を取得(パラメータチェック含む)
                 int maxBackupCount
-                        = projectSettingValues.MaxBackupCount 
+                        = projectSettingValues.MaxBackupCount
                         = Math.Max(projectSettingValues.MaxBackupCount, 1);// バックアップ上限数が1未満の場合は1に設定
 
                 // 設定されたバックアップ上限数を超えている場合、古いものから削除
@@ -909,9 +981,14 @@ namespace CREC
                 DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
                 subFolderArray = di.EnumerateDirectories("*").ToArray();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "CollectionDataClass", languageData) + ex.Message, "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "CollectionDataClass", languageData) + ex.Message,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return false;
             }
             int totalCollections = subFolderArray.Length;// 総コレクション数を取得
@@ -921,10 +998,12 @@ namespace CREC
             backUpProgressReport?.Report((backedUpCount, totalCollections));// 進捗を初期化
 
             // 並列処理用リスト
-            var backupFailedCollectionList = new System.Collections.Concurrent.ConcurrentBag<string>();
+            // IDと成功・失敗のBool値を格納する
+            var backupLog = new System.Collections.Concurrent.ConcurrentBag<(string id, bool isSuccess)>();
             ParallelOptions options = new ParallelOptions();
+
             // MaxDegreeOfBackUpProcessParallelismがnullまたは0以下の場合は自動（デフォルト）
-            if (projectSettingValues.MaxDegreeOfBackUpProcessParallelism.HasValue 
+            if (projectSettingValues.MaxDegreeOfBackUpProcessParallelism.HasValue
                 && projectSettingValues.MaxDegreeOfBackUpProcessParallelism.Value > 0)
             {
                 options.MaxDegreeOfParallelism = projectSettingValues.MaxDegreeOfBackUpProcessParallelism.Value;
@@ -934,30 +1013,31 @@ namespace CREC
             {
                 options.MaxDegreeOfParallelism = Environment.ProcessorCount;
             }
+
             // 非同期でコレクションのバックアップを実行
             System.Threading.Tasks.Parallel.ForEach(subFolderArray, options, subFolder =>
             {
                 // Index読み込み
                 CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
-                if(!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, languageData))
+                if (!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, languageData))
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
-                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
+                    backupLog.Add((collectionDataValues.CollectionID, false));
                     return; // 次のコレクションへ
                 }
-                // コレクションのバックアップを実行、バックアップ失敗した場合はコレクションIDをリストに追加
-                if (!BackupCollection(projectSettingValues, collectionDataValues, languageData))
-                {
-                    backupFailedCollectionList.Add(collectionDataValues.CollectionID);
-                }
-                
+
+                bool backupResult = BackupCollection(projectSettingValues, collectionDataValues, languageData);// バックアップ実行
+                backupLog.Add((collectionDataValues.CollectionID, backupResult));// バックアップ結果をリストに追加
+
                 // 進捗更新
                 int currentbackedUpCount = System.Threading.Interlocked.Increment(ref backedUpCount);// 完了数をインクリメント
                 backUpProgressReport?.Report((currentbackedUpCount, totalCollections));// 進捗を報告
             });
 
+            WriteBackupLog(projectSettingValues.ProjectBackupFolderPath, backupLog, languageData);// バックアップ失敗のログ出力
+
             // バックアップ失敗したコレクションのリストがある場合は結果をfalseに設定
-            if (backupFailedCollectionList.Count > 0)
+            if (backupLog.Any(x => !x.isSuccess))
             {
                 return false;
             }

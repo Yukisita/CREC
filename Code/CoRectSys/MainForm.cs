@@ -2535,11 +2535,22 @@ namespace CREC
             if (CurrentProjectSettingValues.EditBackUp == true)
             {
                 // バックアップメソッドを呼び出し
-                CollectionDataClass.BackupCollection(
+                bool BackupResult = CollectionDataClass.BackupCollection(
                     CurrentProjectSettingValues,// プロジェクト設定値
                     CurrentShownCollectionData, // 現在表示中のコレクションデータ
                     LanguageFile// 言語ファイル
                     );
+
+                // バックアップログを記録
+                var collectionIdBag = new System.Collections.Concurrent.ConcurrentBag<(string collectionId, bool isSuccess)>
+                {
+                    (CurrentShownCollectionData.CollectionID, BackupResult)
+                };
+                CollectionDataClass.WriteBackupLog(
+                    CurrentProjectSettingValues.ProjectBackupFolderPath,// バックアップフォルダパス
+                    collectionIdBag,// コレクションIDのConcurrentBag
+                    LanguageFile// 言語ファイル
+                );
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
             return true;

@@ -1104,6 +1104,10 @@
 				<itemname>FailedToRetrieveCollectionFolder</itemname>
 				<itemtext>Failed to retrieve collection folder.</itemtext>
 			</item>
+			<item>
+				<itemname>BackupLogOutputFailed</itemname>
+				<itemtext>Failed to output backup log.</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>
