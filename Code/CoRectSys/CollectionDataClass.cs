@@ -697,8 +697,8 @@ namespace CREC
             }
             try
             {
-                // BackupLogフォルダを作成
-                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "BackupLog");
+                // BackupLogフォルダを作成(名前順で冒頭に表示されるよう、フォルダ名に感嘆符を付ける)
+                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "!BackupLog");
                 if (!Directory.Exists(backupLogFolderPath))
                 {
                     Directory.CreateDirectory(backupLogFolderPath);
