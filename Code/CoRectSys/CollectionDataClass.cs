@@ -737,8 +737,11 @@ namespace CREC
             {
                 // ログ出力失敗をメッセージボックスで表示
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "BackupLogOutputFailed", languageData) + ex.Message,
-                    "CREC");
+                    LanguageSettingClass.GetMessageBoxMessage("BackupLogOutputFailed", "CollectionDataClass", languageData) + ex.Message,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                    );
             }
         }
 
@@ -880,9 +883,13 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message, "CREC");
+                MessageBox.Show(
+                    "一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 // クリーンアップの失敗は、データバックアップは成功しているので成功として処理
-                return false;
+                return true;
             }
 
             ManageBackupCount(projectSettingValues, backupFolderPath);// バックアップ数管理処理
@@ -978,7 +985,10 @@ namespace CREC
             {
                 MessageBox.Show(
                     LanguageSettingClass.GetMessageBoxMessage("FailedToRetrieveCollectionFolder", "CollectionDataClass", languageData) + ex.Message,
-                    "CREC");
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                    );
                 return false;
             }
             int totalCollections = subFolderArray.Length;// 総コレクション数を取得
