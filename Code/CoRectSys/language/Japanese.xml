@@ -1104,6 +1104,10 @@
 				<itemname>FailedToRetrieveCollectionFolder</itemname>
 				<itemtext>プロジェクトのコレクションフォルダの取得に失敗しました。</itemtext>
 			</item>
+			<item>
+				<itemname>BackupLogOutputFailed</itemname>
+				<itemtext>バックアップログの出力に失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<Other>
 			<item>
