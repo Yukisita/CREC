@@ -147,7 +147,6 @@
             this.NextPictureButton = new System.Windows.Forms.Button();
             this.PreviousPictureButton = new System.Windows.Forms.Button();
             this.SearchOptionComboBox = new System.Windows.Forms.ComboBox();
-            this.SearchFormTextBox = new System.Windows.Forms.TextBox();
             this.ShowConfidentialDataButton = new System.Windows.Forms.Button();
             this.SaveAndCloseEditButton = new System.Windows.Forms.Button();
             this.ConfidentialDataTextBox = new System.Windows.Forms.TextBox();
@@ -222,6 +221,7 @@
             this.UUIDEditStatusLabel = new System.Windows.Forms.Label();
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
+            this.SearchFormTextBox = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -1280,17 +1280,6 @@
             this.SearchOptionComboBox.TabIndex = 3;
             this.SearchOptionComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchOptionComboBox_SelectedIndexChanged);
             // 
-            // SearchFormTextBox
-            // 
-            this.SearchFormTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.SearchFormTextBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SearchFormTextBox.Location = new System.Drawing.Point(14, 64);
-            this.SearchFormTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.SearchFormTextBox.Name = "SearchFormTextBox";
-            this.SearchFormTextBox.Size = new System.Drawing.Size(723, 47);
-            this.SearchFormTextBox.TabIndex = 10;
-            this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
-            // 
             // ShowConfidentialDataButton
             // 
             this.ShowConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -2220,6 +2209,19 @@
             this.SubtractQuantityButton.Visible = false;
             this.SubtractQuantityButton.Click += new System.EventHandler(this.SubtractQuantityButton_Click);
             // 
+            // SearchFormTextBox
+            // 
+            this.SearchFormTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SearchFormTextBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchFormTextBox.Location = new System.Drawing.Point(14, 64);
+            this.SearchFormTextBox.Multiline = false;
+            this.SearchFormTextBox.Name = "SearchFormTextBox";
+            this.SearchFormTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.SearchFormTextBox.Size = new System.Drawing.Size(723, 47);
+            this.SearchFormTextBox.TabIndex = 10;
+            this.SearchFormTextBox.Text = "";
+            this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -2371,7 +2373,6 @@
         private System.Windows.Forms.Button NextPictureButton;
         private System.Windows.Forms.Button PreviousPictureButton;
         private System.Windows.Forms.ComboBox SearchOptionComboBox;
-        private System.Windows.Forms.TextBox SearchFormTextBox;
         private System.Windows.Forms.ToolStripMenuItem EditConfigSysToolStripMenuItem;
         private System.Windows.Forms.Button ShowConfidentialDataButton;
         private System.Windows.Forms.Button SaveAndCloseEditButton;
@@ -2524,6 +2525,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn operation;
         private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
+        private System.Windows.Forms.RichTextBox SearchFormTextBox;
     }
 }
 

@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CloseBackUpForm));
             this.CloseBackUpProgressBar = new System.Windows.Forms.ProgressBar();
             this.backUpStatusLabel = new System.Windows.Forms.Label();
+            this.CloseAftertheBackupFinished = new System.Windows.Forms.CheckBox();
+            this.autoCloseLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // CloseBackUpProgressBar
@@ -57,11 +59,35 @@
             this.backUpStatusLabel.Text = "バックアップ作成中…";
             this.backUpStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // CloseAftertheBackupFinished
+            // 
+            this.CloseAftertheBackupFinished.AutoSize = true;
+            this.CloseAftertheBackupFinished.Checked = true;
+            this.CloseAftertheBackupFinished.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CloseAftertheBackupFinished.Location = new System.Drawing.Point(24, 160);
+            this.CloseAftertheBackupFinished.Margin = new System.Windows.Forms.Padding(4);
+            this.CloseAftertheBackupFinished.Name = "CloseAftertheBackupFinished";
+            this.CloseAftertheBackupFinished.Size = new System.Drawing.Size(18, 17);
+            this.CloseAftertheBackupFinished.TabIndex = 2;
+            this.CloseAftertheBackupFinished.UseVisualStyleBackColor = true;
+            // 
+            // autoCloseLabel
+            // 
+            this.autoCloseLabel.AutoSize = true;
+            this.autoCloseLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.autoCloseLabel.Location = new System.Drawing.Point(50, 157);
+            this.autoCloseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.autoCloseLabel.Name = "autoCloseLabel";
+            this.autoCloseLabel.Size = new System.Drawing.Size(0, 23);
+            this.autoCloseLabel.TabIndex = 3;
+            // 
             // CloseBackUpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(507, 181);
+            this.ClientSize = new System.Drawing.Size(507, 196);
+            this.Controls.Add(this.autoCloseLabel);
+            this.Controls.Add(this.CloseAftertheBackupFinished);
             this.Controls.Add(this.backUpStatusLabel);
             this.Controls.Add(this.CloseBackUpProgressBar);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -77,5 +103,7 @@
         #endregion
         private System.Windows.Forms.Label backUpStatusLabel;
         internal System.Windows.Forms.ProgressBar CloseBackUpProgressBar;
+        private System.Windows.Forms.CheckBox CloseAftertheBackupFinished;
+        private System.Windows.Forms.Label autoCloseLabel;
     }
 }

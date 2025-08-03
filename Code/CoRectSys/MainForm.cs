@@ -32,7 +32,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.3.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.4.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
         #endregion
@@ -2535,11 +2535,22 @@ namespace CREC
             if (CurrentProjectSettingValues.EditBackUp == true)
             {
                 // バックアップメソッドを呼び出し
-                CollectionDataClass.BackupCollection(
+                bool BackupResult = CollectionDataClass.BackupCollection(
                     CurrentProjectSettingValues,// プロジェクト設定値
                     CurrentShownCollectionData, // 現在表示中のコレクションデータ
                     LanguageFile// 言語ファイル
                     );
+
+                // バックアップログを記録
+                var collectionIdBag = new System.Collections.Concurrent.ConcurrentBag<(string collectionId, bool isSuccess)>
+                {
+                    (CurrentShownCollectionData.CollectionID, BackupResult)
+                };
+                CollectionDataClass.WriteBackupLog(
+                    CurrentProjectSettingValues.ProjectBackupFolderPath,// バックアップフォルダパス
+                    collectionIdBag,// コレクションIDのConcurrentBag
+                    LanguageFile// 言語ファイル
+                );
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
             return true;
@@ -3073,8 +3084,6 @@ namespace CREC
         {
             if (CurrentProjectSettingValues.ProjectDataFolderPath.Length != 0)
             {
-                // 現時点での文字列を保存
-
                 // 検索
                 if (DataLoadingStatus == "true")
                 {

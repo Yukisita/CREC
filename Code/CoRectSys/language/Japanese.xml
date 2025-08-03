@@ -1046,6 +1046,14 @@
 			</item>
 		</Other>
 	</ProjectInfoForm>
+	<CloseBackupForm>
+		<Label>
+			<item>
+				<itemname>autoCloseLabel</itemname>
+				<itemtext>バックアップ終了後に自動終了する。</itemtext>
+			</item>
+		</Label>
+	</CloseBackupForm>
 	<CollectionDataClass>
 		<MessageBox>
 			<item>
@@ -1095,6 +1103,10 @@
 			<item>
 				<itemname>FailedToRetrieveCollectionFolder</itemname>
 				<itemtext>プロジェクトのコレクションフォルダの取得に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLogOutputFailed</itemname>
+				<itemtext>バックアップログの出力に失敗しました。</itemtext>
 			</item>
 		</MessageBox>
 		<Other>
