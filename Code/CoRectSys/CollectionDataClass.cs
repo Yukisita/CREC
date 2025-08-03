@@ -704,8 +704,8 @@ namespace CREC
                     Directory.CreateDirectory(backupLogFolderPath);
                 }
 
-                // ログファイル名：BackupLog_yyyyMMdd-hhmmss.txt
-                string logName = $"BackupLog_{DateTime.Now:yyyyMMdd-HHmmss}";
+                // ログファイル名：BackupLog_yyyyMMdd-hhmmssfff.txt
+                string logName = $"BackupLog_{DateTime.Now:yyyyMMdd-HHmmssfff}";
                 string logFilePath = System.IO.Path.Combine(backupLogFolderPath, logName);
 
                 // ログファイルに追記
@@ -883,12 +883,12 @@ namespace CREC
             }
             catch (Exception ex)
             {
+                // クリーンアップの失敗は、メッセージボックスで警告を表示して終了する
                 MessageBox.Show(
                     "一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message,
                     "CREC",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
-                // クリーンアップの失敗は、データバックアップは成功しているので成功として処理
                 return true;
             }
 
