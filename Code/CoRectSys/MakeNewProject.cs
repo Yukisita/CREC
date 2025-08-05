@@ -134,6 +134,7 @@ namespace CREC
                     break;
             }
             MaxBackupCountTextBox.Text = Convert.ToString(CurrentProjectSettingValues.MaxBackupCount);
+            CollectionListAutoUpdateCheckBox.Checked = CurrentProjectSettingValues.CollectionListAutoUpdate;
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -217,6 +218,7 @@ namespace CREC
                     MessageBox.Show("バックアップ保持数の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
                     return;
                 }
+                CurrentProjectSettingValues.CollectionListAutoUpdate = CollectionListAutoUpdateCheckBox.Checked;
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// 新規プロジェクト作成の場合
                 {

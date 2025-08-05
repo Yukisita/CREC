@@ -274,6 +274,10 @@ namespace CREC
         /// バックアップ保持数（各コレクションの最大バックアップ数）
         /// </summary>
         public int MaxBackupCount { get; set; } = 256;
+        /// <summary>
+        /// コレクションリストの自動更新設定
+        /// </summary>
+        public bool CollectionListAutoUpdate { get; set; } = true;
     }
 
     public class ProjectSettingClass
@@ -852,6 +856,16 @@ namespace CREC
                             loadingProjectSettingValues.DataCheckInterval = 100;
                         }
                         break;
+                    case "CollectionListAutoUpdate":
+                        try
+                        {
+                            loadingProjectSettingValues.CollectionListAutoUpdate = cols[1] == "true";
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.CollectionListAutoUpdate = true;
+                        }
+                        break;
                 }
             }
             CheckListVisibleColumnExist(ref loadingProjectSettingValues);
@@ -1104,6 +1118,7 @@ namespace CREC
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);
+                streamWriter.WriteLine("CollectionListAutoUpdate,{0}", projectSettingValues.CollectionListAutoUpdate ? "true" : "false");
                 returnValue = true;
             }
             catch

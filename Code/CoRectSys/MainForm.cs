@@ -169,6 +169,7 @@ namespace CREC
             Application.DoEvents();
             SetFormLayout();
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を開始
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
@@ -1109,6 +1110,7 @@ namespace CREC
                 CollectionEditStatusWatcherStop();// データの監視を停止
                 collectionEditStatusWatcher.Dispose();// データの監視を破棄
                 CheckContentsListCancellationTokenSource.Dispose();// データ監視用のCancellationTokenSourceを破棄
+                CollectionListAutoUpdateCancellationTokenSource.Dispose();// コレクションリスト自動更新用のCancellationTokenSourceを破棄
                 // コレクション一覧を出力
                 if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
@@ -1231,6 +1233,9 @@ namespace CREC
         #region データ一覧・詳細表示関係
         private void CollectionListIsShowing(bool status)
         {
+            // コレクション編集状態を更新
+            isEditingCollection = !status;
+            
             // 一覧表示中に表示する項目
             AddContentsButton.Visible = status;
             dataGridView1.Visible = status;
@@ -1261,6 +1266,9 @@ namespace CREC
             // 表示内容整合性確認処理を停止
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            // コレクションリスト自動更新処理を停止・再開
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
 
             while (DataLoadingStatus != "false")
             {
@@ -1409,6 +1417,7 @@ namespace CREC
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
@@ -2206,6 +2215,8 @@ namespace CREC
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = 0;
             SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
@@ -2217,6 +2228,7 @@ namespace CREC
             // 入力フォームをリセット
             ClearDetailsWindowMethod();
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
             ShowDetails();
         }
         private void DeleteContent()// データ完全削除用のメソッド
@@ -2436,6 +2448,8 @@ namespace CREC
             // 表示内容整合性確認処理を停止し、キャンセルトークンをリセット
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             // ID変更処理が必要な場合
             if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
             {
@@ -3567,6 +3581,8 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
+        CancellationTokenSource CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();// CollectionListAutoUpdateのキャンセルトークン
+        bool isEditingCollection = false;// コレクション編集中フラグ
         /// <summary>
         /// コレクションの編集状態を監視するメソッド
         /// </summary>
@@ -3794,6 +3810,84 @@ namespace CREC
                 ShowDetails();
             }
         }
+
+        /// <summary>
+        /// コレクションリストの自動更新処理
+        /// </summary>
+        /// <param name="cancellationToken">キャンセルトークン</param>
+        private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
+        {
+            int lastCollectionCount = allCollectionList.Count;
+            DateTime lastCheckTime = DateTime.Now;
+
+            while (true)
+            {
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+
+                // キャンセルトークンが要求された場合はループを抜ける
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                // 自動更新が無効の場合は何もしない
+                if (!CurrentProjectSettingValues.CollectionListAutoUpdate)
+                {
+                    continue;
+                }
+
+                // コレクション編集中は自動更新を停止
+                if (isEditingCollection)
+                {
+                    continue;
+                }
+
+                // プロジェクトファイルが開かれていない場合は何もしない
+                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    // プロジェクトデータフォルダが存在するかチェック
+                    if (!Directory.Exists(CurrentProjectSettingValues.ProjectDataFolderPath))
+                    {
+                        continue;
+                    }
+
+                    // プロジェクトフォルダ内のコレクション数をチェック
+                    DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                    var subFolders = di.EnumerateDirectories("*");
+                    int currentCollectionCount = subFolders.Count();
+
+                    // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
+                    if (currentCollectionCount != lastCollectionCount || (DateTime.Now - lastCheckTime).TotalMinutes > 5)
+                    {
+                        // UIスレッドで実行
+                        if (this.InvokeRequired)
+                        {
+                            this.Invoke(new Action(() => {
+                                LoadGrid();
+                            }));
+                        }
+                        else
+                        {
+                            LoadGrid();
+                        }
+
+                        lastCollectionCount = currentCollectionCount;
+                        lastCheckTime = DateTime.Now;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // エラーが発生した場合はログに記録（必要に応じて）
+                    System.Diagnostics.Debug.WriteLine($"Collection auto-update error: {ex.Message}");
+                }
+            }
+        }
+
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)

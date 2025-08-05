@@ -102,6 +102,7 @@
             this.DataCheckIntervalComboBox = new System.Windows.Forms.ComboBox();
             this.DataCheckIntervalUnitLabel = new System.Windows.Forms.Label();
             this.DataCheckIntervalTextBox = new System.Windows.Forms.TextBox();
+            this.CollectionListAutoUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.MaxDegreeOfBackUpProcessParallelismComboBox = new System.Windows.Forms.ComboBox();
             this.MaxDegreeOfBackUpProcessParallelismLabel = new System.Windows.Forms.Label();
             this.MaxBackupCountTextBox = new System.Windows.Forms.TextBox();
@@ -888,6 +889,17 @@
             this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 35);
             this.DataCheckIntervalTextBox.TabIndex = 95;
             // 
+            // CollectionListAutoUpdateCheckBox
+            // 
+            this.CollectionListAutoUpdateCheckBox.AutoSize = true;
+            this.CollectionListAutoUpdateCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CollectionListAutoUpdateCheckBox.Location = new System.Drawing.Point(1145, 937);
+            this.CollectionListAutoUpdateCheckBox.Name = "CollectionListAutoUpdateCheckBox";
+            this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(284, 40);
+            this.CollectionListAutoUpdateCheckBox.TabIndex = 96;
+            this.CollectionListAutoUpdateCheckBox.Text = "コレクションリスト自動更新";
+            this.CollectionListAutoUpdateCheckBox.UseVisualStyleBackColor = true;
+            // 
             // MaxDegreeOfBackUpProcessParallelismComboBox
             // 
             this.MaxDegreeOfBackUpProcessParallelismComboBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
@@ -950,6 +962,7 @@
             this.Controls.Add(this.DataCheckIntervalComboBox);
             this.Controls.Add(this.SleepModeLabel);
             this.Controls.Add(this.SleepModeComboBox);
+            this.Controls.Add(this.CollectionListAutoUpdateCheckBox);
             this.Controls.Add(this.FileFormatComboBox);
             this.Controls.Add(this.FileFormatLabel);
             this.Controls.Add(this.UserValueLabel);
@@ -1102,6 +1115,7 @@
         private System.Windows.Forms.ComboBox DataCheckIntervalComboBox;
         private System.Windows.Forms.Label DataCheckIntervalUnitLabel;
         private System.Windows.Forms.TextBox DataCheckIntervalTextBox;
+        private System.Windows.Forms.CheckBox CollectionListAutoUpdateCheckBox;
         private System.Windows.Forms.ComboBox MaxDegreeOfBackUpProcessParallelismComboBox;
         private System.Windows.Forms.Label MaxDegreeOfBackUpProcessParallelismLabel;
         private System.Windows.Forms.TextBox MaxBackupCountTextBox;
