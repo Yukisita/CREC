@@ -3822,7 +3822,15 @@ namespace CREC
 
             while (true)
             {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                try
+                {
+                    await Task.Delay(CurrentProjectSettingValues.DataCheckInterval, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // キャンセルされた場合はループを抜ける
+                    break;
+                }
 
                 // キャンセルトークンが要求された場合はループを抜ける
                 if (cancellationToken.IsCancellationRequested)
@@ -3843,7 +3851,8 @@ namespace CREC
                 }
 
                 // プロジェクトファイルが開かれていない場合は何もしない
-                if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+                if (string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectSettingFilePath) ||
+                    string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectDataFolderPath))
                 {
                     continue;
                 }
@@ -3862,18 +3871,41 @@ namespace CREC
                     int currentCollectionCount = subFolders.Count();
 
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
-                    if (currentCollectionCount != lastCollectionCount || (DateTime.Now - lastCheckTime).TotalMinutes > 5)
+                    bool shouldUpdate = currentCollectionCount != lastCollectionCount;
+                    
+                    // 5分経過または数が変わった場合に更新
+                    if (shouldUpdate || (DateTime.Now - lastCheckTime).TotalMinutes > 5)
                     {
                         // UIスレッドで実行
                         if (this.InvokeRequired)
                         {
-                            this.Invoke(new Action(() => {
-                                LoadGrid();
-                            }));
+                            try
+                            {
+                                this.Invoke(new Action(() => {
+                                    // 再度チェック（UIスレッドで実行される時点では状況が変わっている可能性があるため）
+                                    if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                                    {
+                                        LoadGrid();
+                                    }
+                                }));
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // フォームが破棄されている場合はループを抜ける
+                                break;
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                // フォームハンドルが作成されていない場合はスキップ
+                                continue;
+                            }
                         }
                         else
                         {
-                            LoadGrid();
+                            if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                            {
+                                LoadGrid();
+                            }
                         }
 
                         lastCollectionCount = currentCollectionCount;
@@ -3884,6 +3916,19 @@ namespace CREC
                 {
                     // エラーが発生した場合はログに記録（必要に応じて）
                     System.Diagnostics.Debug.WriteLine($"Collection auto-update error: {ex.Message}");
+                    
+                    // 重要なエラーの場合は少し待ってから再試行
+                    if (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException)
+                    {
+                        try
+                        {
+                            await Task.Delay(5000, cancellationToken); // 5秒待機
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }

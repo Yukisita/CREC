@@ -897,7 +897,7 @@
             this.CollectionListAutoUpdateCheckBox.Name = "CollectionListAutoUpdateCheckBox";
             this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(284, 40);
             this.CollectionListAutoUpdateCheckBox.TabIndex = 96;
-            this.CollectionListAutoUpdateCheckBox.Text = "コレクションリスト自動更新";
+            this.CollectionListAutoUpdateCheckBox.Text = "リスト自動更新";
             this.CollectionListAutoUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
             // MaxDegreeOfBackUpProcessParallelismComboBox
