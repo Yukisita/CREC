@@ -1231,12 +1231,13 @@ namespace CREC
         #endregion
 
         #region データ一覧・詳細表示関係
+        /// <summary>
+        /// コレクションリストの表示中・編集中を切り替える
+        /// </summary>
+        /// <param name="status">リスト表示表示中：true、リスト非表示：false</param>
         private void CollectionListIsShowing(bool status)
         {
-            // コレクション編集状態を更新
-            isEditingCollection = !status;
-            
-            // 一覧表示中に表示する項目
+            // リスト表示中に表示する項目
             AddContentsButton.Visible = status;
             dataGridView1.Visible = status;
             ListUpdateButton.Visible = status;
