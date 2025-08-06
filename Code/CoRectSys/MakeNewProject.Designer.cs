@@ -205,7 +205,7 @@
             this.EditBackupLocationTextBox.Location = new System.Drawing.Point(7, 371);
             this.EditBackupLocationTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditBackupLocationTextBox.Name = "EditBackupLocationTextBox";
-            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(787, 35);
+            this.EditBackupLocationTextBox.Size = new System.Drawing.Size(787, 43);
             this.EditBackupLocationTextBox.TabIndex = 5;
             // 
             // EditTag1NameTextBox
@@ -224,7 +224,7 @@
             this.EditTag2NameTextBox.Location = new System.Drawing.Point(1145, 544);
             this.EditTag2NameTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditTag2NameTextBox.Name = "EditTag2NameTextBox";
-            this.EditTag2NameTextBox.Size = new System.Drawing.Size(387, 35);
+            this.EditTag2NameTextBox.Size = new System.Drawing.Size(387, 43);
             this.EditTag2NameTextBox.TabIndex = 14;
             this.EditTag2NameTextBox.Text = "タグ２";
             // 
@@ -234,7 +234,7 @@
             this.EditTag3NameTextBox.Location = new System.Drawing.Point(1145, 608);
             this.EditTag3NameTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditTag3NameTextBox.Name = "EditTag3NameTextBox";
-            this.EditTag3NameTextBox.Size = new System.Drawing.Size(387, 35);
+            this.EditTag3NameTextBox.Size = new System.Drawing.Size(387, 43);
             this.EditTag3NameTextBox.TabIndex = 15;
             this.EditTag3NameTextBox.Text = "タグ３";
             // 
@@ -373,7 +373,7 @@
             this.EditListOutputLocationTextBox.Location = new System.Drawing.Point(16, 847);
             this.EditListOutputLocationTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditListOutputLocationTextBox.Name = "EditListOutputLocationTextBox";
-            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(787, 35);
+            this.EditListOutputLocationTextBox.Size = new System.Drawing.Size(787, 43);
             this.EditListOutputLocationTextBox.TabIndex = 7;
             // 
             // ListOutputLocation
@@ -525,7 +525,7 @@
             this.EditDataLocationLabelTextBox.Location = new System.Drawing.Point(1145, 736);
             this.EditDataLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditDataLocationLabelTextBox.Name = "EditDataLocationLabelTextBox";
-            this.EditDataLocationLabelTextBox.Size = new System.Drawing.Size(387, 35);
+            this.EditDataLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
             this.EditDataLocationLabelTextBox.TabIndex = 17;
             this.EditDataLocationLabelTextBox.Text = "データ保管場所";
             // 
@@ -535,7 +535,7 @@
             this.EditRealLocationLabelTextBox.Location = new System.Drawing.Point(1145, 672);
             this.EditRealLocationLabelTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.EditRealLocationLabelTextBox.Name = "EditRealLocationLabelTextBox";
-            this.EditRealLocationLabelTextBox.Size = new System.Drawing.Size(387, 35);
+            this.EditRealLocationLabelTextBox.Size = new System.Drawing.Size(387, 43);
             this.EditRealLocationLabelTextBox.TabIndex = 16;
             this.EditRealLocationLabelTextBox.Text = "現物保管場所";
             // 
@@ -829,7 +829,7 @@
             this.SleepModeComboBox.Items.AddRange(new object[] {
             "CSV",
             "TSV"});
-            this.SleepModeComboBox.Location = new System.Drawing.Point(1145, 872);
+            this.SleepModeComboBox.Location = new System.Drawing.Point(1145, 930);
             this.SleepModeComboBox.Name = "SleepModeComboBox";
             this.SleepModeComboBox.Size = new System.Drawing.Size(272, 44);
             this.SleepModeComboBox.TabIndex = 90;
@@ -837,7 +837,7 @@
             // SleepModeLabel
             // 
             this.SleepModeLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SleepModeLabel.Location = new System.Drawing.Point(846, 872);
+            this.SleepModeLabel.Location = new System.Drawing.Point(846, 930);
             this.SleepModeLabel.Name = "SleepModeLabel";
             this.SleepModeLabel.Size = new System.Drawing.Size(290, 50);
             this.SleepModeLabel.TabIndex = 91;
@@ -886,18 +886,20 @@
             this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 805);
             this.DataCheckIntervalTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.DataCheckIntervalTextBox.Name = "DataCheckIntervalTextBox";
-            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 35);
+            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 43);
             this.DataCheckIntervalTextBox.TabIndex = 95;
             // 
             // CollectionListAutoUpdateCheckBox
             // 
             this.CollectionListAutoUpdateCheckBox.AutoSize = true;
-            this.CollectionListAutoUpdateCheckBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CollectionListAutoUpdateCheckBox.Location = new System.Drawing.Point(1145, 937);
+            this.CollectionListAutoUpdateCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.CollectionListAutoUpdateCheckBox.Font = new System.Drawing.Font("メイリオ", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.CollectionListAutoUpdateCheckBox.Location = new System.Drawing.Point(877, 865);
             this.CollectionListAutoUpdateCheckBox.Name = "CollectionListAutoUpdateCheckBox";
-            this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(284, 40);
+            this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(282, 55);
             this.CollectionListAutoUpdateCheckBox.TabIndex = 96;
             this.CollectionListAutoUpdateCheckBox.Text = "リスト自動更新";
+            this.CollectionListAutoUpdateCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.CollectionListAutoUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
             // MaxDegreeOfBackUpProcessParallelismComboBox
@@ -932,7 +934,7 @@
             this.MaxBackupCountTextBox.Location = new System.Drawing.Point(357, 532);
             this.MaxBackupCountTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.MaxBackupCountTextBox.Name = "MaxBackupCountTextBox";
-            this.MaxBackupCountTextBox.Size = new System.Drawing.Size(272, 35);
+            this.MaxBackupCountTextBox.Size = new System.Drawing.Size(272, 43);
             this.MaxBackupCountTextBox.TabIndex = 99;
             this.MaxBackupCountTextBox.Text = "256";
             // 
