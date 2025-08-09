@@ -1267,9 +1267,8 @@ namespace CREC
             // 表示内容整合性確認処理を停止
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
-            // コレクションリスト自動更新処理を停止・再開
+            // コレクションリスト自動更新処理を一時停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
 
             while (DataLoadingStatus != "false")
             {
@@ -1418,7 +1417,9 @@ namespace CREC
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
+            // コレクションリスト自動更新処理を再開
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
@@ -1426,7 +1427,6 @@ namespace CREC
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
                 column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
             }
-
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -2216,8 +2216,6 @@ namespace CREC
             dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
-            CollectionListAutoUpdateCancellationTokenSource.Cancel();
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
             SearchOptionComboBox.SelectedIndex = 0;
             SearchOptionComboBox.SelectedIndexChanged += SearchOptionComboBox_SelectedIndexChanged;
@@ -2229,7 +2227,6 @@ namespace CREC
             // 入力フォームをリセット
             ClearDetailsWindowMethod();
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
             ShowDetails();
         }
         private void DeleteContent()// データ完全削除用のメソッド
@@ -2446,6 +2443,8 @@ namespace CREC
         private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
             CollectionEditStatusWatcherStop();// 既存の監視を停止
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             // 表示内容整合性確認処理を停止し、キャンセルトークンをリセット
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
@@ -2504,6 +2503,7 @@ namespace CREC
             CurrentShownCollectionData.CollectionRealLocation = EditRealLocationTextBox.Text;
             if (!CollectionDataClass.SaveCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData, LanguageFile))
             {
+                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
                 return false;
             }
 
@@ -2568,6 +2568,7 @@ namespace CREC
                 );
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
             return true;
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -3811,7 +3812,6 @@ namespace CREC
                 ShowDetails();
             }
         }
-
         /// <summary>
         /// コレクションリストの自動更新処理
         /// </summary>
@@ -3915,9 +3915,6 @@ namespace CREC
                 }
                 catch (Exception ex)
                 {
-                    // エラーが発生した場合はログに記録（必要に応じて）
-                    System.Diagnostics.Debug.WriteLine($"Collection auto-update error: {ex.Message}");
-                    
                     // 重要なエラーの場合は少し待ってから再試行
                     if (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException)
                     {
@@ -3933,7 +3930,6 @@ namespace CREC
                 }
             }
         }
-
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)
