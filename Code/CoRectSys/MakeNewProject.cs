@@ -284,7 +284,7 @@ namespace CREC
                 {
                     CurrentProjectSettingValues.ProjectSettingFilePath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
                 }
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
                 ReturnTargetProject = CurrentProjectSettingValues.ProjectSettingFilePath;
                 this.Close();
             }
