@@ -3822,8 +3822,9 @@ namespace CREC
         /// <param name="cancellationToken">キャンセルトークン</param>
         private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
-            int lastCollectionCount = allCollectionList.Count;
-            DateTime lastCheckTime = DateTime.Now;
+            int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
+            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
+            DateTime lastCheckTime = DateTime.Now;// 最後にチェックした時間
 
             while (true)
             {
@@ -3869,23 +3870,29 @@ namespace CREC
                     {
                         continue;
                     }
-
                     // プロジェクトフォルダ内のコレクション数をチェック
                     DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                     var subFolders = di.EnumerateDirectories("*");
                     int currentCollectionCount = subFolders.Count();
-
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
 
                     // 現在のプロジェクト設定値のModifiedDateを取得
-                    var temporaryProjectSettingValues = new ProjectSettingValuesClass();
-                    temporaryProjectSettingValues.ProjectSettingFilePath = CurrentProjectSettingValues.ProjectSettingFilePath;
-                    ProjectSettingClass.LoadProjectSetting(ref temporaryProjectSettingValues);
-                    if (temporaryProjectSettingValues.ModifiedDate != CurrentProjectSettingValues.ModifiedDate)
+                    if (!shouldUpdate)
                     {
-                        shouldUpdate = true;
-                        CurrentProjectSettingValues = temporaryProjectSettingValues; // プロジェクト設定値を更新
+                        if (projectSettingFileLastWriteTime == File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath))
+                        {
+                            continue; // プロジェクト設定ファイルの更新がない場合はスキップ
+                        }
+                        projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);
+                        var temporaryProjectSettingValues = new ProjectSettingValuesClass();
+                        temporaryProjectSettingValues.ProjectSettingFilePath = CurrentProjectSettingValues.ProjectSettingFilePath;
+                        ProjectSettingClass.LoadProjectSetting(ref temporaryProjectSettingValues);
+                        if (temporaryProjectSettingValues.ModifiedDate != CurrentProjectSettingValues.ModifiedDate)
+                        {
+                            shouldUpdate = true;
+                            CurrentProjectSettingValues = temporaryProjectSettingValues; // プロジェクト設定値を更新
+                        }
                     }
 
                     // 5分経過または数が変わった場合に更新
@@ -3896,7 +3903,8 @@ namespace CREC
                         {
                             try
                             {
-                                this.Invoke(new Action(() => {
+                                this.Invoke(new Action(() =>
+                                {
                                     // 再度チェック（UIスレッドで実行される時点では状況が変わっている可能性があるため）
                                     if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
                                     {
