@@ -2120,6 +2120,7 @@ namespace CREC
             ConfidentialDataTextBox.ReadOnly = false;
             // 一応ID重複確認イベントを開始
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;
+            isEditingCollection = true;
         }
         /// <summary>
         /// サムネイル選択
@@ -2569,6 +2570,7 @@ namespace CREC
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
             CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
+            isEditingCollection = false;
             return true;
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -3873,7 +3875,17 @@ namespace CREC
 
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
-                    
+
+                    // 現在のプロジェクト設定値のModifiedDateを取得
+                    var temporaryProjectSettingValues = new ProjectSettingValuesClass();
+                    temporaryProjectSettingValues.ProjectSettingFilePath = CurrentProjectSettingValues.ProjectSettingFilePath;
+                    ProjectSettingClass.LoadProjectSetting(ref temporaryProjectSettingValues);
+                    if (temporaryProjectSettingValues.ModifiedDate != CurrentProjectSettingValues.ModifiedDate)
+                    {
+                        shouldUpdate = true;
+                        CurrentProjectSettingValues = temporaryProjectSettingValues; // プロジェクト設定値を更新
+                    }
+
                     // 5分経過または数が変わった場合に更新
                     if (shouldUpdate || (DateTime.Now - lastCheckTime).TotalMinutes > 5)
                     {
