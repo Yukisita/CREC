@@ -250,7 +250,7 @@ namespace CREC
         {
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
 
             if (SaveAndCloseEditButton.Visible == true && CheckEditingContents() != true)// 編集中の場合は警告を表示
@@ -564,7 +564,7 @@ namespace CREC
             // 開いているプロジェクトがあった場合は内容を保存
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
             // 次に読み込むプロジェクトファイルのパスを設定
             string nextProjectSettingFilePath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
@@ -709,7 +709,7 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
             ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             System.Windows.Forms.Application.Restart();
@@ -1058,7 +1058,7 @@ namespace CREC
             ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
                 if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
@@ -1411,7 +1411,8 @@ namespace CREC
             }
             // アクセス日時を更新
             CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+            // プロジェクト設定ファイルを保存, アクセス日の更新のみなので更新日はそのままとする
+            ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, false, LanguageFile);
             // 一応読み込み終了を宣言
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
@@ -2189,7 +2190,8 @@ namespace CREC
             {
                 DataLoadingStatus = "stop";
             }
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            // 最終更新日を変更
+            ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);// プロジェクト設定を保存
             // 編集したデータを表示するための処理
             ContentsDataTable.Rows.Clear();// 表示内容をクリア
             CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();

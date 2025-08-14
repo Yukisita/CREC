@@ -877,9 +877,13 @@ namespace CREC
         /// プロジェクトファイル保存
         /// </summary>
         /// <param name="projectSettingValues">保存するプロジェクトの設定値</param>
-        /// <param name="path">保存するプロジェクトファイルのパス</param>
+        /// <param name="updateModifiedDate">最終更新日を更新するかどうか</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns>保存成功：true、保存失敗：false</returns>
-        public static bool SaveProjectSetting(ProjectSettingValuesClass projectSettingValues,  XElement languageData)
+        public static bool SaveProjectSetting(
+            ref ProjectSettingValuesClass projectSettingValues,
+            bool updateModifiedDate,
+            XElement languageData)
         {
             bool returnValue = false;
             if (projectSettingValues.ProjectSettingFilePath.Length == 0)// pathが指定されているか確認
@@ -951,7 +955,12 @@ namespace CREC
                 streamWriter.Write('\n');
                 streamWriter.WriteLine("ListOutputFormat,{0}", projectSettingValues.ListOutputFormat.ToString());
                 streamWriter.WriteLine("{0},{1}", "created", projectSettingValues.CreatedDate);
-                streamWriter.WriteLine("{0},{1}", "modified", projectSettingValues.ModifiedDate);
+                // 最終更新日を更新する場合は現在時刻を設定
+                if (updateModifiedDate == true)
+                {
+                    projectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");// 現在時刻を取得して最終更新日として設定
+                }
+                streamWriter.WriteLine("{0},{1}", "modified", projectSettingValues.ModifiedDate);// 現在時刻を記録
                 streamWriter.WriteLine("{0},{1}", "accessed", projectSettingValues.AccessedDate);
                 streamWriter.WriteLine("Color,{0}", (int)projectSettingValues.ColorSetting);
                 if (projectSettingValues.CollectionNameVisible == true)
