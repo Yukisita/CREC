@@ -3588,8 +3588,8 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
-        CancellationTokenSource CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();// CollectionListAutoUpdateのキャンセルトークン
         bool isEditingCollection = false;// コレクション編集中フラグ
+        
         /// <summary>
         /// コレクションの編集状態を監視するメソッド
         /// </summary>
@@ -3610,6 +3610,7 @@ namespace CREC
             collectionEditStatusWatcher.Deleted += CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.EnableRaisingEvents = true; // 新しいフォルダの監視を開始
         }
+        
         /// <summary>
         /// コレクションの編集状態を監視するメソッドの停止
         /// </summary>
@@ -3621,6 +3622,7 @@ namespace CREC
             collectionEditStatusWatcher.Changed -= CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.Deleted -= CollectionEditStatusOnChanged;
         }
+        
         /// <summary>
         /// コレクションフォルダの変更を検知する処理
         /// </summary>
@@ -3628,9 +3630,10 @@ namespace CREC
         /// <param name="e"></param>
         private void CollectionEditStatusOnChanged(object sender, FileSystemEventArgs e)
         {
-            DelegateProcess delegateProcess = new DelegateProcess(CollectionOperationStatusManager);//delegateにChangeTextBoxを登録
-            this.Invoke(delegateProcess);//DelegateProcessを実行
+            DelegateProcess delegateProcess = new DelegateProcess(CollectionOperationStatusManager);// delegateにChangeTextBoxを登録
+            this.Invoke(delegateProcess);// DelegateProcessを実行
         }
+
         /// <summary>
         /// コレクションの編集状態を取得し描画を変更する処理
         /// </summary>
@@ -3771,52 +3774,9 @@ namespace CREC
         }
         #endregion
 
-        #region 非同期処理置き場
-        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
-        {
-            while (true)
-            {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+        #region リストの自動更新処理関係
+        CancellationTokenSource CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();// CollectionListAutoUpdateのキャンセルトークン
 
-                // キャンセルトークンが要求された場合はループを抜ける
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    break;
-                }
-
-                // セル未選択時は何もしない
-                if (dataGridView1.CurrentRow == null)
-                {
-                    continue;
-                }
-
-                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み
-                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false
-                    && CurrentShownCollectionData.CollectionFolderPath != string.Empty)
-                {
-                    MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadGrid();// リストを更新
-                    ShowDetails();
-                    continue;
-                }
-
-                // 表示中コレクションと選択が一致する場合は続行
-                if (CurrentShownCollectionData.CollectionID == Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
-                {
-                    continue;
-                }
-
-                // 差分がある場合なので、リストで選択されている内容の表示に変更する
-                if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
-                {
-                    if (CheckEditingContents() != true)
-                    {
-                        continue;
-                    }
-                }
-                ShowDetails();
-            }
-        }
         /// <summary>
         /// コレクションリストの自動更新処理
         /// </summary>
@@ -3824,7 +3784,8 @@ namespace CREC
         private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
             int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
-            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
+            // プロジェクト設定ファイルのタイムスタンプを記録
+            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);
             DateTime lastCheckTime = DateTime.Now;// 最後にチェックした時間
 
             while (true)
@@ -3896,47 +3857,49 @@ namespace CREC
                         }
                     }
 
-                    // 5分経過または数が変わった場合に更新
-                    if (shouldUpdate || (DateTime.Now - lastCheckTime).TotalMinutes > 5)
+                    // 更新が不要な場合は処理をスキップ
+                    if (!shouldUpdate)
                     {
-                        // UIスレッドで実行
-                        if (this.InvokeRequired)
-                        {
-                            try
-                            {
-                                this.Invoke(new Action(() =>
-                                {
-                                    // 再度チェック（UIスレッドで実行される時点では状況が変わっている可能性があるため）
-                                    if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
-                                    {
-                                        LoadGrid();
-                                        ShowDetails(); // 詳細情報を再描画
-                                    }
-                                }));
-                            }
-                            catch (ObjectDisposedException)
-                            {
-                                // フォームが破棄されている場合はループを抜ける
-                                break;
-                            }
-                            catch (InvalidOperationException)
-                            {
-                                // フォームハンドルが作成されていない場合はスキップ
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
-                            {
-                                LoadGrid();
-                                ShowDetails(); // 詳細情報を再描画
-                            }
-                        }
-
-                        lastCollectionCount = currentCollectionCount;
-                        lastCheckTime = DateTime.Now;
+                        continue;
                     }
+                    
+                    // UIスレッドで実行
+                    if (this.InvokeRequired)
+                    {
+                        try
+                        {
+                            this.Invoke(new Action(() =>
+                            {
+                                // 再度チェック（UIスレッドで実行される時点では状況が変わっている可能性があるため）
+                                if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                                {
+                                    LoadGrid();
+                                    ShowDetails(); // 詳細情報を再描画
+                                }
+                            }));
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // フォームが破棄されている場合はループを抜ける
+                            break;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // フォームハンドルが作成されていない場合はスキップ
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                        {
+                            LoadGrid();
+                            ShowDetails(); // 詳細情報を再描画
+                        }
+                    }
+
+                    lastCollectionCount = currentCollectionCount;
+                    lastCheckTime = DateTime.Now;
                 }
                 catch (Exception ex)
                 {
@@ -3955,6 +3918,55 @@ namespace CREC
                 }
             }
         }
+        #endregion
+
+        #region その他非同期処理置き場
+        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        {
+            while (true)
+            {
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+
+                // キャンセルトークンが要求された場合はループを抜ける
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                // セル未選択時は何もしない
+                if (dataGridView1.CurrentRow == null)
+                {
+                    continue;
+                }
+
+                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み
+                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false
+                    && CurrentShownCollectionData.CollectionFolderPath != string.Empty)
+                {
+                    MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadGrid();// リストを更新
+                    ShowDetails();
+                    continue;
+                }
+
+                // 表示中コレクションと選択が一致する場合は続行
+                if (CurrentShownCollectionData.CollectionID == Convert.ToString(dataGridView1.CurrentRow.Cells[1].Value))
+                {
+                    continue;
+                }
+
+                // 差分がある場合なので、リストで選択されている内容の表示に変更する
+                if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+                {
+                    if (CheckEditingContents() != true)
+                    {
+                        continue;
+                    }
+                }
+                ShowDetails();
+            }
+        }
+        
         private async void AwaitEdit()// 編集許可を待機
         {
             while (true)
@@ -4038,6 +4050,7 @@ namespace CREC
                 }
             }
         }
+        
         /// <summary>
         /// サムネイル読み込み処理
         /// </summary>
@@ -4082,6 +4095,7 @@ namespace CREC
                 }
             }
         }
+        
         /// <summary>
         /// 更新確認
         /// </summary>
