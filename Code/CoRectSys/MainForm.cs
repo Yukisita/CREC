@@ -3783,8 +3783,23 @@ namespace CREC
         /// <param name="cancellationToken">キャンセルトークン</param>
         private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
+            // 開始時のプロジェクト設定ファイルのタイムスタンプを取得
+            DateTime projectSettingFileLastWriteTime = DateTime.MinValue;
+            if (string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectSettingFilePath))
+            {
+                return; // プロジェクト設定ファイルが指定されていない場合は何もしない
+            }
+            try
+            {
+                projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
+            }
+            catch
+            {
+                MessageBox.Show("コレクションリストの自動更新を開始できません。\nプロジェクト設定ファイルが存在しないか、アクセスできません。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
-            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
             DateTime lastCheckTime = DateTime.Now;// 最後にチェックした時間
 
             while (true)
@@ -3813,13 +3828,6 @@ namespace CREC
 
                 // コレクション編集中は自動更新を停止
                 if (isEditingCollection)
-                {
-                    continue;
-                }
-
-                // プロジェクトファイルが開かれていない場合は何もしない
-                if (string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectSettingFilePath) ||
-                    string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectDataFolderPath))
                 {
                     continue;
                 }
