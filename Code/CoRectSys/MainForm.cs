@@ -1111,6 +1111,7 @@ namespace CREC
                 collectionEditStatusWatcher.Dispose();// データの監視を破棄
                 CheckContentsListCancellationTokenSource.Dispose();// データ監視用のCancellationTokenSourceを破棄
                 CollectionListAutoUpdateCancellationTokenSource.Dispose();// コレクションリスト自動更新用のCancellationTokenSourceを破棄
+                Application.DoEvents();// イベントを処理
                 // コレクション一覧を出力
                 if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
@@ -3909,6 +3910,7 @@ namespace CREC
                                     if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
                                     {
                                         LoadGrid();
+                                        ShowDetails(); // 詳細情報を再描画
                                     }
                                 }));
                             }
@@ -3928,6 +3930,7 @@ namespace CREC
                             if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
                             {
                                 LoadGrid();
+                                ShowDetails(); // 詳細情報を再描画
                             }
                         }
 
