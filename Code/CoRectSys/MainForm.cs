@@ -3784,8 +3784,7 @@ namespace CREC
         private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
             int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
-            // プロジェクト設定ファイルのタイムスタンプを記録
-            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);
+            DateTime projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
             DateTime lastCheckTime = DateTime.Now;// 最後にチェックした時間
 
             while (true)
@@ -3874,7 +3873,6 @@ namespace CREC
                                 if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
                                 {
                                     LoadGrid();
-                                    ShowDetails(); // 詳細情報を再描画
                                 }
                             }));
                         }
@@ -3894,10 +3892,8 @@ namespace CREC
                         if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
                         {
                             LoadGrid();
-                            ShowDetails(); // 詳細情報を再描画
                         }
                     }
-
                     lastCollectionCount = currentCollectionCount;
                     lastCheckTime = DateTime.Now;
                 }
