@@ -1166,6 +1166,10 @@
 				<itemname>ProjectNameMatchError</itemname>
 				<itemtext>The project file name does not match the project name. &#xD;&#xA;Do you want to save it?</itemtext>
 			</item>
+			<item>
+				<itemname>ProjectSettingFileSaveError</itemname>
+				<itemtext>Failed to save project settings. Please try again.</itemtext>
+			</item>
 		</MessageBox>
 	</ProjectSettingClass>
 </list>

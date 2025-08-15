@@ -895,7 +895,11 @@ namespace CREC
             if (Path.GetFileNameWithoutExtension(projectSettingValues.ProjectSettingFilePath) != projectSettingValues.Name)
             {
                 // 一致していない場合は警告を表示して保存するか確認
-                MessageBoxResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData), "CREC", MessageBoxButton.YesNo);
+                MessageBoxResult result = MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData), 
+                    "CREC",
+                    MessageBoxButton.YesNo);
+
                  if (result == MessageBoxResult.No)
                 {
                     return false;
@@ -1133,7 +1137,11 @@ namespace CREC
             catch (Exception ex)
             {
                 // エラーが発生した場合は再起処理するユーザーに尋ねる。
-                if (MessageBox.Show("プロジェクト設定の保存に失敗しました。\n" + ex.Message+"\n再試行しますか？", "CREC", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectSettingFileSaveError", "ProjectSettingClass", languageData),
+                    "CREC",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Error) == MessageBoxResult.Yes)
                 {
                     if (streamWriter != null)
                     {

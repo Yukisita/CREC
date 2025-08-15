@@ -1166,6 +1166,10 @@
 				<itemname>ProjectNameMatchError</itemname>
 				<itemtext>プロジェクトファイル名とプロジェクト名が一致していません。 &#xD;&#xA;保存しますか？</itemtext>
 			</item>
+			<item>
+				<itemname>ProjectSettingFileSaveError</itemname>
+				<itemtext>プロジェクト設定の保存に失敗しました。再試行しますか？</itemtext>
+			</item>
 		</MessageBox>
 	</ProjectSettingClass>
 </list>
