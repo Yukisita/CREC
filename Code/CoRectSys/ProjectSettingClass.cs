@@ -896,11 +896,11 @@ namespace CREC
             {
                 // 一致していない場合は警告を表示して保存するか確認
                 MessageBoxResult result = MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData), 
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData),
                     "CREC",
                     MessageBoxButton.YesNo);
 
-                 if (result == MessageBoxResult.No)
+                if (result == MessageBoxResult.No)
                 {
                     return false;
                 }
@@ -1138,7 +1138,7 @@ namespace CREC
             {
                 // エラーが発生した場合は再起処理するユーザーに尋ねる。
                 if (MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("ProjectSettingFileSaveError", "ProjectSettingClass", languageData),
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectSettingFileSaveError", "ProjectSettingClass", languageData) + "\n" + ex.Message,
                     "CREC",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Error) == MessageBoxResult.Yes)
