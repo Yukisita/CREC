@@ -901,10 +901,10 @@ namespace CREC
                     return false;
                 }
             }
-            StreamWriter streamWriter;
-            streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter streamWriter = null; // 修正: 変数を初期化
             try
             {
+                streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
                 streamWriter.WriteLine("{0},{1}", "projectname", projectSettingValues.Name);
                 streamWriter.WriteLine("{0},{1}", "projectlocation", projectSettingValues.ProjectDataFolderPath);
                 streamWriter.WriteLine("{0},{1}", "backuplocation", projectSettingValues.ProjectBackupFolderPath);
@@ -1130,13 +1130,28 @@ namespace CREC
                 streamWriter.WriteLine("CollectionListAutoUpdate,{0}", projectSettingValues.CollectionListAutoUpdate ? "true" : "false");
                 returnValue = true;
             }
-            catch
+            catch (Exception ex)
             {
-                returnValue = false;
+                // エラーが発生した場合は再起処理するユーザーに尋ねる。
+                if (MessageBox.Show("プロジェクト設定の保存に失敗しました。\n" + ex.Message+"\n再試行しますか？", "CREC", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    if (streamWriter != null)
+                    {
+                        streamWriter.Close();
+                    }
+                    return SaveProjectSetting(ref projectSettingValues, updateModifiedDate, languageData); // 再試行
+                }
+                else
+                {
+                    returnValue = false;
+                }
             }
             finally
             {
-                streamWriter.Close();
+                if (streamWriter != null)
+                {
+                    streamWriter.Close();
+                }
             }
             return returnValue;
         }
