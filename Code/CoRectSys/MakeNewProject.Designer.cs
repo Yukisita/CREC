@@ -883,7 +883,7 @@
             // DataCheckIntervalTextBox
             // 
             this.DataCheckIntervalTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 901);
+            this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 893);
             this.DataCheckIntervalTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.DataCheckIntervalTextBox.Name = "DataCheckIntervalTextBox";
             this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 35);

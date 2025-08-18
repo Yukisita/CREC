@@ -286,7 +286,6 @@ namespace CREC
         }
         private void LoadProjectFileMethod(string targetProjectSettingFilePath)// CREC読み込み用の処理メソッド
         {
-            var previousProjectSettinValues = CurrentProjectSettingValues; // 現在のプロジェクト設定値を保持
             CurrentProjectSettingValues = new ProjectSettingValuesClass();// プロジェクト設定値を初期化
             CurrentProjectSettingValues.ProjectSettingFilePath = targetProjectSettingFilePath;// プロジェクトファイルのパスを設定
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
@@ -1421,7 +1420,7 @@ namespace CREC
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
             // コレクションリスト自動更新処理を再開
             CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
@@ -3806,7 +3805,6 @@ namespace CREC
             }
 
             int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
-            DateTime lastCheckTime = DateTime.Now;// 最後にチェックした時間
 
             while (true)
             {
@@ -3875,7 +3873,7 @@ namespace CREC
                     {
                         continue;
                     }
-                    
+
                     // UIスレッドで実行
                     if (this.InvokeRequired)
                     {
@@ -3909,7 +3907,6 @@ namespace CREC
                         }
                     }
                     lastCollectionCount = currentCollectionCount;
-                    lastCheckTime = DateTime.Now;
                 }
                 catch (Exception ex)
                 {
