@@ -876,7 +876,7 @@
 			</item>
 			<item>
 				<itemname>DataCheckIntervalLabel</itemname>
-				<itemtext>データ監視間隔</itemtext>
+				<itemtext>監視間隔</itemtext>
 			</item>
 			<item>
 				<itemname>SleepModeLabel</itemname>

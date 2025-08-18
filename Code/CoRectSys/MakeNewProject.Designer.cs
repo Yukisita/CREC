@@ -829,7 +829,7 @@
             this.SleepModeComboBox.Items.AddRange(new object[] {
             "CSV",
             "TSV"});
-            this.SleepModeComboBox.Location = new System.Drawing.Point(1145, 930);
+            this.SleepModeComboBox.Location = new System.Drawing.Point(1145, 954);
             this.SleepModeComboBox.Name = "SleepModeComboBox";
             this.SleepModeComboBox.Size = new System.Drawing.Size(272, 44);
             this.SleepModeComboBox.TabIndex = 90;
@@ -837,7 +837,7 @@
             // SleepModeLabel
             // 
             this.SleepModeLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SleepModeLabel.Location = new System.Drawing.Point(846, 930);
+            this.SleepModeLabel.Location = new System.Drawing.Point(846, 954);
             this.SleepModeLabel.Name = "SleepModeLabel";
             this.SleepModeLabel.Size = new System.Drawing.Size(290, 50);
             this.SleepModeLabel.TabIndex = 91;
@@ -847,11 +847,11 @@
             // DataCheckIntervalLabel
             // 
             this.DataCheckIntervalLabel.Font = new System.Drawing.Font("メイリオ", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataCheckIntervalLabel.Location = new System.Drawing.Point(846, 805);
+            this.DataCheckIntervalLabel.Location = new System.Drawing.Point(846, 893);
             this.DataCheckIntervalLabel.Name = "DataCheckIntervalLabel";
             this.DataCheckIntervalLabel.Size = new System.Drawing.Size(290, 50);
             this.DataCheckIntervalLabel.TabIndex = 93;
-            this.DataCheckIntervalLabel.Text = "データ監視間隔";
+            this.DataCheckIntervalLabel.Text = "監視間隔";
             this.DataCheckIntervalLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // DataCheckIntervalComboBox
@@ -863,7 +863,7 @@
             "サーバ（高速環境）",
             "サーバ（低速環境）",
             "カスタム設定"});
-            this.DataCheckIntervalComboBox.Location = new System.Drawing.Point(1145, 805);
+            this.DataCheckIntervalComboBox.Location = new System.Drawing.Point(1145, 893);
             this.DataCheckIntervalComboBox.Name = "DataCheckIntervalComboBox";
             this.DataCheckIntervalComboBox.Size = new System.Drawing.Size(272, 44);
             this.DataCheckIntervalComboBox.TabIndex = 92;
@@ -873,7 +873,7 @@
             // 
             this.DataCheckIntervalUnitLabel.AutoSize = true;
             this.DataCheckIntervalUnitLabel.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataCheckIntervalUnitLabel.Location = new System.Drawing.Point(1571, 817);
+            this.DataCheckIntervalUnitLabel.Location = new System.Drawing.Point(1571, 905);
             this.DataCheckIntervalUnitLabel.Name = "DataCheckIntervalUnitLabel";
             this.DataCheckIntervalUnitLabel.Size = new System.Drawing.Size(93, 34);
             this.DataCheckIntervalUnitLabel.TabIndex = 94;
@@ -883,10 +883,10 @@
             // DataCheckIntervalTextBox
             // 
             this.DataCheckIntervalTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 805);
+            this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 901);
             this.DataCheckIntervalTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.DataCheckIntervalTextBox.Name = "DataCheckIntervalTextBox";
-            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 43);
+            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 35);
             this.DataCheckIntervalTextBox.TabIndex = 95;
             // 
             // CollectionListAutoUpdateCheckBox
@@ -894,9 +894,9 @@
             this.CollectionListAutoUpdateCheckBox.AutoSize = true;
             this.CollectionListAutoUpdateCheckBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.CollectionListAutoUpdateCheckBox.Font = new System.Drawing.Font("メイリオ", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CollectionListAutoUpdateCheckBox.Location = new System.Drawing.Point(877, 865);
+            this.CollectionListAutoUpdateCheckBox.Location = new System.Drawing.Point(882, 833);
             this.CollectionListAutoUpdateCheckBox.Name = "CollectionListAutoUpdateCheckBox";
-            this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(282, 55);
+            this.CollectionListAutoUpdateCheckBox.Size = new System.Drawing.Size(275, 54);
             this.CollectionListAutoUpdateCheckBox.TabIndex = 96;
             this.CollectionListAutoUpdateCheckBox.Text = "リスト自動更新";
             this.CollectionListAutoUpdateCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
