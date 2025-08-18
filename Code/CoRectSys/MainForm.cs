@@ -3783,6 +3783,12 @@ namespace CREC
         /// <param name="cancellationToken">キャンセルトークン</param>
         private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
+            // 自動更新が無効の場合はこの時点で処理を終了させる
+            if (!CurrentProjectSettingValues.CollectionListAutoUpdate)
+            {
+                return;
+            }
+
             // 開始時のプロジェクト設定ファイルのタイムスタンプを取得
             DateTime projectSettingFileLastWriteTime = DateTime.MinValue;
             if (string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectSettingFilePath))
