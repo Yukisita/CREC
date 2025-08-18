@@ -277,7 +277,7 @@ namespace CREC
         /// <summary>
         /// コレクションリストの自動更新設定
         /// </summary>
-        public bool CollectionListAutoUpdate { get; set; } = true;
+        public bool CollectionListAutoUpdate { get; set; } = false;
     }
 
     public class ProjectSettingClass
@@ -863,7 +863,7 @@ namespace CREC
                         }
                         catch
                         {
-                            loadingProjectSettingValues.CollectionListAutoUpdate = true;
+                            loadingProjectSettingValues.CollectionListAutoUpdate = false;
                         }
                         break;
                 }
