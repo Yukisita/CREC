@@ -3925,7 +3925,11 @@ namespace CREC
         #endregion
 
         #region その他非同期処理置き場
-        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        /// <summary>
+        /// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        private async void CheckContentsList(CancellationToken cancellationToken)
         {
             while (true)
             {
@@ -3970,8 +3974,11 @@ namespace CREC
                 ShowDetails();
             }
         }
-        
-        private async void AwaitEdit()// 編集許可を待機
+
+        /// <summary>
+        /// 編集許可を待機
+        /// </summary>
+        private async void AwaitEdit()
         {
             while (true)
             {
