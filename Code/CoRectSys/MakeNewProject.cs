@@ -120,13 +120,13 @@ namespace CREC
             DataCheckIntervalTextBox.Text = Convert.ToString(CurrentProjectSettingValues.DataCheckInterval);
             switch (CurrentProjectSettingValues.DataCheckInterval)
             {
-                case 100:
+                case 1:
                     DataCheckIntervalComboBox.SelectedIndex = 0;
                     break;
-                case 500:
+                case 10:
                     DataCheckIntervalComboBox.SelectedIndex = 1;
                     break;
-                case 1000:
+                case 60:
                     DataCheckIntervalComboBox.SelectedIndex = 2;
                     break;
                 default:
@@ -400,15 +400,15 @@ namespace CREC
             switch (DataCheckIntervalComboBox.SelectedIndex)
             {
                 case 0:
-                    DataCheckIntervalTextBox.Text = "100";
+                    DataCheckIntervalTextBox.Text = "1";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 1:
-                    DataCheckIntervalTextBox.Text = "500";
+                    DataCheckIntervalTextBox.Text = "10";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 2:
-                    DataCheckIntervalTextBox.Text = "1000";
+                    DataCheckIntervalTextBox.Text = "60";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 3:

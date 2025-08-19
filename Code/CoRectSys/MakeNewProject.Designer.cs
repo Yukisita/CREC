@@ -875,9 +875,9 @@
             this.DataCheckIntervalUnitLabel.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.DataCheckIntervalUnitLabel.Location = new System.Drawing.Point(1571, 905);
             this.DataCheckIntervalUnitLabel.Name = "DataCheckIntervalUnitLabel";
-            this.DataCheckIntervalUnitLabel.Size = new System.Drawing.Size(93, 34);
+            this.DataCheckIntervalUnitLabel.Size = new System.Drawing.Size(71, 34);
             this.DataCheckIntervalUnitLabel.TabIndex = 94;
-            this.DataCheckIntervalUnitLabel.Text = "(msec)";
+            this.DataCheckIntervalUnitLabel.Text = "(sec)";
             this.DataCheckIntervalUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // DataCheckIntervalTextBox
@@ -886,7 +886,7 @@
             this.DataCheckIntervalTextBox.Location = new System.Drawing.Point(1446, 893);
             this.DataCheckIntervalTextBox.MaximumSize = new System.Drawing.Size(4349, 35);
             this.DataCheckIntervalTextBox.Name = "DataCheckIntervalTextBox";
-            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 35);
+            this.DataCheckIntervalTextBox.Size = new System.Drawing.Size(126, 43);
             this.DataCheckIntervalTextBox.TabIndex = 95;
             // 
             // CollectionListAutoUpdateCheckBox

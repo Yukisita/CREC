@@ -3588,7 +3588,7 @@ namespace CREC
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
         bool isEditingCollection = false;// コレクション編集中フラグ
-        
+
         /// <summary>
         /// コレクションの編集状態を監視するメソッド
         /// </summary>
@@ -3609,7 +3609,7 @@ namespace CREC
             collectionEditStatusWatcher.Deleted += CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.EnableRaisingEvents = true; // 新しいフォルダの監視を開始
         }
-        
+
         /// <summary>
         /// コレクションの編集状態を監視するメソッドの停止
         /// </summary>
@@ -3621,7 +3621,7 @@ namespace CREC
             collectionEditStatusWatcher.Changed -= CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.Deleted -= CollectionEditStatusOnChanged;
         }
-        
+
         /// <summary>
         /// コレクションフォルダの変更を検知する処理
         /// </summary>
@@ -3810,7 +3810,7 @@ namespace CREC
             {
                 try
                 {
-                    await Task.Delay(CurrentProjectSettingValues.DataCheckInterval, cancellationToken);
+                    await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 1000, cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -3934,10 +3934,11 @@ namespace CREC
         /// <param name="cancellationToken"></param>
         private async void CheckContentsList(CancellationToken cancellationToken)
         {
+            int roopCount = 0; // ループカウント
             while (true)
             {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
-
+                await Task.Delay(100);
+                roopCount++;
                 // キャンセルトークンが要求された場合はループを抜ける
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -3950,14 +3951,18 @@ namespace CREC
                     continue;
                 }
 
-                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み
-                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false
-                    && CurrentShownCollectionData.CollectionFolderPath != string.Empty)
+                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み。Existsの負荷を避けるため、DataCheckIntervalごとに行う
+                if (roopCount * 0.1 > CurrentProjectSettingValues.DataCheckInterval
+                    && !string.IsNullOrWhiteSpace(CurrentShownCollectionData.CollectionFolderPath))
                 {
-                    MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadGrid();// リストを更新
-                    ShowDetails();
-                    continue;
+                    if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
+                    {
+                        MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadGrid();// リストを更新
+                        ShowDetails();
+                        continue;
+                    }
+                    roopCount = 0; // ループカウントをリセット
                 }
 
                 // 表示中コレクションと選択が一致する場合は続行
@@ -3985,7 +3990,7 @@ namespace CREC
         {
             while (true)
             {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 1000);
                 if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                 {
                     MessageBox.Show("IDが変更されました。\n再度読み込みを行ってください。", "CREC");
@@ -4064,7 +4069,7 @@ namespace CREC
                 }
             }
         }
-        
+
         /// <summary>
         /// サムネイル読み込み処理
         /// </summary>
@@ -4109,7 +4114,7 @@ namespace CREC
                 }
             }
         }
-        
+
         /// <summary>
         /// 更新確認
         /// </summary>

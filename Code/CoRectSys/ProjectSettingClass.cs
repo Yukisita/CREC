@@ -267,9 +267,9 @@ namespace CREC
         /// </summary>
         public SleepMode SleepMode { get; set; } = SleepMode.Deep;
         /// <summary>
-        /// データ監視の間隔
+        /// データ監視の間隔(秒)
         /// </summary>
-        public int DataCheckInterval { get; set; } = 100;
+        public int DataCheckInterval { get; set; } = 10;
         /// <summary>
         /// バックアップ保持数（各コレクションの最大バックアップ数）
         /// </summary>
@@ -853,7 +853,7 @@ namespace CREC
                         }
                         catch
                         {
-                            loadingProjectSettingValues.DataCheckInterval = 100;
+                            loadingProjectSettingValues.DataCheckInterval = 10;
                         }
                         break;
                     case "CollectionListAutoUpdate":
