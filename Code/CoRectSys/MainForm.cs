@@ -2401,9 +2401,10 @@ namespace CREC
             CurrentShownCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath);
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\data");
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
             FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
             StreamWriter streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
@@ -2426,8 +2427,6 @@ namespace CREC
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = false;
             }
-            // 新規作成タグを作成
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
