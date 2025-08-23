@@ -286,7 +286,7 @@ namespace CREC
         /// </summary>
         /// <param name="CollectionFolderPath">読み込み対象のコレクションのフォルダ</param>
         /// <param name="CollectionDataValues">読み込み対象のコレクションのデータ（参照渡し）</param>
-        /// 
+        /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合にバックアップから復元するかどうか</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(
@@ -1044,7 +1044,7 @@ namespace CREC
             {
                 // Index読み込み
                 CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
-                if (!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, languageData))
+                if (!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, false, languageData))
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
                     backupLog.Add((collectionDataValues.CollectionID, false));

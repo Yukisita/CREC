@@ -40,7 +40,7 @@ namespace CREC
                 if (!File.Exists(subFolder.FullName + "\\SystemData\\ADD"))
                 {
                     // Index読み込み
-                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, LanguageData);
+                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, LanguageData);
                     // 在庫状況読み込み
                     CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, LanguageData);
                 }
