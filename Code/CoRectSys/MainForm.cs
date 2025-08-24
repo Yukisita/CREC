@@ -2242,9 +2242,9 @@ namespace CREC
             try
             {
                 CollectionEditStatusWatcherStop();// 既存の監視を停止
-                // List自動更新処理を停止
-                CollectionListAutoUpdateCancellationTokenSource.Cancel();
-                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath,recursive: true);
+                CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
+                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL");// 削除タグを作成
+                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath,recursive: true);// フォルダごと削除
                 CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
                 CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
                 CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
@@ -3643,6 +3643,12 @@ namespace CREC
         /// </summary>
         private void CollectionOperationStatusManager()
         {
+            // 削除タグ"DEL"がある場合は監視を停止する
+            if(File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL"))
+            {
+                CollectionEditStatusWatcherStop();
+                return;
+            }
             switch (CurrentShownCollectionOperationStatus)
             {
                 case CollectionOperationStatus.Watching:
