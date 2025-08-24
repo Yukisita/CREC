@@ -2241,7 +2241,13 @@ namespace CREC
             }
             try
             {
-                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath, true);
+                CollectionEditStatusWatcherStop();// 既存の監視を停止
+                // List自動更新処理を停止
+                CollectionListAutoUpdateCancellationTokenSource.Cancel();
+                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath,recursive: true);
+                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+                CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+                CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
             }
             catch (Exception ex)
             {
