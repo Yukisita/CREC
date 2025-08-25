@@ -290,8 +290,8 @@ namespace CREC
         /// <param name="languageData">言語データ</param>
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(
-            string CollectionFolderPath, 
-            ref CollectionDataValuesClass CollectionDataValues, 
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
             bool restoreIndexFileIfNotExist,
             XElement languageData)
         {
@@ -398,7 +398,10 @@ namespace CREC
         /// <param name="CollectionDataValues">対象のコレクションデータ</param>
         /// <param name="languageData">言語ファイル</param>
         /// <returns></returns>
-        public static bool LoadCollectionInventoryData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        public static bool LoadCollectionInventoryData(
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
             // 在庫状態を取得、invからデータを読み込み
@@ -579,7 +582,10 @@ namespace CREC
         /// <param name="CollectionDataValues">コレクションのデータ</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>バックアップ成功若しくはバックアップ対象なしの場合はTrue</returns>
-        public static bool BackupCollectionIndexData(string CollectionFolderPath, CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        public static bool BackupCollectionIndexData(
+            string CollectionFolderPath,
+            CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
         {
             string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
             if (System.IO.File.Exists(CollectionDataFilePath))// Indexが存在する場合はバックアップを作成
@@ -593,6 +599,36 @@ namespace CREC
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileBackupFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                     return false;
                 }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// コレクションのデータ削除
+        /// </summary>
+        /// <param name="CollectionFolderPath"></param>
+        /// <param name="CollectionDataValues"></param>
+        /// <param name="languageData"></param>
+        /// <returns></returns>
+        public static bool DeleteCollectionData(
+            CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
+        {
+            FileOperationClass.AddBlankFile(CollectionDataValues.CollectionFolderPath + "\\SystemData\\DEL");// 削除タグを作成
+
+            int tryCount = 0;// 試行回数
+            while (tryCount < 5)
+            {
+                try
+                {
+                    Directory.Delete(CollectionDataValues.CollectionFolderPath, recursive: true);// コレクションフォルダを破棄
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("データの削除に失敗しました。再試行します。\n" + ex.Message, "CREC");
+                }
+                tryCount++;
             }
             return true;
         }

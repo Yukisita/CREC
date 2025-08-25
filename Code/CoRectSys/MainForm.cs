@@ -2239,21 +2239,20 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            try
+
+            CollectionEditStatusWatcherStop();// 既存の監視を停止
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
+
+            // データ削除メソッドを呼び出し
+            if (!CollectionDataClass.DeleteCollectionData(CurrentShownCollectionData, LanguageFile))
             {
-                CollectionEditStatusWatcherStop();// 既存の監視を停止
-                CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
-                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL");// 削除タグを作成
-                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath,recursive: true);// フォルダごと削除
-                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
-                CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-                CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("データの削除に失敗しました。\n" + ex.Message, "CREC");
                 return;
             }
+
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
+
             if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
@@ -3644,7 +3643,7 @@ namespace CREC
         private void CollectionOperationStatusManager()
         {
             // 削除タグ"DEL"がある場合は監視を停止する
-            if(File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL"))
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL"))
             {
                 CollectionEditStatusWatcherStop();
                 return;
