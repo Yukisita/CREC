@@ -1261,7 +1261,7 @@ namespace CREC
                     File.Copy(sourceFile, destinationFile, true);
 
                     // 最近実行したプラグインリストに追加
-                    AddToRecentPluginsList(fileName, destinationFile);
+                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, destinationFile);
 
                     // プラグインを実行
                     ExecutePlugin(destinationFile);
@@ -1280,7 +1280,7 @@ namespace CREC
         {
             RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Clear();
 
-            string recentPluginsFilePath = GetRecentPluginsFilePath();
+            string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
             if (!File.Exists(recentPluginsFilePath))
                 return;
 
@@ -1350,7 +1350,7 @@ namespace CREC
         {
             try
             {
-                string recentPluginsFilePath = GetRecentPluginsFilePath();
+                string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
                 if (File.Exists(recentPluginsFilePath))
                 {
                     File.Delete(recentPluginsFilePath);
@@ -1384,49 +1384,6 @@ namespace CREC
         }
 
         /// <summary>
-        /// 最近実行したプラグインリストに追加する
-        /// </summary>
-        /// <param name="pluginName">プラグイン名</param>
-        /// <param name="pluginPath">プラグインのパス</param>
-        private void AddToRecentPluginsList(string pluginName, string pluginPath)
-        {
-            try
-            {
-                string recentPluginsFilePath = GetRecentPluginsFilePath();
-                List<string> recentPlugins = new List<string>();
-
-                // 既存の履歴を読み込み
-                if (File.Exists(recentPluginsFilePath))
-                {
-                    string[] existingLines = File.ReadAllLines(recentPluginsFilePath, Encoding.GetEncoding("UTF-8"));
-                    foreach (string line in existingLines)
-                    {
-                        if (!line.Contains(pluginPath))
-                        {
-                            recentPlugins.Add(line);
-                        }
-                    }
-                }
-
-                // 新しいプラグインを先頭に追加
-                recentPlugins.Insert(0, $"{pluginName},{pluginPath}");
-
-                // 最大5件まで保持
-                if (recentPlugins.Count > 5)
-                {
-                    recentPlugins = recentPlugins.Take(5).ToList();
-                }
-
-                // ファイルに保存
-                File.WriteAllLines(recentPluginsFilePath, recentPlugins, Encoding.GetEncoding("UTF-8"));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("プラグイン履歴の保存に失敗しました。\n" + ex.Message, "CREC");
-            }
-        }
-
-        /// <summary>
         /// 最近実行したプラグインリストから削除する
         /// </summary>
         /// <param name="pluginPath">削除するプラグインのパス</param>
@@ -1434,7 +1391,7 @@ namespace CREC
         {
             try
             {
-                string recentPluginsFilePath = GetRecentPluginsFilePath();
+                string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
                 if (!File.Exists(recentPluginsFilePath))
                     return;
 
@@ -1457,23 +1414,6 @@ namespace CREC
             }
         }
 
-        /// <summary>
-        /// 最近実行したプラグインリストのファイルパスを取得する
-        /// </summary>
-        /// <returns>ファイルパス</returns>
-        private string GetRecentPluginsFilePath()
-        {
-            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
-            {
-                // プロジェクトが開かれていない場合は、実行ファイルと同じディレクトリに保存
-                return System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\RecentlyExecutedPluginList.log";
-            }
-            else
-            {
-                // プロジェクトファイルと同じディレクトリに保存
-                return System.IO.Path.GetDirectoryName(CurrentProjectSettingValues.ProjectSettingFilePath) + "\\RecentlyExecutedPluginList.log";
-            }
-        }
         #endregion
         #endregion
 
