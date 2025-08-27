@@ -742,6 +742,25 @@ namespace CREC
         }
 
         /// <summary>
+        /// キャッシュディレクトリを削除する
+        /// </summary>
+        /// <param name="cacheDirectoryPath">削除対象のキャッシュディレクトリパス</param>
+        private static void CleanupCacheDirectory(string cacheDirectoryPath)
+        {
+            if (Directory.Exists(cacheDirectoryPath))
+            {
+                try
+                {
+                    Directory.Delete(cacheDirectoryPath, true);
+                }
+                catch (Exception cleanupEx)
+                {
+                    MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                }
+            }
+        }
+
+        /// <summary>
         /// バックアップログを出力する
         /// </summary>
         /// <param name="backupFolderPath">バックアップフォルダのパス</param>
@@ -875,18 +894,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("コレクションのバックアップ用キャッシュ作成に失敗しました。\n" + ex.Message, "CREC");
-                // キャッシュフォルダが存在する場合は削除
-                if (Directory.Exists(cacheDirectoryPath))
-                {
-                    try
-                    {
-                        Directory.Delete(cacheDirectoryPath, true);
-                    }
-                    catch (Exception cleanupEx)
-                    {
-                        MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
-                    }
-                }
+                CleanupCacheDirectory(cacheDirectoryPath);
                 return false;
             }
 
@@ -907,18 +915,7 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップに失敗しました。\n" + ex.Message, "CREC");
-                        // キャッシュフォルダが存在する場合は削除
-                        if (Directory.Exists(cacheDirectoryPath))
-                        {
-                            try
-                            {
-                                Directory.Delete(cacheDirectoryPath, true);
-                            }
-                            catch (Exception cleanupEx)
-                            {
-                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
-                            }
-                        }
+                        CleanupCacheDirectory(cacheDirectoryPath);
                         return false;
                     }
                     break;
@@ -936,18 +933,7 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップデータ圧縮に失敗しました。\n" + ex.Message, "CREC");
-                        // キャッシュフォルダが存在する場合は削除
-                        if (Directory.Exists(cacheDirectoryPath))
-                        {
-                            try
-                            {
-                                Directory.Delete(cacheDirectoryPath, true);
-                            }
-                            catch (Exception cleanupEx)
-                            {
-                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
-                            }
-                        }
+                        CleanupCacheDirectory(cacheDirectoryPath);
                         return false;
                     }
 
@@ -964,35 +950,13 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップZipファイル移動に失敗しました。\n" + ex.Message, "CREC");
-                        // キャッシュフォルダが存在する場合は削除
-                        if (Directory.Exists(cacheDirectoryPath))
-                        {
-                            try
-                            {
-                                Directory.Delete(cacheDirectoryPath, true);
-                            }
-                            catch (Exception cleanupEx)
-                            {
-                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
-                            }
-                        }
+                        CleanupCacheDirectory(cacheDirectoryPath);
                         return false;
                     }
                     break;
                 default:
                     MessageBox.Show("不明な圧縮設定です。", "CREC");
-                    // キャッシュフォルダが存在する場合は削除
-                    if (Directory.Exists(cacheDirectoryPath))
-                    {
-                        try
-                        {
-                            Directory.Delete(cacheDirectoryPath, true);
-                        }
-                        catch (Exception cleanupEx)
-                        {
-                            MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
-                        }
-                    }
+                    CleanupCacheDirectory(cacheDirectoryPath);
                     return false;
             }
 
