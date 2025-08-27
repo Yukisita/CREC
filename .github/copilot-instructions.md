@@ -258,3 +258,41 @@ When making changes:
 - [Installation Guide](https://github.com/Yukisita/CREC/wiki/2.-%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%83%BB%E3%82%A2%E3%83%B3%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95)
 - [Usage Guide](https://github.com/Yukisita/CREC/wiki)
 - Update history in `UpdateHistory.txt`
+
+## Quick Reference Commands
+
+### Frequently Used Code Patterns
+```csharp
+// Language-aware message display
+MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("MessageKey", "FormName", LanguageFile), "CREC");
+
+// Collection data access
+foreach (CollectionDataValuesClass collection in allCollectionList)
+{
+    // Process collection data
+}
+
+// Backup operations with logging
+List<(string id, bool isSuccess)> backupLog = CollectionDataClass.AllCollectionBackUp(...);
+
+// Safe file operations
+using (StreamWriter writer = new StreamWriter(filePath, false, Encoding.GetEncoding("UTF-8")))
+{
+    // File writing operations
+}
+```
+
+### Common File Locations During Development
+- Generated executable: `Code/CoRectSys/bin/Debug/CREC.exe`
+- Project settings: User-specified `.crec` files
+- Language files: `Code/CoRectSys/language/*.xml`
+- Application settings: `%USERPROFILE%/config.sys` (runtime generated)
+- Recent projects: `%USERPROFILE%/RecentlyOpenedProjectList.log`
+
+### Expected Behavior Notes
+- Application auto-saves user preferences and window positions
+- Multi-terminal access requires file locking coordination
+- Image thumbnails are automatically generated and compressed
+- Search performance degrades with projects >1000 items
+- Backup operations create timestamped compressed archives
+- Application supports command-line project file opening
