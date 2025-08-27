@@ -859,10 +859,10 @@ namespace CREC
             string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
 
             // コレクションをローカルに複製（キャッシュ用）
-            // バックアップ開始時にキャッシュクリア（前回失敗時の残存ファイル対策）
             string cacheDirectoryPath = "backuptmp\\" + collectionDataValues.CollectionID;
             string cacheZipFilePath = cacheDirectoryPath + ".zip";
-            
+
+            // バックアップ開始時にキャッシュクリア（前回失敗時の残存ファイル対策）
             // 前回失敗時のキャッシュディレクトリを削除
             if (Directory.Exists(cacheDirectoryPath))
             {
@@ -876,7 +876,7 @@ namespace CREC
                     return false;
                 }
             }
-            
+
             // 前回失敗時のキャッシュZipファイルを削除
             if (File.Exists(cacheZipFilePath))
             {
@@ -914,11 +914,11 @@ namespace CREC
                     try
                     {
                         FileSystem.CopyDirectory(
-                        "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
-                        backupFolderPath + "\\" + currentDateTime,// バックアップ先フォルダ
-                        Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
-                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
-                        );
+                            cacheDirectoryPath,// 一時的なバックアップフォルダ
+                            backupFolderPath + "\\" + currentDateTime,// バックアップ先フォルダ
+                            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
+                            Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                            );
                     }
                     catch (Exception ex)
                     {
@@ -931,8 +931,8 @@ namespace CREC
                     try
                     {
                         ZipFile.CreateFromDirectory(
-                            "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
-                            "backuptmp\\" + collectionDataValues.CollectionID + ".zip",// バックアップ先Zipファイル
+                            cacheDirectoryPath,// 一時的なバックアップフォルダ
+                            cacheZipFilePath,// バックアップ先Zipファイル
                             CompressionLevel.Optimal,// 圧縮レベルは最適化
                             false// サブディレクトリは含めない
                             );
@@ -947,7 +947,7 @@ namespace CREC
                     try
                     {
                         FileSystem.MoveFile(
-                            "backuptmp\\" + collectionDataValues.CollectionID + ".zip",// 一時的なZipファイル
+                            cacheZipFilePath,// 一時的なZipファイル
                             backupFolderPath + "\\" + currentDateTime + ".zip",// バックアップ先Zipファイル
                             Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
                             Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
@@ -968,11 +968,11 @@ namespace CREC
             try
             {
                 // バックアップフォルダの存在確認
-                if (!Directory.Exists("backuptmp\\" + collectionDataValues.CollectionID))
+                if (!Directory.Exists(cacheDirectoryPath))
                 {
                     return true; // フォルダが存在しない場合は何もしない
                 }
-                Directory.Delete("backuptmp\\" + collectionDataValues.CollectionID, true);
+                Directory.Delete(cacheDirectoryPath, true);
             }
             catch (Exception ex)
             {
