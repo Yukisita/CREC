@@ -1377,7 +1377,7 @@ namespace CREC
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.FileName = pluginPath;
-            startInfo.WorkingDirectory = CurrentProjectSettingValues.ProjectCollectionFolderPath;
+            startInfo.WorkingDirectory = CurrentShownCollectionData.CollectionFolderPath;
             startInfo.UseShellExecute = false;
 
             Process.Start(startInfo);
