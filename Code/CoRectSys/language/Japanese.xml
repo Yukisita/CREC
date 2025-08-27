@@ -876,7 +876,7 @@
 			</item>
 			<item>
 				<itemname>DataCheckIntervalLabel</itemname>
-				<itemtext>データ監視間隔</itemtext>
+				<itemtext>監視間隔</itemtext>
 			</item>
 			<item>
 				<itemname>SleepModeLabel</itemname>
@@ -1165,6 +1165,10 @@
 			<item>
 				<itemname>ProjectNameMatchError</itemname>
 				<itemtext>プロジェクトファイル名とプロジェクト名が一致していません。 &#xD;&#xA;保存しますか？</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectSettingFileSaveError</itemname>
+				<itemtext>プロジェクト設定の保存に失敗しました。再試行しますか？</itemtext>
 			</item>
 		</MessageBox>
 	</ProjectSettingClass>

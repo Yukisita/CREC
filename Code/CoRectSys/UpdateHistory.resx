@@ -545,7 +545,10 @@ ver9.3.0.0（2025/07/27）
 ver9.4.0.0（2025/08/04）
 日本語自動検索時に文字数分検索が繰り返される不具合を修正
 終了時バックアップ画面を自動で閉じる機能を追加
-バックアップログ出力機能を追加</value>
+バックアップログ出力機能を追加
+
+ver9.5.0.0（2025/08/27）
+リストの自動更新機能を追加</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

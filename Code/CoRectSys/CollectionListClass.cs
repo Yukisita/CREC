@@ -35,11 +35,20 @@ namespace CREC
             IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
             foreach (DirectoryInfo subFolder in subFolders)
             {
-                // Index読み込み
                 CollectionDataValuesClass item = new CollectionDataValuesClass();
-                CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, LanguageData);
-                // 在庫状況読み込み
-                CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, LanguageData);
+                // \\SystemData\\ADDがある場合はIndexを読み込まない
+                if (!File.Exists(subFolder.FullName + "\\SystemData\\ADD"))
+                {
+                    // Index読み込み
+                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, LanguageData);
+                    // 在庫状況読み込み
+                    CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, LanguageData);
+                }
+                else
+                {
+                    item.CollectionFolderPath = subFolder.FullName;
+                    item.CollectionID = subFolder.Name;
+                }
                 // AllCollectionListに追加
                 loadingCollectionList.Add(item);
             }

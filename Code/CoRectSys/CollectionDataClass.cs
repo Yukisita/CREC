@@ -286,9 +286,14 @@ namespace CREC
         /// </summary>
         /// <param name="CollectionFolderPath">読み込み対象のコレクションのフォルダ</param>
         /// <param name="CollectionDataValues">読み込み対象のコレクションのデータ（参照渡し）</param>
+        /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合にバックアップから復元するかどうか</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>読み込んだコレクションのデータ</returns>
-        public static bool LoadCollectionIndexData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        public static bool LoadCollectionIndexData(
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
+            bool restoreIndexFileIfNotExist,
+            XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
             if (CollectionFolderPath.Length == 0)// コレクションのパスが指定されていない場合
@@ -309,9 +314,29 @@ namespace CREC
                 CollectionDataValues.CollectionFolderPath = CollectionFolderPath;
                 if (!System.IO.File.Exists(CollectionDataFilePath))
                 {
-                    if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
+                    // Indexファイルが存在しない場合の処理
+                    if (restoreIndexFileIfNotExist)
                     {
-                        return false;
+                        // Indexファイルが存在しない場合は、バックアップから復元する
+                        if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
+                        loadingCollectionDataValues.CollectionName = " - "; // 名称は空欄
+                        loadingCollectionDataValues.CollectionMC = " - "; // MCは空欄
+                        loadingCollectionDataValues.CollectionRegistrationDate = " - "; // 登録日は空欄
+                        loadingCollectionDataValues.CollectionCategory = " - "; // カテゴリは空欄
+                        loadingCollectionDataValues.CollectionTag1 = " - "; // タグ1は空欄
+                        loadingCollectionDataValues.CollectionTag2 = " - "; // タグ2は空欄
+                        loadingCollectionDataValues.CollectionTag3 = " - "; // タグ3は空欄
+                        loadingCollectionDataValues.CollectionRealLocation = " - "; // 場所1(Real)は空欄
+                        loadingCollectionDataValues.CollectionCurrentInventory = null; // 在庫数は未設定
+                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet; // 在庫状況は未設定
+                        CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
                     }
                 }
 
@@ -373,7 +398,10 @@ namespace CREC
         /// <param name="CollectionDataValues">対象のコレクションデータ</param>
         /// <param name="languageData">言語ファイル</param>
         /// <returns></returns>
-        public static bool LoadCollectionInventoryData(string CollectionFolderPath, ref CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        public static bool LoadCollectionInventoryData(
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
             // 在庫状態を取得、invからデータを読み込み
@@ -554,7 +582,10 @@ namespace CREC
         /// <param name="CollectionDataValues">コレクションのデータ</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>バックアップ成功若しくはバックアップ対象なしの場合はTrue</returns>
-        public static bool BackupCollectionIndexData(string CollectionFolderPath, CollectionDataValuesClass CollectionDataValues, XElement languageData)
+        public static bool BackupCollectionIndexData(
+            string CollectionFolderPath,
+            CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
         {
             string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
             if (System.IO.File.Exists(CollectionDataFilePath))// Indexが存在する場合はバックアップを作成
@@ -568,6 +599,36 @@ namespace CREC
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileBackupFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                     return false;
                 }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// コレクションのデータ削除
+        /// </summary>
+        /// <param name="CollectionFolderPath"></param>
+        /// <param name="CollectionDataValues"></param>
+        /// <param name="languageData"></param>
+        /// <returns></returns>
+        public static bool DeleteCollectionData(
+            CollectionDataValuesClass CollectionDataValues,
+            XElement languageData)
+        {
+            FileOperationClass.AddBlankFile(CollectionDataValues.CollectionFolderPath + "\\SystemData\\DEL");// 削除タグを作成
+
+            int tryCount = 0;// 試行回数
+            while (tryCount < 5)
+            {
+                try
+                {
+                    Directory.Delete(CollectionDataValues.CollectionFolderPath, recursive: true);// コレクションフォルダを破棄
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("データの削除に失敗しました。再試行します。\n" + ex.Message, "CREC");
+                }
+                tryCount++;
             }
             return true;
         }
@@ -1019,7 +1080,7 @@ namespace CREC
             {
                 // Index読み込み
                 CollectionDataValuesClass collectionDataValues = new CollectionDataValuesClass();
-                if (!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, languageData))
+                if (!CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref collectionDataValues, false, languageData))
                 {
                     // 読み込み失敗した場合はコレクションIDをリストに追加
                     backupLog.Add((collectionDataValues.CollectionID, false));

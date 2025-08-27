@@ -267,13 +267,17 @@ namespace CREC
         /// </summary>
         public SleepMode SleepMode { get; set; } = SleepMode.Deep;
         /// <summary>
-        /// データ監視の間隔
+        /// データ監視の間隔(秒)
         /// </summary>
-        public int DataCheckInterval { get; set; } = 100;
+        public int DataCheckInterval { get; set; } = 10;
         /// <summary>
         /// バックアップ保持数（各コレクションの最大バックアップ数）
         /// </summary>
         public int MaxBackupCount { get; set; } = 256;
+        /// <summary>
+        /// コレクションリストの自動更新設定
+        /// </summary>
+        public bool CollectionListAutoUpdate { get; set; } = false;
     }
 
     public class ProjectSettingClass
@@ -849,7 +853,17 @@ namespace CREC
                         }
                         catch
                         {
-                            loadingProjectSettingValues.DataCheckInterval = 100;
+                            loadingProjectSettingValues.DataCheckInterval = 10;
+                        }
+                        break;
+                    case "CollectionListAutoUpdate":
+                        try
+                        {
+                            loadingProjectSettingValues.CollectionListAutoUpdate = cols[1] == "true";
+                        }
+                        catch
+                        {
+                            loadingProjectSettingValues.CollectionListAutoUpdate = false;
                         }
                         break;
                 }
@@ -863,9 +877,13 @@ namespace CREC
         /// プロジェクトファイル保存
         /// </summary>
         /// <param name="projectSettingValues">保存するプロジェクトの設定値</param>
-        /// <param name="path">保存するプロジェクトファイルのパス</param>
+        /// <param name="updateModifiedDate">最終更新日を更新するかどうか</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns>保存成功：true、保存失敗：false</returns>
-        public static bool SaveProjectSetting(ProjectSettingValuesClass projectSettingValues,  XElement languageData)
+        public static bool SaveProjectSetting(
+            ref ProjectSettingValuesClass projectSettingValues,
+            bool updateModifiedDate,
+            XElement languageData)
         {
             bool returnValue = false;
             if (projectSettingValues.ProjectSettingFilePath.Length == 0)// pathが指定されているか確認
@@ -877,16 +895,20 @@ namespace CREC
             if (Path.GetFileNameWithoutExtension(projectSettingValues.ProjectSettingFilePath) != projectSettingValues.Name)
             {
                 // 一致していない場合は警告を表示して保存するか確認
-                MessageBoxResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData), "CREC", MessageBoxButton.YesNo);
-                 if (result == MessageBoxResult.No)
+                MessageBoxResult result = MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData),
+                    "CREC",
+                    MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.No)
                 {
                     return false;
                 }
             }
-            StreamWriter streamWriter;
-            streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter streamWriter = null; // 修正: 変数を初期化
             try
             {
+                streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
                 streamWriter.WriteLine("{0},{1}", "projectname", projectSettingValues.Name);
                 streamWriter.WriteLine("{0},{1}", "projectlocation", projectSettingValues.ProjectDataFolderPath);
                 streamWriter.WriteLine("{0},{1}", "backuplocation", projectSettingValues.ProjectBackupFolderPath);
@@ -937,7 +959,12 @@ namespace CREC
                 streamWriter.Write('\n');
                 streamWriter.WriteLine("ListOutputFormat,{0}", projectSettingValues.ListOutputFormat.ToString());
                 streamWriter.WriteLine("{0},{1}", "created", projectSettingValues.CreatedDate);
-                streamWriter.WriteLine("{0},{1}", "modified", projectSettingValues.ModifiedDate);
+                // 最終更新日を更新する場合は現在時刻を設定
+                if (updateModifiedDate == true)
+                {
+                    projectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");// 現在時刻を取得して最終更新日として設定
+                }
+                streamWriter.WriteLine("{0},{1}", "modified", projectSettingValues.ModifiedDate);// 現在時刻を記録
                 streamWriter.WriteLine("{0},{1}", "accessed", projectSettingValues.AccessedDate);
                 streamWriter.WriteLine("Color,{0}", (int)projectSettingValues.ColorSetting);
                 if (projectSettingValues.CollectionNameVisible == true)
@@ -1104,15 +1131,35 @@ namespace CREC
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);
+                streamWriter.WriteLine("CollectionListAutoUpdate,{0}", projectSettingValues.CollectionListAutoUpdate ? "true" : "false");
                 returnValue = true;
             }
-            catch
+            catch (Exception ex)
             {
-                returnValue = false;
+                // エラーが発生した場合は再起処理するユーザーに尋ねる。
+                if (MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("ProjectSettingFileSaveError", "ProjectSettingClass", languageData) + "\n" + ex.Message,
+                    "CREC",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Error) == MessageBoxResult.Yes)
+                {
+                    if (streamWriter != null)
+                    {
+                        streamWriter.Close();
+                    }
+                    return SaveProjectSetting(ref projectSettingValues, updateModifiedDate, languageData); // 再試行
+                }
+                else
+                {
+                    returnValue = false;
+                }
             }
             finally
             {
-                streamWriter.Close();
+                if (streamWriter != null)
+                {
+                    streamWriter.Close();
+                }
             }
             return returnValue;
         }

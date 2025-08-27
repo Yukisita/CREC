@@ -169,6 +169,7 @@ namespace CREC
             Application.DoEvents();
             SetFormLayout();
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を開始
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
             // コマンドライン引数で開くプロジェクトが指定されている場合はそちらを優先
             if (commandLineProjectFile != string.Empty && File.Exists(commandLineProjectFile))
             {
@@ -249,7 +250,7 @@ namespace CREC
         {
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)// 開いているプロジェクトがあった場合は内容を保存
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
 
             if (SaveAndCloseEditButton.Visible == true && CheckEditingContents() != true)// 編集中の場合は警告を表示
@@ -285,7 +286,6 @@ namespace CREC
         }
         private void LoadProjectFileMethod(string targetProjectSettingFilePath)// CREC読み込み用の処理メソッド
         {
-            var previousProjectSettinValues = CurrentProjectSettingValues; // 現在のプロジェクト設定値を保持
             CurrentProjectSettingValues = new ProjectSettingValuesClass();// プロジェクト設定値を初期化
             CurrentProjectSettingValues.ProjectSettingFilePath = targetProjectSettingFilePath;// プロジェクトファイルのパスを設定
             ClearDetailsWindowMethod();// 詳細表示画面を初期化
@@ -563,7 +563,7 @@ namespace CREC
             // 開いているプロジェクトがあった場合は内容を保存
             if (CurrentShownCollectionData.CollectionFolderPath.Length > 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
             // 次に読み込むプロジェクトファイルのパスを設定
             string nextProjectSettingFilePath = OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems[OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.IndexOf((ToolStripMenuItem)sender)].ToolTipText;
@@ -708,7 +708,7 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
             }
             ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             System.Windows.Forms.Application.Restart();
@@ -1057,7 +1057,7 @@ namespace CREC
             ConfigClass.SaveConfigValues(ConfigValues, CurrentProjectSettingValues.ProjectSettingFilePath);
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
                 if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
@@ -1109,6 +1109,8 @@ namespace CREC
                 CollectionEditStatusWatcherStop();// データの監視を停止
                 collectionEditStatusWatcher.Dispose();// データの監視を破棄
                 CheckContentsListCancellationTokenSource.Dispose();// データ監視用のCancellationTokenSourceを破棄
+                CollectionListAutoUpdateCancellationTokenSource.Dispose();// コレクションリスト自動更新用のCancellationTokenSourceを破棄
+                Application.DoEvents();// イベントを処理
                 // コレクション一覧を出力
                 if (CurrentProjectSettingValues.CloseListOutput == true)
                 {
@@ -1229,9 +1231,13 @@ namespace CREC
         #endregion
 
         #region データ一覧・詳細表示関係
+        /// <summary>
+        /// コレクションリストの表示中・編集中を切り替える
+        /// </summary>
+        /// <param name="status">リスト表示表示中：true、リスト非表示：false</param>
         private void CollectionListIsShowing(bool status)
         {
-            // 一覧表示中に表示する項目
+            // リスト表示中に表示する項目
             AddContentsButton.Visible = status;
             dataGridView1.Visible = status;
             ListUpdateButton.Visible = status;
@@ -1261,6 +1267,8 @@ namespace CREC
             // 表示内容整合性確認処理を停止
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            // コレクションリスト自動更新処理を一時停止
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
 
             while (DataLoadingStatus != "false")
             {
@@ -1403,12 +1411,16 @@ namespace CREC
             }
             // アクセス日時を更新
             CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-            ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+            // プロジェクト設定ファイルを保存, アクセス日の更新のみなので更新日はそのままとする
+            ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, false, LanguageFile);
             // 一応読み込み終了を宣言
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
             CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            // コレクションリスト自動更新処理を再開
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
@@ -1416,7 +1428,6 @@ namespace CREC
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
                 column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
             }
-
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -1735,7 +1746,7 @@ namespace CREC
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
             // index読み込み
-            return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData, LanguageFile);
+            return CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref CurrentShownCollectionData, true, LanguageFile);
         }
         private void ClearDetailsWindowMethod()// 表示されている詳細情報・入力フォームの情報を全てリセットするメソッド
         {
@@ -2110,6 +2121,7 @@ namespace CREC
             ConfidentialDataTextBox.ReadOnly = false;
             // 一応ID重複確認イベントを開始
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;
+            isEditingCollection = true;
         }
         /// <summary>
         /// サムネイル選択
@@ -2178,7 +2190,8 @@ namespace CREC
             {
                 DataLoadingStatus = "stop";
             }
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            // 最終更新日を変更
+            ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);// プロジェクト設定を保存
             // 編集したデータを表示するための処理
             ContentsDataTable.Rows.Clear();// 表示内容をクリア
             CollectionDataValuesClass thisCollectionDataValues = new CollectionDataValuesClass();
@@ -2187,7 +2200,7 @@ namespace CREC
                 DataLoadingStatus = "false";
             }
             // index読み込み
-            CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, LanguageFile);
+            CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, true, LanguageFile);
             // 在庫状況読み込み
             CollectionDataClass.LoadCollectionInventoryData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, LanguageFile);
             ContentsDataTable.Rows.Add(
@@ -2226,15 +2239,20 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            try
+
+            CollectionEditStatusWatcherStop();// 既存の監視を停止
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
+
+            // データ削除メソッドを呼び出し
+            if (!CollectionDataClass.DeleteCollectionData(CurrentShownCollectionData, LanguageFile))
             {
-                Directory.Delete(CurrentShownCollectionData.CollectionFolderPath, true);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("データの削除に失敗しました。\n" + ex.Message, "CREC");
                 return;
             }
+
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
+
             if (DataLoadingStatus == "true")
             {
                 DataLoadingStatus = "stop";
@@ -2388,9 +2406,10 @@ namespace CREC
             CurrentShownCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
             // フォルダ及びファイルを作成
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath);
+            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
+            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\data");
             Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
             FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
             StreamWriter streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
@@ -2413,8 +2432,6 @@ namespace CREC
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = false;
             }
-            // 新規作成タグを作成
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
@@ -2433,9 +2450,13 @@ namespace CREC
         private bool SaveContentsMethod()// 入力されたデータを保存する処理のメソッド
         {
             CollectionEditStatusWatcherStop();// 既存の監視を停止
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             // 表示内容整合性確認処理を停止し、キャンセルトークンをリセット
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             // ID変更処理が必要な場合
             if (CurrentShownCollectionData.CollectionFolderPath != CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text)
             {
@@ -2489,6 +2510,7 @@ namespace CREC
             CurrentShownCollectionData.CollectionRealLocation = EditRealLocationTextBox.Text;
             if (!CollectionDataClass.SaveCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData, LanguageFile))
             {
+                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
                 return false;
             }
 
@@ -2553,6 +2575,8 @@ namespace CREC
                 );
             }
             CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの再開
+            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を再開
+            isEditingCollection = false;
             return true;
         }
         private void AddContentsButton_Click(object sender, EventArgs e)// データ追加ボタン
@@ -3567,6 +3591,8 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
+        bool isEditingCollection = false;// コレクション編集中フラグ
+
         /// <summary>
         /// コレクションの編集状態を監視するメソッド
         /// </summary>
@@ -3587,6 +3613,7 @@ namespace CREC
             collectionEditStatusWatcher.Deleted += CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.EnableRaisingEvents = true; // 新しいフォルダの監視を開始
         }
+
         /// <summary>
         /// コレクションの編集状態を監視するメソッドの停止
         /// </summary>
@@ -3598,6 +3625,7 @@ namespace CREC
             collectionEditStatusWatcher.Changed -= CollectionEditStatusOnChanged;
             collectionEditStatusWatcher.Deleted -= CollectionEditStatusOnChanged;
         }
+
         /// <summary>
         /// コレクションフォルダの変更を検知する処理
         /// </summary>
@@ -3605,14 +3633,21 @@ namespace CREC
         /// <param name="e"></param>
         private void CollectionEditStatusOnChanged(object sender, FileSystemEventArgs e)
         {
-            DelegateProcess delegateProcess = new DelegateProcess(CollectionOperationStatusManager);//delegateにChangeTextBoxを登録
-            this.Invoke(delegateProcess);//DelegateProcessを実行
+            DelegateProcess delegateProcess = new DelegateProcess(CollectionOperationStatusManager);// delegateにChangeTextBoxを登録
+            this.Invoke(delegateProcess);// DelegateProcessを実行
         }
+
         /// <summary>
         /// コレクションの編集状態を取得し描画を変更する処理
         /// </summary>
         private void CollectionOperationStatusManager()
         {
+            // 削除タグ"DEL"がある場合は監視を停止する
+            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DEL"))
+            {
+                CollectionEditStatusWatcherStop();
+                return;
+            }
             switch (CurrentShownCollectionOperationStatus)
             {
                 case CollectionOperationStatus.Watching:
@@ -3748,13 +3783,172 @@ namespace CREC
         }
         #endregion
 
-        #region 非同期処理置き場
-        private async void CheckContentsList(CancellationToken cancellationToken)// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        #region リストの自動更新処理関係
+        CancellationTokenSource CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();// CollectionListAutoUpdateのキャンセルトークン
+
+        /// <summary>
+        /// コレクションリストの自動更新処理
+        /// </summary>
+        /// <param name="cancellationToken">キャンセルトークン</param>
+        private async void CollectionListAutoUpdate(CancellationToken cancellationToken)
         {
+            // 自動更新が無効の場合はこの時点で処理を終了させる
+            if (!CurrentProjectSettingValues.CollectionListAutoUpdate)
+            {
+                return;
+            }
+
+            // 開始時のプロジェクト設定ファイルのタイムスタンプを取得
+            DateTime projectSettingFileLastWriteTime = DateTime.MinValue;
+            if (string.IsNullOrEmpty(CurrentProjectSettingValues.ProjectSettingFilePath))
+            {
+                return; // プロジェクト設定ファイルが指定されていない場合は何もしない
+            }
+            try
+            {
+                projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);// プロジェクト設定ファイルのタイムスタンプを記録
+            }
+            catch
+            {
+                MessageBox.Show("コレクションリストの自動更新を開始できません。\nプロジェクト設定ファイルが存在しないか、アクセスできません。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            int lastCollectionCount = allCollectionList.Count;// 最後にチェックしたコレクション数
+
             while (true)
             {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                try
+                {
+                    await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 1000, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // キャンセルされた場合はループを抜ける
+                    break;
+                }
 
+                // キャンセルトークンが要求された場合はループを抜ける
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                // 自動更新が無効の場合は何もしない
+                if (!CurrentProjectSettingValues.CollectionListAutoUpdate)
+                {
+                    continue;
+                }
+
+                // コレクション編集中は自動更新を停止
+                if (isEditingCollection)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    // プロジェクトデータフォルダが存在するかチェック
+                    if (!Directory.Exists(CurrentProjectSettingValues.ProjectDataFolderPath))
+                    {
+                        continue;
+                    }
+                    // プロジェクトフォルダ内のコレクション数をチェック
+                    DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
+                    var subFolders = di.EnumerateDirectories("*");
+                    int currentCollectionCount = subFolders.Count();
+                    // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
+                    bool shouldUpdate = currentCollectionCount != lastCollectionCount;
+
+                    // 現在のプロジェクト設定値のModifiedDateを取得
+                    if (!shouldUpdate)
+                    {
+                        if (projectSettingFileLastWriteTime == File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath))
+                        {
+                            continue; // プロジェクト設定ファイルの更新がない場合はスキップ
+                        }
+                        projectSettingFileLastWriteTime = File.GetLastWriteTime(CurrentProjectSettingValues.ProjectSettingFilePath);
+                        var temporaryProjectSettingValues = new ProjectSettingValuesClass();
+                        temporaryProjectSettingValues.ProjectSettingFilePath = CurrentProjectSettingValues.ProjectSettingFilePath;
+                        ProjectSettingClass.LoadProjectSetting(ref temporaryProjectSettingValues);
+                        if (temporaryProjectSettingValues.ModifiedDate != CurrentProjectSettingValues.ModifiedDate)
+                        {
+                            shouldUpdate = true;
+                            CurrentProjectSettingValues = temporaryProjectSettingValues; // プロジェクト設定値を更新
+                        }
+                    }
+
+                    // 更新が不要な場合は処理をスキップ
+                    if (!shouldUpdate)
+                    {
+                        continue;
+                    }
+
+                    // UIスレッドで実行
+                    if (this.InvokeRequired)
+                    {
+                        try
+                        {
+                            this.Invoke(new Action(() =>
+                            {
+                                // 再度チェック（UIスレッドで実行される時点では状況が変わっている可能性があるため）
+                                if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                                {
+                                    LoadGrid();
+                                }
+                            }));
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // フォームが破棄されている場合はループを抜ける
+                            break;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // フォームハンドルが作成されていない場合はスキップ
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        if (CurrentProjectSettingValues.CollectionListAutoUpdate && !isEditingCollection)
+                        {
+                            LoadGrid();
+                        }
+                    }
+                    lastCollectionCount = currentCollectionCount;
+                }
+                catch (Exception ex)
+                {
+                    // 重要なエラーの場合は少し待ってから再試行
+                    if (ex is UnauthorizedAccessException || ex is DirectoryNotFoundException)
+                    {
+                        try
+                        {
+                            await Task.Delay(5000, cancellationToken); // 5秒待機
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region その他非同期処理置き場
+        /// <summary>
+        /// ContentsListの選択と詳細表示内容の整合性をバックグラウンドで監視
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        private async void CheckContentsList(CancellationToken cancellationToken)
+        {
+            int roopCount = 0; // ループカウント
+            while (true)
+            {
+                await Task.Delay(100);
+                roopCount++;
                 // キャンセルトークンが要求された場合はループを抜ける
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -3767,14 +3961,18 @@ namespace CREC
                     continue;
                 }
 
-                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み
-                if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false
-                    && CurrentShownCollectionData.CollectionFolderPath != string.Empty)
+                // 表示中コレクションのUUID（フォルダ）が変更されたときは再読み込み。Existsの負荷を避けるため、DataCheckIntervalごとに行う
+                if (roopCount * 0.1 > CurrentProjectSettingValues.DataCheckInterval
+                    && !string.IsNullOrWhiteSpace(CurrentShownCollectionData.CollectionFolderPath))
                 {
-                    MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadGrid();// リストを更新
-                    ShowDetails();
-                    continue;
+                    if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
+                    {
+                        MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadGrid();// リストを更新
+                        ShowDetails();
+                        continue;
+                    }
+                    roopCount = 0; // ループカウントをリセット
                 }
 
                 // 表示中コレクションと選択が一致する場合は続行
@@ -3794,11 +3992,15 @@ namespace CREC
                 ShowDetails();
             }
         }
-        private async void AwaitEdit()// 編集許可を待機
+
+        /// <summary>
+        /// 編集許可を待機
+        /// </summary>
+        private async void AwaitEdit()
         {
             while (true)
             {
-                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval);
+                await Task.Delay(CurrentProjectSettingValues.DataCheckInterval * 1000);
                 if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                 {
                     MessageBox.Show("IDが変更されました。\n再度読み込みを行ってください。", "CREC");
@@ -3877,6 +4079,7 @@ namespace CREC
                 }
             }
         }
+
         /// <summary>
         /// サムネイル読み込み処理
         /// </summary>
@@ -3921,6 +4124,7 @@ namespace CREC
                 }
             }
         }
+
         /// <summary>
         /// 更新確認
         /// </summary>

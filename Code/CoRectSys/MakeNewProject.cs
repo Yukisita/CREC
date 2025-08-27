@@ -120,13 +120,13 @@ namespace CREC
             DataCheckIntervalTextBox.Text = Convert.ToString(CurrentProjectSettingValues.DataCheckInterval);
             switch (CurrentProjectSettingValues.DataCheckInterval)
             {
-                case 100:
+                case 1:
                     DataCheckIntervalComboBox.SelectedIndex = 0;
                     break;
-                case 500:
+                case 10:
                     DataCheckIntervalComboBox.SelectedIndex = 1;
                     break;
-                case 1000:
+                case 60:
                     DataCheckIntervalComboBox.SelectedIndex = 2;
                     break;
                 default:
@@ -134,6 +134,7 @@ namespace CREC
                     break;
             }
             MaxBackupCountTextBox.Text = Convert.ToString(CurrentProjectSettingValues.MaxBackupCount);
+            CollectionListAutoUpdateCheckBox.Checked = CurrentProjectSettingValues.CollectionListAutoUpdate;
         }
         private void MakeNewProjectButton_Click(object sender, EventArgs e)// 保存してプロジェクト編集画面を閉じる
         {
@@ -217,6 +218,7 @@ namespace CREC
                     MessageBox.Show("バックアップ保持数の値が正しく入力されていません。\n1以上の整数値を入力してください。", "CREC");
                     return;
                 }
+                CurrentProjectSettingValues.CollectionListAutoUpdate = CollectionListAutoUpdateCheckBox.Checked;
                 // プロジェクトデータ保管場所が存在するか判定し、作成
                 if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// 新規プロジェクト作成の場合
                 {
@@ -282,7 +284,7 @@ namespace CREC
                 {
                     CurrentProjectSettingValues.ProjectSettingFilePath = System.Environment.CurrentDirectory + "\\" + EditProjectNameTextBox.Text + ".crec";
                 }
-                ProjectSettingClass.SaveProjectSetting(CurrentProjectSettingValues, LanguageFile);
+                ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
                 ReturnTargetProject = CurrentProjectSettingValues.ProjectSettingFilePath;
                 this.Close();
             }
@@ -398,15 +400,15 @@ namespace CREC
             switch (DataCheckIntervalComboBox.SelectedIndex)
             {
                 case 0:
-                    DataCheckIntervalTextBox.Text = "100";
+                    DataCheckIntervalTextBox.Text = "1";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 1:
-                    DataCheckIntervalTextBox.Text = "500";
+                    DataCheckIntervalTextBox.Text = "10";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 2:
-                    DataCheckIntervalTextBox.Text = "1000";
+                    DataCheckIntervalTextBox.Text = "60";
                     DataCheckIntervalTextBox.ReadOnly = true;
                     break;
                 case 3:
