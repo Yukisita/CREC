@@ -859,43 +859,17 @@ namespace CREC
             string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
 
             // コレクションをローカルに複製（キャッシュ用）
-            string cacheDirectoryPath = "backuptmp\\" + collectionDataValues.CollectionID;
+            // キャッシュのパスは "backuptmp\UUID\<CollectionID>"
+            // cacheUUIDを新たに生成する
+            string cacheUUID = Guid.NewGuid().ToString("N"); // UUIDを生成
+            string cacheDirectoryPath = "backuptmp\\" + cacheUUID;
             string cacheZipFilePath = cacheDirectoryPath + ".zip";
-
-            // バックアップ開始時にキャッシュクリア（前回失敗時の残存ファイル対策）
-            // 前回失敗時のキャッシュディレクトリを削除
-            if (Directory.Exists(cacheDirectoryPath))
-            {
-                try
-                {
-                    Directory.Delete(cacheDirectoryPath, true);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("バックアップ用キャッシュの初期化に失敗しました。\n" + ex.Message, "CREC");
-                    return false;
-                }
-            }
-
-            // 前回失敗時のキャッシュZipファイルを削除
-            if (File.Exists(cacheZipFilePath))
-            {
-                try
-                {
-                    File.Delete(cacheZipFilePath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("バックアップ用キャッシュファイルの初期化に失敗しました。\n" + ex.Message, "CREC");
-                    return false;
-                }
-            }
 
             try
             {
                 FileSystem.CopyDirectory(
                     collectionDataValues.CollectionFolderPath,// コレクションのフォルダパス
-                    cacheDirectoryPath,// 一時的なバックアップフォルダ
+                    cacheDirectoryPath + "\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
                     Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
                     Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
                     );
@@ -903,6 +877,18 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("コレクションのバックアップ用キャッシュ作成に失敗しました。\n" + ex.Message, "CREC");
+                // キャッシュフォルダが存在する場合は削除
+                if (Directory.Exists(cacheDirectoryPath))
+                {
+                    try
+                    {
+                        Directory.Delete(cacheDirectoryPath, true);
+                    }
+                    catch (Exception cleanupEx)
+                    {
+                        MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                    }
+                }
                 return false;
             }
 
@@ -914,7 +900,7 @@ namespace CREC
                     try
                     {
                         FileSystem.CopyDirectory(
-                            cacheDirectoryPath,// 一時的なバックアップフォルダ
+                            cacheDirectoryPath + "\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
                             backupFolderPath + "\\" + currentDateTime,// バックアップ先フォルダ
                             Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
                             Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
@@ -923,6 +909,18 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップに失敗しました。\n" + ex.Message, "CREC");
+                        // キャッシュフォルダが存在する場合は削除
+                        if (Directory.Exists(cacheDirectoryPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(cacheDirectoryPath, true);
+                            }
+                            catch (Exception cleanupEx)
+                            {
+                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                            }
+                        }
                         return false;
                     }
                     break;
@@ -931,8 +929,8 @@ namespace CREC
                     try
                     {
                         ZipFile.CreateFromDirectory(
-                            cacheDirectoryPath,// 一時的なバックアップフォルダ
-                            cacheZipFilePath,// バックアップ先Zipファイル
+                            cacheDirectoryPath + "\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
+                            cacheDirectoryPath + "\\" + collectionDataValues.CollectionID + ".zip",// バックアップ先Zipファイル
                             CompressionLevel.Optimal,// 圧縮レベルは最適化
                             false// サブディレクトリは含めない
                             );
@@ -940,6 +938,18 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップデータ圧縮に失敗しました。\n" + ex.Message, "CREC");
+                        // キャッシュフォルダが存在する場合は削除
+                        if (Directory.Exists(cacheDirectoryPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(cacheDirectoryPath, true);
+                            }
+                            catch (Exception cleanupEx)
+                            {
+                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                            }
+                        }
                         return false;
                     }
 
@@ -947,7 +957,7 @@ namespace CREC
                     try
                     {
                         FileSystem.MoveFile(
-                            cacheZipFilePath,// 一時的なZipファイル
+                            cacheDirectoryPath + "\\" + collectionDataValues.CollectionID + ".zip",// 一時的なZipファイル
                             backupFolderPath + "\\" + currentDateTime + ".zip",// バックアップ先Zipファイル
                             Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
                             Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
@@ -956,11 +966,35 @@ namespace CREC
                     catch (Exception ex)
                     {
                         MessageBox.Show("コレクションのバックアップZipファイル移動に失敗しました。\n" + ex.Message, "CREC");
+                        // キャッシュフォルダが存在する場合は削除
+                        if (Directory.Exists(cacheDirectoryPath))
+                        {
+                            try
+                            {
+                                Directory.Delete(cacheDirectoryPath, true);
+                            }
+                            catch (Exception cleanupEx)
+                            {
+                                MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                            }
+                        }
                         return false;
                     }
                     break;
                 default:
                     MessageBox.Show("不明な圧縮設定です。", "CREC");
+                    // キャッシュフォルダが存在する場合は削除
+                    if (Directory.Exists(cacheDirectoryPath))
+                    {
+                        try
+                        {
+                            Directory.Delete(cacheDirectoryPath, true);
+                        }
+                        catch (Exception cleanupEx)
+                        {
+                            MessageBox.Show("キャッシュフォルダの削除に失敗しました。\n" + cleanupEx.Message, "CREC");
+                        }
+                    }
                     return false;
             }
 
@@ -978,7 +1012,7 @@ namespace CREC
             {
                 // クリーンアップの失敗は、メッセージボックスで警告を表示して終了する
                 MessageBox.Show(
-                    "一時的なバックアップフォルダの削除に失敗しました。\n" + ex.Message,
+                    "キャッシュフォルダの削除に失敗しました。\n" + ex.Message,
                     "CREC",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
