@@ -859,11 +859,26 @@ namespace CREC
             string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
 
             // コレクションをローカルに複製（キャッシュ用）
+            // バックアップ開始時にキャッシュクリア（前回失敗時の残存ファイル対策）
+            string cacheDirectoryPath = "backuptmp\\" + collectionDataValues.CollectionID;
+            if (Directory.Exists(cacheDirectoryPath))
+            {
+                try
+                {
+                    Directory.Delete(cacheDirectoryPath, true);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("バックアップ用キャッシュの初期化に失敗しました。\n" + ex.Message, "CREC");
+                    return false;
+                }
+            }
+
             try
             {
                 FileSystem.CopyDirectory(
                     collectionDataValues.CollectionFolderPath,// コレクションのフォルダパス
-                    "backuptmp\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
+                    cacheDirectoryPath,// 一時的なバックアップフォルダ
                     Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
                     Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
                     );
