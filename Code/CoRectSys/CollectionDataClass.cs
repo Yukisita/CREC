@@ -861,6 +861,9 @@ namespace CREC
             // コレクションをローカルに複製（キャッシュ用）
             // バックアップ開始時にキャッシュクリア（前回失敗時の残存ファイル対策）
             string cacheDirectoryPath = "backuptmp\\" + collectionDataValues.CollectionID;
+            string cacheZipFilePath = cacheDirectoryPath + ".zip";
+            
+            // 前回失敗時のキャッシュディレクトリを削除
             if (Directory.Exists(cacheDirectoryPath))
             {
                 try
@@ -870,6 +873,20 @@ namespace CREC
                 catch (Exception ex)
                 {
                     MessageBox.Show("バックアップ用キャッシュの初期化に失敗しました。\n" + ex.Message, "CREC");
+                    return false;
+                }
+            }
+            
+            // 前回失敗時のキャッシュZipファイルを削除
+            if (File.Exists(cacheZipFilePath))
+            {
+                try
+                {
+                    File.Delete(cacheZipFilePath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("バックアップ用キャッシュファイルの初期化に失敗しました。\n" + ex.Message, "CREC");
                     return false;
                 }
             }
