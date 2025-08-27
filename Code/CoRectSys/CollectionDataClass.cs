@@ -859,11 +859,9 @@ namespace CREC
             string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
 
             // コレクションをローカルに複製（キャッシュ用）
-            // キャッシュのパスは "backuptmp\UUID\<CollectionID>"
-            // cacheUUIDを新たに生成する
+            // キャッシュのパスは "backuptmp\UUID\
             string cacheUUID = Guid.NewGuid().ToString("N"); // UUIDを生成
             string cacheDirectoryPath = "backuptmp\\" + cacheUUID;
-            string cacheZipFilePath = cacheDirectoryPath + ".zip";
 
             try
             {
