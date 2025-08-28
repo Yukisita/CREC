@@ -2081,6 +2081,7 @@ namespace CREC
             }
             FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\DED");
             CurrentShownCollectionOperationStatus = CollectionOperationStatus.Editing;// 現在の操作ステータスを編集中に設定
+            isEditingCollection = true;
             // サムネ用画像変更用データが残っていた場合削除
             if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png"))
             {
@@ -2393,35 +2394,40 @@ namespace CREC
                     return;// 編集モードに切り替えず処理を終了
                 }
             }
+
+            isEditingCollection = true;
             dataGridView1.ClearSelection();//　List選択解除
             dataGridView1.CurrentCell = null;//　List選択解除
-            CurrentShownCollectionData.CollectionID = Convert.ToString(Guid.NewGuid());
-            EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;// UUIDを入力
+
+            // 初期値を設定
+            CollectionDataValuesClass NewCollectionData = new CollectionDataValuesClass();// 表示中のデータを初期化
+            NewCollectionData.CollectionID = Convert.ToString(Guid.NewGuid());
             DateTime DT = DateTime.Now;
             if (CurrentProjectSettingValues.ManagementCodeAutoFill == true)
             {
-                EditMCTextBox.Text = DT.ToString("yyMMddHHmmssf");// MCを自動入力
+                NewCollectionData.CollectionMC = DT.ToString("yyMMddHHmmssf");
             }
-            EditRegistrationDateTextBox.Text = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
-            CurrentShownCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + EditIDTextBox.Text;
+            NewCollectionData.CollectionRegistrationDate = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
+            NewCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + NewCollectionData.CollectionID;
+
             // フォルダ及びファイルを作成
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath);
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData");
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\data");
-            Directory.CreateDirectory(CurrentShownCollectionData.CollectionFolderPath + "\\pictures");
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
-            StreamWriter streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\index.txt");
+            Directory.CreateDirectory(NewCollectionData.CollectionFolderPath);
+            Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\SystemData");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
+            Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\data");
+            Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\pictures");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\index.txt");
+            StreamWriter streamWriter = new StreamWriter(NewCollectionData.CollectionFolderPath + "\\index.txt");
             streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
             streamWriter.Close();
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
-            FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\details.txt");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
             // 在庫管理を行うか確認
             DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
-                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
+                FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\inventory.inv");
+                StreamWriter InventoryManagementFile = new StreamWriter(NewCollectionData.CollectionFolderPath + "\\inventory.inv");
                 InventoryManagementFile.WriteLine("{0},,,", EditIDTextBox.Text);
                 InventoryManagementFile.Close();
                 InventoryManagementModeButton.Visible = true;
@@ -2432,6 +2438,7 @@ namespace CREC
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = false;
             }
+
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
             ConfidentialDataTextBox.Text = string.Empty;
@@ -2439,6 +2446,12 @@ namespace CREC
             NoImageLabel.Visible = true;
             Thumbnail.BackColor = menuStrip1.BackColor;
             StartEditForm();
+            CurrentShownCollectionData = NewCollectionData;
+
+            // 初期内容を表示
+            EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
+            EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
+            EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
             if (FullDisplayModeToolStripMenuItem.Checked)// 全画面表示モードの時の処理
             {
                 CollectionListIsShowing(false);
@@ -3982,10 +3995,12 @@ namespace CREC
                 }
 
                 // 差分がある場合なので、リストで選択されている内容の表示に変更する
-                if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+                if (isEditingCollection == true || SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
                 {
                     if (CheckEditingContents() != true)
                     {
+                        dataGridView1.ClearSelection();//　List選択解除
+                        dataGridView1.CurrentCell = null;//　List選択解除
                         continue;
                     }
                 }
