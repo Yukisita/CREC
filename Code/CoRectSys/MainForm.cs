@@ -2438,6 +2438,7 @@ namespace CREC
                 InventoryManagementModeButton.Visible = false;
                 CloseInventoryManagementModeButton.Visible = false;
             }
+            CurrentShownCollectionData = NewCollectionData;
 
             // 表示中の内容をクリア
             DetailsTextBox.Text = string.Empty;
@@ -2446,7 +2447,6 @@ namespace CREC
             NoImageLabel.Visible = true;
             Thumbnail.BackColor = menuStrip1.BackColor;
             StartEditForm();
-            CurrentShownCollectionData = NewCollectionData;
 
             // 初期内容を表示
             EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
