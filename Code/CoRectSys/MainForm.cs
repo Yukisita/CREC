@@ -1507,7 +1507,7 @@ namespace CREC
                     return false;
                 }
                 // 通常画面に不要な物を非表示に
-                EditNameTextBox.Visible = false;
+                //EditNameTextBox.Visible = false;
                 EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
@@ -1518,7 +1518,9 @@ namespace CREC
                 EditTag2TextBox.Visible = false;
                 EditTag3TextBox.Visible = false;
                 EditRealLocationTextBox.Visible = false;
-                SaveAndCloseEditButton.Visible = false;
+                //SaveAndCloseEditButton.Visible = false;
+                isEditingCollection = false;
+                SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
                 OpenPictureFolderButton.Visible = false;
                 // 入力フォームをリセット
@@ -1569,7 +1571,7 @@ namespace CREC
                     FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
                 // 通常画面に不要な物を非表示に
-                EditNameTextBox.Visible = false;
+                //EditNameTextBox.Visible = false;
                 EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
@@ -1580,7 +1582,9 @@ namespace CREC
                 EditTag2TextBox.Visible = false;
                 EditTag3TextBox.Visible = false;
                 EditRealLocationTextBox.Visible = false;
-                SaveAndCloseEditButton.Visible = false;
+                //SaveAndCloseEditButton.Visible = false;
+                isEditingCollection = false;
+                SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
                 OpenPictureFolderButton.Visible = false;
                 // 入力フォームをリセット
@@ -1924,6 +1928,20 @@ namespace CREC
         #endregion
 
         #region 編集・データ追加・データ削除関係
+        /// <summary>
+        /// isEditingの状態に応じて表示する項目を切り替える処理
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SwitchVisibleControl()
+        {
+            // 編集時に表示するコントロール
+            SaveAndCloseEditButton.Visible = isEditingCollection;
+            EditNameTextBox.Visible = isEditingCollection;
+
+            EditButton.Visible = !isEditingCollection;
+        }
+        
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
             // 状態を確認、必要に応じてボタンを更新
@@ -2089,6 +2107,9 @@ namespace CREC
             {
                 FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
+            //SaveAndCloseEditButton.Visible = true;
+            isEditingCollection = true;
+            SwitchVisibleControl();
             // 編集画面に必要な物を表示
             EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
             EditIDTextBox.Visible = CurrentProjectSettingValues.UUIDVisible;
@@ -2102,7 +2123,6 @@ namespace CREC
             EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
             EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
             EditRealLocationTextBox.Visible = CurrentProjectSettingValues.RealLocationVisible;
-            SaveAndCloseEditButton.Visible = true;
             SelectThumbnailButton.Visible = true;
             OpenPictureFolderButton.Visible = true;
             // 編集画面で不要なものを非表示
@@ -2124,7 +2144,6 @@ namespace CREC
             ConfidentialDataTextBox.ReadOnly = false;
             // 一応ID重複確認イベントを開始
             EditIDTextBox.TextChanged += IDTextBox_TextChanged;
-            isEditingCollection = true;
         }
         /// <summary>
         /// サムネイル選択
@@ -2162,11 +2181,12 @@ namespace CREC
                 return;
             }
             isEditingCollection = false;
+            SwitchVisibleControl();
             // 通常画面用にラベルを変更
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
             // 通常画面に不要な物を非表示に
-            EditNameTextBox.Visible = false;
+            //EditNameTextBox.Visible = false;
             EditIDTextBox.Visible = false;
             AllowEditIDButton.Visible = false;
             EditMCTextBox.Visible = false;
@@ -2264,7 +2284,7 @@ namespace CREC
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
                 // 通常画面に不要な物を非表示に
-                EditNameTextBox.Visible = false;
+                //EditNameTextBox.Visible = false;
                 EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
@@ -2275,10 +2295,11 @@ namespace CREC
                 EditTag2TextBox.Visible = false;
                 EditTag3TextBox.Visible = false;
                 EditRealLocationTextBox.Visible = false;
-                SaveAndCloseEditButton.Visible = false;
+                //SaveAndCloseEditButton.Visible = false;
+                isEditingCollection = false;
+                SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
                 OpenPictureFolderButton.Visible = false;
-                isEditingCollection = false;
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -3739,7 +3760,7 @@ namespace CREC
                             }
                         }
                         // 通常画面に不要な物を非表示に
-                        EditNameTextBox.Visible = false;
+                        //EditNameTextBox.Visible = false;
                         EditIDTextBox.Visible = false;
                         AllowEditIDButton.Visible = false;
                         EditMCTextBox.Visible = false;
@@ -3750,7 +3771,9 @@ namespace CREC
                         EditTag2TextBox.Visible = false;
                         EditTag3TextBox.Visible = false;
                         EditRealLocationTextBox.Visible = false;
-                        SaveAndCloseEditButton.Visible = false;
+                        //SaveAndCloseEditButton.Visible = false;
+                        isEditingCollection = false;
+                        SwitchVisibleControl();
                         SelectThumbnailButton.Visible = false;
                         OpenPictureFolderButton.Visible = false;
                         //　再表示時に編集したデータを表示するための処理
