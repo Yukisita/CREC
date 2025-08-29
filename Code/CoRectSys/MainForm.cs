@@ -1508,7 +1508,7 @@ namespace CREC
                 }
                 // 通常画面に不要な物を非表示に
                 //EditNameTextBox.Visible = false;
-                EditIDTextBox.Visible = false;
+                //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
@@ -1572,7 +1572,7 @@ namespace CREC
                 }
                 // 通常画面に不要な物を非表示に
                 //EditNameTextBox.Visible = false;
-                EditIDTextBox.Visible = false;
+                //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
@@ -1938,6 +1938,7 @@ namespace CREC
             // 編集時に表示するコントロール
             SaveAndCloseEditButton.Visible = isEditingCollection;
             EditNameTextBox.Visible = isEditingCollection;
+            EditIDTextBox.Visible = isEditingCollection;
 
             EditButton.Visible = !isEditingCollection;
         }
@@ -2187,7 +2188,7 @@ namespace CREC
             SavingLabel.Visible = false;
             // 通常画面に不要な物を非表示に
             //EditNameTextBox.Visible = false;
-            EditIDTextBox.Visible = false;
+            //EditIDTextBox.Visible = false;
             AllowEditIDButton.Visible = false;
             EditMCTextBox.Visible = false;
             CheckSameMCButton.Visible = false;
@@ -2285,7 +2286,7 @@ namespace CREC
             {
                 // 通常画面に不要な物を非表示に
                 //EditNameTextBox.Visible = false;
-                EditIDTextBox.Visible = false;
+                //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
                 EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
@@ -3761,7 +3762,7 @@ namespace CREC
                         }
                         // 通常画面に不要な物を非表示に
                         //EditNameTextBox.Visible = false;
-                        EditIDTextBox.Visible = false;
+                        //EditIDTextBox.Visible = false;
                         AllowEditIDButton.Visible = false;
                         EditMCTextBox.Visible = false;
                         CheckSameMCButton.Visible = false;
