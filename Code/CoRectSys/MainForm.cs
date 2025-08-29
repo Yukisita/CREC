@@ -1507,18 +1507,9 @@ namespace CREC
                     return false;
                 }
                 // 通常画面に不要な物を非表示に
-                //EditNameTextBox.Visible = false;
-                //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
-                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
-                //EditRegistrationDateTextBox.Visible = false;
-                //EditCategoryTextBox.Visible = false;
-                //EditTag1TextBox.Visible = false;
-                //EditTag2TextBox.Visible = false;
-                //EditTag3TextBox.Visible = false;
-                //EditRealLocationTextBox.Visible = false;
-                //SaveAndCloseEditButton.Visible = false;
+
                 isEditingCollection = false;
                 SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
@@ -1571,18 +1562,9 @@ namespace CREC
                     FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
                 // 通常画面に不要な物を非表示に
-                //EditNameTextBox.Visible = false;
-                //EditIDTextBox.Visible = false;
                 //AllowEditIDButton.Visible = false;
-                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
-                //EditRegistrationDateTextBox.Visible = false;
-                //EditCategoryTextBox.Visible = false;
-                //EditTag1TextBox.Visible = false;
-                //EditTag2TextBox.Visible = false;
-                //EditTag3TextBox.Visible = false;
-                //EditRealLocationTextBox.Visible = false;
-                //SaveAndCloseEditButton.Visible = false;
+
                 isEditingCollection = false;
                 SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
@@ -2195,17 +2177,9 @@ namespace CREC
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
             // 通常画面に不要な物を非表示に
-            //EditNameTextBox.Visible = false;
-            //EditIDTextBox.Visible = false;
             AllowEditIDButton.Visible = false;
-            //EditMCTextBox.Visible = false;
             CheckSameMCButton.Visible = false;
-            //EditRegistrationDateTextBox.Visible = false;
-            //EditCategoryTextBox.Visible = false;
-            //EditTag1TextBox.Visible = false;
-            //EditTag2TextBox.Visible = false;
-            //EditTag3TextBox.Visible = false;
-            //EditRealLocationTextBox.Visible = false;
+
             SelectThumbnailButton.Visible = false;
             OpenPictureFolderButton.Visible = false;
             // 通常画面で必要なものを表示
@@ -2293,18 +2267,9 @@ namespace CREC
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
                 // 通常画面に不要な物を非表示に
-                //EditNameTextBox.Visible = false;
-                //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
-                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
-                //EditRegistrationDateTextBox.Visible = false;
-                //EditCategoryTextBox.Visible = false;
-                //EditTag1TextBox.Visible = false;
-                //EditTag2TextBox.Visible = false;
-                //EditTag3TextBox.Visible = false;
-                //EditRealLocationTextBox.Visible = false;
-                //SaveAndCloseEditButton.Visible = false;
+
                 isEditingCollection = false;
                 SwitchVisibleControl();
                 SelectThumbnailButton.Visible = false;
@@ -3769,18 +3734,9 @@ namespace CREC
                             }
                         }
                         // 通常画面に不要な物を非表示に
-                        //EditNameTextBox.Visible = false;
-                        //EditIDTextBox.Visible = false;
                         AllowEditIDButton.Visible = false;
-                        //EditMCTextBox.Visible = false;
                         CheckSameMCButton.Visible = false;
-                        //EditRegistrationDateTextBox.Visible = false;
-                        //EditCategoryTextBox.Visible = false;
-                        //EditTag1TextBox.Visible = false;
-                        //EditTag2TextBox.Visible = false;
-                        //EditTag3TextBox.Visible = false;
-                        //EditRealLocationTextBox.Visible = false;
-                        //SaveAndCloseEditButton.Visible = false;
+
                         isEditingCollection = false;
                         SwitchVisibleControl();
                         SelectThumbnailButton.Visible = false;
