@@ -359,7 +359,6 @@ namespace CREC
                 = CurrentProjectSettingValues.UUIDVisible;
             MCLabel.Visible
                 = ShowMC.Visible
-                = CheckSameMCButton.Visible
                 = CurrentProjectSettingValues.ManagementCodeVisible;
             RegistrationDateLabel.Visible
                 = ShowRegistrationDate.Visible
@@ -763,7 +762,6 @@ namespace CREC
                 EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                 EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                 EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
                 EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
@@ -1107,7 +1105,6 @@ namespace CREC
                     }
                 }
                 CollectionEditStatusWatcherStop();// データの監視を停止
-                collectionEditStatusWatcher.Dispose();// データの監視を破棄
                 CheckContentsListCancellationTokenSource.Dispose();// データ監視用のCancellationTokenSourceを破棄
                 CollectionListAutoUpdateCancellationTokenSource.Dispose();// コレクションリスト自動更新用のCancellationTokenSourceを破棄
                 Application.DoEvents();// イベントを処理
@@ -1506,14 +1503,10 @@ namespace CREC
                 {
                     return false;
                 }
-                // 通常画面に不要な物を非表示に
-                AllowEditIDButton.Visible = false;
-                CheckSameMCButton.Visible = false;
 
                 isEditingCollection = false;
                 SwitchVisibleControl();
-                SelectThumbnailButton.Visible = false;
-                OpenPictureFolderButton.Visible = false;
+
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -1528,7 +1521,6 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 ConfigValues.AllowEditID = false;
-                AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
                 {
@@ -1561,14 +1553,10 @@ namespace CREC
                 {
                     FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
-                // 通常画面に不要な物を非表示に
-                //AllowEditIDButton.Visible = false;
-                CheckSameMCButton.Visible = false;
 
                 isEditingCollection = false;
                 SwitchVisibleControl();
-                SelectThumbnailButton.Visible = false;
-                OpenPictureFolderButton.Visible = false;
+
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -1583,7 +1571,6 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 ConfigValues.AllowEditID = false;
-                AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 if (DataLoadingStatus == "true")
                 {
@@ -1617,8 +1604,6 @@ namespace CREC
                 ShowID.Text = CurrentShownCollectionData.CollectionID;
                 return;
             }
-            AllowEditIDButton.Visible = false;
-            CheckSameMCButton.Visible = false;
             ConfidentialDataTextBox.Visible = false;
             DetailsTextBox.Visible = true;
             // サムネイル表示処理を非同期で開始
@@ -1928,6 +1913,12 @@ namespace CREC
             EditTag2TextBox.Visible = isEditingCollection;
             EditTag3TextBox.Visible = isEditingCollection;
             EditRealLocationTextBox.Visible = isEditingCollection;
+            SelectThumbnailButton.Visible = isEditingCollection;
+            OpenPictureFolderButton.Visible = isEditingCollection;
+            AllowEditIDButton.Visible = isEditingCollection;
+            CheckSameMCButton.Visible = isEditingCollection;
+            // CheckSameMCButtonを最前面に移動
+            CheckSameMCButton.BringToFront();
 
             // 編集時に表示しないコントロール
             EditButton.Visible = !isEditingCollection;
@@ -2098,9 +2089,10 @@ namespace CREC
             {
                 FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\NewThumbnail.png");
             }
-            //SaveAndCloseEditButton.Visible = true;
+
             isEditingCollection = true;
             SwitchVisibleControl();
+
             // 編集画面に必要な物を表示
             EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
             EditIDTextBox.Visible = CurrentProjectSettingValues.UUIDVisible;
@@ -2114,8 +2106,7 @@ namespace CREC
             EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
             EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
             EditRealLocationTextBox.Visible = CurrentProjectSettingValues.RealLocationVisible;
-            SelectThumbnailButton.Visible = true;
-            OpenPictureFolderButton.Visible = true;
+
             // 編集画面で不要なものを非表示
             EditButton.Visible = false;
             ShowObjectName.Visible = false;
@@ -2176,12 +2167,7 @@ namespace CREC
             // 通常画面用にラベルを変更
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
-            // 通常画面に不要な物を非表示に
-            AllowEditIDButton.Visible = false;
-            CheckSameMCButton.Visible = false;
 
-            SelectThumbnailButton.Visible = false;
-            OpenPictureFolderButton.Visible = false;
             // 通常画面で必要なものを表示
             EditButton.Visible = true;
             // 詳細データおよび機密データを編集不可能に変更
@@ -2190,7 +2176,6 @@ namespace CREC
             // ID手動設定を不可に変更
             EditIDTextBox.ReadOnly = true;
             ConfigValues.AllowEditID = false;
-            AllowEditIDButton.Visible = true;
             UUIDEditStatusLabel.Visible = false;
             // 再度詳細情報を表示
             if (DataLoadingStatus == "true")
@@ -2266,14 +2251,9 @@ namespace CREC
             }
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
-                // 通常画面に不要な物を非表示に
-                AllowEditIDButton.Visible = false;
-                CheckSameMCButton.Visible = false;
-
                 isEditingCollection = false;
                 SwitchVisibleControl();
-                SelectThumbnailButton.Visible = false;
-                OpenPictureFolderButton.Visible = false;
+
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -2288,7 +2268,6 @@ namespace CREC
                 // ID手動設定を不可に変更
                 EditIDTextBox.ReadOnly = true;
                 ConfigValues.AllowEditID = false;
-                AllowEditIDButton.Visible = true;
                 UUIDEditStatusLabel.Visible = false;
                 // 再度詳細情報を表示
                 if (DataLoadingStatus == "true")
@@ -3733,14 +3712,10 @@ namespace CREC
                                 return;
                             }
                         }
-                        // 通常画面に不要な物を非表示に
-                        AllowEditIDButton.Visible = false;
-                        CheckSameMCButton.Visible = false;
 
                         isEditingCollection = false;
                         SwitchVisibleControl();
-                        SelectThumbnailButton.Visible = false;
-                        OpenPictureFolderButton.Visible = false;
+
                         //　再表示時に編集したデータを表示するための処理
                         SearchFormTextBox.Text = EditIDTextBox.Text;
                         SearchOptionComboBox.SelectedIndex = 0;
@@ -4073,7 +4048,6 @@ namespace CREC
                         EditIDTextBox.TextChanged -= IDTextBox_TextChanged;// ID重複確認イベントを停止
                         EditIDTextBox.Text = CurrentShownCollectionData.CollectionID;
                         EditIDTextBox.TextChanged += IDTextBox_TextChanged;// ID重複確認イベントを開始
-                        AllowEditIDButton.Visible = true;
                         UUIDEditStatusLabel.Visible = false;
                         EditMCTextBox.Text = CurrentShownCollectionData.CollectionMC;
                         EditRegistrationDateTextBox.Text = CurrentShownCollectionData.CollectionRegistrationDate;
