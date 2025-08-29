@@ -1510,7 +1510,7 @@ namespace CREC
                 //EditNameTextBox.Visible = false;
                 //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
-                EditMCTextBox.Visible = false;
+                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
                 EditRegistrationDateTextBox.Visible = false;
                 EditCategoryTextBox.Visible = false;
@@ -1573,8 +1573,8 @@ namespace CREC
                 // 通常画面に不要な物を非表示に
                 //EditNameTextBox.Visible = false;
                 //EditIDTextBox.Visible = false;
-                AllowEditIDButton.Visible = false;
-                EditMCTextBox.Visible = false;
+                //AllowEditIDButton.Visible = false;
+                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
                 EditRegistrationDateTextBox.Visible = false;
                 EditCategoryTextBox.Visible = false;
@@ -1939,7 +1939,9 @@ namespace CREC
             SaveAndCloseEditButton.Visible = isEditingCollection;
             EditNameTextBox.Visible = isEditingCollection;
             EditIDTextBox.Visible = isEditingCollection;
+            EditMCTextBox.Visible = isEditingCollection;
 
+            // 編集時に表示しないコントロール
             EditButton.Visible = !isEditingCollection;
         }
         
@@ -2190,7 +2192,7 @@ namespace CREC
             //EditNameTextBox.Visible = false;
             //EditIDTextBox.Visible = false;
             AllowEditIDButton.Visible = false;
-            EditMCTextBox.Visible = false;
+            //EditMCTextBox.Visible = false;
             CheckSameMCButton.Visible = false;
             EditRegistrationDateTextBox.Visible = false;
             EditCategoryTextBox.Visible = false;
@@ -2288,7 +2290,7 @@ namespace CREC
                 //EditNameTextBox.Visible = false;
                 //EditIDTextBox.Visible = false;
                 AllowEditIDButton.Visible = false;
-                EditMCTextBox.Visible = false;
+                //EditMCTextBox.Visible = false;
                 CheckSameMCButton.Visible = false;
                 EditRegistrationDateTextBox.Visible = false;
                 EditCategoryTextBox.Visible = false;
@@ -3764,7 +3766,7 @@ namespace CREC
                         //EditNameTextBox.Visible = false;
                         //EditIDTextBox.Visible = false;
                         AllowEditIDButton.Visible = false;
-                        EditMCTextBox.Visible = false;
+                        //EditMCTextBox.Visible = false;
                         CheckSameMCButton.Visible = false;
                         EditRegistrationDateTextBox.Visible = false;
                         EditCategoryTextBox.Visible = false;
