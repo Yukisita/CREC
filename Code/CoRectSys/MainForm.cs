@@ -1542,6 +1542,7 @@ namespace CREC
                     DataLoadingStatus = "stop";
                 }
                 LoadGrid();
+                isEditingCollection = false;
                 return true;
             }
             else if (result == System.Windows.MessageBoxResult.No)// 保存せず編集画面を閉じる
@@ -1603,6 +1604,7 @@ namespace CREC
                     DataLoadingStatus = "stop";
                 }
                 LoadGrid();
+                isEditingCollection = false;
                 return true;
             }
             else if (result == System.Windows.MessageBoxResult.Cancel)// コレクションのフォーカスを解除して、そのまま続行
@@ -2159,6 +2161,7 @@ namespace CREC
                 EditRequestButton.Visible = false;
                 return;
             }
+            isEditingCollection = false;
             // 通常画面用にラベルを変更
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
@@ -2275,6 +2278,7 @@ namespace CREC
                 SaveAndCloseEditButton.Visible = false;
                 SelectThumbnailButton.Visible = false;
                 OpenPictureFolderButton.Visible = false;
+                isEditingCollection = false;
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
@@ -3697,6 +3701,7 @@ namespace CREC
                         EditRequestButton.Visible = false;
                     }
                     SaveAndCloseEditButton.Visible = false;
+                    isEditingCollection = false;
                     break;
                 case CollectionOperationStatus.Editing:
                     // 編集リクエストされた場合
