@@ -1490,8 +1490,17 @@ namespace CREC
         }
         private bool CheckEditingContents()// 編集中に別のデータを開こうとした場合、編集中データを保存するか確認
         {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
-            if (result == System.Windows.MessageBoxResult.Yes)// 保存して編集画面を閉じる
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(
+                LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile),
+                "CREC",
+                System.Windows.MessageBoxButton.YesNoCancel,
+                System.Windows.MessageBoxImage.Warning);
+            if (result == System.Windows.MessageBoxResult.Cancel)// コレクションのフォーカスを解除して、そのまま続行
+            {
+                dataGridView1.ClearSelection();
+                return false;
+            }
+            else if (result == System.Windows.MessageBoxResult.Yes)// 保存して編集画面を閉じる
             {
                 // 入力内容を確認
                 if (CheckContent() == false)
@@ -1503,31 +1512,6 @@ namespace CREC
                 {
                     return false;
                 }
-
-                isEditingCollection = false;
-                SwitchVisibleControl();
-
-                // 入力フォームをリセット
-                ClearDetailsWindowMethod();
-                // 通常画面で必要なものを表示
-                ShowTag1.Visible = true;
-                ShowTag2.Visible = true;
-                ShowTag3.Visible = true;
-                ShowPicturesButton.Visible = true;
-                // 詳細データおよび機密データを編集不可能に変更
-                DetailsTextBox.ReadOnly = true;
-                ConfidentialDataTextBox.ReadOnly = true;
-                // ID手動設定を不可に変更
-                EditIDTextBox.ReadOnly = true;
-                ConfigValues.AllowEditID = false;
-                UUIDEditStatusLabel.Visible = false;
-                if (DataLoadingStatus == "true")
-                {
-                    DataLoadingStatus = "stop";
-                }
-                LoadGrid();
-                isEditingCollection = false;
-                return true;
             }
             else if (result == System.Windows.MessageBoxResult.No)// 保存せず編集画面を閉じる
             {
@@ -1552,39 +1536,33 @@ namespace CREC
                 {
                     FileOperationClass.DeleteFile(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\ADD");
                 }
-
-                isEditingCollection = false;
-                SwitchVisibleControl();
-
-                // 入力フォームをリセット
-                ClearDetailsWindowMethod();
-                // 通常画面で必要なものを表示
-                ShowTag1.Visible = true;
-                ShowTag2.Visible = true;
-                ShowTag3.Visible = true;
-                ShowPicturesButton.Visible = true;
-                // 詳細データおよび機密データを編集不可能に変更
-                DetailsTextBox.ReadOnly = true;
-                ConfidentialDataTextBox.ReadOnly = true;
-                // ID手動設定を不可に変更
-                EditIDTextBox.ReadOnly = true;
-                ConfigValues.AllowEditID = false;
-                UUIDEditStatusLabel.Visible = false;
-                if (DataLoadingStatus == "true")
-                {
-                    DataLoadingStatus = "stop";
-                }
-                LoadGrid();
-                isEditingCollection = false;
-                return true;
             }
-            else if (result == System.Windows.MessageBoxResult.Cancel)// コレクションのフォーカスを解除して、そのまま続行
+
+            isEditingCollection = false;
+            SwitchVisibleControlAccordingtoEditingStatus();
+
+            // 入力フォームをリセット
+            ClearDetailsWindowMethod();
+            // 通常画面で必要なものを表示
+            ShowPicturesButton.Visible = true;
+
+            // 詳細データおよび機密データを編集不可能に変更
+            DetailsTextBox.ReadOnly = true;
+            ConfidentialDataTextBox.ReadOnly = true;
+
+            // ID手動設定を不可に変更
+            EditIDTextBox.ReadOnly = true;
+            ConfigValues.AllowEditID = false;
+            UUIDEditStatusLabel.Visible = false;
+            if (DataLoadingStatus == "true")
             {
-                dataGridView1.ClearSelection();
-                return false;
+                DataLoadingStatus = "stop";
             }
-            // 上記条件以外、エラー発生時
-            return false;
+
+            LoadDetails();// 現在選択されているデータの詳細を再表示
+            LoadGrid();
+
+            return true;
         }
         private void ShowDetails()// 詳細情報の表示
         {
@@ -1898,7 +1876,7 @@ namespace CREC
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchVisibleControl()
+        private void SwitchVisibleControlAccordingtoEditingStatus()
         {
             // 編集時に表示するコントロール
             SaveAndCloseEditButton.Visible = isEditingCollection;
@@ -1939,7 +1917,7 @@ namespace CREC
                 EditRealLocationTextBox.Visible = false;
             }
         }
-        
+
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
         {
             // 状態を確認、必要に応じてボタンを更新
@@ -2107,7 +2085,7 @@ namespace CREC
             }
 
             isEditingCollection = true;
-            SwitchVisibleControl();
+            SwitchVisibleControlAccordingtoEditingStatus();
 
             // 編集画面に必要な物を表示
             UUIDEditStatusLabel.Visible = false;
@@ -2167,7 +2145,7 @@ namespace CREC
                 return;
             }
             isEditingCollection = false;
-            SwitchVisibleControl();
+            SwitchVisibleControlAccordingtoEditingStatus();
             // 通常画面用にラベルを変更
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
@@ -2254,14 +2232,11 @@ namespace CREC
             if (SaveAndCloseEditButton.Visible == true)// 編集中のデータを削除した場合
             {
                 isEditingCollection = false;
-                SwitchVisibleControl();
+                SwitchVisibleControlAccordingtoEditingStatus();
 
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
-                ShowTag1.Visible = true;
-                ShowTag2.Visible = true;
-                ShowTag3.Visible = true;
                 ShowPicturesButton.Visible = true;
                 // 詳細データおよび機密データを編集不可能に変更
                 DetailsTextBox.ReadOnly = true;
@@ -3715,7 +3690,7 @@ namespace CREC
                         }
 
                         isEditingCollection = false;
-                        SwitchVisibleControl();
+                        SwitchVisibleControlAccordingtoEditingStatus();
 
                         //　再表示時に編集したデータを表示するための処理
                         SearchFormTextBox.Text = EditIDTextBox.Text;
