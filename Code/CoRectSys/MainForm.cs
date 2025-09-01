@@ -1510,7 +1510,6 @@ namespace CREC
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
-                EditButton.Visible = true;
                 ShowTag1.Visible = true;
                 ShowTag2.Visible = true;
                 ShowTag3.Visible = true;
@@ -1560,7 +1559,6 @@ namespace CREC
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
-                EditButton.Visible = true;
                 ShowTag1.Visible = true;
                 ShowTag2.Visible = true;
                 ShowTag3.Visible = true;
@@ -1904,24 +1902,42 @@ namespace CREC
         {
             // 編集時に表示するコントロール
             SaveAndCloseEditButton.Visible = isEditingCollection;
-            EditNameTextBox.Visible = isEditingCollection;
-            EditIDTextBox.Visible = isEditingCollection;
-            EditMCTextBox.Visible = isEditingCollection;
-            EditRegistrationDateTextBox.Visible = isEditingCollection;
-            EditCategoryTextBox.Visible = isEditingCollection;
-            EditTag1TextBox.Visible = isEditingCollection;
-            EditTag2TextBox.Visible = isEditingCollection;
-            EditTag3TextBox.Visible = isEditingCollection;
-            EditRealLocationTextBox.Visible = isEditingCollection;
             SelectThumbnailButton.Visible = isEditingCollection;
             OpenPictureFolderButton.Visible = isEditingCollection;
-            AllowEditIDButton.Visible = isEditingCollection;
-            CheckSameMCButton.Visible = isEditingCollection;
-            // CheckSameMCButtonを最前面に移動
-            CheckSameMCButton.BringToFront();
-
             // 編集時に表示しないコントロール
             EditButton.Visible = !isEditingCollection;
+
+            // 設定に応じて表示を切り替えるコントロール
+            if (isEditingCollection == true)
+            {
+                EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
+                EditIDTextBox.Visible = CurrentProjectSettingValues.UUIDVisible;
+                AllowEditIDButton.Visible = CurrentProjectSettingValues.UUIDVisible;
+                EditMCTextBox.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
+                CheckSameMCButton.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
+                EditRegistrationDateTextBox.Visible = CurrentProjectSettingValues.RegistrationDateVisible;
+                EditCategoryTextBox.Visible = CurrentProjectSettingValues.CategoryVisible;
+                EditTag1TextBox.Visible = CurrentProjectSettingValues.FirstTagVisible;
+                EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
+                EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
+                EditRealLocationTextBox.Visible = CurrentProjectSettingValues.RealLocationVisible;
+                // CheckSameMCButtonを最前面に移動
+                CheckSameMCButton.BringToFront();
+            }
+            else
+            {
+                EditNameTextBox.Visible = false;
+                EditIDTextBox.Visible = false;
+                AllowEditIDButton.Visible = false;
+                EditMCTextBox.Visible = false;
+                CheckSameMCButton.Visible = false;
+                EditRegistrationDateTextBox.Visible = false;
+                EditCategoryTextBox.Visible = false;
+                EditTag1TextBox.Visible = false;
+                EditTag2TextBox.Visible = false;
+                EditTag3TextBox.Visible = false;
+                EditRealLocationTextBox.Visible = false;
+            }
         }
         
         private void EditButton_Click(object sender, EventArgs e)// 編集画面表示
@@ -2094,21 +2110,9 @@ namespace CREC
             SwitchVisibleControl();
 
             // 編集画面に必要な物を表示
-            EditNameTextBox.Visible = CurrentProjectSettingValues.CollectionNameVisible;
-            EditIDTextBox.Visible = CurrentProjectSettingValues.UUIDVisible;
-            AllowEditIDButton.Visible = CurrentProjectSettingValues.UUIDVisible;
             UUIDEditStatusLabel.Visible = false;
-            EditMCTextBox.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
-            CheckSameMCButton.Visible = CurrentProjectSettingValues.ManagementCodeVisible;
-            EditRegistrationDateTextBox.Visible = CurrentProjectSettingValues.RegistrationDateVisible;
-            EditCategoryTextBox.Visible = CurrentProjectSettingValues.CategoryVisible;
-            EditTag1TextBox.Visible = CurrentProjectSettingValues.FirstTagVisible;
-            EditTag2TextBox.Visible = CurrentProjectSettingValues.SecondTagVisible;
-            EditTag3TextBox.Visible = CurrentProjectSettingValues.ThirdTagVisible;
-            EditRealLocationTextBox.Visible = CurrentProjectSettingValues.RealLocationVisible;
 
             // 編集画面で不要なものを非表示
-            EditButton.Visible = false;
             ShowObjectName.Visible = false;
             ShowID.Visible = false;
             ShowMC.Visible = false;
@@ -2168,8 +2172,6 @@ namespace CREC
             ShowPicturesButton.Visible = true;
             SavingLabel.Visible = false;
 
-            // 通常画面で必要なものを表示
-            EditButton.Visible = true;
             // 詳細データおよび機密データを編集不可能に変更
             DetailsTextBox.ReadOnly = true;
             ConfidentialDataTextBox.ReadOnly = true;
@@ -2257,7 +2259,6 @@ namespace CREC
                 // 入力フォームをリセット
                 ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
-                EditButton.Visible = true;
                 ShowTag1.Visible = true;
                 ShowTag2.Visible = true;
                 ShowTag3.Visible = true;
@@ -3734,7 +3735,6 @@ namespace CREC
                         DetailsTextBox.ResetText();
                         ConfidentialDataTextBox.ResetText();
                         // 通常画面で必要なものを表示
-                        EditButton.Visible = true;
                         ShowTag1.Visible = true;
                         ShowTag2.Visible = true;
                         ShowTag3.Visible = true;
