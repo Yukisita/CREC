@@ -1249,22 +1249,12 @@ namespace CREC
             {
                 try
                 {
-                    // Plugin\exe\ フォルダを作成
-                    string pluginDir = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\Plugin\\exe\\";
-                    Directory.CreateDirectory(pluginDir);
-
-                    // 選択されたexeファイルをコピー
-                    string sourceFile = openFileDialog.FileName;
-                    string fileName = Path.GetFileName(sourceFile);
-                    string destinationFile = pluginDir + fileName;
-
-                    File.Copy(sourceFile, destinationFile, true);
-
+                    string sourceFilePath = openFileDialog.FileName;
+                    string fileName = Path.GetFileName(sourceFilePath);
                     // 最近実行したプラグインリストに追加
-                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, destinationFile);
-
+                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, sourceFilePath);
                     // プラグインを実行
-                    ExecutePlugin(destinationFile);
+                    ExecutePlugin(sourceFilePath);
                 }
                 catch (Exception ex)
                 {
