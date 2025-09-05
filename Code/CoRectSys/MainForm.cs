@@ -659,7 +659,7 @@ namespace CREC
         }
         private void RestartToolStripMenuItem_Click(object sender, EventArgs e)// アプリ再起動
         {
-            if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
+            if (isEditingCollection == true)// 編集中のデータがある場合
             {
                 System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                 if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
@@ -1056,7 +1056,7 @@ namespace CREC
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
                 ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, true, LanguageFile);
-                if (SaveAndCloseEditButton.Visible == true)// 編集中のデータがある場合
+                if (isEditingCollection == true)// 編集中のデータがある場合
                 {
                     System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskSaveUnsavedData", "mainform", LanguageFile), "CREC", System.Windows.MessageBoxButton.YesNoCancel, System.Windows.MessageBoxImage.Warning);
                     if (result == System.Windows.MessageBoxResult.Yes)// 保存してアプリを終了
@@ -1428,7 +1428,7 @@ namespace CREC
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
-            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+            if (isEditingCollection == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == false)// 処理をキャンセルされた場合
                 {
@@ -2341,7 +2341,7 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            if (SaveAndCloseEditButton.Visible == true)// 編集中の場合は警告を表示
+            if (isEditingCollection == true)// 編集中の場合は警告を表示
             {
                 if (CheckEditingContents() == false)// キャンセルされた場合
                 {
