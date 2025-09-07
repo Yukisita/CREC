@@ -22,8 +22,8 @@ namespace CREC
         {
             if (ProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
-                // プロジェクトファイルと同じディレクトリに保存
-                return System.IO.Path.GetDirectoryName(ProjectSettingValues.ProjectSettingFilePath) + "\\RecentlyExecutedPluginList.log";
+                // projectのシステムデータフォルダ内に配置する
+                return System.IO.Path.GetDirectoryName(ProjectSettingValues.ProjectSettingFilePath) +"\\"+ProjectSettingValues.Name+ "_SystemData\\RecentlyExecutedPluginList.log";
             }
             return string.Empty;
         }
@@ -40,6 +40,13 @@ namespace CREC
             try
             {
                 string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(ProjectSettingValues);
+                // projectのシステムデータフォルダが存在しない場合は作成
+                string projectSystemDataFolderPath = System.IO.Path.GetDirectoryName(recentPluginsFilePath);
+                if (!System.IO.Directory.Exists(projectSystemDataFolderPath))
+                {
+                    System.IO.Directory.CreateDirectory(projectSystemDataFolderPath);
+                }
+
                 List<string> recentPlugins = new List<string>();
 
                 // 既存の履歴を読み込み
