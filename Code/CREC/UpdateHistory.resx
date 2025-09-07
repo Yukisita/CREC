@@ -547,8 +547,10 @@ ver9.4.0.0（2025/08/04）
 終了時バックアップ画面を自動で閉じる機能を追加
 バックアップログ出力機能を追加
 
-ver9.5.0.0（2025/08/27）
-リストの自動更新機能を追加</value>
+ver9.5.0.0（2025/09/07）
+リストの自動更新機能を追加
+マクロ実行機能の追加
+バックアップに繰り返し失敗する不具合を修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
