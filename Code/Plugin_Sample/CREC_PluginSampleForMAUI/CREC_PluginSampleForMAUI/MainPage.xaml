@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+ <!--
+    Copyright (c) [2025] [S.Yukisita]
+    This software is released under the MIT License.
+    https://github.com/Yukisita/CREC/blob/main/LICENSE
+    -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CREC_PluginSampleForMAUI.MainPage"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="crec_icon.png"
+                HeightRequest="185"
+                Aspect="AspectFit" />
+
+            <Label
+                Text="Hello, CREC Plugin!"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                x:Name="ShowCurrentDirectoryLabel"
+                Text="Loading"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2" />
+
+            <Button
+                x:Name="OpenCollectionDataFolderButton"
+                Text="Open Collection Data Folder" 
+                Clicked="OnOpenCollectionDataFolderButtonClicked"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
