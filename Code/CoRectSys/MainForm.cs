@@ -1247,18 +1247,21 @@ namespace CREC
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                string pluginPath = openFileDialog.FileName;
+                string fileName = Path.GetFileName(pluginPath);
                 try
                 {
-                    string sourceFilePath = openFileDialog.FileName;
-                    string fileName = Path.GetFileName(sourceFilePath);
                     // 最近実行したプラグインリストに追加
-                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, sourceFilePath);
-                    // プラグインを実行
-                    ExecutePlugin(sourceFilePath);
+                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("プラグインの実行に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
+                {
+                    MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         }
@@ -1323,13 +1326,9 @@ namespace CREC
                 return;
             }
 
-            try
+            if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
             {
-                ExecutePlugin(pluginPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("プラグインの実行に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -1351,26 +1350,6 @@ namespace CREC
             {
                 MessageBox.Show("履歴の削除に失敗しました。\n" + ex.Message, "CREC");
             }
-        }
-
-        /// <summary>
-        /// プラグインを実行する
-        /// </summary>
-        /// <param name="pluginPath">プラグインのパス</param>
-        private void ExecutePlugin(string pluginPath)
-        {
-            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
-            {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = pluginPath;
-            startInfo.WorkingDirectory = CurrentShownCollectionData.CollectionFolderPath;
-            startInfo.UseShellExecute = false;
-
-            Process.Start(startInfo);
         }
 
         /// <summary>
@@ -1403,8 +1382,8 @@ namespace CREC
                 MessageBox.Show("プラグイン履歴の更新に失敗しました。\n" + ex.Message, "CREC");
             }
         }
-
         #endregion
+
         #endregion
 
         #region データ一覧・詳細表示関係

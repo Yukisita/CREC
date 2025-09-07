@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using File = System.IO.File;
 using System.Windows.Forms;
+using System.Xml.Linq;
+using File = System.IO.File;
 
 namespace CREC
 {
@@ -69,6 +71,42 @@ namespace CREC
             {
                 MessageBox.Show("プラグイン履歴の保存に失敗しました。\n" + ex.Message, "CREC");
             }
+        }
+
+        /// <summary>
+        /// プラグインを実行する
+        /// </summary>
+        /// <param name="ProjectSettingValues">プロジェクト設定値</param>
+        /// <param name="collectionDataValues">コレクションデータの値</param>
+        /// <param name="pluginPath">プラグインのパス</param>
+        /// <param name="languageData">言語データ</param>
+        public static bool ExecutePlugin(
+            ProjectSettingValuesClass ProjectSettingValues,
+            CollectionDataValuesClass collectionDataValues,
+            string pluginPath,
+            XElement languageData
+            )
+        {
+            if (ProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo();
+                startInfo.FileName = pluginPath;
+                startInfo.WorkingDirectory = collectionDataValues.CollectionFolderPath;
+                startInfo.UseShellExecute = false;
+                Process process = Process.Start(startInfo);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            return true;
         }
     }
 }
