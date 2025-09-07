@@ -657,8 +657,8 @@
 				<itemtext>ProjectName: </itemtext>
 			</item>
 			<item>
-				<itemname>DeleteRecentlyOpendProjectList</itemname>
-				<itemtext>Clear this list.</itemtext>
+				<itemname>DeleteHistory</itemname>
+				<itemtext>Delete History</itemtext>
 			</item>
 			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>

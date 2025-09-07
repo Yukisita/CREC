@@ -541,7 +541,7 @@ namespace CREC
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItemDropDownItemsSeparator);
                 ToolStripItem DeleteRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Click += DeleteRecentlyOpendProjectListToolStripMenuItem_Click;
-                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteRecentlyOpendProjectList", "mainform", LanguageFile);
+                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteHistory", "mainform", LanguageFile);
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
             }
             else
@@ -1300,7 +1300,7 @@ namespace CREC
                     RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Add(separator);
 
                     ToolStripMenuItem clearHistoryItem = new ToolStripMenuItem();
-                    clearHistoryItem.Text = "履歴を削除";
+                    clearHistoryItem.Text = LanguageSettingClass.GetOtherMessage("DeleteHistory", "mainform", LanguageFile);
                     clearHistoryItem.Click += ClearRecentPluginsToolStripMenuItem_Click;
                     RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Add(clearHistoryItem);
                 }

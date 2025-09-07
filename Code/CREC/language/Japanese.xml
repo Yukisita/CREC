@@ -657,7 +657,7 @@
 				<itemtext>プロジェクト名：</itemtext>
 			</item>
 			<item>
-				<itemname>DeleteRecentlyOpendProjectList</itemname>
+				<itemname>DeleteHistory</itemname>
 				<itemtext>履歴を削除</itemtext>
 			</item>
 			<item>
