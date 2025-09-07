@@ -1233,7 +1233,7 @@ namespace CREC
         /// <summary>
         /// プラグイン実行（exe）メニューがクリックされた時の処理
         /// </summary>
-        private void ExecutePluginToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ExecuteEXEPluginToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {

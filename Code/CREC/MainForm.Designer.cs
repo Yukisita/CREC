@@ -102,6 +102,7 @@
             this.ProjectInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExecutePluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -737,20 +738,28 @@
             this.ExecutePluginToolStripMenuItem,
             this.RecentlyExecutedPluginToolStripMenuItem});
             this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
-            this.PluginToolStripMenuItem.Size = new System.Drawing.Size(140, 37);
+            this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
             this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
             // 
             // ExecutePluginToolStripMenuItem
             // 
+            this.ExecutePluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExecuteEXEPluginToolStripMenuItem});
             this.ExecutePluginToolStripMenuItem.Name = "ExecutePluginToolStripMenuItem";
-            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(310, 34);
-            this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行（exe）...";
-            this.ExecutePluginToolStripMenuItem.Click += new System.EventHandler(this.ExecutePluginToolStripMenuItem_Click);
+            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行";
+            // 
+            // ExecuteEXEPluginToolStripMenuItem
+            // 
+            this.ExecuteEXEPluginToolStripMenuItem.Name = "ExecuteEXEPluginToolStripMenuItem";
+            this.ExecuteEXEPluginToolStripMenuItem.Size = new System.Drawing.Size(237, 34);
+            this.ExecuteEXEPluginToolStripMenuItem.Text = "EXEファイル...";
+            this.ExecuteEXEPluginToolStripMenuItem.Click += new System.EventHandler(this.ExecuteEXEPluginToolStripMenuItem_Click);
             // 
             // RecentlyExecutedPluginToolStripMenuItem
             // 
             this.RecentlyExecutedPluginToolStripMenuItem.Name = "RecentlyExecutedPluginToolStripMenuItem";
-            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(310, 34);
+            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
             this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
             this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
             // 
@@ -2556,6 +2565,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.RichTextBox SearchFormTextBox;
+        private System.Windows.Forms.ToolStripMenuItem ExecuteEXEPluginToolStripMenuItem;
     }
 }
 
