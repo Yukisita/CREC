@@ -1319,9 +1319,9 @@ namespace CREC
             if (!File.Exists(pluginPath))
             {
                 MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目を「最近実行したプラグイン」から削除します。", "CREC");
-                if(!PluginsClass.RemoveFromRecentPluginsList(CurrentProjectSettingValues, pluginPath))
+                if (!PluginsClass.RemoveFromRecentPluginsList(CurrentProjectSettingValues, pluginPath))
                 {
-                    MessageBox.Show("プラグイン履歴の更新に失敗しました。" , "CREC");
+                    MessageBox.Show("プラグイン履歴の更新に失敗しました。", "CREC");
                 }
                 return;
             }

@@ -1,4 +1,10 @@
-﻿using System;
+﻿/*
+PluginsClass
+Copyright (c) [2022-2025] [S.Yukisita]
+This software is released under the MIT License.
+https://github.com/Yukisita/CREC/blob/main/LICENSE
+*/
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
