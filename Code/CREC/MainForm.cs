@@ -1319,7 +1319,10 @@ namespace CREC
             if (!File.Exists(pluginPath))
             {
                 MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目を「最近実行したプラグイン」から削除します。", "CREC");
-                RemoveFromRecentPluginsList(pluginPath);
+                if(!PluginsClass.RemoveFromRecentPluginsList(CurrentProjectSettingValues, pluginPath))
+                {
+                    MessageBox.Show("プラグイン履歴の更新に失敗しました。" , "CREC");
+                }
                 return;
             }
 
@@ -1349,36 +1352,6 @@ namespace CREC
             }
         }
 
-        /// <summary>
-        /// 最近実行したプラグインリストから削除する
-        /// </summary>
-        /// <param name="pluginPath">削除するプラグインのパス</param>
-        private void RemoveFromRecentPluginsList(string pluginPath)
-        {
-            try
-            {
-                string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
-                if (!File.Exists(recentPluginsFilePath))
-                    return;
-
-                string[] existingLines = File.ReadAllLines(recentPluginsFilePath, Encoding.GetEncoding("UTF-8"));
-                List<string> filteredLines = new List<string>();
-
-                foreach (string line in existingLines)
-                {
-                    if (!line.Contains(pluginPath))
-                    {
-                        filteredLines.Add(line);
-                    }
-                }
-
-                File.WriteAllLines(recentPluginsFilePath, filteredLines, Encoding.GetEncoding("UTF-8"));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("プラグイン履歴の更新に失敗しました。\n" + ex.Message, "CREC");
-            }
-        }
         #endregion
 
         #endregion

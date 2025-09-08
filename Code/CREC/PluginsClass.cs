@@ -81,6 +81,43 @@ namespace CREC
         }
 
         /// <summary>
+        /// 最近実行したプラグインリストから削除する
+        /// </summary>
+        /// <param name="ProjectSettingValues">プロジェクト設定値</param>
+        /// <param name="pluginPath">削除対象のプラグインのパス</param>
+        /// <returns></returns>
+        public static bool RemoveFromRecentPluginsList(ProjectSettingValuesClass ProjectSettingValues, string pluginPath)
+        {
+            try
+            {
+                string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(ProjectSettingValues);
+                if (!File.Exists(recentPluginsFilePath))
+                {
+                    return false;
+                }
+
+                string[] existingLines = File.ReadAllLines(recentPluginsFilePath, Encoding.GetEncoding("UTF-8"));
+                List<string> filteredLines = new List<string>();
+
+                foreach (string line in existingLines)
+                {
+                    if (!line.Contains(pluginPath))
+                    {
+                        filteredLines.Add(line);
+                    }
+                }
+
+                File.WriteAllLines(recentPluginsFilePath, filteredLines, Encoding.GetEncoding("UTF-8"));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "CREC");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// プラグインを実行する
         /// </summary>
         /// <param name="ProjectSettingValues">プロジェクト設定値</param>
