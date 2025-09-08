@@ -100,6 +100,10 @@
             this.EditProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.ProjectInformationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.PluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExecutePluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -242,6 +246,7 @@
             this.EditToolStripMenuItem,
             this.ViewToolStripMenuItem,
             this.ProjectToolStripMenuItem,
+            this.PluginToolStripMenuItem,
             this.HelpToolStripMenuItem,
             this.ShowListButton,
             this.ShowProjcetNameTextBox});
@@ -726,6 +731,37 @@
             this.ProjectInformationToolStripMenuItem.Size = new System.Drawing.Size(342, 34);
             this.ProjectInformationToolStripMenuItem.Text = "プロジェクトの情報...";
             this.ProjectInformationToolStripMenuItem.Click += new System.EventHandler(this.ProjectInformationToolStripMenuItem_Click);
+            // 
+            // PluginToolStripMenuItem
+            // 
+            this.PluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExecutePluginToolStripMenuItem,
+            this.RecentlyExecutedPluginToolStripMenuItem});
+            this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
+            this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
+            this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
+            // 
+            // ExecutePluginToolStripMenuItem
+            // 
+            this.ExecutePluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ExecuteEXEPluginToolStripMenuItem});
+            this.ExecutePluginToolStripMenuItem.Name = "ExecutePluginToolStripMenuItem";
+            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行";
+            // 
+            // ExecuteEXEPluginToolStripMenuItem
+            // 
+            this.ExecuteEXEPluginToolStripMenuItem.Name = "ExecuteEXEPluginToolStripMenuItem";
+            this.ExecuteEXEPluginToolStripMenuItem.Size = new System.Drawing.Size(237, 34);
+            this.ExecuteEXEPluginToolStripMenuItem.Text = "EXEファイル...";
+            this.ExecuteEXEPluginToolStripMenuItem.Click += new System.EventHandler(this.ExecuteEXEPluginToolStripMenuItem_Click);
+            // 
+            // RecentlyExecutedPluginToolStripMenuItem
+            // 
+            this.RecentlyExecutedPluginToolStripMenuItem.Name = "RecentlyExecutedPluginToolStripMenuItem";
+            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
+            this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
             // 
             // HelpToolStripMenuItem
             // 
@@ -2477,6 +2513,9 @@
         private System.Windows.Forms.Label DataLoadingLabel;
         private System.Windows.Forms.ToolStripMenuItem ProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ProjectInformationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem PluginToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExecutePluginToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RecentlyExecutedPluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem ResetEditingContentsToolStripMenuItem;
         private System.Windows.Forms.Button SearchButton;
@@ -2526,6 +2565,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.RichTextBox SearchFormTextBox;
+        private System.Windows.Forms.ToolStripMenuItem ExecuteEXEPluginToolStripMenuItem;
     }
 }
 

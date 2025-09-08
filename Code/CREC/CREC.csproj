@@ -112,6 +112,7 @@
       <DependentUpon>MakeNewProject.cs</DependentUpon>
     </Compile>
     <Compile Include="LanguageSettingClass.cs" />
+    <Compile Include="PluginsClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInfoForm.cs">
       <SubType>Form</SubType>

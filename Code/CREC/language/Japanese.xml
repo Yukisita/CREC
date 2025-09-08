@@ -395,6 +395,22 @@
 				<itemtext>プロジェクトの情報...</itemtext>
 			</item>
 			<item>
+				<itemname>PluginToolStripMenuItem</itemname>
+				<itemtext>プラグイン(&amp;L)</itemtext>
+			</item>
+			<item>
+				<itemname>ExecutePluginToolStripMenuItem</itemname>
+				<itemtext>プラグイン実行</itemtext>
+			</item>
+			<item>
+				<itemname>ExecuteEXEPluginToolStripMenuItem</itemname>
+				<itemtext>EXEファイル...</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyExecutedPluginToolStripMenuItem</itemname>
+				<itemtext>最近実行したプラグイン</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>ヘルプ(&amp;H)</itemtext>
 			</item>
@@ -641,7 +657,7 @@
 				<itemtext>プロジェクト名：</itemtext>
 			</item>
 			<item>
-				<itemname>DeleteRecentlyOpendProjectList</itemname>
+				<itemname>DeleteHistory</itemname>
 				<itemtext>履歴を削除</itemtext>
 			</item>
 			<item>

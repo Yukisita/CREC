@@ -395,6 +395,22 @@
 				<itemtext>Project Information...</itemtext>
 			</item>
 			<item>
+				<itemname>PluginToolStripMenuItem</itemname>
+				<itemtext>Plugin(&amp;L)</itemtext>
+			</item>
+			<item>
+				<itemname>ExecutePluginToolStripMenuItem</itemname>
+				<itemtext>Execute Plugin</itemtext>
+			</item>
+			<item>
+				<itemname>ExecuteEXEPluginToolStripMenuItem</itemname>
+				<itemtext>EXE file...</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyExecutedPluginToolStripMenuItem</itemname>
+				<itemtext>Recently Executed Plugin</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>Help(&amp;H)</itemtext>
 			</item>
@@ -641,8 +657,8 @@
 				<itemtext>ProjectName: </itemtext>
 			</item>
 			<item>
-				<itemname>DeleteRecentlyOpendProjectList</itemname>
-				<itemtext>Clear this list.</itemtext>
+				<itemname>DeleteHistory</itemname>
+				<itemtext>Delete History</itemtext>
 			</item>
 			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>

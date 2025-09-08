@@ -540,7 +540,7 @@ namespace CREC
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(OpenRecentlyOpendProjectToolStripMenuItemDropDownItemsSeparator);
                 ToolStripItem DeleteRecentlyOpendProjectListToolStripMenuItem = new ToolStripMenuItem();
                 DeleteRecentlyOpendProjectListToolStripMenuItem.Click += DeleteRecentlyOpendProjectListToolStripMenuItem_Click;
-                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteRecentlyOpendProjectList", "mainform", LanguageFile);
+                DeleteRecentlyOpendProjectListToolStripMenuItem.Text = LanguageSettingClass.GetOtherMessage("DeleteHistory", "mainform", LanguageFile);
                 OpenRecentlyOpendProjectToolStripMenuItem.DropDownItems.Add(DeleteRecentlyOpendProjectListToolStripMenuItem);
             }
             else
@@ -1225,6 +1225,135 @@ namespace CREC
                 projectInfoForm.ShowDialog();
             }
         }
+
+        #region プラグイン関係
+        /// <summary>
+        /// プラグイン実行（exe）メニューがクリックされた時の処理
+        /// </summary>
+        private void ExecuteEXEPluginToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "実行ファイル(*.exe)|*.exe";
+            openFileDialog.Title = "実行するプラグインを選択してください";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string pluginPath = openFileDialog.FileName;
+                string fileName = Path.GetFileName(pluginPath);
+                try
+                {
+                    // 最近実行したプラグインリストに追加
+                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
+                {
+                    MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 最近実行したプラグインメニューがマウスホバーされた時の処理
+        /// </summary>
+        private void RecentlyExecutedPluginToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Clear();
+
+            string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
+            if (!File.Exists(recentPluginsFilePath))
+                return;
+
+            try
+            {
+                string[] recentPluginsList = File.ReadAllLines(recentPluginsFilePath, Encoding.GetEncoding("UTF-8"));
+                for (int i = 0; i < Math.Min(recentPluginsList.Length, 5); i++)
+                {
+                    string[] parts = recentPluginsList[i].Split(',');
+                    if (parts.Length >= 2)
+                    {
+                        ToolStripMenuItem recentPluginItem = new ToolStripMenuItem();
+                        recentPluginItem.Text = parts[0];
+                        recentPluginItem.ToolTipText = parts[1];
+                        recentPluginItem.Click += RecentlyExecutedPluginToolStripMenuItemSub_Click;
+                        RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Add(recentPluginItem);
+                    }
+                }
+
+                // 履歴削除を追加
+                if (recentPluginsList.Length > 0)
+                {
+                    ToolStripSeparator separator = new ToolStripSeparator();
+                    RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Add(separator);
+
+                    ToolStripMenuItem clearHistoryItem = new ToolStripMenuItem();
+                    clearHistoryItem.Text = LanguageSettingClass.GetOtherMessage("DeleteHistory", "mainform", LanguageFile);
+                    clearHistoryItem.Click += ClearRecentPluginsToolStripMenuItem_Click;
+                    RecentlyExecutedPluginToolStripMenuItem.DropDownItems.Add(clearHistoryItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("プラグイン履歴ファイルの読み込みに失敗しました。\n" + ex.Message, "CREC");
+            }
+        }
+
+        /// <summary>
+        /// 最近実行したプラグインのサブメニューがクリックされた時の処理
+        /// </summary>
+        private void RecentlyExecutedPluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (!File.Exists(pluginPath))
+            {
+                MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目を「最近実行したプラグイン」から削除します。", "CREC");
+                if (!PluginsClass.RemoveFromRecentPluginsList(CurrentProjectSettingValues, pluginPath))
+                {
+                    MessageBox.Show("プラグイン履歴の更新に失敗しました。", "CREC");
+                }
+                return;
+            }
+
+            if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
+            {
+                MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// 履歴削除メニューがクリックされた時の処理
+        /// </summary>
+        private void ClearRecentPluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string recentPluginsFilePath = PluginsClass.GetRecentPluginsFilePath(CurrentProjectSettingValues);
+                if (File.Exists(recentPluginsFilePath))
+                {
+                    File.Delete(recentPluginsFilePath);
+                }
+                MessageBox.Show("プラグイン履歴を削除しました。", "CREC");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("履歴の削除に失敗しました。\n" + ex.Message, "CREC");
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region データ一覧・詳細表示関係
