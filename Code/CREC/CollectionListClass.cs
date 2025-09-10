@@ -378,7 +378,10 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                streamWriter.Close();
+                if (streamWriter != null)
+                {
+                    streamWriter.Close();
+                }
                 // エラーメッセージ表示
                 if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
