@@ -365,6 +365,7 @@ namespace CREC
                             thisCollectionDataValues.CollectionInventoryStatus);
                     }
                 }
+                streamWriter.Close();
                 // 正常出力完了のメッセージ表示
                 if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
@@ -377,6 +378,10 @@ namespace CREC
             }
             catch (Exception ex)
             {
+                if (streamWriter != null)
+                {
+                    streamWriter.Close();
+                }
                 // エラーメッセージ表示
                 if (currentProjectSettingValues.ListOutputFormat == CREC.ListOutputFormat.CSV)
                 {
@@ -386,10 +391,6 @@ namespace CREC
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("TSVOutputError", "CollectionListClass", languageData) + "\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-            finally
-            {
-                streamWriter.Close();
             }
         }
     }
