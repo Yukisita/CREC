@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2025/08/04";
+            this.ReleaseDate.Text = "Release: 2025/09/15";
             // 
             // VersionName
             // 
@@ -75,7 +75,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(141, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 9.4.0.0";
+            this.VersionName.Text = "Version 9.5.0.0";
             // 
             // CopyrightLabel
             // 
