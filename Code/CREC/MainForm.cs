@@ -348,6 +348,15 @@ namespace CREC
             Tag1ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
             Tag2ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
             Tag3ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
+            // ラベルの名称を読み込んで列幅自動調整設定画面に追加
+            IDListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.UUIDLabel;
+            MCListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.ManagementCodeLabel;
+            NameListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.CollectionNameLabel;
+            RegistrationDateListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.RegistrationDateLabel;
+            CategoryListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.CategoryLabel;
+            Tag1ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
+            Tag2ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
+            Tag3ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
 
             // 表示内容更新
             ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
@@ -394,6 +403,7 @@ namespace CREC
             Tag3ListVisibleToolStripMenuItem.CheckedChanged -= Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged -= InventoryInformationToolStripMenuItem_CheckedChanged;
             ControlCollectionListColumnVisibe();
+            ControlCollectionListColumnAutoWidth();
             // イベントハンドラ再開
             IDListVisibleToolStripMenuItem.CheckedChanged += IDVisibleToolStripMenuItem_CheckedChanged;
             MCListVisibleToolStripMenuItem.CheckedChanged += MCVisibleToolStripMenuItem_CheckedChanged;
@@ -843,6 +853,104 @@ namespace CREC
                 = dataGridView1.Columns["InventoryStatusList"].Visible
                 = CurrentProjectSettingValues.CollectionListInventoryInformationVisible;
         }
+
+        /// <summary>
+        /// コレクションリストの列幅自動調整をコントロール
+        /// </summary>
+        private void ControlCollectionListColumnAutoWidth()
+        {
+            IDListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListUUIDAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListUUIDAutoWidth)
+            {
+                dataGridView1.Columns["IDList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["IDList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            MCListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth)
+            {
+                dataGridView1.Columns["MCList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["MCList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            NameListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListNameAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListNameAutoWidth)
+            {
+                dataGridView1.Columns["ObjectNameList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["ObjectNameList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            RegistrationDateListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth)
+            {
+                dataGridView1.Columns["RegistrationDateList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["RegistrationDateList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            CategoryListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListCategoryAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListCategoryAutoWidth)
+            {
+                dataGridView1.Columns["CategoryList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["CategoryList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            Tag1ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListFirstTagAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListFirstTagAutoWidth)
+            {
+                dataGridView1.Columns["Tag1List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["Tag1List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            Tag2ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListSecondTagAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListSecondTagAutoWidth)
+            {
+                dataGridView1.Columns["Tag2List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["Tag2List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            Tag3ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListThirdTagAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListThirdTagAutoWidth)
+            {
+                dataGridView1.Columns["Tag3List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["Tag3List"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+
+            InventoryInformationListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth;
+            if (CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth)
+            {
+                dataGridView1.Columns["InventoryList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+                dataGridView1.Columns["InventoryStatusList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            }
+            else
+            {
+                dataGridView1.Columns["InventoryList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+                dataGridView1.Columns["InventoryStatusList"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            }
+        }
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
             CurrentProjectSettingValues.CollectionListUUIDVisible = IDListVisibleToolStripMenuItem.Checked;
@@ -923,6 +1031,80 @@ namespace CREC
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
+        }
+        #endregion
+        #region 列幅自動調整
+        private void IDListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListUUIDAutoWidth = IDListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void MCListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 管理コードの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth = MCListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void NameListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 名前の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListNameAutoWidth = NameListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 登録日の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth = RegistrationDateListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void CategoryListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// カテゴリの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListCategoryAutoWidth = CategoryListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag1ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ1の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListFirstTagAutoWidth = Tag1ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag2ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ2の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListSecondTagAutoWidth = Tag2ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag3ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ3の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListThirdTagAutoWidth = Tag3ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 在庫情報の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth = InventoryInformationListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
         }
         #endregion
         #region 色設定
@@ -1548,11 +1730,54 @@ namespace CREC
             CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
+            // ただし、列幅自動調整設定がONの列は自動調整を保持する。
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
                 int currentWidth = column.Width;// リセットする前の列幅を取得
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
-                column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
+                
+                // 各列の自動幅調整設定をチェック
+                bool shouldAutoSize = false;
+                switch (column.Name)
+                {
+                    case "IDList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListUUIDAutoWidth;
+                        break;
+                    case "MCList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth;
+                        break;
+                    case "ObjectNameList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListNameAutoWidth;
+                        break;
+                    case "RegistrationDateList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth;
+                        break;
+                    case "CategoryList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListCategoryAutoWidth;
+                        break;
+                    case "Tag1List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListFirstTagAutoWidth;
+                        break;
+                    case "Tag2List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListSecondTagAutoWidth;
+                        break;
+                    case "Tag3List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListThirdTagAutoWidth;
+                        break;
+                    case "InventoryList":
+                    case "InventoryStatusList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth;
+                        break;
+                }
+                
+                if (shouldAutoSize)
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;// 自動調整を保持
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
+                    column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
+                }
             }
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示

@@ -94,6 +94,16 @@
             this.Tag2ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Tag3ListVisibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InventoryInformationListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ColumnWidthAdjustmentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.IDListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MCListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NameListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RegistrationDateListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CategoryListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tag1ListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tag2ListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Tag3ListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InventoryInformationListAutoWidthToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.RecentShownContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -456,6 +466,7 @@
             this.FontSizeToolStripMenuItem,
             this.toolStripSeparator5,
             this.VisibleListElementsToolStripMenuItem,
+            this.ColumnWidthAdjustmentToolStripMenuItem,
             this.toolStripSeparator8,
             this.RecentShownContentsToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
@@ -691,6 +702,94 @@
             this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.InventoryInformationListToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationToolStripMenuItem_CheckedChanged);
+            // 
+            // ColumnWidthAdjustmentToolStripMenuItem
+            // 
+            this.ColumnWidthAdjustmentToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.IDListAutoWidthToolStripMenuItem,
+            this.MCListAutoWidthToolStripMenuItem,
+            this.NameListAutoWidthToolStripMenuItem,
+            this.RegistrationDateListAutoWidthToolStripMenuItem,
+            this.CategoryListAutoWidthToolStripMenuItem,
+            this.Tag1ListAutoWidthToolStripMenuItem,
+            this.Tag2ListAutoWidthToolStripMenuItem,
+            this.Tag3ListAutoWidthToolStripMenuItem,
+            this.InventoryInformationListAutoWidthToolStripMenuItem});
+            this.ColumnWidthAdjustmentToolStripMenuItem.Name = "ColumnWidthAdjustmentToolStripMenuItem";
+            this.ColumnWidthAdjustmentToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.ColumnWidthAdjustmentToolStripMenuItem.Text = "列幅自動調整";
+            // 
+            // IDListAutoWidthToolStripMenuItem
+            // 
+            this.IDListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.IDListAutoWidthToolStripMenuItem.Name = "IDListAutoWidthToolStripMenuItem";
+            this.IDListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.IDListAutoWidthToolStripMenuItem.Text = "ID";
+            this.IDListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.IDListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // MCListAutoWidthToolStripMenuItem
+            // 
+            this.MCListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.MCListAutoWidthToolStripMenuItem.Name = "MCListAutoWidthToolStripMenuItem";
+            this.MCListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.MCListAutoWidthToolStripMenuItem.Text = "管理コード";
+            this.MCListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.MCListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // NameListAutoWidthToolStripMenuItem
+            // 
+            this.NameListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.NameListAutoWidthToolStripMenuItem.Name = "NameListAutoWidthToolStripMenuItem";
+            this.NameListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.NameListAutoWidthToolStripMenuItem.Text = "名前";
+            this.NameListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.NameListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // RegistrationDateListAutoWidthToolStripMenuItem
+            // 
+            this.RegistrationDateListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.RegistrationDateListAutoWidthToolStripMenuItem.Name = "RegistrationDateListAutoWidthToolStripMenuItem";
+            this.RegistrationDateListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.RegistrationDateListAutoWidthToolStripMenuItem.Text = "登録日";
+            this.RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // CategoryListAutoWidthToolStripMenuItem
+            // 
+            this.CategoryListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.CategoryListAutoWidthToolStripMenuItem.Name = "CategoryListAutoWidthToolStripMenuItem";
+            this.CategoryListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.CategoryListAutoWidthToolStripMenuItem.Text = "カテゴリ";
+            this.CategoryListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.CategoryListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // Tag1ListAutoWidthToolStripMenuItem
+            // 
+            this.Tag1ListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.Tag1ListAutoWidthToolStripMenuItem.Name = "Tag1ListAutoWidthToolStripMenuItem";
+            this.Tag1ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag1ListAutoWidthToolStripMenuItem.Text = "タグ1";
+            this.Tag1ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag1ListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // Tag2ListAutoWidthToolStripMenuItem
+            // 
+            this.Tag2ListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.Tag2ListAutoWidthToolStripMenuItem.Name = "Tag2ListAutoWidthToolStripMenuItem";
+            this.Tag2ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag2ListAutoWidthToolStripMenuItem.Text = "タグ2";
+            this.Tag2ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag2ListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // Tag3ListAutoWidthToolStripMenuItem
+            // 
+            this.Tag3ListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.Tag3ListAutoWidthToolStripMenuItem.Name = "Tag3ListAutoWidthToolStripMenuItem";
+            this.Tag3ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag3ListAutoWidthToolStripMenuItem.Text = "タグ3";
+            this.Tag3ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag3ListAutoWidthToolStripMenuItem_CheckedChanged);
+            // 
+            // InventoryInformationListAutoWidthToolStripMenuItem
+            // 
+            this.InventoryInformationListAutoWidthToolStripMenuItem.CheckOnClick = true;
+            this.InventoryInformationListAutoWidthToolStripMenuItem.Name = "InventoryInformationListAutoWidthToolStripMenuItem";
+            this.InventoryInformationListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.InventoryInformationListAutoWidthToolStripMenuItem.Text = "在庫情報";
+            this.InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator8
             // 
@@ -2477,6 +2576,16 @@
         private System.Windows.Forms.ToolStripMenuItem Tag1ListVisibleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Tag2ListVisibleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Tag3ListVisibleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ColumnWidthAdjustmentToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem IDListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem MCListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem NameListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RegistrationDateListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CategoryListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tag1ListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tag2ListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem Tag3ListAutoWidthToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InventoryInformationListAutoWidthToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem SelectBackgroundColorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AliceBlueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem WhiteSmokeToolStripMenuItem;
