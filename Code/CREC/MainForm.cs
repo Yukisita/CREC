@@ -1776,7 +1776,7 @@ namespace CREC
                 else
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
-                    column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
+                    // AutoSizeが無効な場合はサイズを変更しない
                 }
             }
         }

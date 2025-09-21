@@ -257,39 +257,39 @@ namespace CREC
         /// <summary>
         /// コレクション一覧でのUUID列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListUUIDAutoWidth { get; set; } = false;
+        public bool CollectionListUUIDAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧での管理コード列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListManagementCodeAutoWidth { get; set; } = false;
+        public bool CollectionListManagementCodeAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧での名前列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListNameAutoWidth { get; set; } = false;
+        public bool CollectionListNameAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧での登録日列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListRegistrationDateAutoWidth { get; set; } = false;
+        public bool CollectionListRegistrationDateAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧でのカテゴリ列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListCategoryAutoWidth { get; set; } = false;
+        public bool CollectionListCategoryAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧でのタグ1列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListFirstTagAutoWidth { get; set; } = false;
+        public bool CollectionListFirstTagAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧でのタグ2列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListSecondTagAutoWidth { get; set; } = false;
+        public bool CollectionListSecondTagAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧でのタグ3列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListThirdTagAutoWidth { get; set; } = false;
+        public bool CollectionListThirdTagAutoWidth { get; set; } = true;
         /// <summary>
         /// コレクション一覧での在庫情報列幅自動調整フラグ
         /// </summary>
-        public bool CollectionListInventoryInformationAutoWidth { get; set; } = false;
+        public bool CollectionListInventoryInformationAutoWidth { get; set; } = true;
         /// <summary>
         /// 検索対象の番号
         /// </summary>
