@@ -893,6 +893,7 @@ namespace CREC
             // 各列の自動幅調整設定に基づき、DataGridViewの各列のAutoSizeModeを設定
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
+                int currentWidth = column.Width;// リセットする前の列幅を取得
                 // 各列の自動幅調整設定をチェック
                 bool shouldAutoSize = false;
                 switch (column.Name)
@@ -934,6 +935,7 @@ namespace CREC
                 else
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
+                    column.Width = currentWidth;// リセット前の列幅+標準文字サイズに戻す
                 }
             }
         }
@@ -1519,9 +1521,7 @@ namespace CREC
                 MessageBox.Show("履歴の削除に失敗しました。\n" + ex.Message, "CREC");
             }
         }
-
         #endregion
-
         #endregion
 
         #region データ一覧・詳細表示関係
@@ -1581,11 +1581,7 @@ namespace CREC
             // DataGridView関係
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // 表示直後、セルの幅が適切になるようDataGridViewAutoSizeColumnModeをDisplayedCellsに設定
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
-            {
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            }
+
             try
             {
                 try
@@ -1620,7 +1616,6 @@ namespace CREC
                             CollectionDataClass.InventoryStatusToString(thisCollectionDataValues.CollectionInventoryStatus, LanguageFile));
                     }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
-                    dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
                 }
                 catch (Exception ex)
                 {
@@ -1639,6 +1634,8 @@ namespace CREC
                 DataLoadingStatus = "false";
                 return;
             }
+
+            ControlCollectionListColumnAutoWidth();// 列幅自動調整の設定を反映
 
             // 一覧読み込み中に禁止した操作を復元
             Application.DoEvents();// 一覧読み込み中に発生していたイベントを削除
@@ -2480,7 +2477,6 @@ namespace CREC
                 thisCollectionDataValues.CollectionCurrentInventory,
                 CollectionDataClass.InventoryStatusToString(thisCollectionDataValues.CollectionInventoryStatus, LanguageFile));
             dataGridView1.DataSource = ContentsDataTable;// ここでバインド
-            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
