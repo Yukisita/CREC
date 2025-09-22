@@ -402,8 +402,19 @@ namespace CREC
             Tag2ListVisibleToolStripMenuItem.CheckedChanged -= Tag2VisibleToolStripMenuItem_CheckedChanged;
             Tag3ListVisibleToolStripMenuItem.CheckedChanged -= Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged -= InventoryInformationToolStripMenuItem_CheckedChanged;
+            IDListAutoWidthToolStripMenuItem.CheckedChanged -= IDListAutoWidthToolStripMenuItem_CheckedChanged;
+            MCListAutoWidthToolStripMenuItem.CheckedChanged -= MCListAutoWidthToolStripMenuItem_CheckedChanged;
+            NameListAutoWidthToolStripMenuItem.CheckedChanged -= NameListAutoWidthToolStripMenuItem_CheckedChanged;
+            RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged -= RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged;
+            CategoryListAutoWidthToolStripMenuItem.CheckedChanged -= CategoryListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag1ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag1ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag2ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag2ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag3ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag3ListAutoWidthToolStripMenuItem_CheckedChanged;
+            InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged -= InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged;
+
             ControlCollectionListColumnVisibe();
             ControlCollectionListColumnAutoWidth();
+
             // イベントハンドラ再開
             IDListVisibleToolStripMenuItem.CheckedChanged += IDVisibleToolStripMenuItem_CheckedChanged;
             MCListVisibleToolStripMenuItem.CheckedChanged += MCVisibleToolStripMenuItem_CheckedChanged;
@@ -414,6 +425,15 @@ namespace CREC
             Tag2ListVisibleToolStripMenuItem.CheckedChanged += Tag2VisibleToolStripMenuItem_CheckedChanged;
             Tag3ListVisibleToolStripMenuItem.CheckedChanged += Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged += InventoryInformationToolStripMenuItem_CheckedChanged;
+            IDListAutoWidthToolStripMenuItem.CheckedChanged += IDListAutoWidthToolStripMenuItem_CheckedChanged;
+            MCListAutoWidthToolStripMenuItem.CheckedChanged += MCListAutoWidthToolStripMenuItem_CheckedChanged;
+            NameListAutoWidthToolStripMenuItem.CheckedChanged += NameListAutoWidthToolStripMenuItem_CheckedChanged;
+            RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged += RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged;
+            CategoryListAutoWidthToolStripMenuItem.CheckedChanged += CategoryListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag1ListAutoWidthToolStripMenuItem.CheckedChanged += Tag1ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag2ListAutoWidthToolStripMenuItem.CheckedChanged += Tag2ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag3ListAutoWidthToolStripMenuItem.CheckedChanged += Tag3ListAutoWidthToolStripMenuItem_CheckedChanged;
+            InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged += InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged;
 
             // ToolTipsの設定
             SetTagNameToolTips();
@@ -906,7 +926,7 @@ namespace CREC
                         shouldAutoSize = CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth;
                         break;
                 }
-                
+
                 if (shouldAutoSize)
                 {
                     column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;// 自動調整を保持
