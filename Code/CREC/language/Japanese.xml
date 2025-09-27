@@ -379,6 +379,10 @@
 				<itemtext>データ一覧の表示項目</itemtext>
 			</item>
 			<item>
+				<itemname>ColumnWidthAdjustmentToolStripMenuItem</itemname>
+				<itemtext>列幅自動調整</itemtext>
+			</item>
+			<item>
 				<itemname>RecentShownContentsToolStripMenuItem</itemname>
 				<itemtext>最近表示したコレクション</itemtext>
 			</item>
