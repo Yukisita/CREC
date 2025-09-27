@@ -379,6 +379,10 @@
 				<itemtext>Items Displayed in the List</itemtext>
 			</item>
 			<item>
+				<itemname>ColumnWidthAdjustmentToolStripMenuItem</itemname>
+				<itemtext>Adjust Column Width</itemtext>
+			</item>
+			<item>
 				<itemname>RecentShownContentsToolStripMenuItem</itemname>
 				<itemtext>Recent Shown Collection</itemtext>
 			</item>
