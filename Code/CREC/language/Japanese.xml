@@ -542,7 +542,7 @@
 			</item>
 			<item>
 				<itemname>SearchedCollectionNofFoundMessage</itemname>
-				<itemtext>検索されたコレクションんが見つかりません。</itemtext>
+				<itemtext>検索されたコレクションが見つかりません。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
