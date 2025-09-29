@@ -545,7 +545,7 @@
 				<itemtext>The searched collection cannot be found.</itemtext>
 			</item>
 			<item>
-				<itemname>UUIDListHiddenWargning</itemname>
+				<itemname>UUIDListHiddenWarning</itemname>
 				<itemtext>Hiding the UUID may cause problems.&#xD;&#xA;Would you like to keep it visible?</itemtext>
 			</item>
 		</MessageBox>
