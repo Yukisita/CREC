@@ -629,7 +629,7 @@
             this.IDListVisibleToolStripMenuItem.CheckOnClick = true;
             this.IDListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.IDListVisibleToolStripMenuItem.Name = "IDListVisibleToolStripMenuItem";
-            this.IDListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.IDListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.IDListVisibleToolStripMenuItem.Text = "ID";
             this.IDListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.IDVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -639,7 +639,7 @@
             this.MCListVisibleToolStripMenuItem.CheckOnClick = true;
             this.MCListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MCListVisibleToolStripMenuItem.Name = "MCListVisibleToolStripMenuItem";
-            this.MCListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.MCListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.MCListVisibleToolStripMenuItem.Text = "管理コード";
             this.MCListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.MCVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -649,7 +649,7 @@
             this.NameListVisibleToolStripMenuItem.CheckOnClick = true;
             this.NameListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.NameListVisibleToolStripMenuItem.Name = "NameListVisibleToolStripMenuItem";
-            this.NameListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.NameListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.NameListVisibleToolStripMenuItem.Text = "名称";
             this.NameListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.NameVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -657,7 +657,7 @@
             // 
             this.RegistrationDateListVisibleToolStripMenuItem.CheckOnClick = true;
             this.RegistrationDateListVisibleToolStripMenuItem.Name = "RegistrationDateListVisibleToolStripMenuItem";
-            this.RegistrationDateListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.RegistrationDateListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.RegistrationDateListVisibleToolStripMenuItem.Text = "登録日";
             this.RegistrationDateListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.RegistrationDateVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -667,7 +667,7 @@
             this.CategoryListVisibleToolStripMenuItem.CheckOnClick = true;
             this.CategoryListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CategoryListVisibleToolStripMenuItem.Name = "CategoryListVisibleToolStripMenuItem";
-            this.CategoryListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.CategoryListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.CategoryListVisibleToolStripMenuItem.Text = "カテゴリ";
             this.CategoryListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.CategoryVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -675,7 +675,7 @@
             // 
             this.Tag1ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag1ListVisibleToolStripMenuItem.Name = "Tag1ListVisibleToolStripMenuItem";
-            this.Tag1ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.Tag1ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.Tag1ListVisibleToolStripMenuItem.Text = "タグ１";
             this.Tag1ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag1VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -683,7 +683,7 @@
             // 
             this.Tag2ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag2ListVisibleToolStripMenuItem.Name = "Tag2ListVisibleToolStripMenuItem";
-            this.Tag2ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.Tag2ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.Tag2ListVisibleToolStripMenuItem.Text = "タグ２";
             this.Tag2ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag2VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -691,7 +691,7 @@
             // 
             this.Tag3ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag3ListVisibleToolStripMenuItem.Name = "Tag3ListVisibleToolStripMenuItem";
-            this.Tag3ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.Tag3ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.Tag3ListVisibleToolStripMenuItem.Text = "タグ３";
             this.Tag3ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag3VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -699,7 +699,7 @@
             // 
             this.InventoryInformationListToolStripMenuItem.CheckOnClick = true;
             this.InventoryInformationListToolStripMenuItem.Name = "InventoryInformationListToolStripMenuItem";
-            this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(224, 34);
+            this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
             this.InventoryInformationListToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationToolStripMenuItem_CheckedChanged);
             // 

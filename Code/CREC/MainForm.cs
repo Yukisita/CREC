@@ -941,6 +941,16 @@ namespace CREC
         }
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
+            // IDを非表示にする場合の警告メッセージ
+            if (IDListVisibleToolStripMenuItem.Checked == false)
+            {
+                // 警告メッセージを表示し、Yesを選択した場合は変更を破棄する
+                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDListHiddenWarning", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    IDListVisibleToolStripMenuItem.Checked = true;
+                }
+            }
             CurrentProjectSettingValues.CollectionListUUIDVisible = IDListVisibleToolStripMenuItem.Checked;
             ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
             ControlCollectionListColumnVisibe();
