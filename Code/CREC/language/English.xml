@@ -544,6 +544,10 @@
 				<itemname>SearchedCollectionNofFoundMessage</itemname>
 				<itemtext>The searched collection cannot be found.</itemtext>
 			</item>
+			<item>
+				<itemname>UUIDListHiddenWargning</itemname>
+				<itemtext>Hiding the UUID may cause problems.&#xD;&#xA;Would you like to keep it visible?</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

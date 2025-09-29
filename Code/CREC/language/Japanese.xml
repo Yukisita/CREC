@@ -544,6 +544,10 @@
 				<itemname>SearchedCollectionNofFoundMessage</itemname>
 				<itemtext>検索されたコレクションが見つかりません。</itemtext>
 			</item>
+			<item>
+				<itemname>UUIDListHiddenWargning</itemname>
+				<itemtext>UUIDを非表示にすると不具合の原因となります。&#xD;&#xA;表示状態にしますか？</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
