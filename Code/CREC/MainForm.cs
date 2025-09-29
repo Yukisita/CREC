@@ -945,7 +945,7 @@ namespace CREC
             if (IDListVisibleToolStripMenuItem.Checked == false)
             {
                 // 警告メッセージを表示し、Yesを選択した場合は変更を破棄する
-                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDListHiddenWargning", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDListHiddenWarning", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
                     IDListVisibleToolStripMenuItem.Checked = true;
