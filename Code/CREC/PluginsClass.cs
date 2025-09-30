@@ -29,7 +29,7 @@ namespace CREC
             if (ProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
                 // projectのシステムデータフォルダ内に配置する
-                return System.IO.Path.GetDirectoryName(ProjectSettingValues.ProjectSettingFilePath) + "\\" + ProjectSettingValues.Name + "_SystemData\\RecentlyExecutedPluginList.log";
+                return System.IO.Path.GetDirectoryName(ProjectSettingValues.ProjectSettingFilePath) + "\\$SystemData\\RecentlyExecutedPluginList.log";
             }
             return string.Empty;
         }
