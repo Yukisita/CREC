@@ -4110,7 +4110,7 @@ namespace CREC
                     // プロジェクトフォルダ内のコレクション数をチェック
                     DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                     var subFolders = di.EnumerateDirectories("*");
-                    int currentCollectionCount = subFolders.Count();
+                    int currentCollectionCount = subFolders.Where(folder => folder.Name != "$SystemData").Count();
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
 
