@@ -2592,6 +2592,16 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
+            if (ProjectSystemDataFolderName == EditIDTextBox.Text)
+            {
+                System.Windows.MessageBox.Show(
+                     LanguageSettingClass.GetMessageBoxMessage("SystemReservedValueError", "mainform", LanguageFile) + "\n" + ProjectSystemDataFolderName,
+                    "CREC",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
+                UUIDEditStatusLabel.ForeColor = Color.Red;
+            }
             if (CurrentShownCollectionData.CollectionID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
