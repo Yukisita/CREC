@@ -884,11 +884,10 @@ namespace CREC
 
             try
             {
-                FileSystem.CopyDirectory(
+                CopyDirectoryRecursive(
                     collectionDataValues.CollectionFolderPath,// コレクションのフォルダパス
                     cacheDirectoryPath + "\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
-                    Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
-                    Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                    true // overwrite existing files
                     );
             }
             catch (Exception ex)
@@ -905,11 +904,10 @@ namespace CREC
                     // 圧縮なしの場合はそのまま移動
                     try
                     {
-                        FileSystem.CopyDirectory(
+                        CopyDirectoryRecursive(
                             cacheDirectoryPath + "\\" + collectionDataValues.CollectionID,// 一時的なバックアップフォルダ
                             backupFolderPath + "\\" + currentDateTime,// バックアップ先フォルダ
-                            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
-                            Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                            true // overwrite existing files
                             );
                     }
                     catch (Exception ex)
@@ -940,11 +938,9 @@ namespace CREC
                     // 指定のフォルダに圧縮したZipファイルを移動
                     try
                     {
-                        FileSystem.MoveFile(
+                        File.Move(
                             cacheDirectoryPath + "\\" + collectionDataValues.CollectionID + ".zip",// 一時的なZipファイル
-                            backupFolderPath + "\\" + currentDateTime + ".zip",// バックアップ先Zipファイル
-                            Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs,// エラーダイアログのみ表示
-                            Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing// キャンセルオプションは何もしない
+                            backupFolderPath + "\\" + currentDateTime + ".zip"// バックアップ先Zipファイル
                             );
                     }
                     catch (Exception ex)
@@ -1131,6 +1127,36 @@ namespace CREC
                 projectSettingValues,
                 backUpProgressReport,
                 languageData));
+        }
+
+        /// <summary>
+        /// Copy directory recursively
+        /// </summary>
+        /// <param name="sourceDir">Source directory</param>
+        /// <param name="destDir">Destination directory</param>
+        /// <param name="overwriteFiles">Whether to overwrite existing files</param>
+        private static void CopyDirectoryRecursive(string sourceDir, string destDir, bool overwriteFiles)
+        {
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            // Copy files
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(destDir, fileName);
+                File.Copy(file, destFile, overwriteFiles);
+            }
+
+            // Copy subdirectories
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string dirName = Path.GetFileName(subDir);
+                string destSubDir = Path.Combine(destDir, dirName);
+                CopyDirectoryRecursive(subDir, destSubDir, overwriteFiles);
+            }
         }
     }
 }

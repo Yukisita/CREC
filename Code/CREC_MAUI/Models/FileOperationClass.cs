@@ -10,9 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using File = System.IO.File;
-using Microsoft.VisualBasic.FileIO;
 
 namespace CREC
 {
@@ -32,32 +30,32 @@ namespace CREC
             }
             catch (ArgumentNullException ex)// PathがNullぽ
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (ArgumentException ex)// Pathが不完全
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (DirectoryNotFoundException ex)// パスが正しくない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (NotSupportedException ex)// サポート外の形式のパス
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (PathTooLongException ex)// パスが長すぎる
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (IOException ex)// 使用中のファイル
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 if (DeleteReadOnlyFile(FileFullPath))
                 {
                     return true;
@@ -69,7 +67,7 @@ namespace CREC
             }
             catch (UnauthorizedAccessException ex)// 権限がない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 if (DeleteReadOnlyFile(FileFullPath))
                 {
                     return true;
@@ -81,7 +79,7 @@ namespace CREC
             }
             catch (Exception ex)// 予期せぬエラー
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
         }
@@ -104,7 +102,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
         }
@@ -126,47 +124,47 @@ namespace CREC
             }
             catch (ArgumentNullException ex)// PathがNullぽ
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (ArgumentException ex)// Pathに不備がある
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (UnauthorizedAccessException ex)// 権限がない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (PathTooLongException ex)// パスが長すぎる
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (DirectoryNotFoundException ex)// ディレクトリが見つからない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (FileNotFoundException ex)// コピー元ファイルが見つからない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (IOException ex)// コピー先のファイルが存在し、上書き許可がない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (NotSupportedException ex)// パスの名称がサポート外
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (Exception ex)// 予期せぬエラー
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             // 移動元のファイルを削除
@@ -191,7 +189,7 @@ namespace CREC
         {
             if (Directory.Exists(NewFolderFullPath) && !overwriteExistingFolder)// フォルダ上書き禁止
             {
-                MessageBox.Show("指定されたフォルダは既に存在します。", "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {("指定されたフォルダは既に存在します。"}");
                 return false;
             }
 
@@ -202,11 +200,11 @@ namespace CREC
                 {
                     try
                     {
-                        FileSystem.DeleteDirectory(NewFolderFullPath, DeleteDirectoryOption.DeleteAllContents);
+                        Directory.Delete(NewFolderFullPath, true);
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(ex.Message, "CREC");
+                        System.Diagnostics.Debug.WriteLine($"[CREC] {ex.Message}");
                         return false;
                     }
                 }
@@ -214,41 +212,41 @@ namespace CREC
 
             try
             {
-                FileSystem.CopyDirectory(CurrentFolderFullPath, NewFolderFullPath, overwriteExistingFiles);
+                CopyDirectory(CurrentFolderFullPath, NewFolderFullPath, overwriteExistingFiles);
             }
             catch (UnauthorizedAccessException ex)// アクセス許可がない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {ex.Message}");
                 return false;
             }
             catch (ArgumentNullException ex)// 移動前、または移動先のフォルダパスが未指定
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (ArgumentException ex)// 移動前、または移動先のフォルダパスに無効な文字が含まれる
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (PathTooLongException ex)// 移動前、または移動先のフォルダパスがシステムの最大長以上
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (DirectoryNotFoundException ex)// 移動前のフォルダが見つからない
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (IOException ex)// 移動前と移動先のフォルダパスが同一、使用中のフォルダまたはファイルがある、など
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
             catch (Exception ex)// 予期せぬエラー
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {(ex.Message}");
                 return false;
             }
 
@@ -256,12 +254,12 @@ namespace CREC
             {
                 try
                 {
-                    FileSystem.DeleteDirectory(CurrentFolderFullPath, DeleteDirectoryOption.DeleteAllContents);
+                    Directory.Delete(CurrentFolderFullPath, true);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "CREC");
+                    System.Diagnostics.Debug.WriteLine($"[CREC] {ex.Message}");
                     return false;
                 }
             }
@@ -282,8 +280,38 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine($"[CREC] {ex.Message}");
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Copy directory recursively
+        /// </summary>
+        /// <param name="sourceDir">Source directory</param>
+        /// <param name="destDir">Destination directory</param>
+        /// <param name="overwriteFiles">Whether to overwrite existing files</param>
+        private static void CopyDirectory(string sourceDir, string destDir, bool overwriteFiles)
+        {
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+
+            // Copy files
+            foreach (string file in Directory.GetFiles(sourceDir))
+            {
+                string fileName = Path.GetFileName(file);
+                string destFile = Path.Combine(destDir, fileName);
+                File.Copy(file, destFile, overwriteFiles);
+            }
+
+            // Copy subdirectories
+            foreach (string subDir in Directory.GetDirectories(sourceDir))
+            {
+                string dirName = Path.GetFileName(subDir);
+                string destSubDir = Path.Combine(destDir, dirName);
+                CopyDirectory(subDir, destSubDir, overwriteFiles);
             }
         }
     }
