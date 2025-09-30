@@ -637,80 +637,10 @@ namespace CREC
         /// <returns>サムネイル生成に成功したらTrue、その他False</returns>
         public static bool MakeTumbnailPicture(string CollectionFolderPath, XElement languageData)
         {
-            // サムネイルとする画像を選択
-            OpenFileDialog openFolderDialog = new OpenFileDialog();
-            openFolderDialog.InitialDirectory = CollectionFolderPath + "\\pictures";
-            openFolderDialog.Title = LanguageSettingClass.GetOtherMessage("SelectThumbnail", "CollectionDataClass", languageData);
-            openFolderDialog.Filter = "JPEG|*.jpg;*.jpeg;*.jfif;*.jpe" + "|PNG|*.png" + "|GIF|*.gif" + "|ICO|*.ico";
-            if (openFolderDialog.ShowDialog() == DialogResult.OK)// 画像読み込み成功
-            {
-                try
-                {
-                    // 画像最大サイズを400x400に設定
-                    int TargetWidth = 400;
-                    int TargetHeight = 400;
-                    Bitmap TargetBitmap = new Bitmap(openFolderDialog.FileName);
-                    // 画像サイズ設定
-                    if (Math.Max(TargetBitmap.Width, TargetBitmap.Height) < 400)// 画像サイズが元々規定サイズ以内だった場合
-                    {
-                        TargetWidth = TargetBitmap.Width;
-                        TargetHeight = TargetBitmap.Height;
-                    }
-                    else// 画像圧縮処理
-                    {
-                        // 長辺を取得してサイズを決定
-                        if (TargetBitmap.Width > TargetBitmap.Height)// 横長画像
-                        {
-                            TargetWidth = 400;
-                            TargetHeight = (int)(400.0 * TargetBitmap.Height / TargetBitmap.Width);
-                        }
-                        else if (TargetBitmap.Width < TargetBitmap.Height)// 縦長画像
-                        {
-                            TargetHeight = 400;
-                            TargetWidth = (int)(400.0 * TargetBitmap.Width / TargetBitmap.Height);
-                        }
-                    }
-                    Bitmap ConvertedBitmap = new Bitmap(TargetWidth, TargetHeight);
-                    // DPI設定
-                    if (Math.Max(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution) <= 72)
-                    {
-                        ConvertedBitmap.SetResolution(TargetBitmap.HorizontalResolution, TargetBitmap.VerticalResolution);
-                    }
-                    else
-                    {
-                        ConvertedBitmap.SetResolution(72.0F, 72.0F);
-                    }
-                    // エンコーダ設定
-                    EncoderParameters encoderParameters = new EncoderParameters(1);
-                    encoderParameters.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.ColorDepth, 24L);
-                    ImageCodecInfo imageCodecInfos = null;
-                    foreach (ImageCodecInfo imageCodecInfo in ImageCodecInfo.GetImageEncoders())
-                    {
-                        if (imageCodecInfo.FormatID == ImageFormat.Png.Guid)
-                        {
-                            imageCodecInfos = imageCodecInfo;
-                            break;
-                        }
-                    }
-                    // 変換＆保存
-                    using (Graphics g = Graphics.FromImage(ConvertedBitmap))
-                    {
-                        g.DrawImage(TargetBitmap, 0, 0, TargetWidth, TargetHeight);
-                    }
-                    ConvertedBitmap.Save(CollectionFolderPath + "\\SystemData\\NewThumbnail.png", imageCodecInfos, encoderParameters);
-                    ConvertedBitmap.Dispose();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    MessageService.ShowMessage(LanguageSettingClass.GetOtherMessage("ThumbnailSetFaild", "CollectionDataClass", languageData) + ex.Message, "CREC");
-                    return false;
-                }
-            }
-            else// 画像が選択されなかった場合
-            {
-                return false;
-            }
+            // TODO: Implement MAUI-compatible image selection and processing
+            // This method needs platform-specific file picker and Microsoft.Maui.Graphics for image processing
+            System.Diagnostics.Debug.WriteLine("[CREC] MakeThumbnailPicture: Not implemented in MAUI version");
+            return false;
         }
 
         /// <summary>

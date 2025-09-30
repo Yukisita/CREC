@@ -25,6 +25,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<Services.IConfigurationService, Services.ConfigurationService>();
         builder.Services.AddSingleton<Services.IProjectService, Services.ProjectService>();
         builder.Services.AddSingleton<Services.ICollectionDataService, Services.CollectionDataService>();
+        builder.Services.AddSingleton<Services.IPlatformService, Services.PlatformService>();
         
         // Register ViewModels
         builder.Services.AddTransient<ViewModels.MainViewModel>();

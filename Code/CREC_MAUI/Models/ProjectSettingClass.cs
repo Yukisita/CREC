@@ -6,13 +6,11 @@ https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
 using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Documents;
+using CREC.Services;
 using System.Xml.Linq;
 
 namespace CREC
@@ -337,13 +335,13 @@ namespace CREC
                 }
                 catch
                 {
-                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
+                    MessageService.ShowMessage("プロジェクトファイルの読み込みに失敗しました。");
                     return false;
                 }
             }
             else
             {
-                MessageBox.Show("プロジェクトファイルが見つかりませんでした。", "CREC");
+                MessageService.ShowMessage("プロジェクトファイルが見つかりませんでした。");
                 return false;
             }
             loadingProjectSettingValues.ProjectSettingFilePath = projectSettingValues.ProjectSettingFilePath;
@@ -1014,14 +1012,14 @@ namespace CREC
             bool returnValue = false;
             if (projectSettingValues.ProjectSettingFilePath.Length == 0)// pathが指定されているか確認
             {
-                MessageBox.Show("保存先が指定されていません。", "CREC");
+                MessageService.ShowMessage("保存先が指定されていません。");
                 return false;
             }
             // プロジェクトファイル名と名前が一致しているか確認
             if (Path.GetFileNameWithoutExtension(projectSettingValues.ProjectSettingFilePath) != projectSettingValues.Name)
             {
                 // 一致していない場合は警告を表示して保存するか確認
-                MessageBoxResult result = MessageBox.Show(
+                MessageBoxResult result = MessageService.ShowMessage(
                     LanguageSettingClass.GetMessageBoxMessage("ProjectNameMatchError", "ProjectSettingClass", languageData),
                     "CREC",
                     MessageBoxButton.YesNo);
@@ -1335,7 +1333,7 @@ namespace CREC
             catch (Exception ex)
             {
                 // エラーが発生した場合は再起処理するユーザーに尋ねる。
-                if (MessageBox.Show(
+                if (MessageService.ShowMessage(
                     LanguageSettingClass.GetMessageBoxMessage("ProjectSettingFileSaveError", "ProjectSettingClass", languageData) + "\n" + ex.Message,
                     "CREC",
                     MessageBoxButton.YesNo,
@@ -1377,7 +1375,7 @@ namespace CREC
                 && projectSettingValues.CollectionListThirdTagVisible == false
                 && projectSettingValues.CollectionListInventoryInformationVisible == false)
             {
-                MessageBox.Show("全項目が非表示状態に設定されています。システム上IDのみ表示します。", "CREC");
+                MessageService.ShowMessage("全項目が非表示状態に設定されています。システム上IDのみ表示します。");
                 projectSettingValues.CollectionListUUIDVisible = true;
             }
         }

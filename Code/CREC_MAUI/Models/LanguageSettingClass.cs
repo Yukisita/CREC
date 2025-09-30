@@ -121,7 +121,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("日本語言語ファイルの作成に失敗しました。\n" + ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine("日本語言語ファイルの作成に失敗しました。\n" + ex.Message);
                 return false;
             }
         }
@@ -147,7 +147,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("英語言語ファイルの作成に失敗しました。\n" + ex.Message, "CREC");
+                System.Diagnostics.Debug.WriteLine("英語言語ファイルの作成に失敗しました。\n" + ex.Message);
                 return false;
             }
         }

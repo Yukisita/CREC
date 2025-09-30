@@ -10,9 +10,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using File = System.IO.File;
+using CREC.Services;
 
 namespace CREC
 {
@@ -82,7 +82,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("プラグイン履歴の保存に失敗しました。\n" + ex.Message, "CREC");
+                MessageService.ShowMessage("プラグイン履歴の保存に失敗しました。\n" + ex.Message);
             }
         }
 
@@ -117,7 +117,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "CREC");
+                MessageService.ShowMessage(ex.Message);
                 return false;
             }
             return true;
@@ -139,7 +139,7 @@ namespace CREC
         {
             if (ProjectSettingValues.ProjectSettingFilePath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageService.ShowMessage(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageService.ShowMessage(ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
