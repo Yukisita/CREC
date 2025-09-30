@@ -548,6 +548,10 @@
 				<itemname>UUIDListHiddenWarning</itemname>
 				<itemtext>Hiding the UUID may cause problems.&#xD;&#xA;Would you like to keep it visible?</itemtext>
 			</item>
+			<item>
+				<itemname>SystemReservedValueError</itemname>
+				<itemtext>This value is reserved for system use and cannot be used.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

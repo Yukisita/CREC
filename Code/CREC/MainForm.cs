@@ -35,6 +35,7 @@ namespace CREC
         readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.5.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
+        public const string ProjectSystemDataFolderName = "$SystemData";// コレクションデータのシステムフォルダ名
         #endregion
 
         #region 変数の宣言
@@ -2591,6 +2592,16 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
+            if (ProjectSystemDataFolderName == EditIDTextBox.Text)
+            {
+                System.Windows.MessageBox.Show(
+                     LanguageSettingClass.GetMessageBoxMessage("SystemReservedValueError", "mainform", LanguageFile) + "\n" + ProjectSystemDataFolderName,
+                    "CREC",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
+                UUIDEditStatusLabel.ForeColor = Color.Red;
+            }
             if (CurrentShownCollectionData.CollectionID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
@@ -4110,7 +4121,7 @@ namespace CREC
                     // プロジェクトフォルダ内のコレクション数をチェック
                     DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                     var subFolders = di.EnumerateDirectories("*");
-                    int currentCollectionCount = subFolders.Count();
+                    int currentCollectionCount = subFolders.Where(folder => folder.Name != ProjectSystemDataFolderName).Count();
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
 

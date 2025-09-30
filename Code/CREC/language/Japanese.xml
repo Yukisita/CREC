@@ -548,6 +548,10 @@
 				<itemname>UUIDListHiddenWarning</itemname>
 				<itemtext>UUIDを非表示にすると不具合の原因となります。&#xD;&#xA;表示状態にしますか？</itemtext>
 			</item>
+			<item>
+				<itemname>SystemReservedValueError</itemname>
+				<itemtext>システムが使用する値のため使用できません。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
