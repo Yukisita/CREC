@@ -36,7 +36,7 @@ namespace CREC
             foreach (DirectoryInfo subFolder in subFolders)
             {
                 // $SystemDataフォルダはコレクションに含めない
-                if (subFolder.Name == "$SystemData")
+                if (subFolder.Name == MainForm.ProjectSystemDataFolderName)
                 {
                     continue;
                 }

@@ -1053,7 +1053,7 @@ namespace CREC
             try
             {
                 DirectoryInfo di = new DirectoryInfo(projectSettingValues.ProjectDataFolderPath);
-                subFolderArray = di.EnumerateDirectories("*").Where(folder => folder.Name != "$SystemData").ToArray();
+                subFolderArray = di.EnumerateDirectories("*").Where(folder => folder.Name != MainForm.ProjectSystemDataFolderName).ToArray();
             }
             catch (Exception ex)
             {
