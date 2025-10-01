@@ -1540,7 +1540,7 @@ namespace CREC
         {
             // お気に入りマクロ関連の動的メニュー項目を削除
             // 固定メニュー項目の後に追加されたものを削除
-            int fixedItemCount = 4; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem, RemoveFavoritePluginsToolStripMenuItem
+            int fixedItemCount = 5; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem, RemoveFavoritePluginsToolStripMenuItem
             
             // お気に入りマクロ項目とセパレータを削除（後ろから削除）
             while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
@@ -1571,17 +1571,6 @@ namespace CREC
                 
                 PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
             }
-
-            // お気に入りマクロ追加と削除をメニューの最後に移動
-            PluginToolStripMenuItem.DropDownItems.Remove(AddToFavoritePluginsToolStripMenuItem);
-            PluginToolStripMenuItem.DropDownItems.Remove(RemoveFavoritePluginsToolStripMenuItem);
-            
-            // セパレータを追加
-            ToolStripSeparator separator2 = new ToolStripSeparator();
-            PluginToolStripMenuItem.DropDownItems.Add(separator2);
-            
-            PluginToolStripMenuItem.DropDownItems.Add(AddToFavoritePluginsToolStripMenuItem);
-            PluginToolStripMenuItem.DropDownItems.Add(RemoveFavoritePluginsToolStripMenuItem);
         }
 
         /// <summary>
