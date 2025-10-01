@@ -1540,7 +1540,7 @@ namespace CREC
         {
             // お気に入りマクロ関連の動的メニュー項目を削除
             // 固定メニュー項目の後に追加されたものを削除
-            int fixedItemCount = 3; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem
+            int fixedItemCount = 4; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem, RemoveFavoritePluginsToolStripMenuItem
             
             // お気に入りマクロ項目とセパレータを削除（後ろから削除）
             while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
@@ -1569,42 +1569,19 @@ namespace CREC
                 favoritePluginItem.ToolTipText = plugin.path;
                 favoritePluginItem.Click += FavoritePluginToolStripMenuItemSub_Click;
                 
-                // 右クリックメニューを追加（削除機能）
-                favoritePluginItem.MouseUp += (s, mea) =>
-                {
-                    if (mea.Button == MouseButtons.Right)
-                    {
-                        ToolStripMenuItem menuItem = s as ToolStripMenuItem;
-                        string pluginPath = menuItem.ToolTipText;
-                        
-                        ContextMenuStrip contextMenu = new ContextMenuStrip();
-                        ToolStripMenuItem removeItem = new ToolStripMenuItem();
-                        removeItem.Text = LanguageSettingClass.GetOtherMessage("RemoveFromFavorites", "mainform", LanguageFile);
-                        removeItem.Click += (removeS, removeE) =>
-                        {
-                            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
-                            {
-                                MessageBox.Show("お気に入りから削除しました。", "CREC");
-                                // メニューを再構築
-                                PluginToolStripMenuItem_DropDownOpening(sender, e);
-                            }
-                        };
-                        contextMenu.Items.Add(removeItem);
-                        contextMenu.Show(Cursor.Position);
-                    }
-                };
-                
                 PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
             }
 
-            // お気に入りマクロ追加をメニューの最後に移動
+            // お気に入りマクロ追加と削除をメニューの最後に移動
             PluginToolStripMenuItem.DropDownItems.Remove(AddToFavoritePluginsToolStripMenuItem);
+            PluginToolStripMenuItem.DropDownItems.Remove(RemoveFavoritePluginsToolStripMenuItem);
             
             // セパレータを追加
             ToolStripSeparator separator2 = new ToolStripSeparator();
             PluginToolStripMenuItem.DropDownItems.Add(separator2);
             
             PluginToolStripMenuItem.DropDownItems.Add(AddToFavoritePluginsToolStripMenuItem);
+            PluginToolStripMenuItem.DropDownItems.Add(RemoveFavoritePluginsToolStripMenuItem);
         }
 
         /// <summary>
@@ -1665,6 +1642,60 @@ namespace CREC
                 {
                     MessageBox.Show("お気に入りマクロに追加しました。", "CREC");
                 }
+            }
+        }
+
+        /// <summary>
+        /// お気に入りマクロ削除メニューがマウスホバーされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Clear();
+
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+                return;
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
+
+            if (favoritePlugins.Count == 0)
+            {
+                ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
+                noFavoritesItem.Text = "お気に入りマクロなし";
+                noFavoritesItem.Enabled = false;
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += RemoveFavoritePluginToolStripMenuItemSub_Click;
+                
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りマクロ削除のサブメニューがクリックされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
+            {
+                MessageBox.Show("お気に入りから削除しました。", "CREC");
+                // メニューを再構築
+                RemoveFavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
+            }
+            else
+            {
+                MessageBox.Show("お気に入りマクロの削除に失敗しました。", "CREC");
             }
         }
         #endregion

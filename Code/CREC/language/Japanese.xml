@@ -419,6 +419,10 @@
 				<itemtext>お気に入りマクロ追加...</itemtext>
 			</item>
 			<item>
+				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>お気に入りマクロ削除</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>ヘルプ(&amp;H)</itemtext>
 			</item>

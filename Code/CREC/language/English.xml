@@ -419,6 +419,10 @@
 				<itemtext>Add Favorite Macro...</itemtext>
 			</item>
 			<item>
+				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>Remove Favorite Macro</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>Help(&amp;H)</itemtext>
 			</item>

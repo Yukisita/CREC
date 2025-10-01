@@ -115,6 +115,7 @@
             this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddToFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RemoveFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -837,7 +838,8 @@
             this.PluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecutePluginToolStripMenuItem,
             this.RecentlyExecutedPluginToolStripMenuItem,
-            this.AddToFavoritePluginsToolStripMenuItem});
+            this.AddToFavoritePluginsToolStripMenuItem,
+            this.RemoveFavoritePluginsToolStripMenuItem});
             this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
             this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
             this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
@@ -871,6 +873,13 @@
             this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
             this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ追加...";
             this.AddToFavoritePluginsToolStripMenuItem.Click += new System.EventHandler(this.AddToFavoritePluginsToolStripMenuItem_Click);
+            // 
+            // RemoveFavoritePluginsToolStripMenuItem
+            // 
+            this.RemoveFavoritePluginsToolStripMenuItem.Name = "RemoveFavoritePluginsToolStripMenuItem";
+            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ削除";
+            this.RemoveFavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.RemoveFavoritePluginsToolStripMenuItem_MouseEnter);
             // 
             // HelpToolStripMenuItem
             // 
@@ -2636,6 +2645,7 @@
         private System.Windows.Forms.ToolStripMenuItem ExecutePluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RecentlyExecutedPluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddToFavoritePluginsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem RemoveFavoritePluginsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem ResetEditingContentsToolStripMenuItem;
         private System.Windows.Forms.Button SearchButton;
