@@ -415,6 +415,14 @@
 				<itemtext>最近実行したプラグイン</itemtext>
 			</item>
 			<item>
+				<itemname>FavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>お気に入りマクロ</itemtext>
+			</item>
+			<item>
+				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>お気に入りマクロ追加...</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>ヘルプ(&amp;H)</itemtext>
 			</item>
@@ -671,6 +679,10 @@
 			<item>
 				<itemname>DeleteHistory</itemname>
 				<itemtext>履歴を削除</itemtext>
+			</item>
+			<item>
+				<itemname>RemoveFromFavorites</itemname>
+				<itemtext>お気に入りから削除</itemtext>
 			</item>
 			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>

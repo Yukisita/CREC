@@ -1532,6 +1532,126 @@ namespace CREC
                 MessageBox.Show("履歴の削除に失敗しました。\n" + ex.Message, "CREC");
             }
         }
+
+        /// <summary>
+        /// お気に入りマクロメニューがマウスホバーされた時の処理
+        /// </summary>
+        private void FavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            FavoritePluginsToolStripMenuItem.DropDownItems.Clear();
+
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+                return;
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
+
+            if (favoritePlugins.Count == 0)
+            {
+                ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
+                noFavoritesItem.Text = "お気に入りマクロなし";
+                noFavoritesItem.Enabled = false;
+                FavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += FavoritePluginToolStripMenuItemSub_Click;
+                
+                // 右クリックメニューを追加（削除機能）
+                favoritePluginItem.MouseUp += (s, mea) =>
+                {
+                    if (mea.Button == MouseButtons.Right)
+                    {
+                        ToolStripMenuItem menuItem = s as ToolStripMenuItem;
+                        string pluginPath = menuItem.ToolTipText;
+                        
+                        ContextMenuStrip contextMenu = new ContextMenuStrip();
+                        ToolStripMenuItem removeItem = new ToolStripMenuItem();
+                        removeItem.Text = LanguageSettingClass.GetOtherMessage("RemoveFromFavorites", "mainform", LanguageFile);
+                        removeItem.Click += (removeS, removeE) =>
+                        {
+                            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
+                            {
+                                MessageBox.Show("お気に入りから削除しました。", "CREC");
+                                // メニューを再構築
+                                FavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
+                            }
+                        };
+                        contextMenu.Items.Add(removeItem);
+                        contextMenu.Show(Cursor.Position);
+                    }
+                };
+                
+                FavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りマクロのサブメニューがクリックされた時の処理
+        /// </summary>
+        private void FavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (!File.Exists(pluginPath))
+            {
+                MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目をお気に入りから削除します。", "CREC");
+                if (!PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
+                {
+                    MessageBox.Show("お気に入りマクロの更新に失敗しました。", "CREC");
+                }
+                return;
+            }
+
+            // 最近実行したプラグインリストにも追加
+            try
+            {
+                PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, clickedItem.Text, pluginPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
+            {
+                MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りマクロ追加メニューがクリックされた時の処理
+        /// </summary>
+        private void AddToFavoritePluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "実行ファイル(*.exe)|*.exe";
+            openFileDialog.Title = "お気に入りマクロに追加するプラグインを選択してください";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string pluginPath = openFileDialog.FileName;
+                string fileName = Path.GetFileName(pluginPath);
+
+                if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath))
+                {
+                    MessageBox.Show("お気に入りマクロに追加しました。", "CREC");
+                }
+            }
+        }
         #endregion
         #endregion
 

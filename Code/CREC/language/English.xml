@@ -415,6 +415,14 @@
 				<itemtext>Recently Executed Plugin</itemtext>
 			</item>
 			<item>
+				<itemname>FavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>Favorite Macros</itemtext>
+			</item>
+			<item>
+				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>Add Favorite Macro...</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>Help(&amp;H)</itemtext>
 			</item>
@@ -671,6 +679,10 @@
 			<item>
 				<itemname>DeleteHistory</itemname>
 				<itemtext>Delete History</itemtext>
+			</item>
+			<item>
+				<itemname>RemoveFromFavorites</itemname>
+				<itemtext>Remove from Favorites</itemtext>
 			</item>
 			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>
