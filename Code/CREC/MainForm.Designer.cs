@@ -114,7 +114,6 @@
             this.ExecutePluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AddToFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -838,11 +837,11 @@
             this.PluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecutePluginToolStripMenuItem,
             this.RecentlyExecutedPluginToolStripMenuItem,
-            this.FavoritePluginsToolStripMenuItem,
             this.AddToFavoritePluginsToolStripMenuItem});
             this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
             this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
             this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
+            this.PluginToolStripMenuItem.DropDownOpening += new System.EventHandler(this.PluginToolStripMenuItem_DropDownOpening);
             // 
             // ExecutePluginToolStripMenuItem
             // 
@@ -865,13 +864,6 @@
             this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
             this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
             this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
-            // 
-            // FavoritePluginsToolStripMenuItem
-            // 
-            this.FavoritePluginsToolStripMenuItem.Name = "FavoritePluginsToolStripMenuItem";
-            this.FavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
-            this.FavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ";
-            this.FavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.FavoritePluginsToolStripMenuItem_MouseEnter);
             // 
             // AddToFavoritePluginsToolStripMenuItem
             // 
@@ -2643,7 +2635,6 @@
         private System.Windows.Forms.ToolStripMenuItem PluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExecutePluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem RecentlyExecutedPluginToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem FavoritePluginsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem AddToFavoritePluginsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem ResetEditingContentsToolStripMenuItem;

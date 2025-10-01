@@ -415,10 +415,6 @@
 				<itemtext>Recently Executed Plugin</itemtext>
 			</item>
 			<item>
-				<itemname>FavoritePluginsToolStripMenuItem</itemname>
-				<itemtext>Favorite Macros</itemtext>
-			</item>
-			<item>
 				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
 				<itemtext>Add Favorite Macro...</itemtext>
 			</item>

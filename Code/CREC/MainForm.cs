@@ -1534,11 +1534,19 @@ namespace CREC
         }
 
         /// <summary>
-        /// お気に入りマクロメニューがマウスホバーされた時の処理
+        /// プラグインメニューが開かれる時の処理（お気に入りマクロを動的に追加）
         /// </summary>
-        private void FavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        private void PluginToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            FavoritePluginsToolStripMenuItem.DropDownItems.Clear();
+            // お気に入りマクロ関連の動的メニュー項目を削除
+            // 固定メニュー項目の後に追加されたものを削除
+            int fixedItemCount = 3; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem
+            
+            // お気に入りマクロ項目とセパレータを削除（後ろから削除）
+            while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
+            {
+                PluginToolStripMenuItem.DropDownItems.RemoveAt(fixedItemCount);
+            }
 
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
                 return;
@@ -1547,13 +1555,11 @@ namespace CREC
             List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
 
             if (favoritePlugins.Count == 0)
-            {
-                ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
-                noFavoritesItem.Text = "お気に入りマクロなし";
-                noFavoritesItem.Enabled = false;
-                FavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
                 return;
-            }
+
+            // セパレータを追加
+            ToolStripSeparator separator = new ToolStripSeparator();
+            PluginToolStripMenuItem.DropDownItems.Add(separator);
 
             // お気に入りプラグインをメニューに追加
             foreach (var plugin in favoritePlugins)
@@ -1580,7 +1586,7 @@ namespace CREC
                             {
                                 MessageBox.Show("お気に入りから削除しました。", "CREC");
                                 // メニューを再構築
-                                FavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
+                                PluginToolStripMenuItem_DropDownOpening(sender, e);
                             }
                         };
                         contextMenu.Items.Add(removeItem);
@@ -1588,8 +1594,17 @@ namespace CREC
                     }
                 };
                 
-                FavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+                PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
             }
+
+            // お気に入りマクロ追加をメニューの最後に移動
+            PluginToolStripMenuItem.DropDownItems.Remove(AddToFavoritePluginsToolStripMenuItem);
+            
+            // セパレータを追加
+            ToolStripSeparator separator2 = new ToolStripSeparator();
+            PluginToolStripMenuItem.DropDownItems.Add(separator2);
+            
+            PluginToolStripMenuItem.DropDownItems.Add(AddToFavoritePluginsToolStripMenuItem);
         }
 
         /// <summary>
