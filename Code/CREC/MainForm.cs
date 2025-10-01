@@ -1539,27 +1539,24 @@ namespace CREC
         private void PluginToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             // お気に入りマクロ関連の動的メニュー項目を削除
-            // 固定メニュー項目の後に追加されたものを削除
-            int fixedItemCount = 5; // ExecutePluginToolStripMenuItem, RecentlyExecutedPluginToolStripMenuItem, AddToFavoritePluginsToolStripMenuItem, RemoveFavoritePluginsToolStripMenuItem
-            
-            // お気に入りマクロ項目とセパレータを削除（後ろから削除）
+            int fixedItemCount = 6;
             while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
             {
                 PluginToolStripMenuItem.DropDownItems.RemoveAt(fixedItemCount);
             }
 
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
                 return;
+            }
 
-            // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除する）
             List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
 
             if (favoritePlugins.Count == 0)
+            {
                 return;
-
-            // セパレータを追加
-            ToolStripSeparator separator = new ToolStripSeparator();
-            PluginToolStripMenuItem.DropDownItems.Add(separator);
+            }
 
             // お気に入りプラグインをメニューに追加
             foreach (var plugin in favoritePlugins)
@@ -1568,7 +1565,6 @@ namespace CREC
                 favoritePluginItem.Text = plugin.name;
                 favoritePluginItem.ToolTipText = plugin.path;
                 favoritePluginItem.Click += FavoritePluginToolStripMenuItemSub_Click;
-                
                 PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
             }
         }
@@ -1642,7 +1638,9 @@ namespace CREC
             RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Clear();
 
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
                 return;
+            }
 
             // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
             List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);

@@ -238,6 +238,8 @@
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
             this.SearchFormTextBox = new System.Windows.Forms.RichTextBox();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -838,8 +840,10 @@
             this.PluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecutePluginToolStripMenuItem,
             this.RecentlyExecutedPluginToolStripMenuItem,
+            this.toolStripSeparator11,
             this.AddToFavoritePluginsToolStripMenuItem,
-            this.RemoveFavoritePluginsToolStripMenuItem});
+            this.RemoveFavoritePluginsToolStripMenuItem,
+            this.toolStripSeparator12});
             this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
             this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
             this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
@@ -850,7 +854,7 @@
             this.ExecutePluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecuteEXEPluginToolStripMenuItem});
             this.ExecutePluginToolStripMenuItem.Name = "ExecutePluginToolStripMenuItem";
-            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
             this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行";
             // 
             // ExecuteEXEPluginToolStripMenuItem
@@ -863,21 +867,21 @@
             // RecentlyExecutedPluginToolStripMenuItem
             // 
             this.RecentlyExecutedPluginToolStripMenuItem.Name = "RecentlyExecutedPluginToolStripMenuItem";
-            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
             this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
             this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
             // 
             // AddToFavoritePluginsToolStripMenuItem
             // 
             this.AddToFavoritePluginsToolStripMenuItem.Name = "AddToFavoritePluginsToolStripMenuItem";
-            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
             this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ追加...";
             this.AddToFavoritePluginsToolStripMenuItem.Click += new System.EventHandler(this.AddToFavoritePluginsToolStripMenuItem_Click);
             // 
             // RemoveFavoritePluginsToolStripMenuItem
             // 
             this.RemoveFavoritePluginsToolStripMenuItem.Name = "RemoveFavoritePluginsToolStripMenuItem";
-            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(320, 34);
+            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
             this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ削除";
             this.RemoveFavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.RemoveFavoritePluginsToolStripMenuItem_MouseEnter);
             // 
@@ -2376,6 +2380,16 @@
             this.SearchFormTextBox.Text = "";
             this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
             // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(323, 6);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(323, 6);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
@@ -2696,6 +2710,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn note;
         private System.Windows.Forms.RichTextBox SearchFormTextBox;
         private System.Windows.Forms.ToolStripMenuItem ExecuteEXEPluginToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }
 
