@@ -780,6 +780,10 @@
 				<itemname>ShowListButton</itemname>
 				<itemtext>← 一覧に戻る</itemtext>
 			</item>
+			<item>
+				<itemname>SelectPluginToAddFavorite</itemname>
+				<itemtext>お気に入りに追加するプラグインを選択してください。</itemtext>
+			</item>
 		</Other>
 	</mainform>
 	<MakeNewProject>
@@ -1214,6 +1218,10 @@
 				<itemname>ProjectSettingFileSaveError</itemname>
 				<itemtext>プロジェクト設定の保存に失敗しました。再試行しますか？</itemtext>
 			</item>
+		</MessageBox>
+	</ProjectSettingClass>
+	<PluginsClass>
+		<MessageBox>
 			<item>
 				<itemname>AlreadyInFavorites</itemname>
 				<itemtext>このプラグインは既にお気に入りに登録されています</itemtext>
@@ -1231,5 +1239,5 @@
 				<itemtext>お気に入りマクロリストの読み込みに失敗しました。</itemtext>
 			</item>
 		</MessageBox>
-	</ProjectSettingClass>
+	</PluginsClass>
 </list>

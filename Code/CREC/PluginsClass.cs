@@ -184,7 +184,7 @@ namespace CREC
                         {
                             // 既に登録済みの場合はメッセージを表示して終了
                             MessageBox.Show(
-                                LanguageSettingClass.GetMessageBoxMessage("AlreadyInFavorites", "mainform", languageData),
+                                LanguageSettingClass.GetMessageBoxMessage("AlreadyInFavorites", "PluginsClass", languageData),
                                 "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return false;
                         }
@@ -201,7 +201,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroSaveError", "mainform", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroSaveError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -242,7 +242,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroDeleteError", "mainform", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroDeleteError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -303,7 +303,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroListLoadError", "mainform", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroListLoadError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 

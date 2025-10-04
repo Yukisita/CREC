@@ -780,6 +780,10 @@
 				<itemname>ShowListButton</itemname>
 				<itemtext>← List</itemtext>
 			</item>
+			<item>
+				<itemname>SelectPluginToAddFavorite</itemname>
+				<itemtext>Select a plugin to add to favorite.</itemtext>
+			</item>
 		</Other>
 	</mainform>
 	<MakeNewProject>
@@ -1214,6 +1218,10 @@
 				<itemname>ProjectSettingFileSaveError</itemname>
 				<itemtext>Failed to save project settings. Please try again.</itemtext>
 			</item>
+		</MessageBox>
+	</ProjectSettingClass>
+	<PluginsClass>
+		<MessageBox>
 			<item>
 				<itemname>AlreadyInFavorites</itemname>
 				<itemtext>This plugin is already in your favorites.</itemtext>
@@ -1231,5 +1239,5 @@
 				<itemtext>Failed to load favorite macro list.</itemtext>
 			</item>
 		</MessageBox>
-	</ProjectSettingClass>
+	</PluginsClass>
 </list>

@@ -1594,10 +1594,7 @@ namespace CREC
                 MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
-            {
-                MessageBox.Show("プラグインの実行に失敗しました。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+            PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile);
         }
 
         /// <summary>
@@ -1613,7 +1610,7 @@ namespace CREC
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "実行ファイル(*.exe)|*.exe";
-            openFileDialog.Title = "お気に入りマクロに追加するプラグインを選択してください";
+            openFileDialog.Title = LanguageSettingClass.GetOtherMessage("SelectPluginToAddFavorite", "mainform", LanguageFile);
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
