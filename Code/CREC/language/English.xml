@@ -681,10 +681,6 @@
 				<itemtext>Delete History</itemtext>
 			</item>
 			<item>
-				<itemname>RemoveFromFavorites</itemname>
-				<itemtext>Remove from Favorites</itemtext>
-			</item>
-			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>
 				<itemtext>No recently opened project.</itemtext>
 			</item>
@@ -1209,6 +1205,22 @@
 			<item>
 				<itemname>ProjectSettingFileSaveError</itemname>
 				<itemtext>Failed to save project settings. Please try again.</itemtext>
+			</item>
+			<item>
+				<itemname>AlreadyInFavorites</itemname>
+				<itemtext>This plugin is already in your favorites.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroSaveError</itemname>
+				<itemtext>Failed to save favorite macro.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroDeleteError</itemname>
+				<itemtext>Failed to delete favorite macro.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroListLoadError</itemname>
+				<itemtext>Failed to load favorite macro list.</itemtext>
 			</item>
 		</MessageBox>
 	</ProjectSettingClass>

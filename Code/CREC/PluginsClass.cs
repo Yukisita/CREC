@@ -144,7 +144,12 @@ namespace CREC
         /// <param name="ProjectSettingValues">プロジェクト設定値</param>
         /// <param name="pluginName">プラグイン名</param>
         /// <param name="pluginPath">プラグインのパス</param>
-        public static bool AddToFavoritePluginsList(ProjectSettingValuesClass ProjectSettingValues, string pluginName, string pluginPath)
+        /// <param name="languageData">言語データ</param>
+        public static bool AddToFavoritePluginsList(
+            ProjectSettingValuesClass ProjectSettingValues,
+            string pluginName,
+            string pluginPath,
+            XElement languageData)
         {
             try
             {
@@ -178,7 +183,9 @@ namespace CREC
                         else
                         {
                             // 既に登録済みの場合はメッセージを表示して終了
-                            MessageBox.Show("このプラグインは既にお気に入りに登録されています。", "CREC");
+                            MessageBox.Show(
+                                LanguageSettingClass.GetMessageBoxMessage("AlreadyInFavorites", "mainform", languageData),
+                                "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return false;
                         }
                     }
@@ -193,7 +200,9 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("お気に入りマクロの保存に失敗しました。\n" + ex.Message, "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroSaveError", "mainform", languageData) + "\n" + ex.Message,
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -203,8 +212,9 @@ namespace CREC
         /// </summary>
         /// <param name="ProjectSettingValues">プロジェクト設定値</param>
         /// <param name="pluginPath">削除対象のプラグインのパス</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns></returns>
-        public static bool RemoveFromFavoritePluginsList(ProjectSettingValuesClass ProjectSettingValues, string pluginPath)
+        public static bool RemoveFromFavoritePluginsList(ProjectSettingValuesClass ProjectSettingValues, string pluginPath, XElement languageData)
         {
             try
             {
@@ -231,7 +241,9 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("お気に入りマクロの削除に失敗しました。\n" + ex.Message, "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroDeleteError", "mainform", languageData) + "\n" + ex.Message,
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -240,8 +252,9 @@ namespace CREC
         /// お気に入りプラグインリストを取得し、見つからないファイルを削除する
         /// </summary>
         /// <param name="ProjectSettingValues">プロジェクト設定値</param>
+        /// <param name="languageData">言語データ</param>
         /// <returns>お気に入りプラグインのリスト（プラグイン名,パス）</returns>
-        public static List<(string name, string path)> GetFavoritePluginsList(ProjectSettingValuesClass ProjectSettingValues)
+        public static List<(string name, string path)> GetFavoritePluginsList(ProjectSettingValuesClass ProjectSettingValues, XElement languageData)
         {
             List<(string name, string path)> favoritePlugins = new List<(string name, string path)>();
             string favoritePluginsFilePath = PluginsClass.GetFavoritePluginsFilePath(ProjectSettingValues);
@@ -289,7 +302,9 @@ namespace CREC
             }
             catch (Exception ex)
             {
-                MessageBox.Show("お気に入りマクロリストの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroListLoadError", "mainform", languageData) + "\n" + ex.Message,
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return favoritePlugins;

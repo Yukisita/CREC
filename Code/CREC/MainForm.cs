@@ -1551,7 +1551,7 @@ namespace CREC
             }
 
             // お気に入りプラグインリストを取得（見つからないファイルは自動削除する）
-            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
 
             if (favoritePlugins.Count == 0)
             {
@@ -1580,10 +1580,7 @@ namespace CREC
             if (!File.Exists(pluginPath))
             {
                 MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目をお気に入りから削除します。", "CREC");
-                if (!PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
-                {
-                    MessageBox.Show("お気に入りマクロの更新に失敗しました。", "CREC");
-                }
+                PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile);
                 return;
             }
 
@@ -1623,7 +1620,7 @@ namespace CREC
                 string pluginPath = openFileDialog.FileName;
                 string fileName = Path.GetFileName(pluginPath);
 
-                if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath))
+                if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath, LanguageFile))
                 {
                     MessageBox.Show("お気に入りマクロに追加しました。", "CREC");
                 }
@@ -1643,7 +1640,7 @@ namespace CREC
             }
 
             // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
-            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues);
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
 
             if (favoritePlugins.Count == 0)
             {
@@ -1661,7 +1658,7 @@ namespace CREC
                 favoritePluginItem.Text = plugin.name;
                 favoritePluginItem.ToolTipText = plugin.path;
                 favoritePluginItem.Click += RemoveFavoritePluginToolStripMenuItemSub_Click;
-                
+
                 RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
             }
         }
@@ -1674,7 +1671,7 @@ namespace CREC
             ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
             string pluginPath = clickedItem.ToolTipText;
 
-            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath))
+            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile))
             {
                 MessageBox.Show("お気に入りから削除しました。", "CREC");
                 // メニューを再構築

@@ -681,10 +681,6 @@
 				<itemtext>履歴を削除</itemtext>
 			</item>
 			<item>
-				<itemname>RemoveFromFavorites</itemname>
-				<itemtext>お気に入りから削除</itemtext>
-			</item>
-			<item>
 				<itemname>NoRecentlyOpenedProjectList</itemname>
 				<itemtext>履歴はありません</itemtext>
 			</item>
@@ -1209,6 +1205,22 @@
 			<item>
 				<itemname>ProjectSettingFileSaveError</itemname>
 				<itemtext>プロジェクト設定の保存に失敗しました。再試行しますか？</itemtext>
+			</item>
+			<item>
+				<itemname>AlreadyInFavorites</itemname>
+				<itemtext>このプラグインは既にお気に入りに登録されています</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroSaveError</itemname>
+				<itemtext>お気に入りマクロの保存に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroDeleteError</itemname>
+				<itemtext>お気に入りマクロの削除に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoriteMacroListLoadError</itemname>
+				<itemtext>お気に入りマクロリストの読み込みに失敗しました。</itemtext>
 			</item>
 		</MessageBox>
 	</ProjectSettingClass>
