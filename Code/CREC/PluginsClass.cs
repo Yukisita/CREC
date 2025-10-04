@@ -29,7 +29,7 @@ namespace CREC
             if (ProjectSettingValues.ProjectSettingFilePath.Length != 0)
             {
                 // プロジェクトデータフォルダ内のシステムデータフォルダに配置する
-                return ProjectSettingValues.ProjectDataFolderPath + "\\"+MainForm.ProjectSystemDataFolderName+"\\RecentlyExecutedPluginList.log";
+                return ProjectSettingValues.ProjectDataFolderPath + "\\" + MainForm.ProjectSystemDataFolderName + "\\RecentlyExecutedPluginList.log";
             }
             return string.Empty;
         }
@@ -150,7 +150,7 @@ namespace CREC
             {
                 // お気に入りプラグインリストのファイルパスを取得
                 string favoritePluginsFilePath = PluginsClass.GetFavoritePluginsFilePath(ProjectSettingValues);
-                if(string.IsNullOrEmpty(favoritePluginsFilePath)) 
+                if (string.IsNullOrEmpty(favoritePluginsFilePath))
                 {
                     return false;
                 }
@@ -259,7 +259,7 @@ namespace CREC
                 foreach (string line in existingLines)
                 {
                     string[] parts = line.Split(',');
-                    if (parts.Length >= 2)
+                    if (parts.Length == 2)
                     {
                         string pluginPath = parts[1];
                         // ファイルが存在する場合のみリストに追加
@@ -270,8 +270,14 @@ namespace CREC
                         }
                         else
                         {
+                            // ファイルが存在しない場合はリストから削除
                             needsUpdate = true;
                         }
+                    }
+                    else
+                    {
+                        // フォーマットが不正な行は削除
+                        needsUpdate = true;
                     }
                 }
 
