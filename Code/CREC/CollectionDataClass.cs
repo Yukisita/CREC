@@ -281,6 +281,9 @@ namespace CREC
 
     public class CollectionDataClass
     {
+        // 定数
+        const string BackupLogFolderName = "!BackupLog";// バックアップログのフォルダ名を定義
+
         /// <summary>
         /// コレクションのデータ読み込み
         /// </summary>
@@ -782,7 +785,7 @@ namespace CREC
             try
             {
                 // BackupLogフォルダを作成(名前順で冒頭に表示されるよう、フォルダ名に感嘆符を付ける)
-                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "!BackupLog");
+                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, BackupLogFolderName);
                 if (!Directory.Exists(backupLogFolderPath))
                 {
                     Directory.CreateDirectory(backupLogFolderPath);
@@ -1174,7 +1177,7 @@ namespace CREC
                 // バックアップフォルダ内のすべてのサブフォルダを取得
                 string[] backupFolders = Directory.GetDirectories(projectSettingValues.ProjectBackupFolderPath);
                 // バックアップログフォルダは削除対象外
-                backupFolders = backupFolders.Where(folder => System.IO.Path.GetFileName(folder) != "!BackupLog").ToArray();
+                backupFolders = backupFolders.Where(folder => System.IO.Path.GetFileName(folder) != BackupLogFolderName).ToArray();
 
                 // 各バックアップフォルダをチェック
                 foreach (string backupFolder in backupFolders)
