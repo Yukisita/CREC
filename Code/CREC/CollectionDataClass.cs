@@ -1144,7 +1144,7 @@ namespace CREC
         /// <param name="allCollectionList">現在のコレクションリスト</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>成功：true / 失敗：false</returns>
-        public static bool CleanupOrphanedBackupFolders(
+        public static bool CleanupDeletedCollectionBackupFolders(
             ProjectSettingValuesClass projectSettingValues,
             List<CollectionDataValuesClass> allCollectionList,
             XElement languageData)

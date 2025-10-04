@@ -690,7 +690,7 @@ namespace CREC
             if (result == DialogResult.Yes)
             {
                 // バックアップデータ整理を実行
-                bool cleanupResult = CollectionDataClass.CleanupOrphanedBackupFolders(
+                bool cleanupResult = CollectionDataClass.CleanupDeletedCollectionBackupFolders(
                     CurrentProjectSettingValues,
                     allCollectionList,
                     LanguageFile);
