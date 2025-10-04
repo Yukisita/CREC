@@ -1163,7 +1163,7 @@ namespace CREC
             try
             {
                 // 現在のコレクションのUUIDリストを作成
-                HashSet<string> currentCollectionIds = new HashSet<string>();
+                var currentCollectionIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 foreach (var collection in allCollectionList)
                 {
                     currentCollectionIds.Add(collection.CollectionID);
