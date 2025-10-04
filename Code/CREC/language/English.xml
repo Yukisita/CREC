@@ -578,11 +578,11 @@
 			</item>
 			<item>
 				<itemname>BackupCleanupCompleted</itemname>
-				<itemtext>Backup data cleanup completed.</itemtext>
+				<itemtext>Backup data cleanup completed.&#xD;&#xA;Deleted data count: </itemtext>
 			</item>
 			<item>
 				<itemname>BackupCleanupFailed</itemname>
-				<itemtext>Backup data cleanup failed.</itemtext>
+				<itemtext>Backup data cleanup failed.&#xD;&#xA;Deleted data count: </itemtext>
 			</item>
 			<item>
 				<itemname>NoBackupFolderSettingError</itemname>

@@ -578,11 +578,11 @@
 			</item>
 			<item>
 				<itemname>BackupCleanupCompleted</itemname>
-				<itemtext>バックアップデータの整理が完了しました。</itemtext>
+				<itemtext>バックアップデータの整理が完了しました。&#xD;&#xA;削除データ件数: </itemtext>
 			</item>
 			<item>
 				<itemname>BackupCleanupFailed</itemname>
-				<itemtext>バックアップデータの整理に失敗しました。</itemtext>
+				<itemtext>バックアップデータの整理に失敗しました。&#xD;&#xA;削除データ件数: </itemtext>
 			</item>
 			<item>
 				<itemname>NoBackupFolderSettingError</itemname>
