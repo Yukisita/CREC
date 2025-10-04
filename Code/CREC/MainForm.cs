@@ -674,7 +674,11 @@ namespace CREC
         {
             if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
