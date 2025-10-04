@@ -568,6 +568,18 @@
 				<itemname>FavoritePluginRemovedMessage</itemname>
 				<itemtext>お気に入りプラグインから削除しました。</itemtext>
 			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>存在しないコレクションのバックアップを削除します。この操作は取り消せません。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>バックアップデータの整理が完了しました。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>バックアップデータの整理に失敗しました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

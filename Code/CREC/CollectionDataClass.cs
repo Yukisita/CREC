@@ -1136,5 +1136,70 @@ namespace CREC
                 backUpProgressReport,
                 languageData));
         }
+
+        /// <summary>
+        /// 存在しないコレクションのバックアップフォルダを削除する
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="allCollectionList">現在のコレクションリスト</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>成功：true / 失敗：false</returns>
+        public static bool CleanupOrphanedBackupFolders(
+            ProjectSettingValuesClass projectSettingValues,
+            List<CollectionDataValuesClass> allCollectionList,
+            XElement languageData)
+        {
+            // バックアップフォルダが存在するか確認
+            if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
+            {
+                return false;
+            }
+
+            if (!Directory.Exists(projectSettingValues.ProjectBackupFolderPath))
+            {
+                return false;
+            }
+
+            try
+            {
+                // 現在のコレクションのUUIDリストを作成
+                HashSet<string> currentCollectionIds = new HashSet<string>();
+                foreach (var collection in allCollectionList)
+                {
+                    currentCollectionIds.Add(collection.CollectionID);
+                }
+
+                // バックアップフォルダ内のすべてのサブフォルダを取得
+                string[] backupFolders = Directory.GetDirectories(projectSettingValues.ProjectBackupFolderPath);
+
+                // 各バックアップフォルダをチェック
+                foreach (string backupFolder in backupFolders)
+                {
+                    string folderName = System.IO.Path.GetFileName(backupFolder);
+
+                    // 現在のコレクションリストに存在しないUUIDの場合は削除
+                    if (!currentCollectionIds.Contains(folderName))
+                    {
+                        try
+                        {
+                            Directory.Delete(backupFolder, recursive: true);
+                        }
+                        catch (Exception ex)
+                        {
+                            // 個別のフォルダ削除に失敗してもログに記録するだけで処理を継続
+                            System.Diagnostics.Debug.WriteLine($"Failed to delete backup folder: {backupFolder}, Error: {ex.Message}");
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // エラーが発生した場合はfalseを返す
+                System.Diagnostics.Debug.WriteLine($"Cleanup failed: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

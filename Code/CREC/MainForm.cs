@@ -666,6 +666,53 @@ namespace CREC
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
             }
         }
+        private void CleanupBackupDataToolStripMenuItem_Click(object sender, EventArgs e)// バックアップデータ整理
+        {
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
+            {
+                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                return;
+            }
+
+            // 確認メッセージ表示
+            DialogResult result = MessageBox.Show(
+                LanguageSettingClass.GetMessageBoxMessage("AskCleanupBackupData", "mainform", LanguageFile),
+                "CREC",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.Yes)
+            {
+                // バックアップデータ整理を実行
+                bool cleanupResult = CollectionDataClass.CleanupOrphanedBackupFolders(
+                    CurrentProjectSettingValues,
+                    allCollectionList,
+                    LanguageFile);
+
+                if (cleanupResult)
+                {
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile),
+                        "CREC",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile),
+                        "CREC",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+        }
         private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
         {
             CollectionListClass.OutputCollectionList(CurrentProjectSettingValues, allCollectionList, LanguageFile);// 一覧を出力

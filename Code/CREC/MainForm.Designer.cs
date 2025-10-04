@@ -49,6 +49,7 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.BackupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenBackUpFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CleanupBackupDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.OutputListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OutputListAllContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -280,6 +281,7 @@
             this.toolStripSeparator4,
             this.BackupToolStripMenuItem,
             this.OpenBackUpFolderToolStripMenuItem,
+            this.CleanupBackupDataToolStripMenuItem,
             this.toolStripSeparator1,
             this.OutputListToolStripMenuItem,
             this.toolStripSeparator6,
@@ -332,6 +334,13 @@
             this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
             this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く...";
             this.OpenBackUpFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenBackUpFolderToolStripMenuItem_Click);
+            // 
+            // CleanupBackupDataToolStripMenuItem
+            // 
+            this.CleanupBackupDataToolStripMenuItem.Name = "CleanupBackupDataToolStripMenuItem";
+            this.CleanupBackupDataToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.CleanupBackupDataToolStripMenuItem.Text = "バックアップデータ整理";
+            this.CleanupBackupDataToolStripMenuItem.Click += new System.EventHandler(this.CleanupBackupDataToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -2629,6 +2638,7 @@
         private System.Windows.Forms.ToolStripMenuItem BackupToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem InventoryInformationListToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenBackUpFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem CleanupBackupDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem DisplayModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem StandardDisplayModeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem FullDisplayModeToolStripMenuItem;

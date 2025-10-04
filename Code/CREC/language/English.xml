@@ -568,6 +568,18 @@
 				<itemname>FavoritePluginRemovedMessage</itemname>
 				<itemtext>Removed from favorite plugin.</itemtext>
 			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>This will delete backups of non-existent collections. This operation cannot be undone.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>Backup data cleanup completed.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>Backup data cleanup failed.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
