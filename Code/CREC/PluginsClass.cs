@@ -169,7 +169,7 @@ namespace CREC
 
                 List<string> favoritePlugins = new List<string>();
 
-                // 既存のリストを読み込み
+                // 既存のリストを読み込み、重複確認
                 if (File.Exists(favoritePluginsFilePath))
                 {
                     string[] existingLines = File.ReadAllLines(favoritePluginsFilePath, Encoding.GetEncoding("UTF-8"));
@@ -230,9 +230,9 @@ namespace CREC
                 string[] existingLines = File.ReadAllLines(favoritePluginsFilePath, Encoding.GetEncoding("UTF-8"));
                 List<string> filteredLines = new List<string>();
 
+                // 削除対象のパス以外をリストに追加
                 foreach (string line in existingLines)
                 {
-                    // Split the line by comma and compare the second part (plugin path) exactly
                     string[] parts = line.Split(',');
                     if (parts.Length < 2 || !string.Equals(parts[1], pluginPath, StringComparison.Ordinal))
                     {
