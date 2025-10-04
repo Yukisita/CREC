@@ -1622,7 +1622,9 @@ namespace CREC
 
                 if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath, LanguageFile))
                 {
-                    MessageBox.Show("お気に入りマクロに追加しました。", "CREC");
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroAddedMessage", "mainform", LanguageFile),
+                        "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -1673,13 +1675,11 @@ namespace CREC
 
             if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile))
             {
-                MessageBox.Show("お気に入りから削除しました。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginRemovedMessage", "mainform", LanguageFile),
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 // メニューを再構築
                 RemoveFavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
-            }
-            else
-            {
-                MessageBox.Show("お気に入りマクロの削除に失敗しました。", "CREC");
             }
         }
         #endregion

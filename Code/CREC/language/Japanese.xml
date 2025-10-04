@@ -560,6 +560,14 @@
 				<itemname>SystemReservedValueError</itemname>
 				<itemtext>システムが使用する値のため使用できません。</itemtext>
 			</item>
+			<item>
+				<itemname>FavoriteMacroAddedMessage</itemname>
+				<itemtext>お気に入りマクロに追加しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginRemovedMessage</itemname>
+				<itemtext>お気に入りプラグインから削除しました。</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>

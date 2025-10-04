@@ -560,6 +560,14 @@
 				<itemname>SystemReservedValueError</itemname>
 				<itemtext>This value is reserved for system use and cannot be used.</itemtext>
 			</item>
+			<item>
+				<itemname>FavoriteMacroAddedMessage</itemname>
+				<itemtext>Added to favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginRemovedMessage</itemname>
+				<itemtext>Removed from favorite plugin.</itemtext>
+			</item>
 		</MessageBox>
 		<ToolTip>
 			<item>
