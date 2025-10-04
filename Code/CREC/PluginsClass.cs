@@ -232,7 +232,9 @@ namespace CREC
 
                 foreach (string line in existingLines)
                 {
-                    if (!line.Contains(pluginPath))
+                    // Split the line by comma and compare the second part (plugin path) exactly
+                    string[] parts = line.Split(',');
+                    if (parts.Length < 2 || !string.Equals(parts[1], pluginPath, StringComparison.Ordinal))
                     {
                         filteredLines.Add(line);
                     }
