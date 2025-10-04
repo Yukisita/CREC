@@ -148,7 +148,13 @@ namespace CREC
         {
             try
             {
+                // お気に入りプラグインリストのファイルパスを取得
                 string favoritePluginsFilePath = PluginsClass.GetFavoritePluginsFilePath(ProjectSettingValues);
+                if(string.IsNullOrEmpty(favoritePluginsFilePath)) 
+                {
+                    return false;
+                }
+
                 // projectのシステムデータフォルダが存在しない場合は作成
                 string projectSystemDataFolderPath = System.IO.Path.GetDirectoryName(favoritePluginsFilePath);
                 if (!System.IO.Directory.Exists(projectSystemDataFolderPath))
@@ -202,8 +208,9 @@ namespace CREC
         {
             try
             {
+                // お気に入りプラグインリストのファイルパスを取得
                 string favoritePluginsFilePath = PluginsClass.GetFavoritePluginsFilePath(ProjectSettingValues);
-                if (!File.Exists(favoritePluginsFilePath))
+                if (string.IsNullOrEmpty(favoritePluginsFilePath) || !File.Exists(favoritePluginsFilePath))
                 {
                     return false;
                 }
@@ -238,8 +245,7 @@ namespace CREC
         {
             List<(string name, string path)> favoritePlugins = new List<(string name, string path)>();
             string favoritePluginsFilePath = PluginsClass.GetFavoritePluginsFilePath(ProjectSettingValues);
-            
-            if (!File.Exists(favoritePluginsFilePath))
+            if (string.IsNullOrEmpty(favoritePluginsFilePath) || !File.Exists(favoritePluginsFilePath))
             {
                 return favoritePlugins;
             }
