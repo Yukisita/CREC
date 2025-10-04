@@ -176,7 +176,9 @@ namespace CREC
                     foreach (string line in existingLines)
                     {
                         // 同じパスが既に存在する場合は重複登録しない
-                        if (!line.Contains(pluginPath))
+                        var parts = line.Split(new[] { ',' }, 2);
+                        string existingPath = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+                        if (!string.Equals(existingPath, pluginPath, StringComparison.OrdinalIgnoreCase))
                         {
                             favoritePlugins.Add(line);
                         }
