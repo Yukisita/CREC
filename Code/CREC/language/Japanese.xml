@@ -263,6 +263,10 @@
 				<itemtext>バックアップ場所を開く...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>バックアップデータの整理</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>一覧をCSV/TSV出力</itemtext>
 			</item>
@@ -579,6 +583,10 @@
 			<item>
 				<itemname>BackupCleanupFailed</itemname>
 				<itemtext>バックアップデータの整理に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>バックアップフォルダが設定されていません。&#xD;&#xA;プロジェクト設定画面で設定してください。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>

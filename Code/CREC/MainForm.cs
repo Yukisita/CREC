@@ -654,7 +654,11 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
-                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
             try
@@ -675,7 +679,11 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
-                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 

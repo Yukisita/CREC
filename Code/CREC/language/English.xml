@@ -263,6 +263,10 @@
 				<itemtext>Open Backup Folder...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>Cleanup Backup Data</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>Output Contents List(TSV os CSV)</itemtext>
 			</item>
@@ -579,6 +583,10 @@
 			<item>
 				<itemname>BackupCleanupFailed</itemname>
 				<itemtext>Backup data cleanup failed.</itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>Backup folder is not set.&#xD;&#xA;Please set backup folder in Project Settings.</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
