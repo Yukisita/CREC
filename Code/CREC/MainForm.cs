@@ -705,15 +705,16 @@ namespace CREC
             }
 
             // バックアップデータ整理を実行
+            int deletedBackupData = 0;
             bool cleanupResult = CollectionDataClass.CleanupDeletedCollectionBackupFolders(
                 CurrentProjectSettingValues,
                 allCollectionList,
-                LanguageFile);
+                ref deletedBackupData);
 
             if (cleanupResult)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile),
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile) + deletedBackupData,
                     "CREC",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);

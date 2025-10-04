@@ -1142,13 +1142,15 @@ namespace CREC
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
         /// <param name="allCollectionList">現在のコレクションリスト</param>
-        /// <param name="languageData">言語データ</param>
+        /// <param name="deletedBackupData">削除したデータを戻すための参照渡し引数</param>
         /// <returns>成功：true / 失敗：false</returns>
         public static bool CleanupDeletedCollectionBackupFolders(
             ProjectSettingValuesClass projectSettingValues,
             List<CollectionDataValuesClass> allCollectionList,
-            XElement languageData)
+            ref int deletedBackupData)
         {
+            deletedBackupData = 0;// 削除したデータ数を初期化
+
             // バックアップフォルダが存在するか確認
             if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
             {
@@ -1157,7 +1159,7 @@ namespace CREC
 
             if (!Directory.Exists(projectSettingValues.ProjectBackupFolderPath))
             {
-                return false;
+                return true;
             }
 
             try
@@ -1183,6 +1185,7 @@ namespace CREC
                         try
                         {
                             Directory.Delete(backupFolder, recursive: true);
+                            deletedBackupData++;
                         }
                         catch (Exception ex)
                         {
