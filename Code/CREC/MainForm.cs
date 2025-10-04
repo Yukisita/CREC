@@ -722,7 +722,7 @@ namespace CREC
             else
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile),
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile) + deletedBackupData,
                     "CREC",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
