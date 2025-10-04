@@ -1427,15 +1427,8 @@ namespace CREC
             {
                 string pluginPath = openFileDialog.FileName;
                 string fileName = Path.GetFileName(pluginPath);
-                try
-                {
-                    // 最近実行したプラグインリストに追加
-                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                // 最近実行したプラグインリストに追加
+                PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
 
                 if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
                 {
@@ -1585,14 +1578,7 @@ namespace CREC
             }
 
             // 最近実行したプラグインリストにも追加
-            try
-            {
-                PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, clickedItem.Text, pluginPath);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, clickedItem.Text, pluginPath);
 
             PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile);
         }
