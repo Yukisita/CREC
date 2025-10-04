@@ -201,7 +201,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroSaveError", "PluginsClass", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginSaveError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -242,7 +242,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroDeleteError", "PluginsClass", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginDeleteError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
@@ -303,7 +303,7 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroListLoadError", "PluginsClass", languageData) + "\n" + ex.Message,
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginListLoadError", "PluginsClass", languageData) + "\n" + ex.Message,
                     "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 

@@ -875,14 +875,14 @@
             // 
             this.AddToFavoritePluginsToolStripMenuItem.Name = "AddToFavoritePluginsToolStripMenuItem";
             this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
-            this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ追加...";
+            this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン追加...";
             this.AddToFavoritePluginsToolStripMenuItem.Click += new System.EventHandler(this.AddToFavoritePluginsToolStripMenuItem_Click);
             // 
             // RemoveFavoritePluginsToolStripMenuItem
             // 
             this.RemoveFavoritePluginsToolStripMenuItem.Name = "RemoveFavoritePluginsToolStripMenuItem";
             this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
-            this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りマクロ削除";
+            this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン削除";
             this.RemoveFavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.RemoveFavoritePluginsToolStripMenuItem_MouseEnter);
             // 
             // HelpToolStripMenuItem

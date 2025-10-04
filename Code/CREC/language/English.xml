@@ -416,11 +416,11 @@
 			</item>
 			<item>
 				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
-				<itemtext>Add Favorite Macro...</itemtext>
+				<itemtext>Add Favorite Plugin...</itemtext>
 			</item>
 			<item>
 				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
-				<itemtext>Remove Favorite Macro</itemtext>
+				<itemtext>Remove Favorite Plugin</itemtext>
 			</item>
 			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
@@ -561,7 +561,7 @@
 				<itemtext>This value is reserved for system use and cannot be used.</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroAddedMessage</itemname>
+				<itemname>FavoritePluginAddedMessage</itemname>
 				<itemtext>Added to favorite plugin.</itemtext>
 			</item>
 			<item>
@@ -783,6 +783,10 @@
 			<item>
 				<itemname>SelectPluginToAddFavorite</itemname>
 				<itemtext>Select a plugin to add to favorite.</itemtext>
+			</item>
+			<item>
+				<itemname>NoFavoritePlugin</itemname>
+				<itemtext>No favorite plugin.</itemtext>
 			</item>
 		</Other>
 	</mainform>
@@ -1227,16 +1231,16 @@
 				<itemtext>This plugin is already in your favorites.</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroSaveError</itemname>
-				<itemtext>Failed to save favorite macro.</itemtext>
+				<itemname>FavoritePluginSaveError</itemname>
+				<itemtext>Failed to save favorite plugin.</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroDeleteError</itemname>
-				<itemtext>Failed to delete favorite macro.</itemtext>
+				<itemname>FavoritePluginDeleteError</itemname>
+				<itemtext>Failed to delete favorite plugin.</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroListLoadError</itemname>
-				<itemtext>Failed to load favorite macro list.</itemtext>
+				<itemname>FavoritePluginListLoadError</itemname>
+				<itemtext>Failed to load favorite plugin list.</itemtext>
 			</item>
 		</MessageBox>
 	</PluginsClass>

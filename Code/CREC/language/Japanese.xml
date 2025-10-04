@@ -416,11 +416,11 @@
 			</item>
 			<item>
 				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
-				<itemtext>お気に入りマクロ追加...</itemtext>
+				<itemtext>お気に入りプラグイン追加...</itemtext>
 			</item>
 			<item>
 				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
-				<itemtext>お気に入りマクロ削除</itemtext>
+				<itemtext>お気に入りプラグイン削除</itemtext>
 			</item>
 			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
@@ -561,8 +561,8 @@
 				<itemtext>システムが使用する値のため使用できません。</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroAddedMessage</itemname>
-				<itemtext>お気に入りマクロに追加しました。</itemtext>
+				<itemname>FavoritePluginAddedMessage</itemname>
+				<itemtext>お気に入りプラグインに追加しました。</itemtext>
 			</item>
 			<item>
 				<itemname>FavoritePluginRemovedMessage</itemname>
@@ -783,6 +783,10 @@
 			<item>
 				<itemname>SelectPluginToAddFavorite</itemname>
 				<itemtext>お気に入りに追加するプラグインを選択してください。</itemtext>
+			</item>
+			<item>
+				<itemname>NoFavoritePlugin</itemname>
+				<itemtext>お気に入りプラグインはありません。</itemtext>
 			</item>
 		</Other>
 	</mainform>
@@ -1227,16 +1231,16 @@
 				<itemtext>このプラグインは既にお気に入りに登録されています</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroSaveError</itemname>
-				<itemtext>お気に入りマクロの保存に失敗しました。</itemtext>
+				<itemname>FavoritePluginSaveError</itemname>
+				<itemtext>お気に入りプラグインの保存に失敗しました。</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroDeleteError</itemname>
-				<itemtext>お気に入りマクロの削除に失敗しました。</itemtext>
+				<itemname>FavoritePluginDeleteError</itemname>
+				<itemtext>お気に入りプラグインの削除に失敗しました。</itemtext>
 			</item>
 			<item>
-				<itemname>FavoriteMacroListLoadError</itemname>
-				<itemtext>お気に入りマクロリストの読み込みに失敗しました。</itemtext>
+				<itemname>FavoritePluginListLoadError</itemname>
+				<itemtext>お気に入りプラグインリストの読み込みに失敗しました。</itemtext>
 			</item>
 		</MessageBox>
 	</PluginsClass>

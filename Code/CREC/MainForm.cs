@@ -1534,11 +1534,11 @@ namespace CREC
         }
 
         /// <summary>
-        /// プラグインメニューが開かれる時の処理（お気に入りマクロを動的に追加）
+        /// プラグインメニューが開かれる時の処理（お気に入りプラグインを動的に追加）
         /// </summary>
         private void PluginToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            // お気に入りマクロ関連の動的メニュー項目を削除
+            // お気に入りプラグイン関連の動的メニュー項目を削除
             int fixedItemCount = 6;
             while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
             {
@@ -1570,7 +1570,7 @@ namespace CREC
         }
 
         /// <summary>
-        /// お気に入りマクロのサブメニューがクリックされた時の処理
+        /// お気に入りプラグインのサブメニューがクリックされた時の処理
         /// </summary>
         private void FavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
         {
@@ -1598,7 +1598,7 @@ namespace CREC
         }
 
         /// <summary>
-        /// お気に入りマクロ追加メニューがクリックされた時の処理
+        /// お気に入りプラグイン追加メニューがクリックされた時の処理
         /// </summary>
         private void AddToFavoritePluginsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1620,14 +1620,14 @@ namespace CREC
                 if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath, LanguageFile))
                 {
                     MessageBox.Show(
-                        LanguageSettingClass.GetMessageBoxMessage("FavoriteMacroAddedMessage", "mainform", LanguageFile),
+                        LanguageSettingClass.GetMessageBoxMessage("FavoritePluginAddedMessage", "mainform", LanguageFile),
                         "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
 
         /// <summary>
-        /// お気に入りマクロ削除メニューがマウスホバーされた時の処理
+        /// お気に入りプラグイン削除メニューがマウスホバーされた時の処理
         /// </summary>
         private void RemoveFavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
         {
@@ -1644,7 +1644,7 @@ namespace CREC
             if (favoritePlugins.Count == 0)
             {
                 ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
-                noFavoritesItem.Text = "お気に入りマクロなし";
+                noFavoritesItem.Text = LanguageSettingClass.GetOtherMessage("NoFavoritePlugin", "mainform", LanguageFile);
                 noFavoritesItem.Enabled = false;
                 RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
                 return;
@@ -1663,7 +1663,7 @@ namespace CREC
         }
 
         /// <summary>
-        /// お気に入りマクロ削除のサブメニューがクリックされた時の処理
+        /// お気に入りプラグイン削除のサブメニューがクリックされた時の処理
         /// </summary>
         private void RemoveFavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
         {
