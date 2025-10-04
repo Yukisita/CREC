@@ -570,7 +570,7 @@
 			</item>
 			<item>
 				<itemname>AskCleanupBackupData</itemname>
-				<itemtext>This will delete backups of non-existent collections. This operation cannot be undone.</itemtext>
+				<itemtext>This will delete backups of non-existent collections. &#xD;&#xA;This operation cannot be undone.</itemtext>
 			</item>
 			<item>
 				<itemname>BackupCleanupCompleted</itemname>
