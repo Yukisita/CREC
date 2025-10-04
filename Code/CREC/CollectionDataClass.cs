@@ -1173,6 +1173,8 @@ namespace CREC
 
                 // バックアップフォルダ内のすべてのサブフォルダを取得
                 string[] backupFolders = Directory.GetDirectories(projectSettingValues.ProjectBackupFolderPath);
+                // バックアップログフォルダは削除対象外
+                backupFolders = backupFolders.Where(folder => System.IO.Path.GetFileName(folder) != "!BackupLog").ToArray();
 
                 // 各バックアップフォルダをチェック
                 foreach (string backupFolder in backupFolders)
