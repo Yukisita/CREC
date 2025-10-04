@@ -281,6 +281,9 @@ namespace CREC
 
     public class CollectionDataClass
     {
+        // 定数
+        const string BackupLogFolderName = "!BackupLog";// バックアップログのフォルダ名を定義
+
         /// <summary>
         /// コレクションのデータ読み込み
         /// </summary>
@@ -782,7 +785,7 @@ namespace CREC
             try
             {
                 // BackupLogフォルダを作成(名前順で冒頭に表示されるよう、フォルダ名に感嘆符を付ける)
-                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, "!BackupLog");
+                string backupLogFolderPath = System.IO.Path.Combine(backupFolderPath, BackupLogFolderName);
                 if (!Directory.Exists(backupLogFolderPath))
                 {
                     Directory.CreateDirectory(backupLogFolderPath);
@@ -1135,6 +1138,76 @@ namespace CREC
                 projectSettingValues,
                 backUpProgressReport,
                 languageData));
+        }
+
+        /// <summary>
+        /// 存在しないコレクションのバックアップフォルダを削除する
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="allCollectionList">現在のコレクションリスト</param>
+        /// <param name="deletedBackupData">削除したデータを戻すための参照渡し引数</param>
+        /// <returns>成功：true / 失敗：false</returns>
+        public static bool CleanupDeletedCollectionBackupFolders(
+            ProjectSettingValuesClass projectSettingValues,
+            List<CollectionDataValuesClass> allCollectionList,
+            ref int deletedBackupData)
+        {
+            deletedBackupData = 0;// 削除したデータ数を初期化
+
+            // バックアップフォルダが存在するか確認
+            if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
+            {
+                return false;
+            }
+
+            if (!Directory.Exists(projectSettingValues.ProjectBackupFolderPath))
+            {
+                return true;
+            }
+
+            try
+            {
+                // 現在のコレクションのUUIDリストを作成
+                var currentCollectionIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var collection in allCollectionList)
+                {
+                    currentCollectionIds.Add(collection.CollectionID);
+                }
+
+                // バックアップフォルダ内のすべてのサブフォルダを取得
+                string[] backupFolders = Directory.GetDirectories(projectSettingValues.ProjectBackupFolderPath);
+                // バックアップログフォルダは削除対象外
+                backupFolders = backupFolders.Where(folder => System.IO.Path.GetFileName(folder) != BackupLogFolderName).ToArray();
+
+                // 各バックアップフォルダをチェック
+                foreach (string backupFolder in backupFolders)
+                {
+                    string folderName = System.IO.Path.GetFileName(backupFolder);
+
+                    // 現在のコレクションリストに存在しないUUIDの場合は削除
+                    if (!currentCollectionIds.Contains(folderName))
+                    {
+                        try
+                        {
+                            Directory.Delete(backupFolder, recursive: true);
+                            deletedBackupData++;
+                        }
+                        catch (Exception ex)
+                        {
+                            // 個別のフォルダ削除に失敗してもログに記録するだけで処理を継続
+                            System.Diagnostics.Debug.WriteLine($"Failed to delete backup folder: {backupFolder}, Error: {ex.Message}");
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // エラーが発生した場合はfalseを返す
+                System.Diagnostics.Debug.WriteLine($"Cleanup failed: {ex.Message}");
+                return false;
+            }
         }
     }
 }

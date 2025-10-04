@@ -654,7 +654,11 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
-                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
             try
@@ -664,6 +668,64 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
+            }
+        }
+        private void CleanupBackupDataToolStripMenuItem_Click(object sender, EventArgs e)// バックアップデータ整理
+        {
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 確認メッセージ表示
+            DialogResult result = MessageBox.Show(
+                LanguageSettingClass.GetMessageBoxMessage("AskCleanupBackupData", "mainform", LanguageFile),
+                "CREC",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
+            // バックアップデータ整理を実行
+            int deletedBackupData = 0;
+            bool cleanupResult = CollectionDataClass.CleanupDeletedCollectionBackupFolders(
+                CurrentProjectSettingValues,
+                allCollectionList,
+                ref deletedBackupData);
+
+            if (cleanupResult)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
         private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力

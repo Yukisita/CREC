@@ -263,6 +263,10 @@
 				<itemtext>Open Backup Folder...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>Cleanup Backup Data</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>Output Contents List(TSV os CSV)</itemtext>
 			</item>
@@ -567,6 +571,22 @@
 			<item>
 				<itemname>FavoritePluginRemovedMessage</itemname>
 				<itemtext>Removed from favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>This will delete backups of non-existent collections. &#xD;&#xA;This operation cannot be undone.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>Backup data cleanup completed.&#xD;&#xA;Deleted data count: </itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>Backup data cleanup failed.&#xD;&#xA;Deleted data count: </itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>Backup folder is not set.&#xD;&#xA;Please set backup folder in Project Settings.</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>

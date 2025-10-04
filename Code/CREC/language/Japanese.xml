@@ -263,6 +263,10 @@
 				<itemtext>バックアップ場所を開く...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>バックアップデータの整理</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>一覧をCSV/TSV出力</itemtext>
 			</item>
@@ -567,6 +571,22 @@
 			<item>
 				<itemname>FavoritePluginRemovedMessage</itemname>
 				<itemtext>お気に入りプラグインから削除しました。</itemtext>
+			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>存在しないコレクションのバックアップを削除します。&#xD;&#xA;この操作は取り消せません。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>バックアップデータの整理が完了しました。&#xD;&#xA;削除データ件数: </itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>バックアップデータの整理に失敗しました。&#xD;&#xA;削除データ件数: </itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>バックアップフォルダが設定されていません。&#xD;&#xA;プロジェクト設定画面で設定してください。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
