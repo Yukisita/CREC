@@ -263,6 +263,10 @@
 				<itemtext>バックアップ場所を開く...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>バックアップデータの整理</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>一覧をCSV/TSV出力</itemtext>
 			</item>
@@ -379,6 +383,10 @@
 				<itemtext>データ一覧の表示項目</itemtext>
 			</item>
 			<item>
+				<itemname>ColumnWidthAdjustmentToolStripMenuItem</itemname>
+				<itemtext>列幅自動調整</itemtext>
+			</item>
+			<item>
 				<itemname>RecentShownContentsToolStripMenuItem</itemname>
 				<itemtext>最近表示したコレクション</itemtext>
 			</item>
@@ -409,6 +417,14 @@
 			<item>
 				<itemname>RecentlyExecutedPluginToolStripMenuItem</itemname>
 				<itemtext>最近実行したプラグイン</itemtext>
+			</item>
+			<item>
+				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>お気に入りプラグイン追加...</itemtext>
+			</item>
+			<item>
+				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>お気に入りプラグイン削除</itemtext>
 			</item>
 			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
@@ -538,7 +554,39 @@
 			</item>
 			<item>
 				<itemname>SearchedCollectionNofFoundMessage</itemname>
-				<itemtext>検索されたコレクションんが見つかりません。</itemtext>
+				<itemtext>検索されたコレクションが見つかりません。</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDListHiddenWarning</itemname>
+				<itemtext>UUIDを非表示にすると不具合の原因となります。&#xD;&#xA;表示状態にしますか？</itemtext>
+			</item>
+			<item>
+				<itemname>SystemReservedValueError</itemname>
+				<itemtext>システムが使用する値のため使用できません。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginAddedMessage</itemname>
+				<itemtext>お気に入りプラグインに追加しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginRemovedMessage</itemname>
+				<itemtext>お気に入りプラグインから削除しました。</itemtext>
+			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>存在しないコレクションのバックアップを削除します。&#xD;&#xA;この操作は取り消せません。</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>バックアップデータの整理が完了しました。&#xD;&#xA;削除データ件数: </itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>バックアップデータの整理に失敗しました。&#xD;&#xA;削除データ件数: </itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>バックアップフォルダが設定されていません。&#xD;&#xA;プロジェクト設定画面で設定してください。</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
@@ -751,6 +799,14 @@
 			<item>
 				<itemname>ShowListButton</itemname>
 				<itemtext>← 一覧に戻る</itemtext>
+			</item>
+			<item>
+				<itemname>SelectPluginToAddFavorite</itemname>
+				<itemtext>お気に入りに追加するプラグインを選択してください。</itemtext>
+			</item>
+			<item>
+				<itemname>NoFavoritePlugin</itemname>
+				<itemtext>お気に入りプラグインはありません。</itemtext>
 			</item>
 		</Other>
 	</mainform>
@@ -1188,4 +1244,24 @@
 			</item>
 		</MessageBox>
 	</ProjectSettingClass>
+	<PluginsClass>
+		<MessageBox>
+			<item>
+				<itemname>AlreadyInFavorites</itemname>
+				<itemtext>このプラグインは既にお気に入りに登録されています</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginSaveError</itemname>
+				<itemtext>お気に入りプラグインの保存に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginDeleteError</itemname>
+				<itemtext>お気に入りプラグインの削除に失敗しました。</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginListLoadError</itemname>
+				<itemtext>お気に入りプラグインリストの読み込みに失敗しました。</itemtext>
+			</item>
+		</MessageBox>
+	</PluginsClass>
 </list>

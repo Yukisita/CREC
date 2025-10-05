@@ -35,6 +35,12 @@ namespace CREC
             IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
             foreach (DirectoryInfo subFolder in subFolders)
             {
+                // $SystemDataフォルダはコレクションに含めない
+                if (subFolder.Name == MainForm.ProjectSystemDataFolderName)
+                {
+                    continue;
+                }
+
                 CollectionDataValuesClass item = new CollectionDataValuesClass();
                 // \\SystemData\\ADDがある場合はIndexを読み込まない
                 if (!File.Exists(subFolder.FullName + "\\SystemData\\ADD"))

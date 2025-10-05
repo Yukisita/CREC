@@ -255,6 +255,42 @@ namespace CREC
         /// </summary>
         public bool CollectionListInventoryInformationVisible { get; set; } = true;
         /// <summary>
+        /// コレクション一覧でのUUID列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListUUIDAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧での管理コード列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListManagementCodeAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧での名前列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListNameAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧での登録日列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListRegistrationDateAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧でのカテゴリ列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListCategoryAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧でのタグ1列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListFirstTagAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧でのタグ2列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListSecondTagAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧でのタグ3列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListThirdTagAutoWidth { get; set; } = true;
+        /// <summary>
+        /// コレクション一覧での在庫情報列幅自動調整フラグ
+        /// </summary>
+        public bool CollectionListInventoryInformationAutoWidth { get; set; } = true;
+        /// <summary>
         /// 検索対象の番号
         /// </summary>
         public int SearchOptionNumber { get; set; } = 0;
@@ -816,6 +852,96 @@ namespace CREC
                             loadingProjectSettingValues.CollectionListInventoryInformationVisible = true;
                         }
                         break;
+                    case "IDListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListUUIDAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListUUIDAutoWidth = false;
+                        }
+                        break;
+                    case "MCListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListManagementCodeAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListManagementCodeAutoWidth = false;
+                        }
+                        break;
+                    case "NameListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListNameAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListNameAutoWidth = false;
+                        }
+                        break;
+                    case "RegistrationDateListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListRegistrationDateAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListRegistrationDateAutoWidth = false;
+                        }
+                        break;
+                    case "CategoryListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListCategoryAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListCategoryAutoWidth = false;
+                        }
+                        break;
+                    case "Tag1ListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListFirstTagAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListFirstTagAutoWidth = false;
+                        }
+                        break;
+                    case "Tag2ListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListSecondTagAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListSecondTagAutoWidth = false;
+                        }
+                        break;
+                    case "Tag3ListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListThirdTagAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListThirdTagAutoWidth = false;
+                        }
+                        break;
+                    case "InventoryInformationListAutoWidth":
+                        if (cols[1] == "true")
+                        {
+                            loadingProjectSettingValues.CollectionListInventoryInformationAutoWidth = true;
+                        }
+                        else
+                        {
+                            loadingProjectSettingValues.CollectionListInventoryInformationAutoWidth = false;
+                        }
+                        break;
                     case "SearchOptionNumber":
                         try
                         {
@@ -1128,6 +1254,78 @@ namespace CREC
                 else
                 {
                     streamWriter.WriteLine("InventoryInformationListVisible,false");
+                }
+                if (projectSettingValues.CollectionListUUIDAutoWidth == true)
+                {
+                    streamWriter.WriteLine("IDListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("IDListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListManagementCodeAutoWidth == true)
+                {
+                    streamWriter.WriteLine("MCListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("MCListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListNameAutoWidth == true)
+                {
+                    streamWriter.WriteLine("NameListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("NameListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListRegistrationDateAutoWidth == true)
+                {
+                    streamWriter.WriteLine("RegistrationDateListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("RegistrationDateListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListCategoryAutoWidth == true)
+                {
+                    streamWriter.WriteLine("CategoryListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("CategoryListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListFirstTagAutoWidth == true)
+                {
+                    streamWriter.WriteLine("Tag1ListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("Tag1ListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListSecondTagAutoWidth == true)
+                {
+                    streamWriter.WriteLine("Tag2ListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("Tag2ListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListThirdTagAutoWidth == true)
+                {
+                    streamWriter.WriteLine("Tag3ListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("Tag3ListAutoWidth,false");
+                }
+                if (projectSettingValues.CollectionListInventoryInformationAutoWidth == true)
+                {
+                    streamWriter.WriteLine("InventoryInformationListAutoWidth,true");
+                }
+                else
+                {
+                    streamWriter.WriteLine("InventoryInformationListAutoWidth,false");
                 }
                 streamWriter.WriteLine("SleepMode,{0}", (int)projectSettingValues.SleepMode);
                 streamWriter.WriteLine("DataCheckInterval,{0}", (int)projectSettingValues.DataCheckInterval);

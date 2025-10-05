@@ -176,6 +176,7 @@
     </Compile>
     <EmbeddedResource Include="UpdateHistory.resx">
       <DependentUpon>UpdateHistory.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ReadMe.resx">
       <DependentUpon>ReadMe.cs</DependentUpon>

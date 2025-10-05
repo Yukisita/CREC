@@ -32,9 +32,10 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.5.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v10.0.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
+        public const string ProjectSystemDataFolderName = "$SystemData";// コレクションデータのシステムフォルダ名
         #endregion
 
         #region 変数の宣言
@@ -348,6 +349,15 @@ namespace CREC
             Tag1ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
             Tag2ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
             Tag3ListVisibleToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
+            // ラベルの名称を読み込んで列幅自動調整設定画面に追加
+            IDListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.UUIDLabel;
+            MCListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.ManagementCodeLabel;
+            NameListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.CollectionNameLabel;
+            RegistrationDateListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.RegistrationDateLabel;
+            CategoryListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.CategoryLabel;
+            Tag1ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.FirstTagLabel;
+            Tag2ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.SecondTagLabel;
+            Tag3ListAutoWidthToolStripMenuItem.Text = CurrentProjectSettingValues.ThirdTagLabel;
 
             // 表示内容更新
             ShowProjcetNameTextBox.Text = LanguageSettingClass.GetOtherMessage("ProjectNameHeader", "mainform", LanguageFile) + CurrentProjectSettingValues.Name;
@@ -393,7 +403,19 @@ namespace CREC
             Tag2ListVisibleToolStripMenuItem.CheckedChanged -= Tag2VisibleToolStripMenuItem_CheckedChanged;
             Tag3ListVisibleToolStripMenuItem.CheckedChanged -= Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged -= InventoryInformationToolStripMenuItem_CheckedChanged;
+            IDListAutoWidthToolStripMenuItem.CheckedChanged -= IDListAutoWidthToolStripMenuItem_CheckedChanged;
+            MCListAutoWidthToolStripMenuItem.CheckedChanged -= MCListAutoWidthToolStripMenuItem_CheckedChanged;
+            NameListAutoWidthToolStripMenuItem.CheckedChanged -= NameListAutoWidthToolStripMenuItem_CheckedChanged;
+            RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged -= RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged;
+            CategoryListAutoWidthToolStripMenuItem.CheckedChanged -= CategoryListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag1ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag1ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag2ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag2ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag3ListAutoWidthToolStripMenuItem.CheckedChanged -= Tag3ListAutoWidthToolStripMenuItem_CheckedChanged;
+            InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged -= InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged;
+
             ControlCollectionListColumnVisibe();
+            ControlCollectionListColumnAutoWidth();
+
             // イベントハンドラ再開
             IDListVisibleToolStripMenuItem.CheckedChanged += IDVisibleToolStripMenuItem_CheckedChanged;
             MCListVisibleToolStripMenuItem.CheckedChanged += MCVisibleToolStripMenuItem_CheckedChanged;
@@ -404,6 +426,15 @@ namespace CREC
             Tag2ListVisibleToolStripMenuItem.CheckedChanged += Tag2VisibleToolStripMenuItem_CheckedChanged;
             Tag3ListVisibleToolStripMenuItem.CheckedChanged += Tag3VisibleToolStripMenuItem_CheckedChanged;
             InventoryInformationListToolStripMenuItem.CheckedChanged += InventoryInformationToolStripMenuItem_CheckedChanged;
+            IDListAutoWidthToolStripMenuItem.CheckedChanged += IDListAutoWidthToolStripMenuItem_CheckedChanged;
+            MCListAutoWidthToolStripMenuItem.CheckedChanged += MCListAutoWidthToolStripMenuItem_CheckedChanged;
+            NameListAutoWidthToolStripMenuItem.CheckedChanged += NameListAutoWidthToolStripMenuItem_CheckedChanged;
+            RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged += RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged;
+            CategoryListAutoWidthToolStripMenuItem.CheckedChanged += CategoryListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag1ListAutoWidthToolStripMenuItem.CheckedChanged += Tag1ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag2ListAutoWidthToolStripMenuItem.CheckedChanged += Tag2ListAutoWidthToolStripMenuItem_CheckedChanged;
+            Tag3ListAutoWidthToolStripMenuItem.CheckedChanged += Tag3ListAutoWidthToolStripMenuItem_CheckedChanged;
+            InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged += InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged;
 
             // ToolTipsの設定
             SetTagNameToolTips();
@@ -623,7 +654,11 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
-                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
             try
@@ -633,6 +668,64 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
+            }
+        }
+        private void CleanupBackupDataToolStripMenuItem_Click(object sender, EventArgs e)// バックアップデータ整理
+        {
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 確認メッセージ表示
+            DialogResult result = MessageBox.Show(
+                LanguageSettingClass.GetMessageBoxMessage("AskCleanupBackupData", "mainform", LanguageFile),
+                "CREC",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
+            // バックアップデータ整理を実行
+            int deletedBackupData = 0;
+            bool cleanupResult = CollectionDataClass.CleanupDeletedCollectionBackupFolders(
+                CurrentProjectSettingValues,
+                allCollectionList,
+                ref deletedBackupData);
+
+            if (cleanupResult)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
         private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
@@ -843,8 +936,84 @@ namespace CREC
                 = dataGridView1.Columns["InventoryStatusList"].Visible
                 = CurrentProjectSettingValues.CollectionListInventoryInformationVisible;
         }
+
+        /// <summary>
+        /// コレクションリストの列幅自動調整をコントロール
+        /// </summary>
+        private void ControlCollectionListColumnAutoWidth()
+        {
+            // MenuItemのチェック状態を現在の設定に合わせる
+            IDListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListUUIDAutoWidth;
+            MCListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth;
+            NameListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListNameAutoWidth;
+            RegistrationDateListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth;
+            CategoryListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListCategoryAutoWidth;
+            Tag1ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListFirstTagAutoWidth;
+            Tag2ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListSecondTagAutoWidth;
+            Tag3ListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListThirdTagAutoWidth;
+            InventoryInformationListAutoWidthToolStripMenuItem.Checked = CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth;
+
+            // 各列の自動幅調整設定に基づき、DataGridViewの各列のAutoSizeModeを設定
+            foreach (DataGridViewColumn column in dataGridView1.Columns)
+            {
+                int currentWidth = column.Width;// リセットする前の列幅を取得
+                // 各列の自動幅調整設定をチェック
+                bool shouldAutoSize = false;
+                switch (column.Name)
+                {
+                    case "IDList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListUUIDAutoWidth;
+                        break;
+                    case "MCList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth;
+                        break;
+                    case "ObjectNameList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListNameAutoWidth;
+                        break;
+                    case "RegistrationDateList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth;
+                        break;
+                    case "CategoryList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListCategoryAutoWidth;
+                        break;
+                    case "Tag1List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListFirstTagAutoWidth;
+                        break;
+                    case "Tag2List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListSecondTagAutoWidth;
+                        break;
+                    case "Tag3List":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListThirdTagAutoWidth;
+                        break;
+                    case "InventoryList":
+                    case "InventoryStatusList":
+                        shouldAutoSize = CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth;
+                        break;
+                }
+
+                if (shouldAutoSize)
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;// 自動調整を保持
+                }
+                else
+                {
+                    column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
+                    column.Width = currentWidth;// リセット前の列幅に戻す
+                }
+            }
+        }
         private void IDVisibleToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの表示・非表示
         {
+            // IDを非表示にする場合の警告メッセージ
+            if (IDListVisibleToolStripMenuItem.Checked == false)
+            {
+                // 警告メッセージを表示し、Yesを選択した場合は変更を破棄する
+                DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("UUIDListHiddenWarning", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.Yes)
+                {
+                    IDListVisibleToolStripMenuItem.Checked = true;
+                }
+            }
             CurrentProjectSettingValues.CollectionListUUIDVisible = IDListVisibleToolStripMenuItem.Checked;
             ProjectSettingClass.CheckListVisibleColumnExist(ref CurrentProjectSettingValues);
             ControlCollectionListColumnVisibe();
@@ -923,6 +1092,80 @@ namespace CREC
             // 選択後もMenuItem開いたままにする処理
             ViewToolStripMenuItem.ShowDropDown();
             VisibleListElementsToolStripMenuItem.ShowDropDown();
+        }
+        #endregion
+        #region 列幅自動調整
+        private void IDListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// IDの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListUUIDAutoWidth = IDListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void MCListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 管理コードの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListManagementCodeAutoWidth = MCListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void NameListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 名前の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListNameAutoWidth = NameListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 登録日の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListRegistrationDateAutoWidth = RegistrationDateListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void CategoryListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// カテゴリの列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListCategoryAutoWidth = CategoryListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag1ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ1の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListFirstTagAutoWidth = Tag1ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag2ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ2の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListSecondTagAutoWidth = Tag2ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void Tag3ListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// タグ3の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListThirdTagAutoWidth = Tag3ListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
+        }
+        private void InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged(object sender, EventArgs e)// 在庫情報の列幅自動調整
+        {
+            CurrentProjectSettingValues.CollectionListInventoryInformationAutoWidth = InventoryInformationListAutoWidthToolStripMenuItem.Checked;
+            ControlCollectionListColumnAutoWidth();
+            // 選択後もMenuItem開いたままにする処理
+            ViewToolStripMenuItem.ShowDropDown();
+            ColumnWidthAdjustmentToolStripMenuItem.ShowDropDown();
         }
         #endregion
         #region 色設定
@@ -1246,15 +1489,8 @@ namespace CREC
             {
                 string pluginPath = openFileDialog.FileName;
                 string fileName = Path.GetFileName(pluginPath);
-                try
-                {
-                    // 最近実行したプラグインリストに追加
-                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                // 最近実行したプラグインリストに追加
+                PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
 
                 if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
                 {
@@ -1352,8 +1588,146 @@ namespace CREC
             }
         }
 
-        #endregion
+        /// <summary>
+        /// プラグインメニューが開かれる時の処理（お気に入りプラグインを動的に追加）
+        /// </summary>
+        private void PluginToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            // お気に入りプラグイン関連の動的メニュー項目を削除
+            int fixedItemCount = 6;
+            while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
+            {
+                PluginToolStripMenuItem.DropDownItems.RemoveAt(fixedItemCount);
+            }
 
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除する）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
+
+            if (favoritePlugins.Count == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += FavoritePluginToolStripMenuItemSub_Click;
+                PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグインのサブメニューがクリックされた時の処理
+        /// </summary>
+        private void FavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (!File.Exists(pluginPath))
+            {
+                MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目をお気に入りから削除します。", "CREC");
+                PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile);
+                return;
+            }
+
+            // 最近実行したプラグインリストにも追加
+            PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, clickedItem.Text, pluginPath);
+
+            PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile);
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン追加メニューがクリックされた時の処理
+        /// </summary>
+        private void AddToFavoritePluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "実行ファイル(*.exe)|*.exe";
+            openFileDialog.Title = LanguageSettingClass.GetOtherMessage("SelectPluginToAddFavorite", "mainform", LanguageFile);
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string pluginPath = openFileDialog.FileName;
+                string fileName = Path.GetFileName(pluginPath);
+
+                if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath, LanguageFile))
+                {
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("FavoritePluginAddedMessage", "mainform", LanguageFile),
+                        "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン削除メニューがマウスホバーされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Clear();
+
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
+
+            if (favoritePlugins.Count == 0)
+            {
+                ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
+                noFavoritesItem.Text = LanguageSettingClass.GetOtherMessage("NoFavoritePlugin", "mainform", LanguageFile);
+                noFavoritesItem.Enabled = false;
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += RemoveFavoritePluginToolStripMenuItemSub_Click;
+
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン削除のサブメニューがクリックされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile))
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginRemovedMessage", "mainform", LanguageFile),
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // メニューを再構築
+                RemoveFavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
+            }
+        }
+        #endregion
         #endregion
 
         #region データ一覧・詳細表示関係
@@ -1413,11 +1787,7 @@ namespace CREC
             // DataGridView関係
             ContentsDataTable.Rows.Clear();
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // 表示直後、セルの幅が適切になるようDataGridViewAutoSizeColumnModeをDisplayedCellsに設定
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
-            {
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
-            }
+
             try
             {
                 try
@@ -1452,7 +1822,6 @@ namespace CREC
                             CollectionDataClass.InventoryStatusToString(thisCollectionDataValues.CollectionInventoryStatus, LanguageFile));
                     }
                     dataGridView1.DataSource = ContentsDataTable;// ここでバインド
-                    dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
                 }
                 catch (Exception ex)
                 {
@@ -1471,6 +1840,8 @@ namespace CREC
                 DataLoadingStatus = "false";
                 return;
             }
+
+            ControlCollectionListColumnAutoWidth();// 列幅自動調整の設定を反映
 
             // 一覧読み込み中に禁止した操作を復元
             Application.DoEvents();// 一覧読み込み中に発生していたイベントを削除
@@ -1547,13 +1918,8 @@ namespace CREC
             // コレクションリスト自動更新処理を再開
             CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
             CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
-            // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
-            foreach (DataGridViewColumn column in dataGridView1.Columns)
-            {
-                int currentWidth = column.Width;// リセットする前の列幅を取得
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;// 列幅の自動調整を無効化
-                column.Width = currentWidth + (int)mainfontsize;// リセット前の列幅+標準文字サイズに戻す
-            }
+            // listの列幅調整
+            ControlCollectionListColumnAutoWidth();
         }
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
@@ -2317,7 +2683,6 @@ namespace CREC
                 thisCollectionDataValues.CollectionCurrentInventory,
                 CollectionDataClass.InventoryStatusToString(thisCollectionDataValues.CollectionInventoryStatus, LanguageFile));
             dataGridView1.DataSource = ContentsDataTable;// ここでバインド
-            dataGridView1.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);// セル幅を調整
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             SearchOptionComboBox.SelectedIndexChanged -= SearchOptionComboBox_SelectedIndexChanged;
@@ -2422,6 +2787,16 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
+            if (ProjectSystemDataFolderName == EditIDTextBox.Text)
+            {
+                System.Windows.MessageBox.Show(
+                     LanguageSettingClass.GetMessageBoxMessage("SystemReservedValueError", "mainform", LanguageFile) + "\n" + ProjectSystemDataFolderName,
+                    "CREC",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
+                UUIDEditStatusLabel.ForeColor = Color.Red;
+            }
             if (CurrentShownCollectionData.CollectionID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
@@ -3941,7 +4316,7 @@ namespace CREC
                     // プロジェクトフォルダ内のコレクション数をチェック
                     DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                     var subFolders = di.EnumerateDirectories("*");
-                    int currentCollectionCount = subFolders.Count();
+                    int currentCollectionCount = subFolders.Where(folder => folder.Name != ProjectSystemDataFolderName).Count();
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
 
