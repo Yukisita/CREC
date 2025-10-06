@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CREC.Views.MainPage"
+             Title="{Binding Title}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Top Toolbar -->
+        <StackLayout Grid.Row="0" Orientation="Horizontal" Padding="10" Spacing="10">
+            <Button Text="Open Project" 
+                    Command="{Binding OpenProjectCommand}" 
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+            <Button Text="New Project" 
+                    Command="{Binding CreateNewProjectCommand}"
+                    IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}" />
+        </StackLayout>
+
+        <!-- Search Bar -->
+        <StackLayout Grid.Row="1" Orientation="Horizontal" Padding="10" Spacing="10"
+                     IsVisible="{Binding IsProjectLoaded}">
+            <Label Text="Search:" VerticalOptions="Center" />
+            <Entry Text="{Binding SearchText}" 
+                   Placeholder="Enter search terms..."
+                   HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+
+        <!-- Content Area -->
+        <Grid Grid.Row="2" Padding="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Collection List -->
+            <CollectionView Grid.Column="0" 
+                           ItemsSource="{Binding FilteredCollections}"
+                           SelectedItem="{Binding SelectedCollection}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            
+                            <Label Grid.Row="0" Text="{Binding CollectionName}" 
+                                   FontAttributes="Bold" FontSize="16" />
+                            <Label Grid.Row="1" Text="{Binding CollectionManagementCode}" 
+                                   FontSize="12" TextColor="Gray" />
+                            <Label Grid.Row="2" Text="{Binding CollectionCategory}" 
+                                   FontSize="12" TextColor="Blue" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Details Panel -->
+            <StackLayout Grid.Column="1" Padding="10"
+                        IsVisible="{Binding SelectedCollection, Converter={StaticResource IsNotNullConverter}}">
+                <Label Text="Collection Details" FontAttributes="Bold" FontSize="18" />
+                <Label Text="{Binding SelectedCollection.CollectionName}" FontSize="16" />
+                <Label Text="{Binding SelectedCollection.CollectionManagementCode}" />
+                <Label Text="{Binding SelectedCollection.CollectionCategory}" />
+                <!-- Add more collection details as needed -->
+            </StackLayout>
+
+            <!-- No Project Loaded Message -->
+            <StackLayout Grid.ColumnSpan="2" 
+                        VerticalOptions="Center" 
+                        HorizontalOptions="Center"
+                        IsVisible="{Binding IsProjectLoaded, Converter={StaticResource InvertedBoolConverter}}">
+                <Label Text="No project loaded" 
+                       FontSize="18" 
+                       HorizontalOptions="Center" 
+                       TextColor="Gray" />
+                <Label Text="Please open an existing project or create a new one" 
+                       FontSize="14" 
+                       HorizontalOptions="Center" 
+                       TextColor="Gray" />
+            </StackLayout>
+        </Grid>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.RowSpan="3" 
+                          IsVisible="{Binding IsBusy}" 
+                          IsRunning="{Binding IsBusy}"
+                          VerticalOptions="Center" 
+                          HorizontalOptions="Center" />
+    </Grid>
+
+</ContentPage>

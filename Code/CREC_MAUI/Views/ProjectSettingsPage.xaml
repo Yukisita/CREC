@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CREC.Views.ProjectSettingsPage"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="20">
+        <StackLayout Spacing="15">
+            
+            <Label Text="Project Information" FontAttributes="Bold" FontSize="18" />
+            
+            <StackLayout>
+                <Label Text="Project Name:" />
+                <Entry Text="{Binding ProjectName}" 
+                       Placeholder="Enter project name" />
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Project Folder:" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0" Text="{Binding ProjectPath}" 
+                           Placeholder="Select project folder" 
+                           IsReadOnly="True" />
+                    <Button Grid.Column="1" Text="Browse" 
+                            Command="{Binding SelectProjectPathCommand}" />
+                </Grid>
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="Backup Folder:" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry Grid.Column="0" Text="{Binding BackupPath}" 
+                           Placeholder="Select backup folder" 
+                           IsReadOnly="True" />
+                    <Button Grid.Column="1" Text="Browse" 
+                            Command="{Binding SelectBackupPathCommand}" />
+                </Grid>
+            </StackLayout>
+
+            <Label Text="Field Visibility Settings" FontAttributes="Bold" FontSize="18" Margin="0,20,0,0" />
+
+            <StackLayout>
+                <CheckBox x:Name="UuidVisibleCheckBox" IsChecked="{Binding UuidVisible}" />
+                <Label Text="Show UUID Field" />
+            </StackLayout>
+
+            <StackLayout>
+                <CheckBox x:Name="ManagementCodeVisibleCheckBox" IsChecked="{Binding ManagementCodeVisible}" />
+                <Label Text="Show Management Code Field" />
+            </StackLayout>
+
+            <StackLayout>
+                <CheckBox x:Name="CategoryVisibleCheckBox" IsChecked="{Binding CategoryVisible}" />
+                <Label Text="Show Category Field" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="End" Margin="0,30,0,0">
+                <Button Text="Save Project" 
+                        Command="{Binding SaveProjectCommand}"
+                        IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                        BackgroundColor="Blue" 
+                        TextColor="White" />
+            </StackLayout>
+
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsVisible="{Binding IsBusy}" 
+                              IsRunning="{Binding IsBusy}"
+                              VerticalOptions="Center" 
+                              HorizontalOptions="Center" />
+
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>
