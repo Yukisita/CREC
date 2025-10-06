@@ -263,6 +263,10 @@
 				<itemtext>Open Backup Folder...</itemtext>
 			</item>
 			<item>
+				<itemname>CleanupBackupDataToolStripMenuItem</itemname>
+				<itemtext>Cleanup Backup Data</itemtext>
+			</item>
+			<item>
 				<itemname>OutputListToolStripMenuItem</itemname>
 				<itemtext>Output Contents List(TSV os CSV)</itemtext>
 			</item>
@@ -415,6 +419,14 @@
 				<itemtext>Recently Executed Plugin</itemtext>
 			</item>
 			<item>
+				<itemname>AddToFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>Add Favorite Plugin...</itemtext>
+			</item>
+			<item>
+				<itemname>RemoveFavoritePluginsToolStripMenuItem</itemname>
+				<itemtext>Remove Favorite Plugin</itemtext>
+			</item>
+			<item>
 				<itemname>HelpToolStripMenuItem</itemname>
 				<itemtext>Help(&amp;H)</itemtext>
 			</item>
@@ -547,6 +559,34 @@
 			<item>
 				<itemname>UUIDListHiddenWarning</itemname>
 				<itemtext>Hiding the UUID may cause problems.&#xD;&#xA;Would you like to keep it visible?</itemtext>
+			</item>
+			<item>
+				<itemname>SystemReservedValueError</itemname>
+				<itemtext>This value is reserved for system use and cannot be used.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginAddedMessage</itemname>
+				<itemtext>Added to favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginRemovedMessage</itemname>
+				<itemtext>Removed from favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>AskCleanupBackupData</itemname>
+				<itemtext>This will delete backups of non-existent collections. &#xD;&#xA;This operation cannot be undone.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupCompleted</itemname>
+				<itemtext>Backup data cleanup completed.&#xD;&#xA;Deleted data count: </itemtext>
+			</item>
+			<item>
+				<itemname>BackupCleanupFailed</itemname>
+				<itemtext>Backup data cleanup failed.&#xD;&#xA;Deleted data count: </itemtext>
+			</item>
+			<item>
+				<itemname>NoBackupFolderSettingError</itemname>
+				<itemtext>Backup folder is not set.&#xD;&#xA;Please set backup folder in Project Settings.</itemtext>
 			</item>
 		</MessageBox>
 		<ToolTip>
@@ -759,6 +799,14 @@
 			<item>
 				<itemname>ShowListButton</itemname>
 				<itemtext>← List</itemtext>
+			</item>
+			<item>
+				<itemname>SelectPluginToAddFavorite</itemname>
+				<itemtext>Select a plugin to add to favorite.</itemtext>
+			</item>
+			<item>
+				<itemname>NoFavoritePlugin</itemname>
+				<itemtext>No favorite plugin.</itemtext>
 			</item>
 		</Other>
 	</mainform>
@@ -1196,4 +1244,24 @@
 			</item>
 		</MessageBox>
 	</ProjectSettingClass>
+	<PluginsClass>
+		<MessageBox>
+			<item>
+				<itemname>AlreadyInFavorites</itemname>
+				<itemtext>This plugin is already in your favorites.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginSaveError</itemname>
+				<itemtext>Failed to save favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginDeleteError</itemname>
+				<itemtext>Failed to delete favorite plugin.</itemtext>
+			</item>
+			<item>
+				<itemname>FavoritePluginListLoadError</itemname>
+				<itemtext>Failed to load favorite plugin list.</itemtext>
+			</item>
+		</MessageBox>
+	</PluginsClass>
 </list>

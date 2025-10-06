@@ -32,9 +32,10 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v9.5.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v10.0.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
+        public const string ProjectSystemDataFolderName = "$SystemData";// コレクションデータのシステムフォルダ名
         #endregion
 
         #region 変数の宣言
@@ -653,7 +654,11 @@ namespace CREC
             }
             if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
             {
-                MessageBox.Show("バックアップフォルダが設定されていません。", "CREC");
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
             try
@@ -663,6 +668,64 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("フォルダを開けませんでした\n" + ex.Message, "CREC");
+            }
+        }
+        private void CleanupBackupDataToolStripMenuItem_Click(object sender, EventArgs e)// バックアップデータ整理
+        {
+            if (CurrentShownCollectionData.CollectionFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+            if (CurrentProjectSettingValues.ProjectBackupFolderPath.Length == 0)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("NoBackupFolderSettingError", "mainform", LanguageFile),
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 確認メッセージ表示
+            DialogResult result = MessageBox.Show(
+                LanguageSettingClass.GetMessageBoxMessage("AskCleanupBackupData", "mainform", LanguageFile),
+                "CREC",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning,
+                MessageBoxDefaultButton.Button2);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
+            // バックアップデータ整理を実行
+            int deletedBackupData = 0;
+            bool cleanupResult = CollectionDataClass.CleanupDeletedCollectionBackupFolders(
+                CurrentProjectSettingValues,
+                allCollectionList,
+                ref deletedBackupData);
+
+            if (cleanupResult)
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupCompleted", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("BackupCleanupFailed", "mainform", LanguageFile) + deletedBackupData,
+                    "CREC",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
         private void OutputListAllContentsToolStripMenuItem_Click(object sender, EventArgs e)// プロジェクトの全データの一覧をListに出力
@@ -1426,15 +1489,8 @@ namespace CREC
             {
                 string pluginPath = openFileDialog.FileName;
                 string fileName = Path.GetFileName(pluginPath);
-                try
-                {
-                    // 最近実行したプラグインリストに追加
-                    PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("最近実行したプラグインリストの追加処理に失敗しました。\n" + ex.Message, "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                // 最近実行したプラグインリストに追加
+                PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, fileName, pluginPath);
 
                 if (!PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile))
                 {
@@ -1529,6 +1585,146 @@ namespace CREC
             catch (Exception ex)
             {
                 MessageBox.Show("履歴の削除に失敗しました。\n" + ex.Message, "CREC");
+            }
+        }
+
+        /// <summary>
+        /// プラグインメニューが開かれる時の処理（お気に入りプラグインを動的に追加）
+        /// </summary>
+        private void PluginToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            // お気に入りプラグイン関連の動的メニュー項目を削除
+            int fixedItemCount = 6;
+            while (PluginToolStripMenuItem.DropDownItems.Count > fixedItemCount)
+            {
+                PluginToolStripMenuItem.DropDownItems.RemoveAt(fixedItemCount);
+            }
+
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除する）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
+
+            if (favoritePlugins.Count == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += FavoritePluginToolStripMenuItemSub_Click;
+                PluginToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグインのサブメニューがクリックされた時の処理
+        /// </summary>
+        private void FavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (!File.Exists(pluginPath))
+            {
+                MessageBox.Show("プラグインファイルが見つかりませんでした。\nこの項目をお気に入りから削除します。", "CREC");
+                PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile);
+                return;
+            }
+
+            // 最近実行したプラグインリストにも追加
+            PluginsClass.AddToRecentPluginsList(CurrentProjectSettingValues, clickedItem.Text, pluginPath);
+
+            PluginsClass.ExecutePlugin(CurrentProjectSettingValues, CurrentShownCollectionData, pluginPath, LanguageFile);
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン追加メニューがクリックされた時の処理
+        /// </summary>
+        private void AddToFavoritePluginsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "実行ファイル(*.exe)|*.exe";
+            openFileDialog.Title = LanguageSettingClass.GetOtherMessage("SelectPluginToAddFavorite", "mainform", LanguageFile);
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string pluginPath = openFileDialog.FileName;
+                string fileName = Path.GetFileName(pluginPath);
+
+                if (PluginsClass.AddToFavoritePluginsList(CurrentProjectSettingValues, fileName, pluginPath, LanguageFile))
+                {
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("FavoritePluginAddedMessage", "mainform", LanguageFile),
+                        "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン削除メニューがマウスホバーされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginsToolStripMenuItem_MouseEnter(object sender, EventArgs e)
+        {
+            RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Clear();
+
+            if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)
+            {
+                return;
+            }
+
+            // お気に入りプラグインリストを取得（見つからないファイルは自動削除される）
+            List<(string name, string path)> favoritePlugins = PluginsClass.GetFavoritePluginsList(CurrentProjectSettingValues, LanguageFile);
+
+            if (favoritePlugins.Count == 0)
+            {
+                ToolStripMenuItem noFavoritesItem = new ToolStripMenuItem();
+                noFavoritesItem.Text = LanguageSettingClass.GetOtherMessage("NoFavoritePlugin", "mainform", LanguageFile);
+                noFavoritesItem.Enabled = false;
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(noFavoritesItem);
+                return;
+            }
+
+            // お気に入りプラグインをメニューに追加
+            foreach (var plugin in favoritePlugins)
+            {
+                ToolStripMenuItem favoritePluginItem = new ToolStripMenuItem();
+                favoritePluginItem.Text = plugin.name;
+                favoritePluginItem.ToolTipText = plugin.path;
+                favoritePluginItem.Click += RemoveFavoritePluginToolStripMenuItemSub_Click;
+
+                RemoveFavoritePluginsToolStripMenuItem.DropDownItems.Add(favoritePluginItem);
+            }
+        }
+
+        /// <summary>
+        /// お気に入りプラグイン削除のサブメニューがクリックされた時の処理
+        /// </summary>
+        private void RemoveFavoritePluginToolStripMenuItemSub_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            string pluginPath = clickedItem.ToolTipText;
+
+            if (PluginsClass.RemoveFromFavoritePluginsList(CurrentProjectSettingValues, pluginPath, LanguageFile))
+            {
+                MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("FavoritePluginRemovedMessage", "mainform", LanguageFile),
+                    "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // メニューを再構築
+                RemoveFavoritePluginsToolStripMenuItem_MouseEnter(sender, e);
             }
         }
         #endregion
@@ -2591,6 +2787,16 @@ namespace CREC
         }
         private void IDTextBox_TextChanged(object sender, EventArgs e)// ID重複確認
         {
+            if (ProjectSystemDataFolderName == EditIDTextBox.Text)
+            {
+                System.Windows.MessageBox.Show(
+                     LanguageSettingClass.GetMessageBoxMessage("SystemReservedValueError", "mainform", LanguageFile) + "\n" + ProjectSystemDataFolderName,
+                    "CREC",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Information);
+                UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDChangeNG", "mainform", LanguageFile);
+                UUIDEditStatusLabel.ForeColor = Color.Red;
+            }
             if (CurrentShownCollectionData.CollectionID == EditIDTextBox.Text)
             {
                 UUIDEditStatusLabel.Text = LanguageSettingClass.GetOtherMessage("UUIDNoChange", "mainform", LanguageFile);
@@ -4110,7 +4316,7 @@ namespace CREC
                     // プロジェクトフォルダ内のコレクション数をチェック
                     DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
                     var subFolders = di.EnumerateDirectories("*");
-                    int currentCollectionCount = subFolders.Count();
+                    int currentCollectionCount = subFolders.Where(folder => folder.Name != ProjectSystemDataFolderName).Count();
                     // コレクション数に変化があるか、または一定時間経過した場合にリストを更新
                     bool shouldUpdate = currentCollectionCount != lastCollectionCount;
 
