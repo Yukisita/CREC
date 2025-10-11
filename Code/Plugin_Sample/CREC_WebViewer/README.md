@@ -40,22 +40,26 @@ CRECデータ閲覧用のWebアプリケーションプラグインです。ブ�
 
 ### 2. 実行方法
 
+**重要**: このアプリケーションは、CRECのデータフォルダ（コレクションフォルダが入っているフォルダ）から実行する必要があります。
+
 #### CRECプラグインとして実行（推奨）
 1. CRECでプロジェクトを開く
 2. メニューから「プラグイン実行(exe)」を選択
 3. `CREC_WebViewer.exe` (Windows) または `CREC_WebViewer` (Linux/macOS) を選択
-4. Webアプリケーションが起動し、ブラウザでアクセス可能になります
+4. CRECが自動的にデータフォルダに移動してから実行するため、正しく動作します
 
 #### スタンドアロン実行
 ```bash
 # Windows
-cd /path/to/crec/data/folder
-/path/to/CREC_WebViewer.exe
+cd /path/to/crec/data/folder    # ← 必ずデータフォルダに移動してから実行
+C:\path\to\CREC_WebViewer.exe
 
 # Linux/macOS
-cd /path/to/crec/data/folder
+cd /path/to/crec/data/folder    # ← 必ずデータフォルダに移動してから実行
 /path/to/CREC_WebViewer
 ```
+
+**注意**: `CREC_WebViewer.exe`を直接ダブルクリックしても、データフォルダから実行されない場合は正しく動作しません。必ず上記の手順に従ってください。
 
 ### 3. アクセス方法
 実行後、以下のURLでアクセスできます：
@@ -124,7 +128,28 @@ pageSize: int         // ページサイズ
 
 ### よくある問題
 
-#### 1. Webページが表示されない
+#### 1. 「ページが見つかりません」エラー
+
+**原因**: `CREC_WebViewer.exe`をCRECのデータフォルダ以外の場所から実行している
+
+**解決方法**:
+1. コマンドプロンプト（またはターミナル）を開く
+2. `cd`コマンドでCRECのデータフォルダ（コレクションフォルダが入っている場所）に移動
+3. そのフォルダから`CREC_WebViewer.exe`を実行
+
+```bash
+# 例: Windowsの場合
+cd C:\Users\YourName\Documents\CREC\MyProject_Data
+C:\Tools\CREC_WebViewer\CREC_WebViewer.exe
+
+# 例: Linux/macOSの場合
+cd ~/Documents/CREC/MyProject_Data
+/path/to/CREC_WebViewer
+```
+
+**推奨**: CRECのプラグインメニューから実行すると、自動的に正しいフォルダから実行されます。
+
+#### 2. Webページが表示されない
 - ポート5000が他のアプリケーションで使用されていないか確認
 - ファイアウォール設定でポート5000がブロックされていないか確認
 
