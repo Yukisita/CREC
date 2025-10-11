@@ -1,0 +1,335 @@
+/*
+CREC Web Viewer - Data Reader Service
+Copyright (c) [2025] [S.Yukisita]
+This software is released under the MIT License.
+https://github.com/Yukisita/CREC/blob/main/LICENSE
+*/
+
+using System.Text;
+using CREC_WebViewer.Models;
+
+namespace CREC_WebViewer.Services
+{
+    /// <summary>
+    /// CRECデータ読み込みサービス
+    /// </summary>
+    public class CrecDataService
+    {
+        private readonly ILogger<CrecDataService> _logger;
+        private readonly string _dataFolderPath;
+        private readonly List<CollectionData> _collectionsCache = new();
+        private DateTime _lastCacheUpdate = DateTime.MinValue;
+        private readonly TimeSpan _cacheExpiry = TimeSpan.FromMinutes(5);
+
+        public CrecDataService(ILogger<CrecDataService> logger, IConfiguration configuration)
+        {
+            _logger = logger;
+            // プラグインとして実行される場合、WorkingDirectoryがデータフォルダに設定される
+            _dataFolderPath = Environment.CurrentDirectory;
+            _logger.LogInformation($"Data folder path: {_dataFolderPath}");
+        }
+
+        /// <summary>
+        /// 全てのコレクションデータを取得
+        /// </summary>
+        public async Task<List<CollectionData>> GetAllCollectionsAsync()
+        {
+            // キャッシュが有効な場合はキャッシュを返す
+            if (_collectionsCache.Any() && DateTime.Now - _lastCacheUpdate < _cacheExpiry)
+            {
+                return _collectionsCache;
+            }
+
+            _collectionsCache.Clear();
+
+            try
+            {
+                // データフォルダ内のサブフォルダを検索
+                var directories = Directory.GetDirectories(_dataFolderPath);
+                
+                var tasks = directories.Select(async dir => await LoadCollectionFromDirectoryAsync(dir));
+                var collections = await Task.WhenAll(tasks);
+                
+                _collectionsCache.AddRange(collections.Where(c => c != null).Cast<CollectionData>());
+                _lastCacheUpdate = DateTime.Now;
+
+                _logger.LogInformation($"Loaded {_collectionsCache.Count} collections");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading collections");
+            }
+
+            return _collectionsCache;
+        }
+
+        /// <summary>
+        /// 指定されたディレクトリからコレクションデータを読み込み
+        /// </summary>
+        private async Task<CollectionData?> LoadCollectionFromDirectoryAsync(string directoryPath)
+        {
+            try
+            {
+                var indexFilePath = Path.Combine(directoryPath, "index.txt");
+                
+                if (!File.Exists(indexFilePath))
+                {
+                    // index.txtが存在しない場合、フォルダ名をIDとして基本的なデータを作成
+                    return CreateBasicCollectionData(directoryPath);
+                }
+
+                var collection = new CollectionData
+                {
+                    CollectionFolderPath = directoryPath,
+                    CollectionID = Path.GetFileName(directoryPath)
+                };
+
+                // index.txtを読み込み
+                var lines = await File.ReadAllLinesAsync(indexFilePath, Encoding.UTF8);
+                
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    
+                    var parts = line.Split(',', 2);
+                    if (parts.Length < 2) continue;
+
+                    var key = parts[0].Trim();
+                    var value = parts[1].Trim();
+
+                    switch (key)
+                    {
+                        case "CollectionName":
+                            collection.CollectionName = value;
+                            break;
+                        case "CollectionMC":
+                            collection.CollectionMC = value;
+                            break;
+                        case "CollectionRegistrationDate":
+                            collection.CollectionRegistrationDate = value;
+                            break;
+                        case "CollectionCategory":
+                            collection.CollectionCategory = value;
+                            break;
+                        case "CollectionTag1":
+                            collection.CollectionTag1 = value;
+                            break;
+                        case "CollectionTag2":
+                            collection.CollectionTag2 = value;
+                            break;
+                        case "CollectionTag3":
+                            collection.CollectionTag3 = value;
+                            break;
+                        case "CollectionRealLocation":
+                            collection.CollectionRealLocation = value;
+                            break;
+                        case "CollectionCurrentInventory":
+                            if (int.TryParse(value, out int inventory))
+                                collection.CollectionCurrentInventory = inventory;
+                            break;
+                        case "CollectionInventoryStatus":
+                            if (Enum.TryParse<InventoryStatus>(value, out var status))
+                                collection.CollectionInventoryStatus = status;
+                            break;
+                    }
+                }
+
+                // コメントファイルを読み込み
+                var commentFilePath = Path.Combine(directoryPath, "comment.txt");
+                if (File.Exists(commentFilePath))
+                {
+                    collection.Comment = await File.ReadAllTextAsync(commentFilePath, Encoding.UTF8);
+                }
+
+                // 画像ファイルとその他のファイルを検索
+                LoadFileList(collection, directoryPath);
+
+                return collection;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error loading collection from {directoryPath}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 基本的なコレクションデータを作成（index.txtが存在しない場合）
+        /// </summary>
+        private CollectionData CreateBasicCollectionData(string directoryPath)
+        {
+            var collection = new CollectionData
+            {
+                CollectionFolderPath = directoryPath,
+                CollectionID = Path.GetFileName(directoryPath),
+                CollectionName = " - ",
+                CollectionMC = " - ",
+                CollectionRegistrationDate = " - ",
+                CollectionCategory = " - ",
+                CollectionTag1 = " - ",
+                CollectionTag2 = " - ",
+                CollectionTag3 = " - ",
+                CollectionRealLocation = " - ",
+                CollectionInventoryStatus = InventoryStatus.NotSet
+            };
+
+            LoadFileList(collection, directoryPath);
+            return collection;
+        }
+
+        /// <summary>
+        /// ディレクトリ内のファイルリストを読み込み
+        /// </summary>
+        private void LoadFileList(CollectionData collection, string directoryPath)
+        {
+            try
+            {
+                var files = Directory.GetFiles(directoryPath);
+                var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff" };
+                
+                foreach (var file in files)
+                {
+                    var fileName = Path.GetFileName(file);
+                    var extension = Path.GetExtension(file).ToLowerInvariant();
+                    
+                    // システムファイルをスキップ
+                    if (fileName == "index.txt" || fileName == "comment.txt") continue;
+                    
+                    if (imageExtensions.Contains(extension))
+                    {
+                        collection.ImageFiles.Add(fileName);
+                        
+                        // 最初の画像をサムネイルとして設定
+                        if (collection.ThumbnailPath == null)
+                        {
+                            collection.ThumbnailPath = fileName;
+                        }
+                    }
+                    else
+                    {
+                        collection.OtherFiles.Add(fileName);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error loading file list from {directoryPath}");
+            }
+        }
+
+        /// <summary>
+        /// 検索条件に基づいてコレクションを検索
+        /// </summary>
+        public async Task<SearchResult> SearchCollectionsAsync(SearchCriteria criteria)
+        {
+            var allCollections = await GetAllCollectionsAsync();
+            var filteredCollections = allCollections.AsQueryable();
+
+            // テキスト検索
+            if (!string.IsNullOrWhiteSpace(criteria.SearchText))
+            {
+                var searchText = criteria.SearchText.ToLowerInvariant();
+                filteredCollections = filteredCollections.Where(c =>
+                    c.CollectionName.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionID.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionMC.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionCategory.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionTag1.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionTag2.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionTag3.ToLowerInvariant().Contains(searchText) ||
+                    c.CollectionRealLocation.ToLowerInvariant().Contains(searchText) ||
+                    (c.Comment != null && c.Comment.ToLowerInvariant().Contains(searchText))
+                );
+            }
+
+            // カテゴリフィルタ
+            if (!string.IsNullOrWhiteSpace(criteria.Category))
+            {
+                filteredCollections = filteredCollections.Where(c => 
+                    c.CollectionCategory.Equals(criteria.Category, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // タグフィルタ
+            if (!string.IsNullOrWhiteSpace(criteria.Tag1))
+            {
+                filteredCollections = filteredCollections.Where(c => 
+                    c.CollectionTag1.Equals(criteria.Tag1, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(criteria.Tag2))
+            {
+                filteredCollections = filteredCollections.Where(c => 
+                    c.CollectionTag2.Equals(criteria.Tag2, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrWhiteSpace(criteria.Tag3))
+            {
+                filteredCollections = filteredCollections.Where(c => 
+                    c.CollectionTag3.Equals(criteria.Tag3, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // 在庫状況フィルタ
+            if (criteria.InventoryStatus.HasValue)
+            {
+                filteredCollections = filteredCollections.Where(c => 
+                    c.CollectionInventoryStatus == criteria.InventoryStatus.Value);
+            }
+
+            var totalCount = filteredCollections.Count();
+            var pagedCollections = filteredCollections
+                .Skip((criteria.Page - 1) * criteria.PageSize)
+                .Take(criteria.PageSize)
+                .ToList();
+
+            return new SearchResult
+            {
+                Collections = pagedCollections,
+                TotalCount = totalCount,
+                Page = criteria.Page,
+                PageSize = criteria.PageSize
+            };
+        }
+
+        /// <summary>
+        /// IDによるコレクション取得
+        /// </summary>
+        public async Task<CollectionData?> GetCollectionByIdAsync(string id)
+        {
+            var collections = await GetAllCollectionsAsync();
+            return collections.FirstOrDefault(c => c.CollectionID.Equals(id, StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
+        /// 利用可能なカテゴリ一覧を取得
+        /// </summary>
+        public async Task<List<string>> GetCategoriesAsync()
+        {
+            var collections = await GetAllCollectionsAsync();
+            return collections
+                .Select(c => c.CollectionCategory)
+                .Where(cat => !string.IsNullOrWhiteSpace(cat) && cat != " - ")
+                .Distinct()
+                .OrderBy(cat => cat)
+                .ToList();
+        }
+
+        /// <summary>
+        /// 利用可能なタグ一覧を取得
+        /// </summary>
+        public async Task<List<string>> GetTagsAsync()
+        {
+            var collections = await GetAllCollectionsAsync();
+            var tags = new List<string>();
+            
+            tags.AddRange(collections.Select(c => c.CollectionTag1));
+            tags.AddRange(collections.Select(c => c.CollectionTag2));
+            tags.AddRange(collections.Select(c => c.CollectionTag3));
+            
+            return tags
+                .Where(tag => !string.IsNullOrWhiteSpace(tag) && tag != " - ")
+                .Distinct()
+                .OrderBy(tag => tag)
+                .ToList();
+        }
+    }
+}

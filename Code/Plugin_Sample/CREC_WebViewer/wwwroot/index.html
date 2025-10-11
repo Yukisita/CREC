@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREC Web Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .search-filters {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .collection-card {
+            transition: transform 0.2s;
+        }
+        .collection-card:hover {
+            transform: translateY(-5px);
+        }
+        .thumbnail-placeholder {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+        .tag-badge {
+            margin: 0.1rem;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 2rem;
+        }
+        .language-toggle {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-collection"></i>
+                CREC Web Viewer
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text language-toggle" onclick="toggleLanguage()">
+                    <i class="bi bi-translate"></i>
+                    <span id="languageLabel">日本語 / English</span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Search Filters -->
+        <div class="search-filters">
+            <h5 class="mb-3" data-lang="search-title">検索フィルタ / Search Filters</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="searchText" class="form-label" data-lang="search-text">テキスト検索 / Text Search</label>
+                    <input type="text" class="form-control" id="searchText" placeholder="名前、ID、タグなど / Name, ID, tags, etc.">
+                </div>
+                <div class="col-md-2">
+                    <label for="categoryFilter" class="form-label" data-lang="category">カテゴリ / Category</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="" data-lang="all-categories">全カテゴリ / All Categories</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="tag1Filter" class="form-label" data-lang="tag1">タグ1 / Tag 1</label>
+                    <select class="form-select" id="tag1Filter">
+                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="tag2Filter" class="form-label" data-lang="tag2">タグ2 / Tag 2</label>
+                    <select class="form-select" id="tag2Filter">
+                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="tag3Filter" class="form-label" data-lang="tag3">タグ3 / Tag 3</label>
+                    <select class="form-select" id="tag3Filter">
+                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <label for="inventoryStatusFilter" class="form-label" data-lang="inventory-status">在庫状況 / Inventory Status</label>
+                    <select class="form-select" id="inventoryStatusFilter">
+                        <option value="" data-lang="all-status">全状況 / All Status</option>
+                        <option value="0" data-lang="stock-out">在庫切れ / Stock Out</option>
+                        <option value="1" data-lang="under-stocked">在庫不足 / Under Stocked</option>
+                        <option value="2" data-lang="appropriate">在庫適正 / Appropriate</option>
+                        <option value="3" data-lang="over-stocked">在庫過剰 / Over Stocked</option>
+                        <option value="4" data-lang="not-set">未設定 / Not Set</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="pageSize" class="form-label" data-lang="page-size">表示件数 / Page Size</label>
+                    <select class="form-select" id="pageSize">
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label">&nbsp;</label>
+                    <div>
+                        <button class="btn btn-primary me-2" onclick="searchCollections()">
+                            <i class="bi bi-search"></i>
+                            <span data-lang="search-button">検索 / Search</span>
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                            <i class="bi bi-x-circle"></i>
+                            <span data-lang="clear-button">クリア / Clear</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Summary -->
+        <div id="resultsSummary" class="mb-3" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center">
+                <span id="resultsText"></span>
+                <span id="resultsCount" class="badge bg-primary"></span>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2" data-lang="loading">読み込み中... / Loading...</p>
+        </div>
+
+        <!-- Error -->
+        <div id="error" class="error" style="display: none;"></div>
+
+        <!-- Collections Grid -->
+        <div id="collectionsGrid" class="row g-4">
+            <!-- Collections will be loaded here -->
+        </div>
+
+        <!-- Pagination -->
+        <div id="pagination" class="pagination-container">
+            <!-- Pagination will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Collection Detail Modal -->
+    <div class="modal fade" id="collectionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Detail content will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-lang="close">閉じる / Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
