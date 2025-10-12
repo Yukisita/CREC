@@ -78,36 +78,32 @@
         <div class="search-filters">
             <h5 class="mb-3" data-lang="search-title">検索フィルタ / Search Filters</h5>
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label for="searchText" class="form-label" data-lang="search-text">テキスト検索 / Text Search</label>
-                    <input type="text" class="form-control" id="searchText" placeholder="名前、ID、タグなど / Name, ID, tags, etc.">
+                    <input type="text" class="form-control" id="searchText" placeholder="検索キーワード / Search keyword">
                 </div>
                 <div class="col-md-2">
-                    <label for="categoryFilter" class="form-label" data-lang="category">カテゴリ / Category</label>
-                    <select class="form-select" id="categoryFilter">
-                        <option value="" data-lang="all-categories">全カテゴリ / All Categories</option>
+                    <label for="searchField" class="form-label" data-lang="search-field">検索対象 / Search Field</label>
+                    <select class="form-select" id="searchField">
+                        <option value="0" data-lang="field-all">全項目 / All Fields</option>
+                        <option value="1" data-lang="field-id">UUID/ID</option>
+                        <option value="2" data-lang="field-name">名称 / Name</option>
+                        <option value="3" data-lang="field-mc">管理コード / MC</option>
+                        <option value="4" data-lang="field-category">カテゴリ / Category</option>
+                        <option value="5" data-lang="field-tag">タグ / Tag</option>
+                        <option value="6" data-lang="field-location">場所 / Location</option>
+                        <option value="7" data-lang="field-comment">コメント / Comment</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label for="tag1Filter" class="form-label" data-lang="tag1">タグ1 / Tag 1</label>
-                    <select class="form-select" id="tag1Filter">
-                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
+                    <label for="searchMethod" class="form-label" data-lang="search-method">検索方式 / Search Method</label>
+                    <select class="form-select" id="searchMethod">
+                        <option value="0" data-lang="method-partial">部分一致 / Partial</option>
+                        <option value="1" data-lang="method-prefix">前方一致 / Prefix</option>
+                        <option value="2" data-lang="method-suffix">後方一致 / Suffix</option>
+                        <option value="3" data-lang="method-exact">完全一致 / Exact</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label for="tag2Filter" class="form-label" data-lang="tag2">タグ2 / Tag 2</label>
-                    <select class="form-select" id="tag2Filter">
-                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label for="tag3Filter" class="form-label" data-lang="tag3">タグ3 / Tag 3</label>
-                    <select class="form-select" id="tag3Filter">
-                        <option value="" data-lang="all-tags">全タグ / All Tags</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mt-3">
                 <div class="col-md-3">
                     <label for="inventoryStatusFilter" class="form-label" data-lang="inventory-status">在庫状況 / Inventory Status</label>
                     <select class="form-select" id="inventoryStatusFilter">
@@ -128,6 +124,8 @@
                         <option value="100">100</option>
                     </select>
                 </div>
+            </div>
+            <div class="row mt-3">
                 <div class="col-md-7">
                     <label class="form-label">&nbsp;</label>
                     <div>

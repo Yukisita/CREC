@@ -96,41 +96,42 @@ namespace CREC_WebViewer.Services
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
                     
-                    var parts = line.Split(',');
-                    if (parts.Length < 2) continue;
-
-                    var key = parts[0].Trim();
+                    // カンマで分割して最初の要素をキーとして扱う
+                    var commaIndex = line.IndexOf(',');
+                    if (commaIndex < 0) continue;  // カンマがない行はスキップ
+                    
+                    var key = line.Substring(0, commaIndex);
+                    var value = commaIndex + 1 < line.Length ? line.Substring(commaIndex + 1) : string.Empty;
                     
                     // CRECのLoadCollectionIndexDataに準拠した処理
-                    // line.Substring()を使用して、キーの後のすべての文字を取得
                     switch (key)
                     {
                         case "名称": // Collection Name
-                            collection.CollectionName = line.Substring(3);
+                            collection.CollectionName = value;
                             break;
                         case "ID":
-                            collection.CollectionID = line.Substring(3);
+                            collection.CollectionID = value;
                             break;
                         case "MC":
-                            collection.CollectionMC = line.Substring(3);
+                            collection.CollectionMC = value;
                             break;
                         case "登録日": // Registration Date
-                            collection.CollectionRegistrationDate = line.Substring(4);
+                            collection.CollectionRegistrationDate = value;
                             break;
                         case "カテゴリ": // Category
-                            collection.CollectionCategory = line.Substring(5);
+                            collection.CollectionCategory = value;
                             break;
                         case "タグ1": // Tag1
-                            collection.CollectionTag1 = line.Substring(4);
+                            collection.CollectionTag1 = value;
                             break;
                         case "タグ2": // Tag2
-                            collection.CollectionTag2 = line.Substring(4);
+                            collection.CollectionTag2 = value;
                             break;
                         case "タグ3": // Tag3
-                            collection.CollectionTag3 = line.Substring(4);
+                            collection.CollectionTag3 = value;
                             break;
                         case "場所1(Real)": // Real Location
-                            collection.CollectionRealLocation = parts[1];
+                            collection.CollectionRealLocation = value;
                             break;
                     }
                 }
