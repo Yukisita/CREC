@@ -128,6 +128,8 @@ async function searchCollections(page = 1) {
     
     const criteria = {
         searchText: document.getElementById('searchText').value,
+        searchField: parseInt(document.getElementById('searchField').value) || 0,
+        searchMethod: parseInt(document.getElementById('searchMethod').value) || 0,
         category: document.getElementById('categoryFilter').value,
         tag1: document.getElementById('tag1Filter').value,
         tag2: document.getElementById('tag2Filter').value,
@@ -428,6 +430,8 @@ function updatePagination(result) {
 
 function clearFilters() {
     document.getElementById('searchText').value = '';
+    document.getElementById('searchField').value = '0';
+    document.getElementById('searchMethod').value = '0';
     document.getElementById('categoryFilter').value = '';
     document.getElementById('tag1Filter').value = '';
     document.getElementById('tag2Filter').value = '';

@@ -47,6 +47,11 @@ namespace CREC_WebViewer.Services
                 // データフォルダ内のサブフォルダを検索
                 var directories = Directory.GetDirectories(_dataFolderPath);
                 
+                // $SystemDataフォルダを除外
+                directories = directories.Where(dir => 
+                    !Path.GetFileName(dir).Equals("$SystemData", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+                
                 var tasks = directories.Select(async dir => await LoadCollectionFromDirectoryAsync(dir));
                 var collections = await Task.WhenAll(tasks);
                 
@@ -228,18 +233,8 @@ namespace CREC_WebViewer.Services
             // テキスト検索
             if (!string.IsNullOrWhiteSpace(criteria.SearchText))
             {
-                var searchText = criteria.SearchText.ToLowerInvariant();
-                filteredCollections = filteredCollections.Where(c =>
-                    c.CollectionName.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionID.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionMC.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionCategory.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionTag1.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionTag2.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionTag3.ToLowerInvariant().Contains(searchText) ||
-                    c.CollectionRealLocation.ToLowerInvariant().Contains(searchText) ||
-                    (c.Comment != null && c.Comment.ToLowerInvariant().Contains(searchText))
-                );
+                filteredCollections = filteredCollections.Where(c => 
+                    MatchesSearchCriteria(c, criteria.SearchText, criteria.SearchField, criteria.SearchMethod));
             }
 
             // カテゴリフィルタ
@@ -288,6 +283,72 @@ namespace CREC_WebViewer.Services
                 Page = criteria.Page,
                 PageSize = criteria.PageSize
             };
+        }
+
+        /// <summary>
+        /// コレクションが検索条件にマッチするかをチェック
+        /// </summary>
+        private bool MatchesSearchCriteria(CollectionData collection, string searchText, SearchField searchField, SearchMethod searchMethod)
+        {
+            // 検索対象フィールドの値を取得
+            var fieldsToSearch = new List<string>();
+            
+            switch (searchField)
+            {
+                case SearchField.All:
+                    fieldsToSearch.Add(collection.CollectionID);
+                    fieldsToSearch.Add(collection.CollectionName);
+                    fieldsToSearch.Add(collection.CollectionMC);
+                    fieldsToSearch.Add(collection.CollectionCategory);
+                    fieldsToSearch.Add(collection.CollectionTag1);
+                    fieldsToSearch.Add(collection.CollectionTag2);
+                    fieldsToSearch.Add(collection.CollectionTag3);
+                    fieldsToSearch.Add(collection.CollectionRealLocation);
+                    if (collection.Comment != null) fieldsToSearch.Add(collection.Comment);
+                    break;
+                case SearchField.ID:
+                    fieldsToSearch.Add(collection.CollectionID);
+                    break;
+                case SearchField.Name:
+                    fieldsToSearch.Add(collection.CollectionName);
+                    break;
+                case SearchField.ManagementCode:
+                    fieldsToSearch.Add(collection.CollectionMC);
+                    break;
+                case SearchField.Category:
+                    fieldsToSearch.Add(collection.CollectionCategory);
+                    break;
+                case SearchField.Tag:
+                    fieldsToSearch.Add(collection.CollectionTag1);
+                    fieldsToSearch.Add(collection.CollectionTag2);
+                    fieldsToSearch.Add(collection.CollectionTag3);
+                    break;
+                case SearchField.Location:
+                    fieldsToSearch.Add(collection.CollectionRealLocation);
+                    break;
+                case SearchField.Comment:
+                    if (collection.Comment != null) fieldsToSearch.Add(collection.Comment);
+                    break;
+            }
+
+            // 検索方式に応じてマッチングを行う
+            foreach (var fieldValue in fieldsToSearch)
+            {
+                if (string.IsNullOrEmpty(fieldValue)) continue;
+                
+                bool matches = searchMethod switch
+                {
+                    SearchMethod.Prefix => fieldValue.StartsWith(searchText, StringComparison.OrdinalIgnoreCase),
+                    SearchMethod.Suffix => fieldValue.EndsWith(searchText, StringComparison.OrdinalIgnoreCase),
+                    SearchMethod.Exact => fieldValue.Equals(searchText, StringComparison.OrdinalIgnoreCase),
+                    SearchMethod.Partial => fieldValue.Contains(searchText, StringComparison.OrdinalIgnoreCase),
+                    _ => false
+                };
+
+                if (matches) return true;
+            }
+
+            return false;
         }
 
         /// <summary>

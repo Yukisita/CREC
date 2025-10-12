@@ -106,11 +106,39 @@ namespace CREC_WebViewer.Models
     }
 
     /// <summary>
+    /// 検索フィールドの種類
+    /// </summary>
+    public enum SearchField
+    {
+        All,            // 全項目
+        ID,             // UUID/ID
+        Name,           // 名称
+        ManagementCode, // 管理コード
+        Category,       // カテゴリ
+        Tag,            // タグ
+        Location,       // 場所
+        Comment         // コメント
+    }
+
+    /// <summary>
+    /// 検索方式の種類
+    /// </summary>
+    public enum SearchMethod
+    {
+        Partial,        // 部分一致
+        Prefix,         // 前方一致
+        Suffix,         // 後方一致
+        Exact           // 完全一致
+    }
+
+    /// <summary>
     /// 検索条件クラス
     /// </summary>
     public class SearchCriteria
     {
         public string? SearchText { get; set; }
+        public SearchField SearchField { get; set; } = SearchField.All;
+        public SearchMethod SearchMethod { get; set; } = SearchMethod.Partial;
         public string? Category { get; set; }
         public string? Tag1 { get; set; }
         public string? Tag2 { get; set; }
