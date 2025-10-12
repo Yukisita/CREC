@@ -81,31 +81,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function initializeApp() {
-    await loadFilters();
-    await searchCollections();
-}
-
-// Load filter options
-async function loadFilters() {
-    // No longer needed - categories and tags are now searched through the Search Field selector
-    // This function is kept for potential future use
-}
-
-function populateSelect(selectId, options) {
-    const select = document.getElementById(selectId);
-    const defaultOption = select.querySelector('option[value=""]');
-    
-    // Clear existing options except the default
-    while (select.children.length > 1) {
-        select.removeChild(select.lastChild);
+    try {
+        console.log('Initializing app...');
+        
+        // Add Enter key listener for search
+        const searchTextElement = document.getElementById('searchText');
+        if (searchTextElement) {
+            searchTextElement.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchCollections();
+                }
+            });
+        }
+        
+        // No longer need to load filters since we have static dropdowns
+        await searchCollections();
+        console.log('App initialized successfully');
+    } catch (error) {
+        console.error('Error initializing app:', error);
+        showError('Failed to initialize application: ' + error.message);
     }
-    
-    options.forEach(option => {
-        const optionElement = document.createElement('option');
-        optionElement.value = option;
-        optionElement.textContent = option;
-        select.appendChild(optionElement);
-    });
 }
 
 // Search collections
@@ -508,15 +503,3 @@ function escapeHtml(text) {
     };
     return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
 }
-
-// Add event listeners for search on Enter key
-document.addEventListener('DOMContentLoaded', function() {
-    const searchTextElement = document.getElementById('searchText');
-    if (searchTextElement) {
-        searchTextElement.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchCollections();
-            }
-        });
-    }
-});
