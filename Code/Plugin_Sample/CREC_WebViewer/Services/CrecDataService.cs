@@ -75,11 +75,17 @@ namespace CREC_WebViewer.Services
         {
             try
             {
+                // index.txtまたはIndex.txtを探す（大文字小文字を区別しない）
                 var indexFilePath = Path.Combine(directoryPath, "index.txt");
+                if (!File.Exists(indexFilePath))
+                {
+                    indexFilePath = Path.Combine(directoryPath, "Index.txt");
+                }
                 
                 if (!File.Exists(indexFilePath))
                 {
                     // index.txtが存在しない場合、フォルダ名をIDとして基本的なデータを作成
+                    _logger.LogWarning($"No index file found in {directoryPath}");
                     return CreateBasicCollectionData(directoryPath);
                 }
 
