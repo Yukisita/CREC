@@ -115,8 +115,10 @@
             this.ExecutePluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.AddToFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -239,8 +241,9 @@
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
             this.SearchFormTextBox = new System.Windows.Forms.RichTextBox();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+            this.webServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.StartCRECServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.serverAppパス設定ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -264,7 +267,8 @@
             this.PluginToolStripMenuItem,
             this.HelpToolStripMenuItem,
             this.ShowListButton,
-            this.ShowProjcetNameTextBox});
+            this.ShowProjcetNameTextBox,
+            this.webServerToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(0);
@@ -863,7 +867,7 @@
             this.ExecutePluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecuteEXEPluginToolStripMenuItem});
             this.ExecutePluginToolStripMenuItem.Name = "ExecutePluginToolStripMenuItem";
-            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(362, 34);
             this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行";
             // 
             // ExecuteEXEPluginToolStripMenuItem
@@ -876,23 +880,33 @@
             // RecentlyExecutedPluginToolStripMenuItem
             // 
             this.RecentlyExecutedPluginToolStripMenuItem.Name = "RecentlyExecutedPluginToolStripMenuItem";
-            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(362, 34);
             this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
             this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(359, 6);
             // 
             // AddToFavoritePluginsToolStripMenuItem
             // 
             this.AddToFavoritePluginsToolStripMenuItem.Name = "AddToFavoritePluginsToolStripMenuItem";
-            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(362, 34);
             this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン追加...";
             this.AddToFavoritePluginsToolStripMenuItem.Click += new System.EventHandler(this.AddToFavoritePluginsToolStripMenuItem_Click);
             // 
             // RemoveFavoritePluginsToolStripMenuItem
             // 
             this.RemoveFavoritePluginsToolStripMenuItem.Name = "RemoveFavoritePluginsToolStripMenuItem";
-            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(362, 34);
             this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン削除";
             this.RemoveFavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.RemoveFavoritePluginsToolStripMenuItem_MouseEnter);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(359, 6);
             // 
             // HelpToolStripMenuItem
             // 
@@ -2389,15 +2403,27 @@
             this.SearchFormTextBox.Text = "";
             this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
             // 
-            // toolStripSeparator11
+            // webServerToolStripMenuItem
             // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(323, 6);
+            this.webServerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StartCRECServerToolStripMenuItem,
+            this.serverAppパス設定ToolStripMenuItem});
+            this.webServerToolStripMenuItem.Name = "webServerToolStripMenuItem";
+            this.webServerToolStripMenuItem.Size = new System.Drawing.Size(156, 37);
+            this.webServerToolStripMenuItem.Text = "WebServer";
             // 
-            // toolStripSeparator12
+            // StartCRECServerToolStripMenuItem
             // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(323, 6);
+            this.StartCRECServerToolStripMenuItem.Name = "StartCRECServerToolStripMenuItem";
+            this.StartCRECServerToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.StartCRECServerToolStripMenuItem.Text = "Server起動";
+            this.StartCRECServerToolStripMenuItem.Click += new System.EventHandler(this.StartCRECServerToolStripMenuItem_Click);
+            // 
+            // serverAppパス設定ToolStripMenuItem
+            // 
+            this.serverAppパス設定ToolStripMenuItem.Name = "serverAppパス設定ToolStripMenuItem";
+            this.serverAppパス設定ToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.serverAppパス設定ToolStripMenuItem.Text = "ServerAppパス設定";
             // 
             // MainForm
             // 
@@ -2722,6 +2748,9 @@
         private System.Windows.Forms.ToolStripMenuItem ExecuteEXEPluginToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripMenuItem webServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem StartCRECServerToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem serverAppパス設定ToolStripMenuItem;
     }
 }
 
