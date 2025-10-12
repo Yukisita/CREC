@@ -105,50 +105,35 @@ async function initializeApp() {
 
 // Search collections
 async function searchCollections(page = 1) {
-    currentPage = page;
-    
-    // Get page size element
-    const pageSizeElement = document.getElementById('pageSize');
-    if (!pageSizeElement) {
-        console.error('pageSize element not found');
-        return;
-    }
-    currentPageSize = parseInt(pageSizeElement.value);
-    
-    // Get all search filter elements
-    const searchTextElement = document.getElementById('searchText');
-    const searchFieldElement = document.getElementById('searchField');
-    const searchMethodElement = document.getElementById('searchMethod');
-    const inventoryStatusElement = document.getElementById('inventoryStatusFilter');
-    
-    // Check if elements exist
-    if (!searchTextElement || !searchFieldElement || !searchMethodElement || !inventoryStatusElement) {
-        console.error('Required elements not found:', {
-            searchText: !!searchTextElement,
-            searchField: !!searchFieldElement,
-            searchMethod: !!searchMethodElement,
-            inventoryStatus: !!inventoryStatusElement
-        });
-        showError('Page elements not properly loaded. Please refresh the page.');
-        return;
-    }
-    
-    const criteria = {
-        searchText: searchTextElement.value,
-        searchField: parseInt(searchFieldElement.value) || 0,
-        searchMethod: parseInt(searchMethodElement.value) || 0,
-        inventoryStatus: inventoryStatusElement.value || null,
-        page: currentPage,
-        pageSize: currentPageSize
-    };
-
-    currentSearchCriteria = criteria;
-    console.log('Search criteria:', criteria);
-
-    showLoading(true);
-    hideError();
-
     try {
+        currentPage = page;
+        
+        // Get page size element - use safer approach with default value
+        const pageSizeElement = document.getElementById('pageSize');
+        currentPageSize = pageSizeElement ? parseInt(pageSizeElement.value) : 20;
+        
+        // Get all search filter elements with defensive approach
+        const searchTextElement = document.getElementById('searchText');
+        const searchFieldElement = document.getElementById('searchField');
+        const searchMethodElement = document.getElementById('searchMethod');
+        const inventoryStatusElement = document.getElementById('inventoryStatusFilter');
+        
+        // Build criteria object with safe access and default values
+        const criteria = {
+            searchText: searchTextElement ? searchTextElement.value : '',
+            searchField: searchFieldElement ? (parseInt(searchFieldElement.value) || 0) : 0,
+            searchMethod: searchMethodElement ? (parseInt(searchMethodElement.value) || 0) : 0,
+            inventoryStatus: inventoryStatusElement ? (inventoryStatusElement.value || null) : null,
+            page: currentPage,
+            pageSize: currentPageSize
+        };
+
+        currentSearchCriteria = criteria;
+        console.log('Search criteria:', criteria);
+
+        showLoading(true);
+        hideError();
+
         const queryParams = new URLSearchParams();
         Object.keys(criteria).forEach(key => {
             if (criteria[key] !== null && criteria[key] !== '') {
