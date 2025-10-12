@@ -123,6 +123,7 @@ async function searchCollections(page = 1) {
     };
 
     currentSearchCriteria = criteria;
+    console.log('Search criteria:', criteria);
 
     showLoading(true);
     hideError();
@@ -135,12 +136,16 @@ async function searchCollections(page = 1) {
             }
         });
 
+        console.log('Query params:', queryParams.toString());
         const response = await fetch(`/api/collections/search?${queryParams}`);
+        console.log('Response status:', response.status);
+        
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const result = await response.json();
+        console.log('Search result:', result);
         displaySearchResults(result);
         updatePagination(result);
     } catch (error) {

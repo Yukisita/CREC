@@ -339,27 +339,41 @@ namespace CREC_WebViewer.Services
         public async Task<SearchResult> SearchCollectionsAsync(SearchCriteria criteria)
         {
             var allCollections = await GetAllCollectionsAsync();
+            _logger.LogInformation($"SearchCollectionsAsync: Total collections loaded: {allCollections.Count}");
+            
             var filteredCollections = allCollections.AsQueryable();
 
             // テキスト検索
             if (!string.IsNullOrWhiteSpace(criteria.SearchText))
             {
+                _logger.LogInformation($"Filtering by search text: '{criteria.SearchText}', Field: {criteria.SearchField}, Method: {criteria.SearchMethod}");
                 filteredCollections = filteredCollections.Where(c => 
                     MatchesSearchCriteria(c, criteria.SearchText, criteria.SearchField, criteria.SearchMethod));
+                _logger.LogInformation($"After text search: {filteredCollections.Count()} collections match");
+            }
+            else
+            {
+                _logger.LogInformation("No search text provided, showing all collections");
             }
 
             // 在庫状況フィルタ
             if (criteria.InventoryStatus.HasValue)
             {
+                _logger.LogInformation($"Filtering by inventory status: {criteria.InventoryStatus.Value}");
                 filteredCollections = filteredCollections.Where(c => 
                     c.CollectionInventoryStatus == criteria.InventoryStatus.Value);
+                _logger.LogInformation($"After inventory filter: {filteredCollections.Count()} collections match");
             }
 
             var totalCount = filteredCollections.Count();
+            _logger.LogInformation($"Total filtered collections: {totalCount}");
+            
             var pagedCollections = filteredCollections
                 .Skip((criteria.Page - 1) * criteria.PageSize)
                 .Take(criteria.PageSize)
                 .ToList();
+
+            _logger.LogInformation($"Returning {pagedCollections.Count} collections for page {criteria.Page}");
 
             return new SearchResult
             {
