@@ -87,21 +87,8 @@ async function initializeApp() {
 
 // Load filter options
 async function loadFilters() {
-    try {
-        // Load categories
-        const categoriesResponse = await fetch('/api/collections/categories');
-        const categories = await categoriesResponse.json();
-        populateSelect('categoryFilter', categories);
-
-        // Load tags
-        const tagsResponse = await fetch('/api/collections/tags');
-        const tags = await tagsResponse.json();
-        populateSelect('tag1Filter', tags);
-        populateSelect('tag2Filter', tags);
-        populateSelect('tag3Filter', tags);
-    } catch (error) {
-        console.error('Error loading filters:', error);
-    }
+    // No longer needed - categories and tags are now searched through the Search Field selector
+    // This function is kept for potential future use
 }
 
 function populateSelect(selectId, options) {
@@ -130,10 +117,6 @@ async function searchCollections(page = 1) {
         searchText: document.getElementById('searchText').value,
         searchField: parseInt(document.getElementById('searchField').value) || 0,
         searchMethod: parseInt(document.getElementById('searchMethod').value) || 0,
-        category: document.getElementById('categoryFilter').value,
-        tag1: document.getElementById('tag1Filter').value,
-        tag2: document.getElementById('tag2Filter').value,
-        tag3: document.getElementById('tag3Filter').value,
         inventoryStatus: document.getElementById('inventoryStatusFilter').value || null,
         page: currentPage,
         pageSize: currentPageSize
@@ -432,10 +415,6 @@ function clearFilters() {
     document.getElementById('searchText').value = '';
     document.getElementById('searchField').value = '0';
     document.getElementById('searchMethod').value = '0';
-    document.getElementById('categoryFilter').value = '';
-    document.getElementById('tag1Filter').value = '';
-    document.getElementById('tag2Filter').value = '';
-    document.getElementById('tag3Filter').value = '';
     document.getElementById('inventoryStatusFilter').value = '';
     searchCollections();
 }

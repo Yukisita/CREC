@@ -90,51 +90,47 @@ namespace CREC_WebViewer.Services
                 };
 
                 // index.txtを読み込み
-                var lines = await File.ReadAllLinesAsync(indexFilePath, Encoding.UTF8);
+                var lines = await File.ReadAllLinesAsync(indexFilePath, Encoding.GetEncoding("UTF-8"));
                 
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
                     
-                    var parts = line.Split(',', 2);
+                    var parts = line.Split(',');
                     if (parts.Length < 2) continue;
 
                     var key = parts[0].Trim();
-                    var value = parts[1].Trim();
-
+                    
+                    // CRECのLoadCollectionIndexDataに準拠した処理
+                    // line.Substring()を使用して、キーの後のすべての文字を取得
                     switch (key)
                     {
-                        case "CollectionName":
-                            collection.CollectionName = value;
+                        case "名称": // Collection Name
+                            collection.CollectionName = line.Substring(3);
                             break;
-                        case "CollectionMC":
-                            collection.CollectionMC = value;
+                        case "ID":
+                            collection.CollectionID = line.Substring(3);
                             break;
-                        case "CollectionRegistrationDate":
-                            collection.CollectionRegistrationDate = value;
+                        case "MC":
+                            collection.CollectionMC = line.Substring(3);
                             break;
-                        case "CollectionCategory":
-                            collection.CollectionCategory = value;
+                        case "登録日": // Registration Date
+                            collection.CollectionRegistrationDate = line.Substring(4);
                             break;
-                        case "CollectionTag1":
-                            collection.CollectionTag1 = value;
+                        case "カテゴリ": // Category
+                            collection.CollectionCategory = line.Substring(5);
                             break;
-                        case "CollectionTag2":
-                            collection.CollectionTag2 = value;
+                        case "タグ1": // Tag1
+                            collection.CollectionTag1 = line.Substring(4);
                             break;
-                        case "CollectionTag3":
-                            collection.CollectionTag3 = value;
+                        case "タグ2": // Tag2
+                            collection.CollectionTag2 = line.Substring(4);
                             break;
-                        case "CollectionRealLocation":
-                            collection.CollectionRealLocation = value;
+                        case "タグ3": // Tag3
+                            collection.CollectionTag3 = line.Substring(4);
                             break;
-                        case "CollectionCurrentInventory":
-                            if (int.TryParse(value, out int inventory))
-                                collection.CollectionCurrentInventory = inventory;
-                            break;
-                        case "CollectionInventoryStatus":
-                            if (Enum.TryParse<InventoryStatus>(value, out var status))
-                                collection.CollectionInventoryStatus = status;
+                        case "場所1(Real)": // Real Location
+                            collection.CollectionRealLocation = parts[1];
                             break;
                     }
                 }
@@ -143,8 +139,11 @@ namespace CREC_WebViewer.Services
                 var commentFilePath = Path.Combine(directoryPath, "comment.txt");
                 if (File.Exists(commentFilePath))
                 {
-                    collection.Comment = await File.ReadAllTextAsync(commentFilePath, Encoding.UTF8);
+                    collection.Comment = await File.ReadAllTextAsync(commentFilePath, Encoding.GetEncoding("UTF-8"));
                 }
+
+                // 在庫情報を読み込み
+                LoadInventoryData(collection, directoryPath);
 
                 // 画像ファイルとその他のファイルを検索
                 LoadFileList(collection, directoryPath);
@@ -180,6 +179,84 @@ namespace CREC_WebViewer.Services
 
             LoadFileList(collection, directoryPath);
             return collection;
+        }
+
+        /// <summary>
+        /// 在庫情報を読み込み（CREC本体のLoadCollectionInventoryDataに準拠）
+        /// </summary>
+        private void LoadInventoryData(CollectionData collection, string directoryPath)
+        {
+            try
+            {
+                var inventoryFilePath = Path.Combine(directoryPath, "inventory.inv");
+                if (!File.Exists(inventoryFilePath))
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.NotSet;
+                    collection.CollectionCurrentInventory = null;
+                    return;
+                }
+
+                var lines = File.ReadAllLines(inventoryFilePath, Encoding.GetEncoding("UTF-8"));
+                if (lines.Length == 0) return;
+
+                int? safetyStock = null;
+                int? reorderPoint = null;
+                int? maximumLevel = null;
+                int totalInventory = 0;
+
+                bool firstLine = true;
+                foreach (var line in lines)
+                {
+                    var cols = line.Split(',');
+                    if (cols.Length < 4) continue;
+
+                    if (firstLine)
+                    {
+                        // 最初の行から安全在庫、発注点、最大在庫レベルを読み取る
+                        if (!string.IsNullOrEmpty(cols[1]) && int.TryParse(cols[1], out int ss))
+                            safetyStock = ss;
+                        if (!string.IsNullOrEmpty(cols[2]) && int.TryParse(cols[2], out int rp))
+                            reorderPoint = rp;
+                        if (!string.IsNullOrEmpty(cols[3]) && int.TryParse(cols[3], out int ml))
+                            maximumLevel = ml;
+                        firstLine = false;
+                    }
+                    else
+                    {
+                        // 2行目以降から在庫数を合計
+                        if (cols.Length >= 3 && int.TryParse(cols[2], out int count))
+                        {
+                            totalInventory += count;
+                        }
+                    }
+                }
+
+                collection.CollectionCurrentInventory = totalInventory;
+
+                // 在庫状況を判定（CREC本体のロジックに準拠）
+                if (totalInventory == 0)
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.StockOut;
+                }
+                else if (safetyStock.HasValue && totalInventory < safetyStock.Value)
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.UnderStocked;
+                }
+                else if (maximumLevel.HasValue && totalInventory > maximumLevel.Value)
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.OverStocked;
+                }
+                else
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.Appropriate;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, $"Error loading inventory data from {directoryPath}");
+                collection.CollectionInventoryStatus = InventoryStatus.NotSet;
+                collection.CollectionCurrentInventory = null;
+            }
         }
 
         /// <summary>
@@ -235,32 +312,6 @@ namespace CREC_WebViewer.Services
             {
                 filteredCollections = filteredCollections.Where(c => 
                     MatchesSearchCriteria(c, criteria.SearchText, criteria.SearchField, criteria.SearchMethod));
-            }
-
-            // カテゴリフィルタ
-            if (!string.IsNullOrWhiteSpace(criteria.Category))
-            {
-                filteredCollections = filteredCollections.Where(c => 
-                    c.CollectionCategory.Equals(criteria.Category, StringComparison.OrdinalIgnoreCase));
-            }
-
-            // タグフィルタ
-            if (!string.IsNullOrWhiteSpace(criteria.Tag1))
-            {
-                filteredCollections = filteredCollections.Where(c => 
-                    c.CollectionTag1.Equals(criteria.Tag1, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(criteria.Tag2))
-            {
-                filteredCollections = filteredCollections.Where(c => 
-                    c.CollectionTag2.Equals(criteria.Tag2, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrWhiteSpace(criteria.Tag3))
-            {
-                filteredCollections = filteredCollections.Where(c => 
-                    c.CollectionTag3.Equals(criteria.Tag3, StringComparison.OrdinalIgnoreCase));
             }
 
             // 在庫状況フィルタ

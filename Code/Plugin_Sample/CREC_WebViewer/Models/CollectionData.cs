@@ -139,10 +139,6 @@ namespace CREC_WebViewer.Models
         public string? SearchText { get; set; }
         public SearchField SearchField { get; set; } = SearchField.All;
         public SearchMethod SearchMethod { get; set; } = SearchMethod.Partial;
-        public string? Category { get; set; }
-        public string? Tag1 { get; set; }
-        public string? Tag2 { get; set; }
-        public string? Tag3 { get; set; }
         public InventoryStatus? InventoryStatus { get; set; }
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 20;
