@@ -32,7 +32,9 @@ namespace CREC_WebViewer.Controllers
         {
             try
             {
+                _logger.LogInformation($"Search request: Text={criteria.SearchText}, Field={criteria.SearchField}, Method={criteria.SearchMethod}");
                 var result = await _crecDataService.SearchCollectionsAsync(criteria);
+                _logger.LogInformation($"Search returned {result.Collections.Count} collections out of {result.TotalCount} total");
                 return Ok(result);
             }
             catch (Exception ex)
@@ -50,7 +52,9 @@ namespace CREC_WebViewer.Controllers
         {
             try
             {
+                _logger.LogInformation("GetAll collections request");
                 var collections = await _crecDataService.GetAllCollectionsAsync();
+                _logger.LogInformation($"Returning {collections.Count} collections");
                 return Ok(collections);
             }
             catch (Exception ex)

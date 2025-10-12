@@ -37,6 +37,7 @@ namespace CREC_WebViewer.Services
             // キャッシュが有効な場合はキャッシュを返す
             if (_collectionsCache.Any() && DateTime.Now - _lastCacheUpdate < _cacheExpiry)
             {
+                _logger.LogInformation($"Returning {_collectionsCache.Count} collections from cache");
                 return _collectionsCache;
             }
 
@@ -44,21 +45,41 @@ namespace CREC_WebViewer.Services
 
             try
             {
+                _logger.LogInformation($"Loading collections from data folder: {_dataFolderPath}");
+                _logger.LogInformation($"Data folder exists: {Directory.Exists(_dataFolderPath)}");
+                
+                if (!Directory.Exists(_dataFolderPath))
+                {
+                    _logger.LogWarning($"Data folder does not exist: {_dataFolderPath}");
+                    return _collectionsCache;
+                }
+                
                 // データフォルダ内のサブフォルダを検索
                 var directories = Directory.GetDirectories(_dataFolderPath);
+                _logger.LogInformation($"Found {directories.Length} subdirectories in data folder");
+                
+                foreach (var dir in directories)
+                {
+                    _logger.LogInformation($"  - {Path.GetFileName(dir)}");
+                }
                 
                 // $SystemDataフォルダを除外
                 directories = directories.Where(dir => 
                     !Path.GetFileName(dir).Equals("$SystemData", StringComparison.OrdinalIgnoreCase))
                     .ToArray();
                 
+                _logger.LogInformation($"After filtering: {directories.Length} collection folders");
+                
                 var tasks = directories.Select(async dir => await LoadCollectionFromDirectoryAsync(dir));
                 var collections = await Task.WhenAll(tasks);
                 
-                _collectionsCache.AddRange(collections.Where(c => c != null).Cast<CollectionData>());
+                var validCollections = collections.Where(c => c != null).Cast<CollectionData>().ToList();
+                _logger.LogInformation($"Successfully loaded {validCollections.Count} collections");
+                
+                _collectionsCache.AddRange(validCollections);
                 _lastCacheUpdate = DateTime.Now;
 
-                _logger.LogInformation($"Loaded {_collectionsCache.Count} collections");
+                _logger.LogInformation($"Total collections in cache: {_collectionsCache.Count}");
             }
             catch (Exception ex)
             {
@@ -75,6 +96,8 @@ namespace CREC_WebViewer.Services
         {
             try
             {
+                _logger.LogDebug($"Loading collection from: {directoryPath}");
+                
                 // index.txtまたはIndex.txtを探す（大文字小文字を区別しない）
                 var indexFilePath = Path.Combine(directoryPath, "index.txt");
                 if (!File.Exists(indexFilePath))
@@ -85,9 +108,11 @@ namespace CREC_WebViewer.Services
                 if (!File.Exists(indexFilePath))
                 {
                     // index.txtが存在しない場合、フォルダ名をIDとして基本的なデータを作成
-                    _logger.LogWarning($"No index file found in {directoryPath}");
+                    _logger.LogWarning($"No index file found in {directoryPath}, creating basic collection data");
                     return CreateBasicCollectionData(directoryPath);
                 }
+                
+                _logger.LogDebug($"Found index file: {indexFilePath}");
 
                 var collection = new CollectionData
                 {
@@ -154,6 +179,8 @@ namespace CREC_WebViewer.Services
 
                 // 画像ファイルとその他のファイルを検索
                 LoadFileList(collection, directoryPath);
+                
+                _logger.LogInformation($"Successfully loaded collection: ID={collection.CollectionID}, Name={collection.CollectionName}");
 
                 return collection;
             }
