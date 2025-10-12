@@ -111,13 +111,38 @@ function populateSelect(selectId, options) {
 // Search collections
 async function searchCollections(page = 1) {
     currentPage = page;
-    currentPageSize = parseInt(document.getElementById('pageSize').value);
+    
+    // Get page size element
+    const pageSizeElement = document.getElementById('pageSize');
+    if (!pageSizeElement) {
+        console.error('pageSize element not found');
+        return;
+    }
+    currentPageSize = parseInt(pageSizeElement.value);
+    
+    // Get all search filter elements
+    const searchTextElement = document.getElementById('searchText');
+    const searchFieldElement = document.getElementById('searchField');
+    const searchMethodElement = document.getElementById('searchMethod');
+    const inventoryStatusElement = document.getElementById('inventoryStatusFilter');
+    
+    // Check if elements exist
+    if (!searchTextElement || !searchFieldElement || !searchMethodElement || !inventoryStatusElement) {
+        console.error('Required elements not found:', {
+            searchText: !!searchTextElement,
+            searchField: !!searchFieldElement,
+            searchMethod: !!searchMethodElement,
+            inventoryStatus: !!inventoryStatusElement
+        });
+        showError('Page elements not properly loaded. Please refresh the page.');
+        return;
+    }
     
     const criteria = {
-        searchText: document.getElementById('searchText').value,
-        searchField: parseInt(document.getElementById('searchField').value) || 0,
-        searchMethod: parseInt(document.getElementById('searchMethod').value) || 0,
-        inventoryStatus: document.getElementById('inventoryStatusFilter').value || null,
+        searchText: searchTextElement.value,
+        searchField: parseInt(searchFieldElement.value) || 0,
+        searchMethod: parseInt(searchMethodElement.value) || 0,
+        inventoryStatus: inventoryStatusElement.value || null,
         page: currentPage,
         pageSize: currentPageSize
     };
@@ -417,10 +442,16 @@ function updatePagination(result) {
 }
 
 function clearFilters() {
-    document.getElementById('searchText').value = '';
-    document.getElementById('searchField').value = '0';
-    document.getElementById('searchMethod').value = '0';
-    document.getElementById('inventoryStatusFilter').value = '';
+    const searchTextElement = document.getElementById('searchText');
+    const searchFieldElement = document.getElementById('searchField');
+    const searchMethodElement = document.getElementById('searchMethod');
+    const inventoryStatusElement = document.getElementById('inventoryStatusFilter');
+    
+    if (searchTextElement) searchTextElement.value = '';
+    if (searchFieldElement) searchFieldElement.value = '0';
+    if (searchMethodElement) searchMethodElement.value = '0';
+    if (inventoryStatusElement) inventoryStatusElement.value = '';
+    
     searchCollections();
 }
 
@@ -480,9 +511,12 @@ function escapeHtml(text) {
 
 // Add event listeners for search on Enter key
 document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('searchText').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            searchCollections();
-        }
-    });
+    const searchTextElement = document.getElementById('searchText');
+    if (searchTextElement) {
+        searchTextElement.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchCollections();
+            }
+        });
+    }
 });
