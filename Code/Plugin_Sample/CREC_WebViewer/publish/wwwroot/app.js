@@ -199,6 +199,10 @@ function createCollectionCard(collection) {
     const colDiv = document.createElement('div');
     colDiv.className = 'col-lg-3 col-md-4 col-sm-6';
 
+    // Debug: log the collection object to see what properties it has
+    console.log('Collection object:', collection);
+    console.log('Collection ID:', collection.collectionID);
+
     const inventoryStatusText = getInventoryStatusText(collection.collectionInventoryStatus);
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 
@@ -210,16 +214,26 @@ function createCollectionCard(collection) {
      .map(tag => `<span class="badge bg-secondary tag-badge">${escapeHtml(tag)}</span>`)
      .join('');
 
-    const thumbnailUrl = `/api/Collections/thumbnail/${encodeURIComponent(collection.collectionID)}`;
-    console.log('Loading thumbnail from:', thumbnailUrl);
+    // Use the folder name as the collection ID for the thumbnail URL
+    const collectionId = collection.collectionID || Path.GetFileName(collection.collectionFolderPath) || 'unknown';
+    const thumbnailUrl = `/api/Collections/thumbnail/${encodeURIComponent(collectionId)}`;
+    console.log('Loading thumbnail from:', thumbnailUrl, 'for collection ID:', collectionId);
+    
+    // Create a unique error handler function to avoid string interpolation issues
+    const imgErrorHandler = function() {
+        console.error('Failed to load thumbnail for collection ID:', collectionId);
+        console.error('Thumbnail URL was:', thumbnailUrl);
+        this.style.display='none';
+        this.nextElementSibling.style.display='flex';
+    };
     
     const thumbnailHtml = `
         <div style="position: relative;">
             <img src="${thumbnailUrl}" 
-                 class="card-img-top" 
+                 class="card-img-top thumbnail-image"
                  alt="Thumbnail"
-                 style="display: block;"
-                 onerror="console.error('Failed to load thumbnail for:', '${collection.collectionID}'); this.style.display='none';this.nextElementSibling.style.display='flex';">
+                 data-collection-id="${escapeHtml(collectionId)}"
+                 style="display: block;">
             <div class="thumbnail-placeholder" style="display: none;">
                 <i class="bi bi-image display-4"></i>
                 <br><small>${t('no-thumbnail')}</small>
@@ -248,6 +262,18 @@ function createCollectionCard(collection) {
             </div>
         </div>
     `;
+    
+    // Attach the error handler after the element is created
+    const img = colDiv.querySelector('.thumbnail-image');
+    if (img) {
+        const collectionId = img.getAttribute('data-collection-id');
+        img.onerror = function() {
+            console.error('Failed to load thumbnail for collection ID:', collectionId);
+            console.error('Thumbnail URL was:', this.src);
+            this.style.display='none';
+            this.nextElementSibling.style.display='flex';
+        };
+    }
 
     return colDiv;
 }
