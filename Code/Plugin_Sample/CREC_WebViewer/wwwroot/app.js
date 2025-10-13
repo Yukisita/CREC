@@ -216,7 +216,7 @@ function createCollectionCard(collection) {
 
     // Use the collection ID (which is the folder name) for the thumbnail URL
     const collectionId = collection.collectionID || 'unknown';
-    const thumbnailUrl = `/api/Collections/thumbnail/${encodeURIComponent(collectionId)}`;
+    const thumbnailUrl = `/api/Files/thumbnail/${encodeURIComponent(collectionId)}`;
     console.log('Loading thumbnail from:', thumbnailUrl, 'for collection ID:', collectionId);
     
     const thumbnailHtml = `
