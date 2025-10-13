@@ -210,13 +210,16 @@ function createCollectionCard(collection) {
      .map(tag => `<span class="badge bg-secondary tag-badge">${escapeHtml(tag)}</span>`)
      .join('');
 
+    const thumbnailUrl = `/api/Collections/thumbnail/${encodeURIComponent(collection.collectionID)}`;
+    console.log('Loading thumbnail from:', thumbnailUrl);
+    
     const thumbnailHtml = `
         <div style="position: relative;">
-            <img src="/api/collections/thumbnail/${encodeURIComponent(collection.collectionID)}" 
+            <img src="${thumbnailUrl}" 
                  class="card-img-top" 
                  alt="Thumbnail"
                  style="display: block;"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                 onerror="console.error('Failed to load thumbnail for:', '${collection.collectionID}'); this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="thumbnail-placeholder" style="display: none;">
                 <i class="bi bi-image display-4"></i>
                 <br><small>${t('no-thumbnail')}</small>
