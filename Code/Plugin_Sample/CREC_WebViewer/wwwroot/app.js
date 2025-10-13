@@ -210,12 +210,19 @@ function createCollectionCard(collection) {
      .map(tag => `<span class="badge bg-secondary tag-badge">${escapeHtml(tag)}</span>`)
      .join('');
 
-    const thumbnailHtml = collection.thumbnailPath 
-        ? `<img src="/api/files/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(collection.thumbnailPath)}" class="card-img-top" alt="Thumbnail">`
-        : `<div class="thumbnail-placeholder">
-               <i class="bi bi-image display-4"></i>
-               <br><small>${t('no-thumbnail')}</small>
-           </div>`;
+    const thumbnailHtml = `
+        <div style="position: relative;">
+            <img src="/api/collections/thumbnail/${encodeURIComponent(collection.collectionID)}" 
+                 class="card-img-top" 
+                 alt="Thumbnail"
+                 style="display: block;"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="thumbnail-placeholder" style="display: none;">
+                <i class="bi bi-image display-4"></i>
+                <br><small>${t('no-thumbnail')}</small>
+            </div>
+        </div>
+    `;
 
     colDiv.innerHTML = `
         <div class="card h-100 collection-card">

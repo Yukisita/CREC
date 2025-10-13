@@ -135,6 +135,46 @@ namespace CREC_WebViewer.Controllers
         }
 
         /// <summary>
+        /// サムネイル画像取得
+        /// </summary>
+        [HttpGet("thumbnail/{collectionId}")]
+        public IActionResult GetThumbnail(string collectionId)
+        {
+            try
+            {
+                // セキュリティ：パストラバーサル攻撃を防ぐ
+                if (collectionId.Contains("..") || collectionId.Contains("/") || collectionId.Contains("\\"))
+                {
+                    return BadRequest("Invalid collection ID");
+                }
+
+                var dataFolder = Environment.CurrentDirectory;
+                var collectionFolder = Path.Combine(dataFolder, collectionId);
+                var thumbnailPath = Path.Combine(collectionFolder, "SystemData", "Thumbnail.png");
+
+                if (!System.IO.File.Exists(thumbnailPath))
+                {
+                    // サムネイルが見つからない場合は404を返す（フロントエンドでデフォルト画像表示）
+                    return NotFound($"Thumbnail not found for collection '{collectionId}'");
+                }
+
+                // ファイルが指定されたコレクションフォルダ内にあることを確認
+                if (!thumbnailPath.StartsWith(collectionFolder))
+                {
+                    return BadRequest("Access denied");
+                }
+
+                var fileBytes = System.IO.File.ReadAllBytes(thumbnailPath);
+                return File(fileBytes, "image/png", "Thumbnail.png");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error getting thumbnail for collection {collectionId}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        /// <summary>
         /// ファイル取得（画像やその他ファイル）
         /// </summary>
         [HttpGet("{collectionId}/{fileName}")]

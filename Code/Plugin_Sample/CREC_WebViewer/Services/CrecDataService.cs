@@ -300,6 +300,14 @@ namespace CREC_WebViewer.Services
         {
             try
             {
+                // まずSystemData/Thumbnail.pngをチェック（優先）
+                var systemDataThumbnail = Path.Combine(directoryPath, "SystemData", "Thumbnail.png");
+                if (File.Exists(systemDataThumbnail))
+                {
+                    collection.ThumbnailPath = "SystemData/Thumbnail.png";
+                    _logger.LogDebug($"Found thumbnail: {systemDataThumbnail}");
+                }
+                
                 var files = Directory.GetFiles(directoryPath);
                 var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff" };
                 
@@ -309,13 +317,14 @@ namespace CREC_WebViewer.Services
                     var extension = Path.GetExtension(file).ToLowerInvariant();
                     
                     // システムファイルをスキップ
-                    if (fileName == "index.txt" || fileName == "comment.txt") continue;
+                    if (fileName == "index.txt" || fileName == "Index.txt" || 
+                        fileName == "comment.txt" || fileName == "inventory.inv") continue;
                     
                     if (imageExtensions.Contains(extension))
                     {
                         collection.ImageFiles.Add(fileName);
                         
-                        // 最初の画像をサムネイルとして設定
+                        // SystemData/Thumbnail.pngが存在しない場合のみ、最初の画像をサムネイルとして設定
                         if (collection.ThumbnailPath == null)
                         {
                             collection.ThumbnailPath = fileName;
