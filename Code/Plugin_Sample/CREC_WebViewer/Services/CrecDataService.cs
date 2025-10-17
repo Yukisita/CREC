@@ -25,7 +25,8 @@ namespace CREC_WebViewer.Services
         {
             _logger = logger;
             // プラグインとして実行される場合、WorkingDirectoryがデータフォルダに設定される
-            _dataFolderPath = Environment.CurrentDirectory;
+            // コマンドライン引数で.crecファイルが指定された場合はそこからパスを取得
+            _dataFolderPath = configuration["ProjectDataPath"] ?? Environment.CurrentDirectory;
             _logger.LogInformation($"Data folder path: {_dataFolderPath}");
         }
 

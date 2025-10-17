@@ -80,7 +80,18 @@ MC,管理コード123
 3. `CREC_WebViewer.exe` (Windows) または `CREC_WebViewer` (Linux/macOS) を選択
 4. CRECが自動的にデータフォルダに移動してから実行するため、正しく動作します
 
-#### スタンドアロン実行
+#### コマンドライン引数で.crecファイルを指定
+```bash
+# Windows
+C:\path\to\CREC_WebViewer.exe "C:\path\to\project.crec"
+
+# Linux/macOS
+/path/to/CREC_WebViewer "/path/to/project.crec"
+```
+
+この方法では、.crecプロジェクト設定ファイルを引数として渡すことで、自動的にプロジェクトのデータフォルダが読み込まれます。
+
+#### スタンドアロン実行（データフォルダから）
 ```bash
 # Windows
 cd /path/to/crec/data/folder    # ← 必ずデータフォルダに移動してから実行
@@ -91,7 +102,7 @@ cd /path/to/crec/data/folder    # ← 必ずデータフォルダに移動して
 /path/to/CREC_WebViewer
 ```
 
-**注意**: `CREC_WebViewer.exe`を直接ダブルクリックしても、データフォルダから実行されない場合は正しく動作しません。必ず上記の手順に従ってください。
+**注意**: `CREC_WebViewer.exe`を直接ダブルクリックしても、データフォルダから実行されない場合は正しく動作しません。必ず上記のいずれかの手順に従ってください。
 
 ### 3. アクセス方法
 実行後、以下のURLでアクセスできます：
