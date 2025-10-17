@@ -283,6 +283,7 @@ namespace CREC
     {
         // 定数
         const string BackupLogFolderName = "!BackupLog";// バックアップログのフォルダ名を定義
+        const string ProjectSettingFileBackupFolderName = "$ProjectSettingFileBackup";// プロジェクト設定ファイルのバックアップフォルダ名を定義
 
         /// <summary>
         /// コレクションのデータ読み込み
@@ -1039,6 +1040,115 @@ namespace CREC
         }
 
         /// <summary>
+        /// プロジェクト設定ファイルをバックアップする
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <returns>成功：true / 失敗：false</returns>
+        public static bool BackupProjectSettingFile(ProjectSettingValuesClass projectSettingValues)
+        {
+            try
+            {
+                // バックアップ場所が指定されていない場合はエラー
+                if (string.IsNullOrEmpty(projectSettingValues.ProjectBackupFolderPath))
+                {
+                    return false;
+                }
+
+                // プロジェクト設定ファイルが存在しない場合はエラー
+                if (string.IsNullOrEmpty(projectSettingValues.ProjectSettingFilePath) || 
+                    !File.Exists(projectSettingValues.ProjectSettingFilePath))
+                {
+                    return false;
+                }
+
+                // プロジェクトバックアップフォルダの存在確認、なければ作成
+                if (!Directory.Exists(projectSettingValues.ProjectBackupFolderPath))
+                {
+                    Directory.CreateDirectory(projectSettingValues.ProjectBackupFolderPath);
+                }
+
+                // プロジェクト設定ファイルバックアップフォルダの存在確認、なければ作成
+                string projectSettingBackupFolderPath = System.IO.Path.Combine(
+                    projectSettingValues.ProjectBackupFolderPath, 
+                    ProjectSettingFileBackupFolderName);
+                
+                if (!Directory.Exists(projectSettingBackupFolderPath))
+                {
+                    Directory.CreateDirectory(projectSettingBackupFolderPath);
+                }
+
+                // バックアップファイル名：バックアップ作成日時＋元のプロジェクト設定ファイル名
+                string currentDateTime = DateTime.Now.ToString("yyyyMMdd_HHmmssfff");
+                string originalFileName = System.IO.Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
+                string backupFileName = $"{currentDateTime}_{originalFileName}";
+                string backupFilePath = System.IO.Path.Combine(projectSettingBackupFolderPath, backupFileName);
+
+                // プロジェクト設定ファイルをバックアップ
+                File.Copy(projectSettingValues.ProjectSettingFilePath, backupFilePath, true);
+
+                // バックアップ数を管理
+                ManageProjectSettingBackupCount(projectSettingValues, projectSettingBackupFolderPath);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"プロジェクト設定ファイルのバックアップに失敗しました: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// プロジェクト設定ファイルのバックアップ数を管理し、古いバックアップを削除する
+        /// </summary>
+        /// <param name="projectSettingValues">プロジェクト設定値</param>
+        /// <param name="projectSettingBackupFolderPath">プロジェクト設定ファイルバックアップフォルダのパス</param>
+        private static void ManageProjectSettingBackupCount(
+            ProjectSettingValuesClass projectSettingValues,
+            string projectSettingBackupFolderPath)
+        {
+            try
+            {
+                // バックアップフォルダが存在しない場合は何もしない
+                if (!Directory.Exists(projectSettingBackupFolderPath))
+                {
+                    return;
+                }
+
+                // バックアップファイルのリストを取得
+                DirectoryInfo backupDirectoryInfo = new DirectoryInfo(projectSettingBackupFolderPath);
+                FileInfo[] backupFiles = backupDirectoryInfo.GetFiles("*.crec");
+
+                // 作成日時順でソート（古い順）
+                List<FileInfo> sortedBackupFiles = backupFiles.OrderBy(f => f.CreationTime).ToList();
+
+                // バックアップ上限数を取得
+                int maxBackupCount = Math.Max(projectSettingValues.MaxBackupCount, 1);
+
+                // 設定されたバックアップ上限数を超えている場合、古いものから削除
+                while (sortedBackupFiles.Count > maxBackupCount)
+                {
+                    FileInfo oldestBackupFile = sortedBackupFiles[0];
+                    sortedBackupFiles.RemoveAt(0);
+
+                    try
+                    {
+                        File.Delete(oldestBackupFile.FullName);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"古いプロジェクト設定ファイルバックアップの削除に失敗しました: {oldestBackupFile.Name}\n{ex.Message}");
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"プロジェクト設定ファイルバックアップ数管理処理でエラーが発生しました: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// プロジェクトの全データをバックアップ（並列数を任意または自動で切り替え可能）
         /// </summary>
         /// <param name="projectSettingValues">プロジェクト設定値</param>
@@ -1069,6 +1179,25 @@ namespace CREC
                 return false;
             }
             int totalCollections = subFolderArray.Length;// 総コレクション数を取得
+
+            // プロジェクト設定ファイルのバックアップが存在しない場合はバックアップを作成
+            string projectSettingBackupFolderPath = System.IO.Path.Combine(
+                projectSettingValues.ProjectBackupFolderPath, 
+                ProjectSettingFileBackupFolderName);
+            
+            bool projectSettingBackupExists = false;
+            if (Directory.Exists(projectSettingBackupFolderPath))
+            {
+                DirectoryInfo backupDirInfo = new DirectoryInfo(projectSettingBackupFolderPath);
+                FileInfo[] backupFiles = backupDirInfo.GetFiles("*.crec");
+                projectSettingBackupExists = backupFiles.Length > 0;
+            }
+
+            // プロジェクト設定ファイルのバックアップが存在しない場合はバックアップを作成
+            if (!projectSettingBackupExists)
+            {
+                BackupProjectSettingFile(projectSettingValues);
+            }
 
             // 進捗初期化
             int backedUpCount = 0;// バックアップ完了数を初期化
@@ -1176,8 +1305,10 @@ namespace CREC
 
                 // バックアップフォルダ内のすべてのサブフォルダを取得
                 string[] backupFolders = Directory.GetDirectories(projectSettingValues.ProjectBackupFolderPath);
-                // バックアップログフォルダは削除対象外
-                backupFolders = backupFolders.Where(folder => System.IO.Path.GetFileName(folder) != BackupLogFolderName).ToArray();
+                // バックアップログフォルダとプロジェクト設定ファイルバックアップフォルダは削除対象外
+                backupFolders = backupFolders.Where(folder => 
+                    System.IO.Path.GetFileName(folder) != BackupLogFolderName &&
+                    System.IO.Path.GetFileName(folder) != ProjectSettingFileBackupFolderName).ToArray();
 
                 // 各バックアップフォルダをチェック
                 foreach (string backupFolder in backupFolders)
