@@ -10,6 +10,7 @@ let currentPage = 1;
 let currentPageSize = 20;
 let currentSearchCriteria = {};
 let currentLanguage = 'ja'; // 'ja' for Japanese, 'en' for English
+let projectSettings = null; // Project settings loaded from .crec file
 
 // Language translations
 const translations = {
