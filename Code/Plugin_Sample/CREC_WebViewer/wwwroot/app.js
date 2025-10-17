@@ -370,12 +370,14 @@ function displayCollectionModal(collection) {
                 <p><span class="badge ${inventoryBadgeClass}">${inventoryStatusText}</span></p>
                 
                 <h6>${t('tags')}</h6>
-                <p>
-                    ${[collection.collectionTag1, collection.collectionTag2, collection.collectionTag3]
-                        .filter(tag => tag && tag !== ' - ')
-                        .map(tag => `<span class="badge bg-secondary me-1">${escapeHtml(tag)}</span>`)
-                        .join('') || t('not-set')}
-                </p>
+                <div>
+                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${t('tag')} 1: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
+                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${t('tag')} 2: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
+                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${t('tag')} 3: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
+                    ${(!collection.collectionTag1 || collection.collectionTag1 === ' - ') && 
+                      (!collection.collectionTag2 || collection.collectionTag2 === ' - ') && 
+                      (!collection.collectionTag3 || collection.collectionTag3 === ' - ') ? `<p>${t('not-set')}</p>` : ''}
+                </div>
             </div>
         </div>
         

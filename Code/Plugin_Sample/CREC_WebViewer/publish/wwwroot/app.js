@@ -206,13 +206,17 @@ function createCollectionCard(collection) {
     const inventoryStatusText = getInventoryStatusText(collection.collectionInventoryStatus);
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 
-    const tagsHtml = [
-        collection.collectionTag1,
-        collection.collectionTag2,
-        collection.collectionTag3
-    ].filter(tag => tag && tag !== ' - ')
-     .map(tag => `<span class="badge bg-secondary tag-badge">${escapeHtml(tag)}</span>`)
-     .join('');
+    // Build tag HTML - display each tag on a separate line like category
+    let tagsHtml = '';
+    if (collection.collectionTag1 && collection.collectionTag1 !== ' - ') {
+        tagsHtml += `<small class="text-muted">${t('tag')} 1: ${escapeHtml(collection.collectionTag1)}</small><br>`;
+    }
+    if (collection.collectionTag2 && collection.collectionTag2 !== ' - ') {
+        tagsHtml += `<small class="text-muted">${t('tag')} 2: ${escapeHtml(collection.collectionTag2)}</small><br>`;
+    }
+    if (collection.collectionTag3 && collection.collectionTag3 !== ' - ') {
+        tagsHtml += `<small class="text-muted">${t('tag')} 3: ${escapeHtml(collection.collectionTag3)}</small><br>`;
+    }
 
     // Use the collection ID (which is the folder name) for the thumbnail URL
     const collectionId = collection.collectionID || 'unknown';
@@ -242,11 +246,11 @@ function createCollectionCard(collection) {
                 <p class="card-text">
                     <small class="text-muted">ID: ${escapeHtml(collection.collectionID)}</small><br>
                     <small class="text-muted">${t('category')}: ${escapeHtml(collection.collectionCategory)}</small><br>
+                    ${tagsHtml}
                     ${collection.collectionCurrentInventory !== null ? 
                         `<small class="text-muted">${t('inventory')}: ${collection.collectionCurrentInventory}</small><br>` : ''}
                     <span class="badge ${inventoryBadgeClass}">${inventoryStatusText}</span>
                 </p>
-                ${tagsHtml}
             </div>
             <div class="card-footer">
                 <button class="btn btn-primary btn-sm w-100" onclick="showCollectionDetails('${escapeHtml(collection.collectionID)}')">
@@ -366,12 +370,14 @@ function displayCollectionModal(collection) {
                 <p><span class="badge ${inventoryBadgeClass}">${inventoryStatusText}</span></p>
                 
                 <h6>${t('tags')}</h6>
-                <p>
-                    ${[collection.collectionTag1, collection.collectionTag2, collection.collectionTag3]
-                        .filter(tag => tag && tag !== ' - ')
-                        .map(tag => `<span class="badge bg-secondary me-1">${escapeHtml(tag)}</span>`)
-                        .join('') || t('not-set')}
-                </p>
+                <div>
+                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${t('tag')} 1: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
+                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${t('tag')} 2: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
+                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${t('tag')} 3: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
+                    ${(!collection.collectionTag1 || collection.collectionTag1 === ' - ') && 
+                      (!collection.collectionTag2 || collection.collectionTag2 === ' - ') && 
+                      (!collection.collectionTag3 || collection.collectionTag3 === ' - ') ? `<p>${t('not-set')}</p>` : ''}
+                </div>
             </div>
         </div>
         
