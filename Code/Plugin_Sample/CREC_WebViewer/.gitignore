@@ -1,0 +1,6 @@
+# Build results
+bin/
+obj/
+
+# Publish output - track only top-level publish files, exclude nested
+publish/publish/
