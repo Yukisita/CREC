@@ -10,7 +10,15 @@ let currentPage = 1;
 let currentPageSize = 20;
 let currentSearchCriteria = {};
 let currentLanguage = 'ja'; // 'ja' for Japanese, 'en' for English
-let projectSettings = null; // Project settings loaded from .crec file
+let projectSettings = {
+    projectName: '',
+    uuidName: 'ID',
+    managementCodeName: 'MC',
+    categoryName: 'カテゴリ',
+    tag1Name: 'タグ 1',
+    tag2Name: 'タグ 2',
+    tag3Name: 'タグ 3'
+}; // Project settings loaded from .crec file
 
 // Language translations
 const translations = {
@@ -85,6 +93,12 @@ async function initializeApp() {
     try {
         console.log('Initializing app...');
         
+        // Load project settings first
+        await loadProjectSettings();
+        
+        // Update UI with custom labels
+        updateUILabels();
+        
         // Add Enter key listener for search
         const searchTextElement = document.getElementById('searchText');
         if (searchTextElement) {
@@ -101,6 +115,52 @@ async function initializeApp() {
     } catch (error) {
         console.error('Error initializing app:', error);
         showError('Failed to initialize application: ' + error.message);
+    }
+}
+
+// Load project settings from API
+async function loadProjectSettings() {
+    try {
+        const response = await fetch('/api/ProjectSettings');
+        if (response.ok) {
+            const settings = await response.json();
+            projectSettings = {
+                projectName: settings.projectName || '',
+                uuidName: settings.uuidName || 'ID',
+                managementCodeName: settings.managementCodeName || 'MC',
+                categoryName: settings.categoryName || (currentLanguage === 'ja' ? 'カテゴリ' : 'Category'),
+                tag1Name: settings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1'),
+                tag2Name: settings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2'),
+                tag3Name: settings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3')
+            };
+            console.log('Project settings loaded:', projectSettings);
+        }
+    } catch (error) {
+        console.warn('Could not load project settings, using defaults:', error);
+        // Keep default values already initialized
+    }
+}
+
+// Update UI labels with custom values from project settings
+function updateUILabels() {
+    // Update search field dropdown options
+    const searchFieldElement = document.getElementById('searchField');
+    if (searchFieldElement) {
+        const options = searchFieldElement.options;
+        // Option values: 0=All Fields, 1=ID, 2=Name, 3=MC, 4=Category, 5=Tags, 6=Location, 7=Comment
+        if (options[1]) options[1].text = projectSettings.uuidName;
+        if (options[3]) options[3].text = projectSettings.managementCodeName;
+        if (options[4]) options[4].text = projectSettings.categoryName;
+        if (options[5]) options[5].text = currentLanguage === 'ja' ? 'タグ' : 'Tags';
+    }
+    
+    // Update page title if project name is available
+    if (projectSettings.projectName) {
+        document.title = `${projectSettings.projectName} - CREC Web Viewer`;
+        const titleElement = document.querySelector('h1');
+        if (titleElement) {
+            titleElement.textContent = projectSettings.projectName;
+        }
     }
 }
 
@@ -210,13 +270,13 @@ function createCollectionCard(collection) {
     // Build tag HTML - display each tag on a separate line like category
     let tagsHtml = '';
     if (collection.collectionTag1 && collection.collectionTag1 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${t('tag')} 1: ${escapeHtml(collection.collectionTag1)}</small><br>`;
+        tagsHtml += `<small class="text-muted">${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</small><br>`;
     }
     if (collection.collectionTag2 && collection.collectionTag2 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${t('tag')} 2: ${escapeHtml(collection.collectionTag2)}</small><br>`;
+        tagsHtml += `<small class="text-muted">${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</small><br>`;
     }
     if (collection.collectionTag3 && collection.collectionTag3 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${t('tag')} 3: ${escapeHtml(collection.collectionTag3)}</small><br>`;
+        tagsHtml += `<small class="text-muted">${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</small><br>`;
     }
 
     // Use the collection ID (which is the folder name) for the thumbnail URL
@@ -245,8 +305,8 @@ function createCollectionCard(collection) {
             <div class="card-body">
                 <h6 class="card-title">${escapeHtml(collection.collectionName)}</h6>
                 <p class="card-text">
-                    <small class="text-muted">ID: ${escapeHtml(collection.collectionID)}</small><br>
-                    <small class="text-muted">${t('category')}: ${escapeHtml(collection.collectionCategory)}</small><br>
+                    <small class="text-muted">${projectSettings.uuidName}: ${escapeHtml(collection.collectionID)}</small><br>
+                    <small class="text-muted">${projectSettings.categoryName}: ${escapeHtml(collection.collectionCategory)}</small><br>
                     ${tagsHtml}
                     ${collection.collectionCurrentInventory !== null ? 
                         `<small class="text-muted">${t('inventory')}: ${collection.collectionCurrentInventory}</small><br>` : ''}
@@ -348,13 +408,13 @@ function displayCollectionModal(collection) {
     modalBody.innerHTML = `
         <div class="row">
             <div class="col-md-6">
-                <h6>${t('collection-id')}</h6>
+                <h6>${projectSettings.uuidName}</h6>
                 <p>${escapeHtml(collection.collectionID)}</p>
                 
-                <h6>${t('management-code')}</h6>
+                <h6>${projectSettings.managementCodeName}</h6>
                 <p>${escapeHtml(collection.collectionMC)}</p>
                 
-                <h6>${t('category')}</h6>
+                <h6>${projectSettings.categoryName}</h6>
                 <p>${escapeHtml(collection.collectionCategory)}</p>
                 
                 <h6>${t('registration-date')}</h6>
@@ -372,9 +432,9 @@ function displayCollectionModal(collection) {
                 
                 <h6>${t('tags')}</h6>
                 <div>
-                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${t('tag')} 1: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
-                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${t('tag')} 2: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
-                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${t('tag')} 3: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
+                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
+                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
+                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
                     ${(!collection.collectionTag1 || collection.collectionTag1 === ' - ') && 
                       (!collection.collectionTag2 || collection.collectionTag2 === ' - ') && 
                       (!collection.collectionTag3 || collection.collectionTag3 === ' - ') ? `<p>${t('not-set')}</p>` : ''}
