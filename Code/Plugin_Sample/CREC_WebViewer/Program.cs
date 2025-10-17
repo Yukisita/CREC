@@ -160,37 +160,40 @@ static ProjectSettings? ParseCrecFile(string crecFilePath)
             var cols = line.Split(',');
             if (cols.Length < 2) continue;
             
+            // Extract the value (second column, index 1)
+            var value = cols[1];
+            
             switch (cols[0])
             {
                 case "projectname":
-                    settings.ProjectName = cols[1];
+                    settings.ProjectName = value;
                     break;
                 case "projectlocation":
-                    settings.ProjectDataPath = cols[1];
+                    settings.ProjectDataPath = value;
                     break;
-                case "UUIDName":
-                    if (cols[1].Length > 0)
-                        settings.UUIDLabel = cols[1];
+                case "ShowIDLabel":
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.UUIDLabel = value;
                     break;
-                case "ManagementCodeName":
-                    if (cols[1].Length > 0)
-                        settings.ManagementCodeLabel = cols[1];
+                case "ShowMCLabel":
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.ManagementCodeLabel = value;
                     break;
-                case "CategoryName":
-                    if (cols[1].Length > 0)
-                        settings.CategoryLabel = cols[1];
+                case "ShowCategoryLabel":
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.CategoryLabel = value;
                     break;
                 case "Tag1Name":
-                    if (cols[1].Length > 0)
-                        settings.FirstTagLabel = cols[1];
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.FirstTagLabel = value;
                     break;
                 case "Tag2Name":
-                    if (cols[1].Length > 0)
-                        settings.SecondTagLabel = cols[1];
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.SecondTagLabel = value;
                     break;
                 case "Tag3Name":
-                    if (cols[1].Length > 0)
-                        settings.ThirdTagLabel = cols[1];
+                    if (!string.IsNullOrWhiteSpace(value))
+                        settings.ThirdTagLabel = value;
                     break;
             }
         }
