@@ -149,6 +149,7 @@ function updateUILabels() {
         const options = searchFieldElement.options;
         // Option values: 0=All Fields, 1=ID, 2=Name, 3=MC, 4=Category, 5=Tags, 6=Location, 7=Comment
         if (options[1]) options[1].text = projectSettings.uuidName;
+        if (options[2]) options[2].text = projectSettings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name');
         if (options[3]) options[3].text = projectSettings.managementCodeName;
         if (options[4]) options[4].text = projectSettings.categoryName;
         if (options[5]) options[5].text = currentLanguage === 'ja' ? 'タグ' : 'Tags';

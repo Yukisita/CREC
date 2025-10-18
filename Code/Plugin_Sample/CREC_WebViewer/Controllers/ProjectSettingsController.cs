@@ -28,6 +28,7 @@ public class ProjectSettingsController : ControllerBase
         var settings = new
         {
             projectName = _configuration["ProjectName"] ?? "CREC Project",
+            objectNameLabel = _configuration["ObjectNameLabel"] ?? "Name",
             uuidName = _configuration["UUIDLabel"] ?? "ID",
             managementCodeName = _configuration["ManagementCodeLabel"] ?? "MC",
             categoryName = _configuration["CategoryLabel"] ?? "Category",
