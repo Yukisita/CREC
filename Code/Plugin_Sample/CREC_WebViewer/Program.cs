@@ -21,7 +21,13 @@ if (args.Length > 0 && args[0].EndsWith(".crec", StringComparison.OrdinalIgnoreC
     {
         Console.WriteLine($"Project name: {projectSettings.ProjectName}");
         Console.WriteLine($"Project data folder: {projectSettings.ProjectDataPath}");
-        Console.WriteLine($"Custom field labels loaded from .crec file");
+        Console.WriteLine($"Custom field labels loaded from .crec file:");
+        Console.WriteLine($"  UUID Label: {projectSettings.UUIDLabel}");
+        Console.WriteLine($"  MC Label: {projectSettings.ManagementCodeLabel}");
+        Console.WriteLine($"  Category Label: {projectSettings.CategoryLabel}");
+        Console.WriteLine($"  Tag 1 Label: {projectSettings.FirstTagLabel}");
+        Console.WriteLine($"  Tag 2 Label: {projectSettings.SecondTagLabel}");
+        Console.WriteLine($"  Tag 3 Label: {projectSettings.ThirdTagLabel}");
     }
     else
     {
@@ -153,6 +159,8 @@ static ProjectSettings? ParseCrecFile(string crecFilePath)
         var settings = new ProjectSettings();
         var lines = File.ReadAllLines(crecFilePath, System.Text.Encoding.GetEncoding("UTF-8"));
         
+        Console.WriteLine($"Parsing .crec file with {lines.Length} lines...");
+        
         foreach (var line in lines)
         {
             if (string.IsNullOrWhiteSpace(line)) continue;
@@ -161,42 +169,72 @@ static ProjectSettings? ParseCrecFile(string crecFilePath)
             if (cols.Length < 2) continue;
             
             // Extract the value (second column, index 1)
-            var value = cols[1];
+            var key = cols[0].Trim();
+            var value = cols[1].Trim();
             
-            switch (cols[0])
+            switch (key)
             {
                 case "projectname":
                     settings.ProjectName = value;
+                    Console.WriteLine($"  - Found projectname: {value}");
                     break;
                 case "projectlocation":
                     settings.ProjectDataPath = value;
+                    Console.WriteLine($"  - Found projectlocation: {value}");
+                    break;
+                case "ShowObjectNameLabel":
+                    if (!string.IsNullOrWhiteSpace(value) && settings.ProjectName == "CREC Project")
+                    {
+                        settings.ProjectName = value;
+                        Console.WriteLine($"  - Found ShowObjectNameLabel (used as project name): {value}");
+                    }
                     break;
                 case "ShowIDLabel":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.UUIDLabel = value;
+                        Console.WriteLine($"  - Found ShowIDLabel: {value}");
+                    }
                     break;
                 case "ShowMCLabel":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.ManagementCodeLabel = value;
+                        Console.WriteLine($"  - Found ShowMCLabel: {value}");
+                    }
                     break;
                 case "ShowCategoryLabel":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.CategoryLabel = value;
+                        Console.WriteLine($"  - Found ShowCategoryLabel: {value}");
+                    }
                     break;
                 case "Tag1Name":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.FirstTagLabel = value;
+                        Console.WriteLine($"  - Found Tag1Name: {value}");
+                    }
                     break;
                 case "Tag2Name":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.SecondTagLabel = value;
+                        Console.WriteLine($"  - Found Tag2Name: {value}");
+                    }
                     break;
                 case "Tag3Name":
                     if (!string.IsNullOrWhiteSpace(value))
+                    {
                         settings.ThirdTagLabel = value;
+                        Console.WriteLine($"  - Found Tag3Name: {value}");
+                    }
                     break;
             }
         }
+        
+        Console.WriteLine($"Finished parsing .crec file");
         
         // Validate that we at least have a data path
         if (string.IsNullOrEmpty(settings.ProjectDataPath))
