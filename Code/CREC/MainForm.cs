@@ -5418,5 +5418,34 @@ namespace CREC
             }
         }
         #endregion
+
+        private void StartCRECServerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // サーバーアプリのパス
+            //string serverAppPath = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\CRECServer\\CRECServer.exe";
+            string serverAppPath = "C:\\Programming\\CREC_GitHub\\Code\\Plugin_Sample\\CREC_WebViewer\\bin\\Release\\net8.0\\CREC_WebViewer.exe";
+            // サーバーアプリの存在確認
+            if (!File.Exists(serverAppPath))
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CantFindCRECServerApp", "mainform", LanguageFile), "CREC");
+                return;
+            }
+            // サーバーアプリをcurrentProjectPathをカレントディレクトリに指定して起動
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = serverAppPath,
+                WorkingDirectory = CurrentProjectSettingValues.ProjectDataFolderPath,
+                UseShellExecute = true
+            };
+            try
+            {
+                System.Diagnostics.Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CRECServerAppStartError", "mainform", LanguageFile) + ex.Message, "CREC");
+
+            }
+        }
     }
 }
