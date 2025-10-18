@@ -27,16 +27,17 @@ public class ProjectSettingsController : ControllerBase
     {
         var settings = new
         {
-            ProjectName = _configuration["ProjectName"] ?? "CREC Project",
-            UUIDLabel = _configuration["UUIDLabel"] ?? "UUID",
-            ManagementCodeLabel = _configuration["ManagementCodeLabel"] ?? "MC",
-            CategoryLabel = _configuration["CategoryLabel"] ?? "Category",
-            FirstTagLabel = _configuration["FirstTagLabel"] ?? "Tag 1",
-            SecondTagLabel = _configuration["SecondTagLabel"] ?? "Tag 2",
-            ThirdTagLabel = _configuration["ThirdTagLabel"] ?? "Tag 3"
+            projectName = _configuration["ProjectName"] ?? "CREC Project",
+            uuidName = _configuration["UUIDLabel"] ?? "ID",
+            managementCodeName = _configuration["ManagementCodeLabel"] ?? "MC",
+            categoryName = _configuration["CategoryLabel"] ?? "Category",
+            tag1Name = _configuration["FirstTagLabel"] ?? "Tag 1",
+            tag2Name = _configuration["SecondTagLabel"] ?? "Tag 2",
+            tag3Name = _configuration["ThirdTagLabel"] ?? "Tag 3"
         };
 
-        _logger.LogInformation("Project settings requested");
+        _logger.LogInformation("Returning project settings: ProjectName={ProjectName}, UUIDLabel={UUIDLabel}, MCLabel={MCLabel}, CategoryLabel={CategoryLabel}, Tag1={Tag1}, Tag2={Tag2}, Tag3={Tag3}",
+            settings.projectName, settings.uuidName, settings.managementCodeName, settings.categoryName, settings.tag1Name, settings.tag2Name, settings.tag3Name);
         return Ok(settings);
     }
 }
