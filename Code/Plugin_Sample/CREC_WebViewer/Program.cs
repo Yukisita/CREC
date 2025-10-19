@@ -22,6 +22,7 @@ if (args.Length > 0 && args[0].EndsWith(".crec", StringComparison.OrdinalIgnoreC
         Console.WriteLine($"Project name: {projectSettings.ProjectName}");
         Console.WriteLine($"Project data folder: {projectSettings.ProjectDataPath}");
         Console.WriteLine($"Custom field labels loaded from .crec file:");
+        Console.WriteLine($"  Name Label: {projectSettings.CollectionNameLabel}");
         Console.WriteLine($"  UUID Label: {projectSettings.UUIDLabel}");
         Console.WriteLine($"  MC Label: {projectSettings.ManagementCodeLabel}");
         Console.WriteLine($"  Category Label: {projectSettings.CategoryLabel}");
@@ -183,10 +184,10 @@ static ProjectSettings? ParseCrecFile(string crecFilePath)
                     Console.WriteLine($"  - Found projectlocation: {value}");
                     break;
                 case "ShowObjectNameLabel":
-                    if (!string.IsNullOrWhiteSpace(value) && settings.ProjectName == "CREC Project")
+                    if (!string.IsNullOrWhiteSpace(value))
                     {
-                        settings.ProjectName = value;
-                        Console.WriteLine($"  - Found ShowObjectNameLabel (used as project name): {value}");
+                        settings.CollectionNameLabel = value;
+                        Console.WriteLine($"  - Found ShowObjectNameLabel: {value}");
                     }
                     break;
                 case "ShowIDLabel":
@@ -265,6 +266,7 @@ public class ProjectSettings
 {
     public string ProjectName { get; set; } = "CREC Project";
     public string ProjectDataPath { get; set; } = "";
+    public string CollectionNameLabel { get; set; } = "Name";
     public string UUIDLabel { get; set; } = "UUID";
     public string ManagementCodeLabel { get; set; } = "MC";
     public string CategoryLabel { get; set; } = "Category";
