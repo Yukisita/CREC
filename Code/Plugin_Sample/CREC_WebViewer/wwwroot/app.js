@@ -126,6 +126,7 @@ async function loadProjectSettings() {
             const settings = await response.json();
             projectSettings = {
                 projectName: settings.projectName || '',
+                objectNameLabel: settings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name'),
                 uuidName: settings.uuidName || 'ID',
                 managementCodeName: settings.managementCodeName || 'MC',
                 categoryName: settings.categoryName || (currentLanguage === 'ja' ? 'カテゴリ' : 'Category'),
