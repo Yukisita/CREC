@@ -5431,8 +5431,11 @@ namespace CREC
                 return;
             }
             // サーバーアプリをcurrentProjectPathをカレントディレクトリに指定して起動
+
             System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo
             {
+                // 引数として現在のプロジェクトファイルのパスを渡す
+                Arguments = $"\"{CurrentProjectSettingValues.ProjectSettingFilePath}\"",
                 FileName = serverAppPath,
                 WorkingDirectory = CurrentProjectSettingValues.ProjectDataFolderPath,
                 UseShellExecute = true
