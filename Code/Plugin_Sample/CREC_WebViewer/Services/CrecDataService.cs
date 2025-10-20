@@ -432,6 +432,15 @@ namespace CREC_WebViewer.Services
                     fieldsToSearch.Add(collection.CollectionTag2);
                     fieldsToSearch.Add(collection.CollectionTag3);
                     break;
+                case SearchField.Tag1:
+                    fieldsToSearch.Add(collection.CollectionTag1);
+                    break;
+                case SearchField.Tag2:
+                    fieldsToSearch.Add(collection.CollectionTag2);
+                    break;
+                case SearchField.Tag3:
+                    fieldsToSearch.Add(collection.CollectionTag3);
+                    break;
                 case SearchField.Location:
                     fieldsToSearch.Add(collection.CollectionRealLocation);
                     break;

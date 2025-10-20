@@ -115,7 +115,10 @@ namespace CREC_WebViewer.Models
         Name,           // 名称
         ManagementCode, // 管理コード
         Category,       // カテゴリ
-        Tag,            // タグ
+        Tag,            // タグ (全て)
+        Tag1,           // タグ1
+        Tag2,           // タグ2
+        Tag3,           // タグ3
         Location,       // 場所
         Comment         // コメント
     }

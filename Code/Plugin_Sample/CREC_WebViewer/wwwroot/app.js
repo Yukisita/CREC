@@ -147,32 +147,79 @@ function updateUILabels() {
     // Update search field dropdown options
     const searchFieldElement = document.getElementById('searchField');
     if (searchFieldElement) {
-        const options = searchFieldElement.options;
-        // Option values: 0=All Fields, 1=ID, 2=Name, 3=MC, 4=Category, 5=Tags, 6=Location, 7=Comment
-        if (options[1]) options[1].text = projectSettings.uuidName;
-        if (options[2]) options[2].text = projectSettings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name');
-        if (options[3]) options[3].text = projectSettings.managementCodeName;
-        if (options[4]) options[4].text = projectSettings.categoryName;
+        // Remember current selection
+        const currentValue = searchFieldElement.value;
         
-        // Update Tags option with custom tag labels
-        if (options[5]) {
-            const defaultTagLabel = currentLanguage === 'ja' ? 'タグ' : 'Tags';
-            const tag1 = projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1');
-            const tag2 = projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2');
-            const tag3 = projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3');
-            
-            // Check if custom tag names are defined (not default values)
-            const hasCustomTags = (projectSettings.tag1Name && projectSettings.tag1Name !== (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1')) ||
-                                  (projectSettings.tag2Name && projectSettings.tag2Name !== (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2')) ||
-                                  (projectSettings.tag3Name && projectSettings.tag3Name !== (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3'));
-            
-            if (hasCustomTags) {
-                // Show custom tag labels separated by slashes
-                options[5].text = `${tag1} / ${tag2} / ${tag3}`;
-            } else {
-                // Keep default generic "Tags" label
-                options[5].text = defaultTagLabel;
-            }
+        // Clear all options
+        searchFieldElement.innerHTML = '';
+        
+        // Add "All Fields" option - SearchField.All = 0
+        const allFieldsOption = document.createElement('option');
+        allFieldsOption.value = '0';
+        allFieldsOption.text = currentLanguage === 'ja' ? 'すべてのフィールド' : 'All Fields';
+        searchFieldElement.appendChild(allFieldsOption);
+        
+        // Add ID option - SearchField.ID = 1
+        const idOption = document.createElement('option');
+        idOption.value = '1';
+        idOption.text = projectSettings.uuidName;
+        searchFieldElement.appendChild(idOption);
+        
+        // Add Name option - SearchField.Name = 2
+        const nameOption = document.createElement('option');
+        nameOption.value = '2';
+        nameOption.text = projectSettings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name');
+        searchFieldElement.appendChild(nameOption);
+        
+        // Add MC option - SearchField.ManagementCode = 3
+        const mcOption = document.createElement('option');
+        mcOption.value = '3';
+        mcOption.text = projectSettings.managementCodeName;
+        searchFieldElement.appendChild(mcOption);
+        
+        // Add Category option - SearchField.Category = 4
+        const categoryOption = document.createElement('option');
+        categoryOption.value = '4';
+        categoryOption.text = projectSettings.categoryName;
+        searchFieldElement.appendChild(categoryOption);
+        
+        // Add Tag (all) option - SearchField.Tag = 5
+        const tagAllOption = document.createElement('option');
+        tagAllOption.value = '5';
+        tagAllOption.text = currentLanguage === 'ja' ? 'タグ (全て)' : 'Tags (All)';
+        searchFieldElement.appendChild(tagAllOption);
+        
+        // Add individual tag options - SearchField.Tag1/2/3 = 6/7/8
+        const tag1Option = document.createElement('option');
+        tag1Option.value = '6';
+        tag1Option.text = projectSettings.tag1Name;
+        searchFieldElement.appendChild(tag1Option);
+        
+        const tag2Option = document.createElement('option');
+        tag2Option.value = '7';
+        tag2Option.text = projectSettings.tag2Name;
+        searchFieldElement.appendChild(tag2Option);
+        
+        const tag3Option = document.createElement('option');
+        tag3Option.value = '8';
+        tag3Option.text = projectSettings.tag3Name;
+        searchFieldElement.appendChild(tag3Option);
+        
+        // Add Location option - SearchField.Location = 9
+        const locationOption = document.createElement('option');
+        locationOption.value = '9';
+        locationOption.text = currentLanguage === 'ja' ? '場所' : 'Location';
+        searchFieldElement.appendChild(locationOption);
+        
+        // Add Comment option - SearchField.Comment = 10
+        const commentOption = document.createElement('option');
+        commentOption.value = '10';
+        commentOption.text = currentLanguage === 'ja' ? 'コメント' : 'Comment';
+        searchFieldElement.appendChild(commentOption);
+        
+        // Restore previous selection if still valid
+        if (currentValue && Array.from(searchFieldElement.options).some(opt => opt.value === currentValue)) {
+            searchFieldElement.value = currentValue;
         }
     }
     
