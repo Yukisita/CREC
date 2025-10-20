@@ -153,7 +153,27 @@ function updateUILabels() {
         if (options[2]) options[2].text = projectSettings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name');
         if (options[3]) options[3].text = projectSettings.managementCodeName;
         if (options[4]) options[4].text = projectSettings.categoryName;
-        if (options[5]) options[5].text = currentLanguage === 'ja' ? 'タグ' : 'Tags';
+        
+        // Update Tags option with custom tag labels
+        if (options[5]) {
+            const defaultTagLabel = currentLanguage === 'ja' ? 'タグ' : 'Tags';
+            const tag1 = projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1');
+            const tag2 = projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2');
+            const tag3 = projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3');
+            
+            // Check if custom tag names are defined (not default values)
+            const hasCustomTags = (projectSettings.tag1Name && projectSettings.tag1Name !== (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1')) ||
+                                  (projectSettings.tag2Name && projectSettings.tag2Name !== (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2')) ||
+                                  (projectSettings.tag3Name && projectSettings.tag3Name !== (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3'));
+            
+            if (hasCustomTags) {
+                // Show custom tag labels separated by slashes
+                options[5].text = `${tag1} / ${tag2} / ${tag3}`;
+            } else {
+                // Keep default generic "Tags" label
+                options[5].text = defaultTagLabel;
+            }
+        }
     }
     
     // Update page title if project name is available
@@ -272,13 +292,16 @@ function createCollectionCard(collection) {
     // Build tag HTML - display each tag on a separate line like category
     let tagsHtml = '';
     if (collection.collectionTag1 && collection.collectionTag1 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</small><br>`;
+        const tag1Label = projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1');
+        tagsHtml += `<small class="text-muted">${tag1Label}: ${escapeHtml(collection.collectionTag1)}</small><br>`;
     }
     if (collection.collectionTag2 && collection.collectionTag2 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</small><br>`;
+        const tag2Label = projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2');
+        tagsHtml += `<small class="text-muted">${tag2Label}: ${escapeHtml(collection.collectionTag2)}</small><br>`;
     }
     if (collection.collectionTag3 && collection.collectionTag3 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</small><br>`;
+        const tag3Label = projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3');
+        tagsHtml += `<small class="text-muted">${tag3Label}: ${escapeHtml(collection.collectionTag3)}</small><br>`;
     }
 
     // Use the collection ID (which is the folder name) for the thumbnail URL
@@ -434,9 +457,9 @@ function displayCollectionModal(collection) {
                 
                 <h6>${t('tags')}</h6>
                 <div>
-                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
-                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
-                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
+                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1')}: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
+                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2')}: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
+                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3')}: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
                     ${(!collection.collectionTag1 || collection.collectionTag1 === ' - ') && 
                       (!collection.collectionTag2 || collection.collectionTag2 === ' - ') && 
                       (!collection.collectionTag3 || collection.collectionTag3 === ' - ') ? `<p>${t('not-set')}</p>` : ''}

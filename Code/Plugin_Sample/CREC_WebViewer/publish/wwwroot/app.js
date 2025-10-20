@@ -126,6 +126,7 @@ async function loadProjectSettings() {
             const settings = await response.json();
             projectSettings = {
                 projectName: settings.projectName || '',
+                objectNameLabel: settings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name'),
                 uuidName: settings.uuidName || 'ID',
                 managementCodeName: settings.managementCodeName || 'MC',
                 categoryName: settings.categoryName || (currentLanguage === 'ja' ? 'カテゴリ' : 'Category'),
@@ -152,7 +153,27 @@ function updateUILabels() {
         if (options[2]) options[2].text = projectSettings.objectNameLabel || (currentLanguage === 'ja' ? '名称' : 'Name');
         if (options[3]) options[3].text = projectSettings.managementCodeName;
         if (options[4]) options[4].text = projectSettings.categoryName;
-        if (options[5]) options[5].text = currentLanguage === 'ja' ? 'タグ' : 'Tags';
+        
+        // Update Tags option with custom tag labels
+        if (options[5]) {
+            const defaultTagLabel = currentLanguage === 'ja' ? 'タグ' : 'Tags';
+            const tag1 = projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1');
+            const tag2 = projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2');
+            const tag3 = projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3');
+            
+            // Check if custom tag names are defined (not default values)
+            const hasCustomTags = (projectSettings.tag1Name && projectSettings.tag1Name !== (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1')) ||
+                                  (projectSettings.tag2Name && projectSettings.tag2Name !== (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2')) ||
+                                  (projectSettings.tag3Name && projectSettings.tag3Name !== (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3'));
+            
+            if (hasCustomTags) {
+                // Show custom tag labels separated by slashes
+                options[5].text = `${tag1} / ${tag2} / ${tag3}`;
+            } else {
+                // Keep default generic "Tags" label
+                options[5].text = defaultTagLabel;
+            }
+        }
     }
     
     // Update page title if project name is available
