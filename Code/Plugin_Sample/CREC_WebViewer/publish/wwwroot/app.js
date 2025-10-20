@@ -292,13 +292,16 @@ function createCollectionCard(collection) {
     // Build tag HTML - display each tag on a separate line like category
     let tagsHtml = '';
     if (collection.collectionTag1 && collection.collectionTag1 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</small><br>`;
+        const tag1Label = projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1');
+        tagsHtml += `<small class="text-muted">${tag1Label}: ${escapeHtml(collection.collectionTag1)}</small><br>`;
     }
     if (collection.collectionTag2 && collection.collectionTag2 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</small><br>`;
+        const tag2Label = projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2');
+        tagsHtml += `<small class="text-muted">${tag2Label}: ${escapeHtml(collection.collectionTag2)}</small><br>`;
     }
     if (collection.collectionTag3 && collection.collectionTag3 !== ' - ') {
-        tagsHtml += `<small class="text-muted">${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</small><br>`;
+        const tag3Label = projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3');
+        tagsHtml += `<small class="text-muted">${tag3Label}: ${escapeHtml(collection.collectionTag3)}</small><br>`;
     }
 
     // Use the collection ID (which is the folder name) for the thumbnail URL
@@ -454,9 +457,9 @@ function displayCollectionModal(collection) {
                 
                 <h6>${t('tags')}</h6>
                 <div>
-                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${projectSettings.tag1Name}: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
-                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${projectSettings.tag2Name}: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
-                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${projectSettings.tag3Name}: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
+                    ${collection.collectionTag1 && collection.collectionTag1 !== ' - ' ? `<p>${projectSettings.tag1Name || (currentLanguage === 'ja' ? 'タグ 1' : 'Tag 1')}: ${escapeHtml(collection.collectionTag1)}</p>` : ''}
+                    ${collection.collectionTag2 && collection.collectionTag2 !== ' - ' ? `<p>${projectSettings.tag2Name || (currentLanguage === 'ja' ? 'タグ 2' : 'Tag 2')}: ${escapeHtml(collection.collectionTag2)}</p>` : ''}
+                    ${collection.collectionTag3 && collection.collectionTag3 !== ' - ' ? `<p>${projectSettings.tag3Name || (currentLanguage === 'ja' ? 'タグ 3' : 'Tag 3')}: ${escapeHtml(collection.collectionTag3)}</p>` : ''}
                     ${(!collection.collectionTag1 || collection.collectionTag1 === ' - ') && 
                       (!collection.collectionTag2 || collection.collectionTag2 === ' - ') && 
                       (!collection.collectionTag3 || collection.collectionTag3 === ' - ') ? `<p>${t('not-set')}</p>` : ''}
