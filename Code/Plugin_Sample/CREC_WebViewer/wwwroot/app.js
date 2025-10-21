@@ -455,11 +455,14 @@ function displayCollectionModal(collection) {
     const inventoryStatusText = getInventoryStatusText(collection.collectionInventoryStatus);
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 
-    const imagesHtml = collection.imageFiles.length > 0 
+    const imagesHtml = collection.imageFiles && collection.imageFiles.length > 0 
         ? collection.imageFiles.map(img => `
             <div class="col-md-6 mb-3">
                 <img src="/api/files/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(img)}" 
-                     class="img-fluid rounded" alt="${escapeHtml(img)}" style="max-height: 300px;">
+                     class="img-fluid rounded" 
+                     alt="${escapeHtml(img)}" 
+                     style="max-height: 300px; max-width: 100%; object-fit: contain;"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'16\' fill=\'%23999\'%3EImage not found%3C/text%3E%3C/svg%3E';">
                 <p class="small text-muted mt-1">${escapeHtml(img)}</p>
             </div>
           `).join('')
