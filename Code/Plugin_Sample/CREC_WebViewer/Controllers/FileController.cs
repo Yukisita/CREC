@@ -54,8 +54,9 @@ namespace CREC_WebViewer.Controllers
                     _ => "application/octet-stream"
                 };
 
-                var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                return File(fileBytes, contentType);
+                // Use FileStream to return the file directly without loading into memory
+                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                return File(fileStream, contentType, enableRangeProcessing: true);
             }
             catch (Exception ex)
             {
