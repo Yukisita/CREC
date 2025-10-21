@@ -336,6 +336,30 @@ namespace CREC_WebViewer.Services
                         collection.OtherFiles.Add(fileName);
                     }
                 }
+                
+                // picturesフォルダから画像を読み込む
+                var picturesPath = Path.Combine(_dataPath, "pictures", collection.CollectionID);
+                if (Directory.Exists(picturesPath))
+                {
+                    _logger.LogDebug($"Loading images from pictures folder: {picturesPath}");
+                    var pictureFiles = Directory.GetFiles(picturesPath);
+                    
+                    foreach (var file in pictureFiles)
+                    {
+                        var fileName = Path.GetFileName(file);
+                        var extension = Path.GetExtension(file).ToLowerInvariant();
+                        
+                        if (imageExtensions.Contains(extension))
+                        {
+                            // picturesフォルダの画像を追加（重複チェック）
+                            if (!collection.ImageFiles.Contains(fileName))
+                            {
+                                collection.ImageFiles.Add(fileName);
+                                _logger.LogDebug($"Added image from pictures folder: {fileName}");
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
