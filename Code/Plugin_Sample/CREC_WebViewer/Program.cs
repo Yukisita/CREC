@@ -113,8 +113,16 @@ app.UseRouting();
 app.MapControllers();
 
 // Serve the main web interface - map fallback to serve index.html for SPA
+// Only for non-API routes to avoid conflicts with API controllers
 app.MapFallback(async context =>
 {
+    // Don't intercept API requests
+    if (context.Request.Path.StartsWithSegments("/api"))
+    {
+        context.Response.StatusCode = 404;
+        return;
+    }
+
     var indexPath = Path.Combine(webRootPath, "index.html");
     if (File.Exists(indexPath))
     {
