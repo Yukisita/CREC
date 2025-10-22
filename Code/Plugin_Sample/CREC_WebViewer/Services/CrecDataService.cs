@@ -338,7 +338,9 @@ namespace CREC_WebViewer.Services
                 }
                 
                 // picturesフォルダから画像を読み込む
-                var picturesPath = Path.Combine(directoryPath, "pictures");
+                // CREC構造: {dataPath}\pictures\{collectionId}\
+                var collectionId = collection.CollectionID;
+                var picturesPath = Path.Combine(_dataFolderPath, "pictures", collectionId);
                 if (Directory.Exists(picturesPath))
                 {
                     _logger.LogInformation($"Loading images from pictures folder: {picturesPath}");
