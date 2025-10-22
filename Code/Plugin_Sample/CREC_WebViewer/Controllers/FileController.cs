@@ -30,8 +30,8 @@ namespace CREC_WebViewer.Controllers
                 // Get data path from configuration or use current directory
                 var dataPath = _configuration["ProjectDataPath"] ?? Directory.GetCurrentDirectory();
                 
-                // Build path to pictures folder: dataPath\pictures\collectionId\fileName
-                var filePath = Path.Combine(dataPath, "pictures", collectionId, fileName);
+                // Build path to pictures folder: dataPath\collectionId\pictures\fileName
+                var filePath = Path.Combine(dataPath, collectionId, "pictures", fileName);
 
                 _logger.LogInformation($"Attempting to serve file: {filePath}");
 
