@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CREC_WebViewer.Controllers
 {
     [ApiController]
-    [Route("api/files")]
+    [Route("api/[controller]")]
     public class FileController : ControllerBase
     {
         private readonly IConfiguration _configuration;
