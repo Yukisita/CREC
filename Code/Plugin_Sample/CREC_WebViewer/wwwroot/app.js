@@ -455,17 +455,25 @@ function displayCollectionModal(collection) {
     const inventoryStatusText = getInventoryStatusText(collection.collectionInventoryStatus);
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 
-    const imagesHtml = collection.imageFiles && collection.imageFiles.length > 0 
-        ? collection.imageFiles.map(img => `
-            <div class="col-md-6 mb-3">
-                <img src="/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(img)}" 
+    let currentImageIndex = 0;
+    const images = collection.imageFiles || [];
+    
+    const imagesHtml = images.length > 0 
+        ? `
+            <div class="image-carousel">
+                <img id="carouselImage" src="/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(images[0])}" 
                      class="img-fluid rounded" 
-                     alt="${escapeHtml(img)}" 
-                     style="max-height: 300px; max-width: 100%; object-fit: contain;"
+                     alt="${escapeHtml(images[0])}" 
+                     style="max-height: 400px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto;"
                      onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\'%3E%3Crect width=\'200\' height=\'200\' fill=\'%23ddd\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' font-family=\'sans-serif\' font-size=\'16\' fill=\'%23999\'%3EImage not found%3C/text%3E%3C/svg%3E';">
-                <p class="small text-muted mt-1">${escapeHtml(img)}</p>
+                <div class="carousel-controls text-center mt-3" style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+                    <button id="prevImage" class="btn btn-outline-secondary" style="font-size: 20px; padding: 8px 20px;">◀</button>
+                    <span id="imageCounter" style="font-size: 16px; min-width: 60px;">1 / ${images.length}</span>
+                    <button id="nextImage" class="btn btn-outline-secondary" style="font-size: 20px; padding: 8px 20px;">▶</button>
+                </div>
+                <p id="imageName" class="small text-muted text-center mt-2">${escapeHtml(images[0])}</p>
             </div>
-          `).join('')
+          `
         : `<p class="text-muted">${t('no-images')}</p>`;
 
     const filesHtml = collection.otherFiles.length > 0
@@ -546,6 +554,51 @@ function displayCollectionModal(collection) {
     `;
 
     modal.show();
+    
+    // Set up carousel controls if images exist
+    if (images.length > 0) {
+        const carouselImage = document.getElementById('carouselImage');
+        const imageCounter = document.getElementById('imageCounter');
+        const imageName = document.getElementById('imageName');
+        const prevBtn = document.getElementById('prevImage');
+        const nextBtn = document.getElementById('nextImage');
+        
+        function updateImage() {
+            carouselImage.src = `/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(images[currentImageIndex])}`;
+            carouselImage.alt = images[currentImageIndex];
+            imageCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+            imageName.textContent = images[currentImageIndex];
+        }
+        
+        prevBtn.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            updateImage();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            updateImage();
+        });
+        
+        // Keyboard navigation
+        const keyHandler = (e) => {
+            if (e.key === 'ArrowLeft') {
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                updateImage();
+            } else if (e.key === 'ArrowRight') {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                updateImage();
+            }
+        };
+        
+        document.addEventListener('keydown', keyHandler);
+        
+        // Clean up event listener when modal is closed
+        const modalElement = document.getElementById('detailModal');
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            document.removeEventListener('keydown', keyHandler);
+        }, { once: true });
+    }
 }
 
 function updatePagination(result) {
