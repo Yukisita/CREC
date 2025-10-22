@@ -59,9 +59,9 @@ namespace CREC_WebViewer.Controllers
                 // Read file into byte array to ensure proper serving
                 var fileBytes = System.IO.File.ReadAllBytes(filePath);
                 
-                // Add CORS and cache headers
-                Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                Response.Headers.Add("Cache-Control", "public, max-age=3600");
+                // Add CORS and cache headers using indexer to avoid duplicate key warnings
+                Response.Headers["Access-Control-Allow-Origin"] = "*";
+                Response.Headers["Cache-Control"] = "public, max-age=3600";
                 
                 return File(fileBytes, contentType);
             }
