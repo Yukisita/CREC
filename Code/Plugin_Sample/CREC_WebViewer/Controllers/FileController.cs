@@ -54,9 +54,16 @@ namespace CREC_WebViewer.Controllers
                     _ => "application/octet-stream"
                 };
 
-                // Use FileStream to return the file directly without loading into memory
-                var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                return File(fileStream, contentType, enableRangeProcessing: true);
+                _logger.LogInformation($"Serving file with content type: {contentType}");
+
+                // Read file into byte array to ensure proper serving
+                var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                
+                // Add CORS and cache headers
+                Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                Response.Headers.Add("Cache-Control", "public, max-age=3600");
+                
+                return File(fileBytes, contentType);
             }
             catch (Exception ex)
             {
