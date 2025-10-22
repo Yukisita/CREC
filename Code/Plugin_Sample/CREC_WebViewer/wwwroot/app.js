@@ -557,56 +557,58 @@ function displayCollectionModal(collection) {
     
     // Set up carousel controls if images exist
     if (images.length > 0) {
-        // Wait for modal to be shown before setting up carousel
-        const modalElement = document.getElementById('detailModal');
-        modalElement.addEventListener('shown.bs.modal', () => {
-            const carouselImage = document.getElementById('carouselImage');
-            const imageCounter = document.getElementById('imageCounter');
-            const imageName = document.getElementById('imageName');
-            const prevBtn = document.getElementById('prevImage');
-            const nextBtn = document.getElementById('nextImage');
-            
-            // Check if all elements exist before proceeding
-            if (!carouselImage || !imageCounter || !imageName || !prevBtn || !nextBtn) {
-                console.error('Carousel elements not found');
-                return;
-            }
-            
-            function updateImage() {
-                carouselImage.src = `/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(images[currentImageIndex])}`;
-                carouselImage.alt = images[currentImageIndex];
-                imageCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
-                imageName.textContent = images[currentImageIndex];
-            }
-            
-            prevBtn.addEventListener('click', () => {
-                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-                updateImage();
-            });
-            
-            nextBtn.addEventListener('click', () => {
-                currentImageIndex = (currentImageIndex + 1) % images.length;
-                updateImage();
-            });
-            
-            // Keyboard navigation
-            const keyHandler = (e) => {
-                if (e.key === 'ArrowLeft') {
+        // Only set up carousel if there are images
+        if (images.length > 0) {
+            // Wait for modal to be shown before setting up carousel
+            const modalElement = document.getElementById('detailModal');
+            modalElement.addEventListener('shown.bs.modal', () => {
+                const carouselImage = document.getElementById('carouselImage');
+                const imageCounter = document.getElementById('imageCounter');
+                const imageName = document.getElementById('imageName');
+                const prevBtn = document.getElementById('prevImage');
+                const nextBtn = document.getElementById('nextImage');
+                
+                // Check if all elements exist before proceeding
+                if (!carouselImage || !imageCounter || !imageName || !prevBtn || !nextBtn) {
+                    return;
+                }
+                
+                function updateImage() {
+                    carouselImage.src = `/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(images[currentImageIndex])}`;
+                    carouselImage.alt = images[currentImageIndex];
+                    imageCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+                    imageName.textContent = images[currentImageIndex];
+                }
+                
+                prevBtn.addEventListener('click', () => {
                     currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
                     updateImage();
-                } else if (e.key === 'ArrowRight') {
+                });
+                
+                nextBtn.addEventListener('click', () => {
                     currentImageIndex = (currentImageIndex + 1) % images.length;
                     updateImage();
-                }
-            };
-            
-            document.addEventListener('keydown', keyHandler);
-            
-            // Clean up event listener when modal is closed
-            modalElement.addEventListener('hidden.bs.modal', () => {
-                document.removeEventListener('keydown', keyHandler);
+                });
+                
+                // Keyboard navigation
+                const keyHandler = (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                        updateImage();
+                    } else if (e.key === 'ArrowRight') {
+                        currentImageIndex = (currentImageIndex + 1) % images.length;
+                        updateImage();
+                    }
+                };
+                
+                document.addEventListener('keydown', keyHandler);
+                
+                // Clean up event listener when modal is closed
+                modalElement.addEventListener('hidden.bs.modal', () => {
+                    document.removeEventListener('keydown', keyHandler);
+                }, { once: true });
             }, { once: true });
-        }, { once: true });
+        }
     }
 }
 
