@@ -362,6 +362,35 @@ namespace CREC_WebViewer.Services
                         }
                     }
                 }
+                
+                // dataフォルダからデータファイルを読み込む
+                // CREC構造: {dataPath}\{collectionId}\data\
+                var dataPath = Path.Combine(directoryPath, "data");
+                if (Directory.Exists(dataPath))
+                {
+                    _logger.LogInformation($"Loading data files from data folder: {dataPath}");
+                    var dataFiles = Directory.GetFiles(dataPath);
+                    
+                    foreach (var file in dataFiles)
+                    {
+                        var fileName = Path.GetFileName(file);
+                        var extension = Path.GetExtension(file).ToLowerInvariant();
+                        
+                        // システムファイルをスキップ
+                        if (fileName == "index.txt" || fileName == "Index.txt" || 
+                            fileName == "comment.txt" || fileName == "inventory.inv") continue;
+                        
+                        // 画像以外のファイルをOtherFilesに追加
+                        if (!imageExtensions.Contains(extension))
+                        {
+                            if (!collection.OtherFiles.Contains(fileName))
+                            {
+                                collection.OtherFiles.Add(fileName);
+                                _logger.LogDebug($"Added data file from data folder: {fileName}");
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

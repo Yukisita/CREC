@@ -480,7 +480,7 @@ function displayCollectionModal(collection) {
         ? collection.otherFiles.map(file => `
             <li class="list-group-item d-flex justify-content-between align-items-center">
                 ${escapeHtml(file)}
-                <a href="/api/File/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(file)}" 
+                <a href="/api/File/data/${encodeURIComponent(collection.collectionID)}/${encodeURIComponent(file)}" 
                    class="btn btn-sm btn-outline-primary" target="_blank">
                     <i class="bi bi-download"></i>
                 </a>
