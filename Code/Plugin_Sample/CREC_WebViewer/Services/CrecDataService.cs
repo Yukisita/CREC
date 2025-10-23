@@ -304,29 +304,7 @@ namespace CREC_WebViewer.Services
                 
                 var files = Directory.GetFiles(directoryPath);
                 var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff" };
-                
-                foreach (var file in files)
-                {
-                    var fileName = Path.GetFileName(file);
-                    var extension = Path.GetExtension(file).ToLowerInvariant();
-                    
-                    // システムファイルをスキップ
-                    if (fileName == "index.txt" || fileName == "Index.txt" || 
-                        fileName == "comment.txt" || fileName == "inventory.inv") continue;
-                    
-                    if (imageExtensions.Contains(extension))
-                    {
-                        collection.ImageFiles.Add(fileName);
-                        
-                        // SystemData/Thumbnail.pngが存在しない場合のみ、最初の画像をサムネイルとして設定
-                        if (collection.ThumbnailPath == null)
-                        {
-                            collection.ThumbnailPath = fileName;
-                        }
-                    }
-                    // Note: OtherFiles should only be loaded from the data subfolder, not from root
-                }
-                
+
                 // picturesフォルダから画像を読み込む
                 // CREC構造: {dataPath}\{collectionId}\pictures\
                 var collectionId = collection.CollectionID;
