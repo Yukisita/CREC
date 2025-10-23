@@ -233,15 +233,14 @@ Environment.CurrentDirectory = "/path/to/crec/data"
 Directory.GetDirectories()
     │
     ├─→ SAMPLE001/
-    │   ├── index.txt          ← これを読む！
+    │   ├── index.txt          ← これを読む
     │   │   ┌─────────────────────────────┐
-    │   │   │ CollectionName,電子部品サンプル│
-    │   │   │ CollectionMC,ELEC-001        │
-    │   │   │ CollectionCategory,電子部品   │
-    │   │   │ CollectionTag1,Arduino       │
+    │   │   │ CollectionName,コレクション名│
+    │   │   │ CollectionMC,管理コード        │
+    │   │   │ CollectionCategory,コレクションのカテゴリ   │
+    │   │   │ CollectionTag1,コレクションのタグ1       │
     │   │   │ ...                          │
     │   │   └─────────────────────────────┘
-    │   ├── comment.txt        ← コメント読む
     │   └── [画像ファイル等]
     │
     ├─→ SAMPLE002/

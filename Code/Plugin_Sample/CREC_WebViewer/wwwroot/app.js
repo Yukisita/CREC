@@ -92,27 +92,27 @@ document.addEventListener('DOMContentLoaded', function() {
 async function initializeApp() {
     try {
         console.log('Initializing app...');
-        
+
         // Load project settings first
         await loadProjectSettings();
-        
+
         // Update UI with custom labels
         updateUILabels();
-        
+
         // Add Enter key listener for search
         const searchTextElement = document.getElementById('searchText');
         if (searchTextElement) {
-            searchTextElement.addEventListener('keypress', function(e) {
+            searchTextElement.addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     searchCollections();
                 }
             });
         }
-        
+
         // No longer need to load filters since we have static dropdowns
         await searchCollections();
         console.log('App initialized successfully');
-    } catch (error) {
+    }catch (error) {
         console.error('Error initializing app:', error);
         showError('Failed to initialize application: ' + error.message);
     }
@@ -699,7 +699,7 @@ function updateLanguageDisplay() {
             }
         }
     });
-    
+
     // Re-render current results with new language
     if (currentSearchCriteria && Object.keys(currentSearchCriteria).length > 0) {
         searchCollections(currentPage);
@@ -718,5 +718,5 @@ function escapeHtml(text) {
         '"': '&quot;',
         "'": '&#039;'
     };
-    return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
+    return text.toString().replace(/[&<>"']/g, function (m) { return map[m]; });
 }
