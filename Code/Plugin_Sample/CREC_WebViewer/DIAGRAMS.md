@@ -93,12 +93,13 @@
                                      │ File.ReadAllLinesAsync()
                                      ↓
                               ┌──────────────┐
-                              │ SAMPLE001/   │
-                              │  index.txt   │
-                              │ SAMPLE002/   │
-                              │  index.txt   │
-                              │ SAMPLE003/   │
-                              │  index.txt   │
+                              │ {dataPath}/  │
+                              │  SAMPLE001/  │
+                              │   index.txt  │
+                              │  SAMPLE002/  │
+                              │   index.txt  │
+                              │  SAMPLE003/  │
+                              │   index.txt  │
                               └──────┬───────┘
                                      │
                               ⑥ データ返却（逆順）
@@ -133,22 +134,42 @@ CREC_WebViewer/
 │     └─────────────────────────┘
 │
 ├─┬─ Controllers/                  [APIエンドポイント]
-│ └── ApiController.cs
+│ ├── ApiController.cs
+│ │   ┌─────────────────────────┐
+│ │   │ GET /api/collections     │ ← 全件取得
+│ │   │ GET /api/collections/    │
+│ │   │     search               │ ← 検索
+│ │   │ GET /api/collections/{id}│ ← 詳細取得
+│ │   │ GET /api/thumbnail/{id}  │ ← サムネイル取得
+│ │   └─────────────────────────┘
+│ │
+│ ├── FileController.cs
+│ │   ┌─────────────────────────┐
+│ │   │ GET /api/File/{id}/      │
+│ │   │     {filename}           │ ← 画像ファイル取得
+│ │   │ GET /api/File/data/{id}/ │
+│ │   │     {filename}           │ ← データファイル取得
+│ │   └─────────────────────────┘
+│ │
+│ └── ProjectSettingsController.cs
 │     ┌─────────────────────────┐
-│     │ GET /api/collections     │ ← 全件取得
-│     │ GET /api/collections/    │
-│     │     search               │ ← 検索
-│     │ GET /api/collections/{id}│ ← 詳細取得
-│     │ GET /api/files/{id}/     │
-│     │     {filename}           │ ← ファイル取得
+│     │ GET /api/project-settings│ ← プロジェクト設定取得
 │     └─────────────────────────┘
 │
 ├─┬─ Services/                     [ビジネスロジック]
-│ └── CrecDataService.cs
+│ ├── CrecDataService.cs
+│ │   ┌─────────────────────────┐
+│ │   │ GetAllCollectionsAsync() │ ← データ読み込み
+│ │   │ SearchCollectionsAsync() │ ← 検索処理
+│ │   │ GetCollectionByIdAsync() │ ← ID検索
+│ │   │ LoadFileList()          │ ← ファイルリスト取得
+│ │   │                          │   (画像/データファイル)
+│ │   └─────────────────────────┘
+│ │
+│ └── ProjectSettingsService.cs
 │     ┌─────────────────────────┐
-│     │ GetAllCollectionsAsync() │ ← データ読み込み
-│     │ SearchCollectionsAsync() │ ← 検索処理
-│     │ GetCollectionByIdAsync() │ ← ID検索
+│     │ GetProjectSettingsAsync()│ ← .crecファイル読み込み
+│     │                          │   (カスタムフィールドラベル)
 │     └─────────────────────────┘
 │
 ├─┬─ Models/                       [データ定義]
@@ -270,12 +291,248 @@ Directory.GetDirectories()
 └──────────────────────────────┘
 ```
 
-## 図6: セキュリティ対策
+## 図6: CRECファイル構造の詳細
+
+```
+{dataPath}/                        ← プロジェクトデータのルート
+│
+├── {ProjectName}.crec             ← プロジェクト設定ファイル
+│   ┌─────────────────────────────────────┐
+│   │ ShowIDLabel,UUID,t           ← カスタムフィールド名
+│   │ ShowMCLabel,管理コード,t
+│   │ ShowCategoryLabel,カテゴリー,t
+│   │ Tag1Name,メーカー,t          ← タグ名のカスタマイズ
+│   │ Tag2Name,用途,t
+│   │ Tag3Name,プロジェクト,t
+│   │ ShowObjectNameLabel,部品名,t
+│   │ projectlocation,{dataPath},t
+│   └─────────────────────────────────────┘
+│
+└── {CollectionID}/                ← 各コレクションフォルダ
+    │
+    ├── index.txt                  ← コレクションメタデータ
+    │   ┌─────────────────────────────────┐
+    │   │ UUID                      ← フィールド名（固定）
+    │   │ SAMPLE001                 ← ID値
+    │   │ 名称                      ← フィールド名
+    │   │ Arduino Uno Rev3          ← 名称値
+    │   │ 管理コード
+    │   │ MC-001
+    │   │ カテゴリー
+    │   │ マイコンボード
+    │   │ タグ1
+    │   │ Arduino
+    │   │ タグ2
+    │   │ Sample
+    │   │ タグ3
+    │   │ Component
+    │   └─────────────────────────────────┘
+    │
+    ├── inventory.inv              ← 在庫管理データ（オプション）
+    │
+    ├── SystemData/                ← システムデータフォルダ
+    │   └── Thumbnail.png          ← サムネイル画像
+    │
+    ├── pictures/                  ← 詳細画像フォルダ
+    │   ├── image001.jpg           ← コレクションの画像
+    │   ├── image002.jpg
+    │   └── schematic.png
+    │
+    └── data/                      ← データファイルフォルダ
+        ├── datasheet.pdf          ← 関連ドキュメント
+        ├── manual.pdf
+        └── specification.xlsx
+
+【パス構造の重要ポイント】
+- 画像: {dataPath}\{collectionId}\pictures\
+- データファイル: {dataPath}\{collectionId}\data\
+- サムネイル: {dataPath}\{collectionId}\SystemData\Thumbnail.png
+```
+
+## 図7: カスタムフィールドラベルの動作
+
+```
+┌─────────────────────┐
+│ {ProjectName}.crec  │
+│                     │
+│ Tag1Name,メーカー,t  │ ← .crecファイルでタグ名定義
+│ Tag2Name,用途,t      │
+│ Tag3Name,プロジェクト,t│
+└──────────┬──────────┘
+           │
+           ↓ ProjectSettingsService が読み込み
+┌──────────────────────────────┐
+│ ProjectSettingsController    │
+│ GET /api/project-settings    │
+└──────────┬───────────────────┘
+           │
+           ↓ JSON形式で返却
+┌──────────────────────────────┐
+│ {                            │
+│   "tag1Name": "メーカー",     │
+│   "tag2Name": "用途",         │
+│   "tag3Name": "プロジェクト"  │
+│ }                            │
+└──────────┬───────────────────┘
+           │
+           ↓ フロントエンドが利用
+┌──────────────────────────────┐
+│ app.js                       │
+│                              │
+│ 検索ドロップダウン:           │
+│  - 名称                       │
+│  - メーカー     ← Tag1Name    │
+│  - 用途         ← Tag2Name    │
+│  - プロジェクト ← Tag3Name    │
+│                              │
+│ コレクションカード表示:       │
+│  メーカー: Arduino           │
+│  用途: Sample                │
+│  プロジェクト: Component     │
+└──────────────────────────────┘
+```
+
+## 図8: 画像カルーセル機能
+
+```
+┌────────────────────────────────────────┐
+│ 詳細モーダル                            │
+│                                        │
+│  ┌────────────────────────────────┐   │
+│  │                                 │   │
+│  │      [画像表示エリア]            │   │
+│  │                                 │   │
+│  │      image001.jpg               │   │
+│  │                                 │   │
+│  └────────────────────────────────┘   │
+│                                        │
+│  ┌────────────────────────────────┐   │
+│  │  ◀ Previous    1 / 3    Next ▶ │   │ ← ナビゲーション
+│  └────────────────────────────────┘   │
+│                                        │
+│  image001.jpg                          │ ← ファイル名表示
+│                                        │
+│  【機能】                               │
+│  ・ ◀ ▶ ボタンで画像切り替え           │
+│  ・ ← → キーボードで画像切り替え       │
+│  ・ 画像カウンター表示（現在位置/総数） │
+│  ・ 最後の画像で次へ → 最初の画像へ    │
+│  ・ 最初の画像で前へ → 最後の画像へ    │
+└────────────────────────────────────────┘
+
+【実装のポイント】
+- Bootstrap modal の shown.bs.modal イベントで初期化
+- 画像が存在する場合のみカルーセル機能を有効化
+- 適切な null チェックでエラーを防止
+```
+
+## 図9: ファイル配信の仕組み
+
+```
+【画像ファイル配信】
+GET /api/File/{collectionId}/{filename}
+    │
+    ↓ FileController
+┌─────────────────────────────────────┐
+│ 1. パス構築                          │
+│    path = {dataPath}\{collectionId}\ │
+│           pictures\{filename}        │
+└─────────────────────────────────────┘
+    │
+    ↓
+┌─────────────────────────────────────┐
+│ 2. セキュリティチェック              │
+│    - ファイル名に ".." 含まれない？  │
+│    - パスが正しいフォルダ内？        │
+└─────────────────────────────────────┘
+    │
+    ↓ OK
+┌─────────────────────────────────────┐
+│ 3. MIMEタイプ判定                    │
+│    .jpg  → image/jpeg                │
+│    .png  → image/png                 │
+│    .gif  → image/gif                 │
+└─────────────────────────────────────┘
+    │
+    ↓
+┌─────────────────────────────────────┐
+│ 4. PhysicalFile() でファイル配信     │
+│    - ディスクから直接ストリーミング  │
+│    - 効率的なバイナリデータ転送      │
+└─────────────────────────────────────┘
+
+【データファイル配信】
+GET /api/File/data/{collectionId}/{filename}
+    │
+    ↓ FileController
+┌─────────────────────────────────────┐
+│ 1. パス構築                          │
+│    path = {dataPath}\{collectionId}\ │
+│           data\{filename}            │
+└─────────────────────────────────────┘
+    │
+    ↓ (以下、画像ファイルと同様の処理)
+```
+
+## 図10: コントローラー構成
+
+```
+┌─────────────────────────────────────┐
+│ ASP.NET Core Web API                │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ CollectionsController         │ │
+│  │ /api/collections              │ │
+│  │                               │ │
+│  │ - GET /                       │ │ ← 全コレクション一覧
+│  │ - GET /{id}                   │ │ ← 特定コレクション詳細
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ ProjectSettingsController     │ │
+│  │ /api/project-settings         │ │
+│  │                               │ │
+│  │ - GET /                       │ │ ← プロジェクト設定取得
+│  │   （カスタムフィールドラベル） │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ FileController                │ │
+│  │ /api/File                     │ │
+│  │                               │ │
+│  │ - GET /{id}/{file}            │ │ ← 画像ファイル配信
+│  │ - GET /data/{id}/{file}       │ │ ← データファイル配信
+│  │ - GET /thumbnail/{id}         │ │ ← サムネイル配信
+│  └───────────────────────────────┘ │
+└─────────────────────────────────────┘
+         │
+         ↓ 依存
+┌─────────────────────────────────────┐
+│ Services                            │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ CrecDataService               │ │
+│  │                               │ │
+│  │ - LoadAllCollections()        │ │
+│  │ - LoadFileList()              │ │
+│  │ - キャッシュ管理（5分）        │ │
+│  └───────────────────────────────┘ │
+│                                     │
+│  ┌───────────────────────────────┐ │
+│  │ ProjectSettingsService        │ │
+│  │                               │ │
+│  │ - LoadProjectSettings()       │ │
+│  │ - .crecファイルパース          │ │
+│  └───────────────────────────────┘ │
+└─────────────────────────────────────┘
+```
+
+## 図11: セキュリティ対策
 
 ```
 【安全なファイルアクセス】
 
-リクエスト: GET /api/files/SAMPLE001/image.jpg
+リクエスト: GET /api/File/SAMPLE001/image.jpg
     │
     ↓ 検証ステップ
 ┌─────────────────────────────────────┐
@@ -283,38 +540,50 @@ Directory.GetDirectories()
 │    ✓ ".." が含まれていないか？        │
 │    ✓ "/" が含まれていないか？         │
 │    ✓ "\\" が含まれていないか？        │
+│    ✓ パストラバーサル攻撃を防止      │
 └─────────────────────────────────────┘
     │
     ↓ OK
 ┌─────────────────────────────────────┐
 │ 2. パス構築                          │
-│    dataFolder = "/path/to/crec/data" │
-│    collectionFolder = dataFolder +   │
-│                       "/SAMPLE001"   │
-│    filePath = collectionFolder +     │
-│               "/image.jpg"           │
-│    = "/path/to/crec/data/SAMPLE001/  │
-│       image.jpg"                     │
+│    dataPath = "C:\CREC\data"         │
+│    collectionPath = dataPath +       │
+│                     "\SAMPLE001"     │
+│    picturesPath = collectionPath +   │
+│                   "\pictures"        │
+│    filePath = picturesPath +         │
+│               "\image.jpg"           │
+│    = "C:\CREC\data\SAMPLE001\        │
+│       pictures\image.jpg"            │
 └─────────────────────────────────────┘
     │
     ↓
 ┌─────────────────────────────────────┐
 │ 3. パス検証                          │
-│    filePath が collectionFolder 内か？│
+│    filePath が正しいフォルダ内か？   │
 │    ✓ はい → OK                       │
-│    ✗ いいえ → ブロック               │
+│    ✗ いいえ → 404 NotFound           │
 └─────────────────────────────────────┘
     │
     ↓ OK
 ┌─────────────────────────────────────┐
-│ 4. ファイル読み込み                  │
-│    File.ReadAllBytes(filePath)       │
+│ 4. ファイル存在チェック              │
+│    ✓ ファイルが存在する → OK         │
+│    ✗ 存在しない → 404 NotFound       │
+└─────────────────────────────────────┘
+    │
+    ↓ OK
+┌─────────────────────────────────────┐
+│ 5. ファイル配信                      │
+│    PhysicalFile(filePath, mimeType)  │
+│    - 直接ストリーミング配信          │
+│    - 効率的なメモリ使用              │
 └─────────────────────────────────────┘
 
 
 【危険なアクセスの例】
 
-リクエスト: GET /api/files/../../../etc/passwd
+リクエスト: GET /api/File/../../../etc/passwd
     │
     ↓
 ┌─────────────────────────────────────┐
@@ -324,9 +593,23 @@ Directory.GetDirectories()
 └─────────────────────────────────────┘
     │
     ✗ アクセス拒否
+
+
+【CORS設定】
+┌─────────────────────────────────────┐
+│ AllowAnyOrigin()                    │
+│ - どのドメインからでもアクセス可能  │
+│ - LAN内での複数端末アクセスに対応   │
+│                                     │
+│ AllowAnyMethod()                    │
+│ - GET, POST等すべてのメソッドを許可 │
+│                                     │
+│ AllowAnyHeader()                    │
+│ - すべてのHTTPヘッダーを許可        │
+└─────────────────────────────────────┘
 ```
 
-## 図7: キャッシュメカニズム
+## 図12: キャッシュメカニズム
 
 ```
 タイムライン:
