@@ -301,7 +301,7 @@ namespace CREC_WebViewer.Services
                     collection.ThumbnailPath = "SystemData/Thumbnail.png";
                     _logger.LogDebug($"Found thumbnail: {systemDataThumbnail}");
                 }
-                
+
                 var files = Directory.GetFiles(directoryPath);
                 var imageExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff" };
 
@@ -313,12 +313,12 @@ namespace CREC_WebViewer.Services
                 {
                     _logger.LogInformation($"Loading images from pictures folder: {picturesPath}");
                     var pictureFiles = Directory.GetFiles(picturesPath);
-                    
+
                     foreach (var file in pictureFiles)
                     {
                         var fileName = Path.GetFileName(file);
                         var extension = Path.GetExtension(file).ToLowerInvariant();
-                        
+
                         if (imageExtensions.Contains(extension))
                         {
                             // picturesフォルダの画像を追加（重複チェック）
@@ -330,7 +330,7 @@ namespace CREC_WebViewer.Services
                         }
                     }
                 }
-                
+
                 // dataフォルダからデータファイルを読み込む
                 // CREC構造: {dataPath}\{collectionId}\data\
                 var dataPath = Path.Combine(directoryPath, "data");
@@ -338,20 +338,16 @@ namespace CREC_WebViewer.Services
                 {
                     _logger.LogInformation($"Loading data files from data folder: {dataPath}");
                     var dataFiles = Directory.GetFiles(dataPath);
-                    
+
                     foreach (var file in dataFiles)
                     {
                         var fileName = Path.GetFileName(file);
                         var extension = Path.GetExtension(file).ToLowerInvariant();
-                        
-                        // 画像以外のファイルをOtherFilesに追加
-                        if (!imageExtensions.Contains(extension))
+
+                        if (!collection.OtherFiles.Contains(fileName))
                         {
-                            if (!collection.OtherFiles.Contains(fileName))
-                            {
-                                collection.OtherFiles.Add(fileName);
-                                _logger.LogDebug($"Added data file from data folder: {fileName}");
-                            }
+                            collection.OtherFiles.Add(fileName);
+                            _logger.LogDebug($"Added data file from data folder: {fileName}");
                         }
                     }
                 }
