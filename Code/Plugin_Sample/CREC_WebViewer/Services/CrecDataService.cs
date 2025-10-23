@@ -168,13 +168,6 @@ namespace CREC_WebViewer.Services
                     }
                 }
 
-                // コメントファイルを読み込み
-                var commentFilePath = Path.Combine(directoryPath, "comment.txt");
-                if (File.Exists(commentFilePath))
-                {
-                    collection.Comment = await File.ReadAllTextAsync(commentFilePath, Encoding.GetEncoding("UTF-8"));
-                }
-
                 // 在庫情報を読み込み
                 LoadInventoryData(collection, directoryPath);
 
