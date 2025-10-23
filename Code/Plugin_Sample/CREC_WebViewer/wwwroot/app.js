@@ -50,7 +50,25 @@ const translations = {
         'page': 'ページ',
         'of': '/',
         'previous': '前へ',
-        'next': '次へ'
+        'next': '次へ',
+        'search-field': '検索対象',
+        'field-all': '全項目',
+        'field-id': 'UUID/ID',
+        'field-name': '名称',
+        'field-mc': '管理コード',
+        'field-category': 'カテゴリー',
+        'field-tag': 'タグ',
+        'field-location': '場所',
+        'search-method': '検索方法',
+        'method-partial': '部分一致',
+        'method-prefix': '前方一致',
+        'method-suffix': '後方一致',
+        'method-exact': '完全一致',
+        'all-status': '全状況',
+        'page-size': '表示件数',
+        'search-button': '検索',
+        'clear-button': 'クリア',
+        'close': '閉じる'
     },
     en: {
         'loading': 'Loading...',
@@ -80,7 +98,25 @@ const translations = {
         'page': 'Page',
         'of': 'of',
         'previous': 'Previous',
-        'next': 'Next'
+        'next': 'Next',
+        'search-field': 'Search Field',
+        'field-all': 'All Fields',
+        'field-id': 'UUID/ID',
+        'field-name': 'Name',
+        'field-mc': 'MC',
+        'field-category': 'Category',
+        'field-tag': 'Tag',
+        'field-location': 'Location',
+        'search-method': 'Search Method',
+        'method-partial': 'Partial',
+        'method-prefix': 'Prefix',
+        'method-suffix': 'Suffix',
+        'method-exact': 'Exact',
+        'all-status': 'All Status',
+        'page-size': 'Page Size',
+        'search-button': 'Search',
+        'clear-button': 'Clear',
+        'close': 'Close'
     }
 };
 
@@ -88,6 +124,21 @@ const translations = {
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
+
+// Update UI language
+function updateUILanguage() {
+    const lang = currentLanguage;
+    
+    // Update all elements with data-lang attribute
+    document.querySelectorAll('[data-lang]').forEach(element => {
+        const key = element.getAttribute('data-lang');
+        const translation = translations[lang][key];
+        
+        if (translation) {
+            element.textContent = translation;
+        }
+    });
+}
 
 async function initializeApp() {
     try {
@@ -98,6 +149,9 @@ async function initializeApp() {
 
         // Update UI with custom labels
         updateUILabels();
+        
+        // Update UI language
+        updateUILanguage();
 
         // Add Enter key listener for search
         const searchTextElement = document.getElementById('searchText');
@@ -686,9 +740,16 @@ function updateLanguageDisplay() {
     elements.forEach(element => {
         const key = element.getAttribute('data-lang');
         if (translations[currentLanguage][key]) {
-            if (element.tagName.toLowerCase() === 'input' && element.type === 'text') {
+            const tagName = element.tagName.toLowerCase();
+            
+            if (tagName === 'input' && element.type === 'text') {
+                // Update placeholder for text inputs
                 element.placeholder = translations[currentLanguage][key];
+            } else if (tagName === 'option') {
+                // Update text content for option elements (remove bilingual format)
+                element.textContent = translations[currentLanguage][key];
             } else {
+                // Update text content for other elements
                 element.textContent = translations[currentLanguage][key];
             }
         }
