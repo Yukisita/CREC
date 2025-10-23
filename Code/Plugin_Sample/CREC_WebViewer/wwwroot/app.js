@@ -211,12 +211,6 @@ function updateUILabels() {
         locationOption.text = currentLanguage === 'ja' ? '場所' : 'Location';
         searchFieldElement.appendChild(locationOption);
         
-        // Add Comment option - SearchField.Comment = 10
-        const commentOption = document.createElement('option');
-        commentOption.value = '10';
-        commentOption.text = currentLanguage === 'ja' ? 'コメント' : 'Comment';
-        searchFieldElement.appendChild(commentOption);
-        
         // Restore previous selection if still valid
         if (currentValue && Array.from(searchFieldElement.options).some(opt => opt.value === currentValue)) {
             searchFieldElement.value = currentValue;
