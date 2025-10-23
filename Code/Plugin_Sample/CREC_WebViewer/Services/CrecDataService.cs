@@ -331,10 +331,7 @@ namespace CREC_WebViewer.Services
                             collection.ThumbnailPath = fileName;
                         }
                     }
-                    else
-                    {
-                        collection.OtherFiles.Add(fileName);
-                    }
+                    // Note: OtherFiles should only be loaded from the data subfolder, not from root
                 }
                 
                 // picturesフォルダから画像を読み込む
