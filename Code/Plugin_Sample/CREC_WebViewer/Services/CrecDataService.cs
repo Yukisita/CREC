@@ -366,10 +366,6 @@ namespace CREC_WebViewer.Services
                         var fileName = Path.GetFileName(file);
                         var extension = Path.GetExtension(file).ToLowerInvariant();
                         
-                        // システムファイルをスキップ
-                        if (fileName == "index.txt" || fileName == "Index.txt" || 
-                            fileName == "comment.txt" || fileName == "inventory.inv") continue;
-                        
                         // 画像以外のファイルをOtherFilesに追加
                         if (!imageExtensions.Contains(extension))
                         {
