@@ -394,8 +394,8 @@ JSONはデータを書き表す形式です。
   "collectionID": "SAMPLE001",
   "collectionName": "電子部品サンプル",
   "collectionCategory": "電子部品",
-  "collectionTag1": "Arduino",
-  "collectionTag2": "センサー",
+  "collectionTag1": "タグ１",
+  "collectionTag2": "タグ２",
   "collectionCurrentInventory": 25,
   "collectionInventoryStatus": 2
 }
