@@ -27,11 +27,41 @@ namespace CREC_WebViewer.Controllers
         {
             try
             {
+                // Security: Validate collection ID (alphanumeric, hyphens, underscores only)
+                if (string.IsNullOrWhiteSpace(collectionId) || 
+                    !System.Text.RegularExpressions.Regex.IsMatch(collectionId, @"^[a-zA-Z0-9_-]+$") ||
+                    collectionId.Length > 255)
+                {
+                    _logger.LogWarning($"Invalid collection ID: {collectionId}");
+                    return BadRequest("Invalid collection ID");
+                }
+
+                // Security: Validate file name (no path traversal characters)
+                if (string.IsNullOrWhiteSpace(fileName) || 
+                    fileName.Contains("..") || 
+                    fileName.Contains("/") || 
+                    fileName.Contains("\\") ||
+                    fileName.Length > 255)
+                {
+                    _logger.LogWarning($"Invalid file name: {fileName}");
+                    return BadRequest("Invalid file name");
+                }
+
                 // Get data path from configuration or use current directory
                 var dataPath = _configuration["ProjectDataPath"] ?? Directory.GetCurrentDirectory();
                 
                 // Build path to pictures folder: dataPath\collectionId\pictures\fileName
                 var filePath = Path.Combine(dataPath, collectionId, "pictures", fileName);
+
+                // Security: Ensure the resolved path stays within the pictures directory
+                var fullPath = Path.GetFullPath(filePath);
+                var allowedPath = Path.GetFullPath(Path.Combine(dataPath, collectionId, "pictures"));
+                
+                if (!fullPath.StartsWith(allowedPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    _logger.LogWarning($"Path traversal attempt detected: {fullPath}");
+                    return BadRequest("Invalid file path");
+                }
 
                 _logger.LogInformation($"Attempting to serve file: {filePath}");
 
@@ -56,12 +86,13 @@ namespace CREC_WebViewer.Controllers
 
                 _logger.LogInformation($"Serving file with content type: {contentType}");
 
-                // Add CORS and cache headers using indexer to avoid duplicate key warnings
+                // Security headers
                 Response.Headers["Access-Control-Allow-Origin"] = "*";
                 Response.Headers["Cache-Control"] = "public, max-age=3600";
+                Response.Headers["X-Content-Type-Options"] = "nosniff";
                 
-                // Use PhysicalFile for direct file serving - most efficient for binary data
-                return PhysicalFile(filePath, contentType);
+                // Images are view-only (inline), not downloadable
+                return PhysicalFile(fullPath, contentType, enableRangeProcessing: true);
             }
             catch (Exception ex)
             {
