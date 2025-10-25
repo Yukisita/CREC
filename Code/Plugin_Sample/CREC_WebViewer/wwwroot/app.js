@@ -480,7 +480,7 @@ function getInventoryStatusText(status, currentInventory, collectionOrderPoint, 
     if (status !== 4 && currentInventory !== null && collectionOrderPoint !== null) {
         if (status === 0 || status === 1) {
             // Stock out or under stocked - show shortage
-            const diff = collectionOrderPoint - currentInventory;
+            const diff = currentInventory - collectionOrderPoint;
             statusText += `: ${diff}`;
         } else if (status === 3) {
             // Over stocked - show excess
