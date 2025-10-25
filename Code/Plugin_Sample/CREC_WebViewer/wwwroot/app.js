@@ -484,9 +484,6 @@ function getInventoryStatusText(status, currentInventory, appropriateInventory) 
         } else if (status === 3) {
             // Over stocked - show excess
             statusText += `: +${diff}`;
-        } else if (status === 2) {
-            // Appropriate - show 0
-            statusText += ': 0';
         }
     }
     
