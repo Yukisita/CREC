@@ -277,6 +277,10 @@ namespace CREC_WebViewer.Services
                 {
                     collection.CollectionInventoryStatus = InventoryStatus.OverStocked;
                 }
+                else if(!safetyStock.HasValue && !orderPoint.HasValue && !maxStock.HasValue)
+                {
+                    collection.CollectionInventoryStatus = InventoryStatus.NotSet;
+                }
                 else
                 {
                     collection.CollectionInventoryStatus = InventoryStatus.Appropriate;
