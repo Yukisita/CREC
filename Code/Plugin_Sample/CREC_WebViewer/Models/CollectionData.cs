@@ -85,6 +85,21 @@ namespace CREC_WebViewer.Models
         public InventoryStatus CollectionInventoryStatus { get; set; } = InventoryStatus.NotSet;
 
         /// <summary>
+        /// 安全在庫数
+        /// </summary>
+        public int? CollectionSafetyStock { get; set; } = null;
+
+        /// <summary>
+        /// 発注点
+        /// </summary>
+        public int? CollectionOrderPoint { get; set; } = null;
+
+        /// <summary>
+        /// 最大在庫数
+        /// </summary>
+        public int? CollectionMaxStock { get; set; } = null;
+
+        /// <summary>
         /// サムネイル画像パス（相対パス）
         /// </summary>
         public string? ThumbnailPath { get; set; }

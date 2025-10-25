@@ -388,7 +388,8 @@ function createCollectionCard(collection) {
     const inventoryStatusText = getInventoryStatusText(
         collection.collectionInventoryStatus, 
         collection.collectionCurrentInventory, 
-        collection.collectionAppropriateInventory
+        collection.collectionOrderPoint,
+        collection.collectionMaxStock
     );
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 
@@ -464,7 +465,7 @@ function createCollectionCard(collection) {
     return colDiv;
 }
 
-function getInventoryStatusText(status, currentInventory, appropriateInventory) {
+function getInventoryStatusText(status, currentInventory, collectionOrderPoint, collectionMaxStock) {
     const statusMap = {
         0: t('stock-out'),
         1: t('under-stocked'),
@@ -476,13 +477,14 @@ function getInventoryStatusText(status, currentInventory, appropriateInventory) 
     let statusText = statusMap[status] || t('not-set');
     
     // Add shortage/excess quantity for relevant statuses
-    if (status !== 4 && currentInventory !== null && appropriateInventory !== null) {
-        const diff = currentInventory - appropriateInventory;
+    if (status !== 4 && currentInventory !== null && collectionOrderPoint !== null) {
         if (status === 0 || status === 1) {
             // Stock out or under stocked - show shortage
+            const diff = collectionOrderPoint - currentInventory;
             statusText += `: ${diff}`;
         } else if (status === 3) {
             // Over stocked - show excess
+            const diff = collectionMaxStock - currentInventory; 
             statusText += `: +${diff}`;
         }
     }
@@ -526,7 +528,8 @@ function displayCollectionModal(collection) {
     const inventoryStatusText = getInventoryStatusText(
         collection.collectionInventoryStatus,
         collection.collectionCurrentInventory,
-        collection.collectionAppropriateInventory
+        collection.collectionOrderPoint,
+        collection.collectionMaxStock
     );
     const inventoryBadgeClass = getInventoryStatusBadgeClass(collection.collectionInventoryStatus);
 

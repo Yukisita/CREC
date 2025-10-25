@@ -228,8 +228,8 @@ namespace CREC_WebViewer.Services
                 if (lines.Length == 0) return;
 
                 int? safetyStock = null;
-                int? reorderPoint = null;
-                int? maximumLevel = null;
+                int? orderPoint = null;
+                int? maxStock = null;
                 int totalInventory = 0;
 
                 bool firstLine = true;
@@ -243,10 +243,10 @@ namespace CREC_WebViewer.Services
                         // 最初の行から安全在庫、発注点、最大在庫レベルを読み取る
                         if (!string.IsNullOrEmpty(cols[1]) && int.TryParse(cols[1], out int ss))
                             safetyStock = ss;
-                        if (!string.IsNullOrEmpty(cols[2]) && int.TryParse(cols[2], out int rp))
-                            reorderPoint = rp;
-                        if (!string.IsNullOrEmpty(cols[3]) && int.TryParse(cols[3], out int ml))
-                            maximumLevel = ml;
+                        if (!string.IsNullOrEmpty(cols[2]) && int.TryParse(cols[2], out int op))
+                            orderPoint = op;
+                        if (!string.IsNullOrEmpty(cols[3]) && int.TryParse(cols[3], out int ms))
+                            maxStock = ms;
                         firstLine = false;
                     }
                     else
@@ -260,6 +260,9 @@ namespace CREC_WebViewer.Services
                 }
 
                 collection.CollectionCurrentInventory = totalInventory;
+                collection.CollectionSafetyStock = safetyStock;
+                collection.CollectionOrderPoint = orderPoint;
+                collection.CollectionMaxStock = maxStock;
 
                 // 在庫状況を判定（CREC本体のロジックに準拠）
                 if (totalInventory == 0)
@@ -270,7 +273,7 @@ namespace CREC_WebViewer.Services
                 {
                     collection.CollectionInventoryStatus = InventoryStatus.UnderStocked;
                 }
-                else if (maximumLevel.HasValue && totalInventory > maximumLevel.Value)
+                else if (maxStock.HasValue && totalInventory > maxStock.Value)
                 {
                     collection.CollectionInventoryStatus = InventoryStatus.OverStocked;
                 }
