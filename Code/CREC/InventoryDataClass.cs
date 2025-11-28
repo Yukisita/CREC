@@ -17,9 +17,13 @@ namespace CREC
     /// <summary>
     /// 在庫操作の種類
     /// </summary>
+    /// <remarks>
+    /// Note: "EntoryOperation" spelling is intentional for backward compatibility 
+    /// with existing data files. The original codebase uses this spelling.
+    /// </remarks>
     public enum InventoryOperationType
     {
-        EntoryOperation,   // 入庫
+        EntoryOperation,   // 入庫 (Entry operation - note: intentional spelling for backward compatibility)
         ExitOperation,     // 出庫
         Stocktaking        // 棚卸
     }
@@ -121,31 +125,38 @@ namespace CREC
         {
             int count = CalculateCurrentInventory();
 
-            if (count == 0)
+            // 適正在庫設定が未設定の場合
+            if (!SafetyStock.HasValue && !ReorderPoint.HasValue && !MaximumLevel.HasValue)
+            {
+                return InventoryStatus.NotSet;
+            }
+
+            // 在庫切れ（0以下）
+            if (count <= 0)
             {
                 return InventoryStatus.StockOut;
             }
-            else if (count > 0 && SafetyStock.HasValue && count < SafetyStock.Value)
+            // 在庫不足（安全在庫数未満）
+            else if (SafetyStock.HasValue && count < SafetyStock.Value)
             {
                 return InventoryStatus.UnderStocked;
             }
+            // 在庫不足（安全在庫数以上、発注点以下）
             else if (SafetyStock.HasValue && ReorderPoint.HasValue &&
                      SafetyStock.Value <= count && count <= ReorderPoint.Value)
             {
                 return InventoryStatus.UnderStocked;
             }
+            // 在庫適正（発注点以上、最大在庫数以下）
             else if (ReorderPoint.HasValue && MaximumLevel.HasValue &&
                      ReorderPoint.Value <= count && count <= MaximumLevel.Value)
             {
                 return InventoryStatus.Appropriate;
             }
+            // 在庫過剰（最大在庫数超過）
             else if (MaximumLevel.HasValue && MaximumLevel.Value < count)
             {
                 return InventoryStatus.OverStocked;
-            }
-            else if (!SafetyStock.HasValue && !ReorderPoint.HasValue && !MaximumLevel.HasValue)
-            {
-                return InventoryStatus.NotSet;
             }
 
             return InventoryStatus.Appropriate;
@@ -350,6 +361,11 @@ namespace CREC
         /// <summary>
         /// レガシーCSVファイルをJSONに移行
         /// </summary>
+        /// <remarks>
+        /// 移行後もレガシーCSVファイル(.inv)は削除せず、バックアップとして残します。
+        /// これにより、以前のバージョンへのロールバックや、データ復旧が可能になります。
+        /// 将来のバージョンで、十分な移行期間が経過した後に削除する可能性があります。
+        /// </remarks>
         public static bool MigrateLegacyCsvToJson(string collectionFolderPath)
         {
             if (string.IsNullOrEmpty(collectionFolderPath))
@@ -387,10 +403,7 @@ namespace CREC
                     return false;
                 }
 
-                // CSVファイルを削除（移行完了）
-                // 安全のため、まずはCSVファイルを残しておく（将来のバージョンで削除可能）
-                // File.Delete(csvPath);
-
+                // レガシーCSVファイルはバックアップとして保持（上記remarksを参照）
                 return true;
             }
             catch
