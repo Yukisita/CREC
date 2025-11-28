@@ -877,16 +877,14 @@ namespace CREC
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                 return;
             }
-            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
+            if (InventoryDataIO.InventoryFileExists(CurrentShownCollectionData.CollectionFolderPath))// 在庫数管理モードの表示・非表示
             {
                 MessageBox.Show("在庫数管理ファイルは作成済みです。", "CREC");
             }
             else
             {
-                FileOperationClass.AddBlankFile(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
-                StreamWriter InventoryManagementFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv");
-                InventoryManagementFile.WriteLine("{0},,,", CurrentShownCollectionData.CollectionID);
-                InventoryManagementFile.Close();
+                // JSONフォーマットで在庫管理ファイルを作成
+                InventoryDataIO.CreateNewInventoryFile(CurrentShownCollectionData.CollectionFolderPath, CurrentShownCollectionData.CollectionID);
                 InventoryManagementModeButton.Visible = true;
                 CloseInventoryManagementModeButton.Visible = false;
             }
@@ -2092,7 +2090,7 @@ namespace CREC
             ShowDataLocation.Visible = CurrentProjectSettingValues.DataLocationVisible;
 
             // 在庫管理データ読み込み
-            if (File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))// 在庫数管理モードの表示・非表示
+            if (InventoryDataIO.InventoryFileExists(CurrentShownCollectionData.CollectionFolderPath))// 在庫数管理モードの表示・非表示
             {
                 if (CloseInventoryManagementModeButton.Visible == false)
                 {
@@ -2884,10 +2882,8 @@ namespace CREC
             DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\inventory.inv");
-                StreamWriter InventoryManagementFile = new StreamWriter(NewCollectionData.CollectionFolderPath + "\\inventory.inv");
-                InventoryManagementFile.WriteLine("{0},,,", EditIDTextBox.Text);
-                InventoryManagementFile.Close();
+                // JSONフォーマットで在庫管理ファイルを作成
+                InventoryDataIO.CreateNewInventoryFile(NewCollectionData.CollectionFolderPath, EditIDTextBox.Text);
                 InventoryManagementModeButton.Visible = true;
                 CloseInventoryManagementModeButton.Visible = false;
             }
@@ -3065,7 +3061,7 @@ namespace CREC
         #endregion
 
         #region 在庫数・適正在庫数管理関係
-        string[] rowsIM;// .invを1行ごとに読み込んだ内容（在庫管理用）
+        InventoryData currentInventoryData;// 在庫管理用データ (JSON)
         int? SafetyStock;// 安全在庫数、未定義時はnullを使用
         int? ReorderPoint;// 発注点、未定義時はnullを使用
         int? MaximumLevel;// 最大在庫数、未定義時はnullを使用
@@ -3099,9 +3095,6 @@ namespace CREC
         }
         private void InventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード開始
         {
-            string reader;
-            string row;
-            string[] cols;
             if (CurrentProjectSettingValues.ProjectSettingFilePath.Length == 0)// プロジェクトが開かれていない場合のエラー
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("NoProjectOpendError", "mainform", LanguageFile), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -3112,11 +3105,19 @@ namespace CREC
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                 return;
             }
-            //invからデータを読み込んで表示
+
+            // JSONベースの在庫データを読み込み（レガシーCSVからも自動移行）
             try
             {
-                reader = File.ReadAllText(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                rowsIM = reader.Trim().Replace("\r", string.Empty).Split('\n');
+                currentInventoryData = InventoryDataIO.LoadInventoryData(CurrentShownCollectionData.CollectionFolderPath);
+                if (currentInventoryData == null)
+                {
+                    MessageBox.Show("在庫管理データの読み込みに失敗しました。", "CREC");
+                    return;
+                }
+
+                // レガシーCSVファイルが存在する場合はJSONに移行
+                InventoryDataIO.MigrateLegacyCsvToJson(CurrentShownCollectionData.CollectionFolderPath);
             }
             catch (Exception ex)
             {
@@ -3137,48 +3138,40 @@ namespace CREC
             {
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             }
-            // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            // 1行目を読み込み
-            row = rowsIM[0];
-            cols = row.Split(',');
-            if (cols[1].Length != 0)
-            {
-                SafetyStock = Convert.ToInt32(cols[1]);
-            }
-            if (cols[2].Length != 0)
-            {
-                ReorderPoint = Convert.ToInt32(cols[2]);
-            }
-            if (cols[3].Length != 0)
-            {
-                MaximumLevel = Convert.ToInt32(cols[3]);
-            }
+
+            // 適正在庫設定を読み込み
+            SafetyStock = currentInventoryData.SafetyStock;
+            ReorderPoint = currentInventoryData.ReorderPoint;
+            MaximumLevel = currentInventoryData.MaximumLevel;
+
+            // 在庫操作データを表示
             inventory = 0;// 初期化
-            for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)// 2行目以降を読み込み
+            if (currentInventoryData.Operations != null)
             {
-                row = rowsIM[i];
-                cols = row.Split(',');
-                string InventoryOperation = string.Empty;
-                switch (cols[1])
+                foreach (var op in currentInventoryData.Operations)
                 {
-                    case "EntoryOperation":
-                    case "入庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
-                        break;
-                    case "ExitOperation":
-                    case "出庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
-                        break;
-                    case "Stocktaking":
-                    case "棚卸"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
-                        break;
+                    string InventoryOperation = string.Empty;
+                    switch (op.OperationType)
+                    {
+                        case "EntoryOperation":
+                        case "入庫"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
+                            break;
+                        case "ExitOperation":
+                        case "出庫"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
+                            break;
+                        case "Stocktaking":
+                        case "棚卸"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
+                            break;
+                    }
+                    InventoryModeDataGridView.Rows.Add(op.DateTime, InventoryOperation, op.Quantity, op.Note);
+                    inventory += op.Quantity;
+                    InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
                 }
-                InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
-                inventory += Convert.ToInt32(cols[2]);
-                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
+
             if (inventory < 0)
             {
                 MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
@@ -3233,15 +3226,14 @@ namespace CREC
                 MessageBox.Show("作業内容が入力されていません。", "CREC");
                 return;
             }
-            // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            string InventoryOperation = string.Empty;
+
+            string inventoryOperationType = string.Empty;
             switch (OperationOptionComboBox.SelectedIndex)// 入力されたデータの整合性チェック
             {
                 case 0:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) > 0)
                     {
-                        InventoryOperation = "EntoryOperation";
+                        inventoryOperationType = "EntoryOperation";
                     }
                     else
                     {
@@ -3252,7 +3244,7 @@ namespace CREC
                 case 1:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) < 0)
                     {
-                        InventoryOperation = "ExitOperation";
+                        inventoryOperationType = "ExitOperation";
                     }
                     else
                     {
@@ -3261,64 +3253,56 @@ namespace CREC
                     }
                     break;
                 case 2:
-                    InventoryOperation = "Stocktaking";
+                    inventoryOperationType = "Stocktaking";
                     break;
             }
-            StreamWriter sw = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
-            for (int i = 0; i <= Convert.ToInt32(tmp.Length); i++)
-            {
-                if (i == 0)// .invのヘッダをコピー
-                {
-                    sw.WriteLine(rowsIM[0]);
-                }
-                else if (i == 1)// 追加されたデータを先頭に追加
-                {
-                    // 現在時刻を取得 
-                    DateTime DT = DateTime.Now;
-                    sw.WriteLine("{0},{1},{2},{3}", DT.ToString("yyyy/MM/dd hh:mm:ss"), InventoryOperation, EditQuantityTextBox.Text, EditInventoryOperationNoteTextBox.Text);
-                }
-                else// 既存のデータを順に書き込み
-                {
-                    sw.WriteLine(rowsIM[i - 1]);
-                }
-            }
-            sw.Close();
+
+            // 新しい操作レコードを作成
+            DateTime DT = DateTime.Now;
+            var newOperation = new InventoryOperationRecord(
+                DT.ToString("yyyy/MM/dd HH:mm:ss"),
+                inventoryOperationType,
+                Convert.ToInt32(EditQuantityTextBox.Text),
+                EditInventoryOperationNoteTextBox.Text
+            );
+
+            // 操作をリストの先頭に追加してJSON保存
+            currentInventoryData.Operations.Insert(0, newOperation);
+            InventoryDataIO.SaveInventoryData(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData);
+
             OperationOptionComboBox.Refresh();
             EditQuantityTextBox.ResetText();
             EditInventoryOperationNoteTextBox.ResetText();
-            //invからデータを読み込んで再表示
+
+            // DataGridViewを再描画
             InventoryModeDataGridView.Rows.Clear();
-            string reader;
-            string row;
-            string[] cols;
-            reader = File.ReadAllText(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            rowsIM = reader.Trim().Replace("\r", string.Empty).Split('\n');
-            // 行数を確認
-            tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
             inventory = 0;
-            for (int i = 1; i <= Convert.ToInt32(tmp.Length) - 1; i++)
+            if (currentInventoryData.Operations != null)
             {
-                row = rowsIM[i];
-                cols = row.Split(',');
-                switch (cols[1])
+                foreach (var op in currentInventoryData.Operations)
                 {
-                    case "EntoryOperation":
-                    case "入庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
-                        break;
-                    case "ExitOperation":
-                    case "出庫"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
-                        break;
-                    case "Stocktaking":
-                    case "棚卸"://後方互換用
-                        InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
-                        break;
+                    string InventoryOperation = string.Empty;
+                    switch (op.OperationType)
+                    {
+                        case "EntoryOperation":
+                        case "入庫"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
+                            break;
+                        case "ExitOperation":
+                        case "出庫"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
+                            break;
+                        case "Stocktaking":
+                        case "棚卸"://後方互換用
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
+                            break;
+                    }
+                    InventoryModeDataGridView.Rows.Add(op.DateTime, InventoryOperation, op.Quantity, op.Note);
+                    inventory += op.Quantity;
+                    InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
                 }
-                InventoryModeDataGridView.Rows.Add(cols[0], InventoryOperation, cols[2], cols[3]);
-                inventory += Convert.ToInt32(cols[2]);
-                InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
             }
+
             if (inventory < 0)
             {
                 MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
@@ -3391,36 +3375,21 @@ namespace CREC
             ProperInventorySettingsTextBox.ReadOnly = true;
             SaveProperInventorySettingsButton.Visible = false;
             SetProperInventorySettingsButton.Visible = true;
-            // 行数を確認
-            string[] tmp = File.ReadAllLines(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-            StreamWriter streamWriter;
-            streamWriter = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv", false, Encoding.GetEncoding("UTF-8"));
+
+            // JSON形式で適正在庫設定を保存
             try
             {
-                for (int i = 0; i < Convert.ToInt32(tmp.Length); i++)
-                {
-                    if (i == 0)// .invのヘッダをコピー
-                    {
-                        string row;
-                        row = rowsIM[i];
-                        cols = row.Split(',');
-                        streamWriter.WriteLine("{0},{1},{2},{3}", cols[0], SafetyStock, ReorderPoint, MaximumLevel);
-                    }
-                    else// 既存のデータを順に書き込み
-                    {
-                        streamWriter.WriteLine(rowsIM[i]);
-                    }
-                }
+                currentInventoryData.SafetyStock = SafetyStock;
+                currentInventoryData.ReorderPoint = ReorderPoint;
+                currentInventoryData.MaximumLevel = MaximumLevel;
+                InventoryDataIO.SaveInventoryData(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData);
+
                 ProperInventoryNotification();
                 CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "CREC");
-            }
-            finally
-            {
-                streamWriter.Close();
             }
         }
         private void SetProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更モード開始
@@ -3555,7 +3524,7 @@ namespace CREC
         private void CloseInventoryViewMethod()// 在庫表示モードを閉じるメソッド
         {
             InventoryManagementModeIsShowing(false);
-            if (!File.Exists(CurrentShownCollectionData.CollectionFolderPath + "\\inventory.inv"))
+            if (!InventoryDataIO.InventoryFileExists(CurrentShownCollectionData.CollectionFolderPath))
             {
                 InventoryManagementModeButton.Visible = false;
             }

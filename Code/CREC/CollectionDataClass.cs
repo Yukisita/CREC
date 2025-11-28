@@ -406,65 +406,19 @@ namespace CREC
             ref CollectionDataValuesClass CollectionDataValues,
             XElement languageData)
         {
-            var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
-            // 在庫状態を取得、invからデータを読み込み
-            int? ListSafetyStock = null;
-            int? ListReorderPoint = null;
-            int? ListMaximumLevel = null;
-            if (File.Exists(CollectionFolderPath + "\\inventory.inv"))
+            var loadingCollectionDataValues = new CollectionDataValuesClass();
+
+            // InventoryDataIOを使用して在庫データを読み込み（JSON優先、レガシーCSVにフォールバック）
+            InventoryData inventoryData = InventoryDataIO.LoadInventoryData(CollectionFolderPath);
+
+            if (inventoryData != null)
             {
-                string[] cols;// List等読み込み用
                 try
                 {
-                    IEnumerable<string> tmp = File.ReadLines(CollectionFolderPath + "\\inventory.inv", Encoding.GetEncoding("UTF-8"));
-                    bool firstline = true;
-                    int count = 0;
-                    foreach (string line in tmp)
-                    {
-                        cols = line.Split(',');
-                        if (firstline == true)
-                        {
-                            if (cols[1].Length != 0)
-                            {
-                                ListSafetyStock = Convert.ToInt32(cols[1]);
-                            }
-                            if (cols[2].Length != 0)
-                            {
-                                ListReorderPoint = Convert.ToInt32(cols[2]);
-                            }
-                            if (cols[3].Length != 0)
-                            {
-                                ListMaximumLevel = Convert.ToInt32(cols[3]);
-                            }
-                            firstline = false;
-                        }
-                        else
-                        {
-                            count += Convert.ToInt32(cols[2]);
-                        }
-                    }
-                    // 在庫状況を設定
-                    if (0 == count)
-                    {
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.StockOut;
-                    }
-                    else if (0 < count && count < ListSafetyStock)
-                    {
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.UnderStocked;
-                    }
-                    else if (ListSafetyStock <= count && count <= ListReorderPoint)
-                    {
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.UnderStocked;
-                    }
-                    else if (ListReorderPoint <= count && count <= ListMaximumLevel)
-                    {
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.Appropriate;
-                    }
-                    else if (ListMaximumLevel < count)
-                    {
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.OverStocked;
-                    }
+                    // 在庫数と在庫状況を計算
+                    int count = inventoryData.CalculateCurrentInventory();
                     loadingCollectionDataValues.CollectionCurrentInventory = count;
+                    loadingCollectionDataValues.CollectionInventoryStatus = inventoryData.GetInventoryStatus();
                 }
                 catch
                 {
@@ -477,6 +431,7 @@ namespace CREC
                 loadingCollectionDataValues.CollectionCurrentInventory = null;
                 loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet;
             }
+
             CollectionDataValues.CollectionInventoryStatus = loadingCollectionDataValues.CollectionInventoryStatus;
             CollectionDataValues.CollectionCurrentInventory = loadingCollectionDataValues.CollectionCurrentInventory;
             return true;
