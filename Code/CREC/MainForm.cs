@@ -3140,9 +3140,9 @@ namespace CREC
             }
 
             // 適正在庫設定を読み込み
-            SafetyStock = currentInventoryData.SafetyStock;
-            ReorderPoint = currentInventoryData.ReorderPoint;
-            MaximumLevel = currentInventoryData.MaximumLevel;
+            SafetyStock = currentInventoryData.Setting.SafetyStock;
+            ReorderPoint = currentInventoryData.Setting.ReorderPoint;
+            MaximumLevel = currentInventoryData.Setting.MaximumLevel;
 
             // 在庫操作データを表示
             inventory = 0;// 初期化
@@ -3379,9 +3379,9 @@ namespace CREC
             // JSON形式で適正在庫設定を保存
             try
             {
-                currentInventoryData.SafetyStock = SafetyStock;
-                currentInventoryData.ReorderPoint = ReorderPoint;
-                currentInventoryData.MaximumLevel = MaximumLevel;
+                currentInventoryData.Setting.SafetyStock = SafetyStock;
+                currentInventoryData.Setting.ReorderPoint = ReorderPoint;
+                currentInventoryData.Setting.MaximumLevel = MaximumLevel;
                 InventoryDataIO.SaveInventoryData(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData);
 
                 ProperInventoryNotification();

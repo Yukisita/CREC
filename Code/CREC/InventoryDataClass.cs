@@ -29,6 +29,36 @@ namespace CREC
     }
 
     /// <summary>
+    /// 在庫管理設定
+    /// </summary>
+    [DataContract]
+    public class InventoryOperationSetting
+    {
+        [DataMember(Name = "safetyStock")]
+        public int? SafetyStock { get; set; }
+
+        [DataMember(Name = "reorderPoint")]
+        public int? ReorderPoint { get; set; }
+
+        [DataMember(Name = "maximumLevel")]
+        public int? MaximumLevel { get; set; }
+
+        public InventoryOperationSetting()
+        {
+            SafetyStock = null;
+            ReorderPoint = null;
+            MaximumLevel = null;
+        }
+
+        public InventoryOperationSetting(int? safetyStock, int? reorderPoint, int? maximumLevel)
+        {
+            SafetyStock = safetyStock;
+            ReorderPoint = reorderPoint;
+            MaximumLevel = maximumLevel;
+        }
+    }
+
+    /// <summary>
     /// 在庫操作レコード (JSON用)
     /// </summary>
     [DataContract]
@@ -72,14 +102,8 @@ namespace CREC
         [DataMember(Name = "collectionId")]
         public string CollectionId { get; set; }
 
-        [DataMember(Name = "safetyStock")]
-        public int? SafetyStock { get; set; }
-
-        [DataMember(Name = "reorderPoint")]
-        public int? ReorderPoint { get; set; }
-
-        [DataMember(Name = "maximumLevel")]
-        public int? MaximumLevel { get; set; }
+        [DataMember(Name = "setting")]
+        public InventoryOperationSetting Setting { get; set; }
 
         [DataMember(Name = "operations")]
         public List<InventoryOperationRecord> Operations { get; set; }
@@ -87,18 +111,14 @@ namespace CREC
         public InventoryData()
         {
             CollectionId = string.Empty;
-            SafetyStock = null;
-            ReorderPoint = null;
-            MaximumLevel = null;
+            Setting = new InventoryOperationSetting();
             Operations = new List<InventoryOperationRecord>();
         }
 
         public InventoryData(string collectionId)
         {
             CollectionId = collectionId ?? string.Empty;
-            SafetyStock = null;
-            ReorderPoint = null;
-            MaximumLevel = null;
+            Setting = new InventoryOperationSetting();
             Operations = new List<InventoryOperationRecord>();
         }
 
@@ -125,8 +145,12 @@ namespace CREC
         {
             int count = CalculateCurrentInventory();
 
-            // 適正在庫設定が未設定の場合
-            if (!SafetyStock.HasValue && !ReorderPoint.HasValue && !MaximumLevel.HasValue)
+            // 在庫管理の設定値読み込み
+            int? safetyStock = Setting.SafetyStock;
+            int? reorderPoint = Setting.ReorderPoint;
+            int? maximumLevel = Setting.MaximumLevel;
+
+            if (!safetyStock.HasValue && !reorderPoint.HasValue && !maximumLevel.HasValue)
             {
                 return InventoryStatus.NotSet;
             }
@@ -137,24 +161,24 @@ namespace CREC
                 return InventoryStatus.StockOut;
             }
             // 在庫不足（安全在庫数未満）
-            else if (SafetyStock.HasValue && count < SafetyStock.Value)
+            else if (safetyStock.HasValue && count < safetyStock.Value)
             {
                 return InventoryStatus.UnderStocked;
             }
             // 在庫不足（安全在庫数以上、発注点以下）
-            else if (SafetyStock.HasValue && ReorderPoint.HasValue &&
-                     SafetyStock.Value <= count && count <= ReorderPoint.Value)
+            else if (safetyStock.HasValue && reorderPoint.HasValue &&
+                     safetyStock.Value <= count && count <= reorderPoint.Value)
             {
                 return InventoryStatus.UnderStocked;
             }
             // 在庫適正（発注点以上、最大在庫数以下）
-            else if (ReorderPoint.HasValue && MaximumLevel.HasValue &&
-                     ReorderPoint.Value <= count && count <= MaximumLevel.Value)
+            else if (reorderPoint.HasValue && maximumLevel.HasValue &&
+                     reorderPoint.Value <= count && count <= maximumLevel.Value)
             {
                 return InventoryStatus.Appropriate;
             }
             // 在庫過剰（最大在庫数超過）
-            else if (MaximumLevel.HasValue && MaximumLevel.Value < count)
+            else if (maximumLevel.HasValue && maximumLevel.Value < count)
             {
                 return InventoryStatus.OverStocked;
             }
@@ -291,27 +315,32 @@ namespace CREC
                 {
                     data.CollectionId = headerCols[0];
                 }
+
+                // InventoryOperationSetting のインスタンスを作成
+                var setting = new InventoryOperationSetting();
                 if (headerCols.Length >= 2 && !string.IsNullOrEmpty(headerCols[1]))
                 {
                     if (int.TryParse(headerCols[1], out int safetyStock))
                     {
-                        data.SafetyStock = safetyStock;
+                        setting.SafetyStock = safetyStock;
                     }
                 }
                 if (headerCols.Length >= 3 && !string.IsNullOrEmpty(headerCols[2]))
                 {
                     if (int.TryParse(headerCols[2], out int reorderPoint))
                     {
-                        data.ReorderPoint = reorderPoint;
+                        setting.ReorderPoint = reorderPoint;
                     }
                 }
                 if (headerCols.Length >= 4 && !string.IsNullOrEmpty(headerCols[3]))
                 {
                     if (int.TryParse(headerCols[3], out int maxLevel))
                     {
-                        data.MaximumLevel = maxLevel;
+                        setting.MaximumLevel = maxLevel;
                     }
                 }
+                // 設定を InventoryData の Setting リストに追加
+                data.Setting = setting;
 
                 // 2行目以降: DateTime,OperationType,Quantity,Note
                 for (int i = 1; i < lines.Length; i++)
@@ -464,9 +493,9 @@ namespace CREC
                 return false;
             }
 
-            data.SafetyStock = safetyStock;
-            data.ReorderPoint = reorderPoint;
-            data.MaximumLevel = maximumLevel;
+            data.Setting.SafetyStock = safetyStock;
+            data.Setting.ReorderPoint = reorderPoint;
+            data.Setting.MaximumLevel = maximumLevel;
 
             return SaveInventoryData(collectionFolderPath, data);
         }
