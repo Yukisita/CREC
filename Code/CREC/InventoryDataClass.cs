@@ -252,16 +252,15 @@ namespace CREC
                 return null;
             }
 
+            // JSONファイルを読み込み
             string jsonPath = Path.Combine(collectionFolderPath, JsonFileName);
-            string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
-
-            // JSONファイルを優先して読み込み
             if (File.Exists(jsonPath))
             {
                 return LoadFromJson(jsonPath);
             }
 
-            // レガシーCSVファイルから読み込み
+            // JSONファイルが無い場合はレガシーCSVファイルから読み込み
+            string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
             if (File.Exists(csvPath))
             {
                 return LoadFromLegacyCsv(csvPath);
