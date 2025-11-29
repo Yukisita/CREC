@@ -29,6 +29,26 @@ namespace CREC
     }
 
     /// <summary>
+    /// 在庫メタデータ
+    /// </summary>
+    [DataContract]
+    public class InventoryMetaData
+    {
+        [DataMember(Name = "collectionId")]
+        public string CollectionId { get; set; }
+
+        public InventoryMetaData()
+        {
+            CollectionId = string.Empty;
+        }
+
+        public InventoryMetaData(string collectionId)
+        {
+            CollectionId = collectionId ?? string.Empty;
+        }
+    }
+
+    /// <summary>
     /// 在庫管理設定
     /// </summary>
     [DataContract]
@@ -99,8 +119,8 @@ namespace CREC
     [DataContract]
     public class InventoryData
     {
-        [DataMember(Name = "collectionId")]
-        public string CollectionId { get; set; }
+        [DataMember(Name = "metaData")]
+        public InventoryMetaData MetaData { get; set; }
 
         [DataMember(Name = "setting")]
         public InventoryOperationSetting Setting { get; set; }
@@ -110,14 +130,7 @@ namespace CREC
 
         public InventoryData()
         {
-            CollectionId = string.Empty;
-            Setting = new InventoryOperationSetting();
-            Operations = new List<InventoryOperationRecord>();
-        }
-
-        public InventoryData(string collectionId)
-        {
-            CollectionId = collectionId ?? string.Empty;
+            MetaData = new InventoryMetaData();
             Setting = new InventoryOperationSetting();
             Operations = new List<InventoryOperationRecord>();
         }
@@ -310,11 +323,10 @@ namespace CREC
                 var data = new InventoryData();
 
                 // 1行目: CollectionID,SafetyStock,ReorderPoint,MaximumLevel
+                // CollectionIDは規定値から取得
+                data.MetaData.CollectionId = Path.GetFileName(Path.GetDirectoryName(filePath));
+
                 string[] headerCols = lines[0].Split(',');
-                if (headerCols.Length >= 1)
-                {
-                    data.CollectionId = headerCols[0];
-                }
 
                 // InventoryOperationSetting のインスタンスを作成
                 var setting = new InventoryOperationSetting();
@@ -451,7 +463,8 @@ namespace CREC
                 return false;
             }
 
-            var data = new InventoryData(collectionId);
+            var data = new InventoryData();
+            data.MetaData.CollectionId = collectionId;
             return SaveInventoryData(collectionFolderPath, data);
         }
 
