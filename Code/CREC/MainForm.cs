@@ -3266,9 +3266,39 @@ namespace CREC
                 EditInventoryOperationNoteTextBox.Text
             );
 
-            // 操作をリストの先頭に追加してJSON保存
-            currentInventoryData.Operations.Insert(0, newOperation);
-            InventoryDataIO.SaveInventoryData(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData);
+
+            bool addResult;
+            try
+            {
+                addResult = InventoryDataIO.AddInventoryOperation(CurrentShownCollectionData.CollectionFolderPath, newOperation);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("在庫操作の保存中に例外が発生しました。\n" + ex.Message, "CREC");
+                return;
+            }
+
+            if (!addResult)
+            {
+                MessageBox.Show("在庫操作の保存に失敗しました。", "CREC");
+                return;
+            }
+
+            // 保存に成功したので最新の在庫データを再読み込み
+            try
+            {
+                currentInventoryData = InventoryDataIO.LoadInventoryData(CurrentShownCollectionData.CollectionFolderPath);
+                if (currentInventoryData == null)
+                {
+                    MessageBox.Show("在庫管理データの読み込みに失敗しました。", "CREC");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("在庫管理データの読み込みに失敗しました。\n" + ex.Message, "CREC");
+                return;
+            }
 
             OperationOptionComboBox.Refresh();
             EditQuantityTextBox.ResetText();
