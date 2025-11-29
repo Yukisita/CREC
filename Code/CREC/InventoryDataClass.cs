@@ -354,7 +354,7 @@ namespace CREC
                 data.Setting = setting;
 
                 // 2行目以降: DateTime,OperationType,Quantity,Note
-                for (int i = 1; i < lines.Length; i++)
+                for (int i = lines.Length - 1; i >= 1; i--)// 最新が下になるよう逆順で追加
                 {
                     string[] cols = lines[i].Split(',');
                     if (cols.Length >= 3)
@@ -470,6 +470,8 @@ namespace CREC
         /// <summary>
         /// 在庫操作を追加
         /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="record">在庫操作レコード</param>
         public static bool AddInventoryOperation(string collectionFolderPath, InventoryOperationRecord record)
         {
             if (string.IsNullOrEmpty(collectionFolderPath) || record == null)
@@ -483,8 +485,14 @@ namespace CREC
                 return false;
             }
 
-            // 新しい操作をリストの先頭に追加
-            data.Operations.Insert(0, record);
+            // Operations が null の場合に備えて初期化
+            if (data.Operations == null)
+            {
+                data.Operations = new List<InventoryOperationRecord>();
+            }
+
+            // 新しい操作をリストの末尾に追加
+            data.Operations.Add(record);
 
             return SaveInventoryData(collectionFolderPath, data);
         }
