@@ -221,7 +221,7 @@ namespace CREC
 
             try
             {
-                string filePath = Path.Combine(collectionFolderPath, JsonFileName);
+                string filePath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
                 var serializer = new DataContractJsonSerializer(typeof(InventoryData));
 
                 using (var stream = new MemoryStream())
@@ -253,7 +253,7 @@ namespace CREC
             }
 
             // JSONファイルを読み込み
-            string jsonPath = Path.Combine(collectionFolderPath, JsonFileName);
+            string jsonPath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
             if (File.Exists(jsonPath))
             {
                 return LoadFromJson(jsonPath);
@@ -279,7 +279,7 @@ namespace CREC
                 return false;
             }
 
-            string jsonPath = Path.Combine(collectionFolderPath, JsonFileName);
+            string jsonPath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
             string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
 
             return File.Exists(jsonPath) || File.Exists(csvPath);
@@ -414,7 +414,7 @@ namespace CREC
             }
 
             string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
-            string jsonPath = Path.Combine(collectionFolderPath, JsonFileName);
+            string jsonPath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
 
             // JSONファイルが既に存在する場合は移行不要
             if (File.Exists(jsonPath))
