@@ -877,7 +877,7 @@ namespace CREC
                 MessageBox.Show("表示するデータを選択し、詳細表示してください。", "CREC");
                 return;
             }
-            if (InventoryDataIO.InventoryFileExists(CurrentShownCollectionData.CollectionFolderPath))// 在庫数管理モードの表示・非表示
+            if (InventoryDataIO.InventoryFileExists(CurrentShownCollectionData.CollectionFolderPath))// 在庫数管理ファイルが既に存在する場合は生成しない
             {
                 MessageBox.Show("在庫数管理ファイルは作成済みです。", "CREC");
             }
