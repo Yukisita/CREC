@@ -47,7 +47,6 @@ namespace CREC
         CollectionDataValuesClass CurrentShownCollectionData = new CollectionDataValuesClass();// 詳細表示中のコレクション
         CollectionOperationStatus CurrentShownCollectionOperationStatus = new CollectionOperationStatus();// 詳細表示中のコレクションの操作状況
 
-        string[] cols;// List等読み込み用
         ToolStripMenuItem[] LanguageSettingToolStripMenuItems;// 言語リスト
         ToolStripMenuItem[] RecentShownCollectionsToolStripMenuItems;// 最近使用したコレクションのリスト
 
@@ -3063,9 +3062,6 @@ namespace CREC
 
         #region 在庫数・適正在庫数管理関係
         InventoryData currentInventoryData;// 在庫管理用データ (JSON)
-        int? SafetyStock;// 安全在庫数、未定義時はnullを使用
-        int? ReorderPoint;// 発注点、未定義時はnullを使用
-        int? MaximumLevel;// 最大在庫数、未定義時はnullを使用
         int inventory = 0;// 在庫数計算用
         // 在庫管理モードの表示状態を変更する処理
         public void InventoryManagementModeIsShowing(bool status)// 在庫管理モード関係の表示・非表示設定処理
@@ -3137,11 +3133,6 @@ namespace CREC
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             }
 
-            // 適正在庫設定を読み込み
-            SafetyStock = currentInventoryData.Setting.SafetyStock;
-            ReorderPoint = currentInventoryData.Setting.ReorderPoint;
-            MaximumLevel = currentInventoryData.Setting.MaximumLevel;
-
             // 在庫操作データを表示
             inventory = 0;// 初期化
             if (currentInventoryData.Operations != null)
@@ -3175,7 +3166,7 @@ namespace CREC
                 MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
             }
             ProperInventorySettingsComboBox.SelectedIndex = 0;
-            if (SafetyStock == null)
+            if (currentInventoryData.Setting.SafetyStock == null)
             {
                 ProperInventorySettingsTextBox.TextChanged -= ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを停止
                 ProperInventorySettingsTextBox.Text = " - ";
@@ -3183,7 +3174,7 @@ namespace CREC
             }
             else
             {
-                ProperInventorySettingsTextBox.Text = Convert.ToString(SafetyStock);
+                ProperInventorySettingsTextBox.Text = Convert.ToString(currentInventoryData.Setting.SafetyStock);
             }
             ProperInventoryNotification();// 適正在庫設定と比較
             // 手動でセルの幅を変えられるようにDataGridViewAutoSizeColumnModeをNoneに戻す。ただし、現在の列幅は維持する。
@@ -3344,7 +3335,7 @@ namespace CREC
             switch (ProperInventorySettingsComboBox.SelectedIndex)
             {
                 case 0:
-                    if (SafetyStock == null)
+                    if (currentInventoryData.Setting.SafetyStock == null)
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
@@ -3357,11 +3348,11 @@ namespace CREC
                     }
                     else
                     {
-                        ProperInventorySettingsTextBox.Text = SafetyStock.ToString();
+                        ProperInventorySettingsTextBox.Text = currentInventoryData.Setting.SafetyStock.ToString();
                     }
                     break;
                 case 1:
-                    if (ReorderPoint == null)
+                    if (currentInventoryData.Setting.ReorderPoint == null)
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
@@ -3374,11 +3365,11 @@ namespace CREC
                     }
                     else
                     {
-                        ProperInventorySettingsTextBox.Text = ReorderPoint.ToString();
+                        ProperInventorySettingsTextBox.Text = currentInventoryData.Setting.ReorderPoint.ToString();
                     }
                     break;
                 case 2:
-                    if (MaximumLevel == null)
+                    if (currentInventoryData.Setting.MaximumLevel == null)
                     {
                         if (ProperInventorySettingsTextBox.ReadOnly == true)
                         {
@@ -3391,7 +3382,7 @@ namespace CREC
                     }
                     else
                     {
-                        ProperInventorySettingsTextBox.Text = MaximumLevel.ToString();
+                        ProperInventorySettingsTextBox.Text = currentInventoryData.Setting.MaximumLevel.ToString();
                     }
                     break;
             }
@@ -3405,9 +3396,6 @@ namespace CREC
             SetProperInventorySettingsButton.Visible = true;
 
             // JSON形式で適正在庫設定を保存
-            currentInventoryData.Setting.SafetyStock = SafetyStock;
-            currentInventoryData.Setting.ReorderPoint = ReorderPoint;
-            currentInventoryData.Setting.MaximumLevel = MaximumLevel;
             if (!InventoryDataIO.UpdateProperInventorySettings(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData))
             {
                 MessageBox.Show("適正在庫設定の保存に失敗しました。", "CREC");
@@ -3434,19 +3422,19 @@ namespace CREC
                 case 0:
                     if (ProperInventorySettingsTextBox.Text != string.Empty)
                     {
-                        SafetyStock = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
+                        currentInventoryData.Setting.SafetyStock = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
                     }
                     break;
                 case 1:
                     if (ProperInventorySettingsTextBox.Text != string.Empty)
                     {
-                        ReorderPoint = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
+                        currentInventoryData.Setting.ReorderPoint = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
                     }
                     break;
                 case 2:
                     if (ProperInventorySettingsTextBox.Text != string.Empty)
                     {
-                        MaximumLevel = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
+                        currentInventoryData.Setting.MaximumLevel = Convert.ToInt32(ProperInventorySettingsTextBox.Text);
                     }
                     break;
             }
@@ -3454,17 +3442,17 @@ namespace CREC
         private void ProperInventoryNotification()// 適正在庫設定と比較して通知を表示
         {
             ProperInventorySettingsNotificationLabel.Text = string.Empty;
-            if (inventory < SafetyStock)
+            if (inventory < currentInventoryData.Setting.SafetyStock)
             {
                 MessageBox.Show("安全在庫数を下回っています。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "安全在庫数を下回っています。";
             }
-            if (SafetyStock <= inventory && inventory <= ReorderPoint)
+            if (currentInventoryData.Setting.SafetyStock <= inventory && inventory <= currentInventoryData.Setting.ReorderPoint)
             {
                 MessageBox.Show("在庫数が発注点以下です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "在庫数が発注点以下です。";
             }
-            if (MaximumLevel < inventory)
+            if (currentInventoryData.Setting.MaximumLevel < inventory)
             {
                 MessageBox.Show("過剰在庫状態です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "過剰在庫状態です。";
@@ -3555,9 +3543,8 @@ namespace CREC
             // 表示内容・変数をリセット
             InventoryLabel.ResetText();
             ProperInventorySettingsTextBox.ResetText();
-            SafetyStock = null;
-            ReorderPoint = null;
-            MaximumLevel = null;
+            // currentInventoryDataを初期化
+            currentInventoryData = null;
         }
         #endregion
 
