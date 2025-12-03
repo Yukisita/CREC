@@ -3405,20 +3405,16 @@ namespace CREC
             SetProperInventorySettingsButton.Visible = true;
 
             // JSON形式で適正在庫設定を保存
-            try
+            currentInventoryData.Setting.SafetyStock = SafetyStock;
+            currentInventoryData.Setting.ReorderPoint = ReorderPoint;
+            currentInventoryData.Setting.MaximumLevel = MaximumLevel;
+            if (!InventoryDataIO.UpdateProperInventorySettings(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData))
             {
-                currentInventoryData.Setting.SafetyStock = SafetyStock;
-                currentInventoryData.Setting.ReorderPoint = ReorderPoint;
-                currentInventoryData.Setting.MaximumLevel = MaximumLevel;
-                InventoryDataIO.SaveInventoryData(CurrentShownCollectionData.CollectionFolderPath, currentInventoryData);
-
-                ProperInventoryNotification();
-                CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                MessageBox.Show("適正在庫設定の保存に失敗しました。", "CREC");
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "CREC");
-            }
+            ProperInventoryNotification();
+            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
         }
         private void SetProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更モード開始
         {

@@ -530,22 +530,26 @@ namespace CREC
         /// <summary>
         /// 適正在庫設定を更新
         /// </summary>
-        public static bool UpdateProperInventorySettings(string collectionFolderPath, int? safetyStock, int? reorderPoint, int? maximumLevel)
+        public static bool UpdateProperInventorySettings(string collectionFolderPath, InventoryData data)
         {
-            if (string.IsNullOrEmpty(collectionFolderPath))
+            if (string.IsNullOrEmpty(collectionFolderPath) || data == null)
             {
                 return false;
             }
 
-            InventoryData data = LoadInventoryData(collectionFolderPath);
-            if (data == null)
+            // data.Settingのそれぞれの値が負でないことを確認し、負の場合はnullに設定
+            if (data.Setting.SafetyStock.HasValue && data.Setting.SafetyStock < 0)
             {
-                return false;
+                data.Setting.SafetyStock = null;
             }
-
-            data.Setting.SafetyStock = safetyStock;
-            data.Setting.ReorderPoint = reorderPoint;
-            data.Setting.MaximumLevel = maximumLevel;
+            if (data.Setting.ReorderPoint.HasValue && data.Setting.ReorderPoint < 0)
+            {
+                data.Setting.ReorderPoint = null;
+            }
+            if (data.Setting.MaximumLevel.HasValue && data.Setting.MaximumLevel < 0)
+            {
+                data.Setting.MaximumLevel = null;
+            }
 
             return SaveInventoryData(collectionFolderPath, data);
         }
