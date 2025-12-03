@@ -2884,7 +2884,7 @@ namespace CREC
             if (result == DialogResult.Yes)
             {
                 // JSONフォーマットで在庫管理ファイルを作成
-                InventoryDataIO.CreateNewInventoryFile(NewCollectionData.CollectionFolderPath, EditIDTextBox.Text);
+                InventoryDataIO.CreateNewInventoryFile(NewCollectionData.CollectionFolderPath, NewCollectionData.CollectionID);
                 InventoryManagementModeButton.Visible = true;
                 CloseInventoryManagementModeButton.Visible = false;
             }
