@@ -3155,7 +3155,8 @@ namespace CREC
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                             break;
                     }
-                    InventoryModeDataGridView.Rows.Add(op.DateTime, InventoryOperation, op.Quantity, op.Note);
+                    string localDateTime = DateTimeOffset.Parse(op.DateTime).ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss");// op.DateTimeをUTCからローカル時間に変換し、ミリ秒以下を削除
+                    InventoryModeDataGridView.Rows.Add(localDateTime, InventoryOperation, op.Quantity, op.Note);
                     inventory += op.Quantity;
                     InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
                 }
@@ -3317,7 +3318,8 @@ namespace CREC
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                             break;
                     }
-                    InventoryModeDataGridView.Rows.Add(op.DateTime, InventoryOperation, op.Quantity, op.Note);
+                    string localDateTime = DateTimeOffset.Parse(op.DateTime).ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss");// op.DateTimeをUTCからローカル時間に変換し、ミリ秒以下を削除
+                    InventoryModeDataGridView.Rows.Add(localDateTime, InventoryOperation, op.Quantity, op.Note);
                     inventory += op.Quantity;
                     InventoryLabel.Text = Convert.ToString(LanguageSettingClass.GetOtherMessage("Inventory", "mainform", LanguageFile) + " : " + inventory);
                 }
