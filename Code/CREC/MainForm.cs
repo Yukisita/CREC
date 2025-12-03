@@ -2667,7 +2667,8 @@ namespace CREC
             // index読み込み
             CollectionDataClass.LoadCollectionIndexData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, true, LanguageFile);
             // 在庫状況読み込み
-            CollectionDataClass.LoadCollectionInventoryData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, LanguageFile);
+            bool? deleteLegacyInventoryFile = false;// レガシー在庫ファイル削除フラグを無効に設定
+            CollectionDataClass.LoadCollectionInventoryData(CurrentShownCollectionData.CollectionFolderPath, ref thisCollectionDataValues, ref deleteLegacyInventoryFile, LanguageFile);
             ContentsDataTable.Rows.Add(
                 CurrentShownCollectionData.CollectionFolderPath,
                 thisCollectionDataValues.CollectionID,
@@ -3106,7 +3107,7 @@ namespace CREC
                 return;
             }
 
-            // JSONベースの在庫データを読み込み（レガシーCSVからも自動移行）
+            // 在庫データを読み込み
             try
             {
                 currentInventoryData = InventoryDataIO.LoadInventoryData(CurrentShownCollectionData.CollectionFolderPath);
@@ -3115,9 +3116,6 @@ namespace CREC
                     MessageBox.Show("在庫管理データの読み込みに失敗しました。", "CREC");
                     return;
                 }
-
-                // レガシーCSVファイルが存在する場合はJSONに移行
-                InventoryDataIO.MigrateLegacyCsvToJson(CurrentShownCollectionData.CollectionFolderPath);
             }
             catch (Exception ex)
             {

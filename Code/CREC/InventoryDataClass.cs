@@ -243,9 +243,12 @@ namespace CREC
         }
 
         /// <summary>
-        /// 在庫データを読み込み (JSON優先、レガシーCSVにフォールバック)
+        /// 在庫データを読み込み
         /// </summary>
-        public static InventoryData LoadInventoryData(string collectionFolderPath)
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="deleteLegacyInventoryFile">レガシー在庫ファイル削除フラグ</param>
+        /// <returns>在庫データ</returns>
+        public static InventoryData LoadInventoryData(string collectionFolderPath, ref bool? deleteLegacyInventoryFile)
         {
             if (string.IsNullOrEmpty(collectionFolderPath))
             {
@@ -254,19 +257,31 @@ namespace CREC
 
             // JSONファイルを読み込み
             string jsonPath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
-            if (File.Exists(jsonPath))
+            if (!File.Exists(jsonPath))
             {
-                return LoadFromJson(jsonPath);
+                // レガシーCSVファイル
+                if (MigrateLegacyCsvToJson(collectionFolderPath, ref deleteLegacyInventoryFile))
+                {
+                    return LoadFromJson(jsonPath);
+                }
+                else
+                {
+                    return null; // JSONもCSVも存在しない場合はnullを返す
+                }
             }
 
-            // JSONファイルが無い場合はレガシーCSVファイルから読み込み
-            string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
-            if (File.Exists(csvPath))
-            {
-                return LoadFromLegacyCsv(csvPath);
-            }
+            return LoadFromJson(jsonPath);
+        }
 
-            return null;
+        /// <summary>
+        /// 在庫データを読み込み（移行なし）
+        /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <returns>在庫データ</returns>
+        public static InventoryData LoadInventoryData(string collectionFolderPath)
+        {
+            bool? deleteLegacyInventoryFile = false;
+            return LoadInventoryData(collectionFolderPath, ref deleteLegacyInventoryFile);
         }
 
         /// <summary>
@@ -401,12 +416,9 @@ namespace CREC
         /// <summary>
         /// レガシーCSVファイルをJSONに移行
         /// </summary>
-        /// <remarks>
-        /// 移行後もレガシーCSVファイル(.inv)は削除せず、バックアップとして残します。
-        /// これにより、以前のバージョンへのロールバックや、データ復旧が可能になります。
-        /// 将来のバージョンで、十分な移行期間が経過した後に削除する可能性があります。
-        /// </remarks>
-        public static bool MigrateLegacyCsvToJson(string collectionFolderPath)
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="deleteLegacyCsv">レガシーCSVファイルを削除するかどうか</param>
+        public static bool MigrateLegacyCsvToJson(string collectionFolderPath, ref bool? deleteLegacyInventoryFile)
         {
             if (string.IsNullOrEmpty(collectionFolderPath))
             {
@@ -422,10 +434,23 @@ namespace CREC
                 return true;
             }
 
-            // CSVファイルが存在しない場合は移行不要
+            // CSVファイルが存在しない場合は移行対象がないため移行処理を停止する
             if (!File.Exists(csvPath))
             {
-                return true;
+                return false;
+            }
+
+            // deleteLegacyInventoryFile が null の場合は設定値を取得
+            if (deleteLegacyInventoryFile == null)
+            {
+                // メッセージボックスを表示して、設定
+                System.Windows.Forms.DialogResult result = System.Windows.Forms.MessageBox.Show(
+                    "在庫管理ファイルを新バージョンに移行します。\n\n" +
+                    "旧バージョンの在庫管理ファイルを削除しますか？",
+                    "CREC",
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Question);
+                deleteLegacyInventoryFile = (result == System.Windows.Forms.DialogResult.Yes);
             }
 
             try
@@ -443,7 +468,12 @@ namespace CREC
                     return false;
                 }
 
-                // レガシーCSVファイルはバックアップとして保持（上記remarksを参照）
+                // レガシーCSVファイルを削除
+                if (deleteLegacyInventoryFile == true)
+                {
+                    File.Delete(csvPath);
+                }
+
                 return true;
             }
             catch

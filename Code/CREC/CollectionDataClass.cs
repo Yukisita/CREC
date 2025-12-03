@@ -399,17 +399,23 @@ namespace CREC
         /// </summary>
         /// <param name="CollectionFolderPath">対象のコレクションフォルダパス</param>
         /// <param name="CollectionDataValues">対象のコレクションデータ</param>
+        /// <param name="deleteLegacyInventoryFile">レガシー在庫ファイル削除フラグ</param>
         /// <param name="languageData">言語ファイル</param>
         /// <returns></returns>
         public static bool LoadCollectionInventoryData(
             string CollectionFolderPath,
             ref CollectionDataValuesClass CollectionDataValues,
+            ref bool? deleteLegacyInventoryFile,
             XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();
 
-            // InventoryDataIOを使用して在庫データを読み込み（JSON優先、レガシーCSVにフォールバック）
-            InventoryData inventoryData = InventoryDataIO.LoadInventoryData(CollectionFolderPath);
+            // InventoryDataIOを使用して在庫データを読み込み
+            InventoryData inventoryData = InventoryDataIO.LoadInventoryData(CollectionFolderPath, ref deleteLegacyInventoryFile);
+            if (inventoryData == null)
+            {
+                return false;
+            }
 
             if (inventoryData != null)
             {
