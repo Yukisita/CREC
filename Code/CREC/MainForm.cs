@@ -3247,9 +3247,10 @@ namespace CREC
             }
 
             // 新しい操作レコードを作成
-            DateTime DT = DateTime.Now;
+            DateTimeOffset dto = DateTimeOffset.UtcNow;
+
             var newOperation = new InventoryOperationRecord(
-                DT.ToString("yyyy/MM/dd HH:mm:ss"),
+                dto.ToString("o"),
                 inventoryOperationType,
                 Convert.ToInt32(EditQuantityTextBox.Text),
                 EditInventoryOperationNoteTextBox.Text

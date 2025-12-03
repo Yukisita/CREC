@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Windows;
 using System.Xml.Linq;
 
 namespace CREC
@@ -460,6 +461,35 @@ namespace CREC
                 if (data == null)
                 {
                     return false;
+                }
+
+                // 日時をUTCかつISO 8601形式、Offsetを明記する形に変換、元データはローカルタイムと仮定
+                // 元データの形式はStringの"yyyy/MM/dd HH:mm:ss"
+                foreach (var record in data.Operations)
+                {
+                    if (DateTime.TryParseExact(
+                        record.DateTime,
+                        "yyyy/MM/dd HH:mm:ss",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.AssumeLocal,
+                        out DateTime parsedDateTime))
+                    {
+                        DateTimeOffset dto = new DateTimeOffset(parsedDateTime.ToUniversalTime());
+                        record.DateTime = dto.ToString("o");// ISO 8601形式
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            $"在庫管理ファイルの日時解析に失敗しました。\n" +
+                            $"不正な日時データ: {record.DateTime}\n" +
+                            $"現在のUTC日時を設定します。",
+                            "CREC",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        // 解析に失敗した場合は現在のUTC日時を設定
+                        DateTimeOffset dto = new DateTimeOffset(DateTime.UtcNow);
+                        record.DateTime = dto.ToString("o");// ISO 8601形式
+                    }
                 }
 
                 // JSONで保存
