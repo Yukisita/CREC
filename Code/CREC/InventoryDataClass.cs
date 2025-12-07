@@ -18,13 +18,9 @@ namespace CREC
     /// <summary>
     /// 在庫操作の種類
     /// </summary>
-    /// <remarks>
-    /// Note: "EntoryOperation" spelling is intentional for backward compatibility 
-    /// with existing data files. The original codebase uses this spelling.
-    /// </remarks>
     public enum InventoryOperationType
     {
-        EntoryOperation,   // 入庫 (Entry operation - note: intentional spelling for backward compatibility)
+        EntryOperation,   // 入庫
         ExitOperation,     // 出庫
         Stocktaking        // 棚卸
     }
@@ -89,7 +85,7 @@ namespace CREC
         public string DateTime { get; set; }
 
         [DataMember(Name = "operationType")]
-        public string OperationType { get; set; }
+        public InventoryOperationType OperationType { get; set; }
 
         [DataMember(Name = "quantity")]
         public int Quantity { get; set; }
@@ -100,15 +96,15 @@ namespace CREC
         public InventoryOperationRecord()
         {
             DateTime = string.Empty;
-            OperationType = string.Empty;
+            OperationType = InventoryOperationType.Stocktaking;
             Quantity = 0;
             Note = string.Empty;
         }
 
-        public InventoryOperationRecord(string dateTime, string operationType, int quantity, string note)
+        public InventoryOperationRecord(string dateTime, InventoryOperationType operationType, int quantity, string note)
         {
             DateTime = dateTime ?? string.Empty;
-            OperationType = operationType ?? string.Empty;
+            OperationType = operationType;
             Quantity = quantity;
             Note = note ?? string.Empty;
         }
@@ -376,7 +372,7 @@ namespace CREC
                     if (cols.Length >= 3)
                     {
                         string dateTime = cols[0];
-                        string opType = NormalizeOperationType(cols[1]);
+                        InventoryOperationType opType = NormalizeOperationType(cols[1]);
                         int quantity = 0;
                         if (int.TryParse(cols[2], out int qty))
                         {
@@ -397,20 +393,24 @@ namespace CREC
         }
 
         /// <summary>
-        /// レガシーの日本語操作タイプを英語に正規化
+        /// レガシーの日本語操作タイプを英語に正規化、英語での誤字を修正
         /// </summary>
-        private static string NormalizeOperationType(string operationType)
+        private static InventoryOperationType NormalizeOperationType(string operationType)
         {
             switch (operationType)
             {
                 case "入庫":
-                    return "EntoryOperation";
+                case "EntryOperation":
+                case "EntoryOperation": // 誤字の修正
+                    return InventoryOperationType.EntryOperation;
                 case "出庫":
-                    return "ExitOperation";
+                case "ExitOperation":
+                    return InventoryOperationType.ExitOperation;
                 case "棚卸":
-                    return "Stocktaking";
+                case "Stocktaking":
+                    return InventoryOperationType.Stocktaking;
                 default:
-                    return operationType;
+                    return InventoryOperationType.Stocktaking;
             }
         }
 

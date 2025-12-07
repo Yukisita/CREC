@@ -3142,16 +3142,13 @@ namespace CREC
                     string InventoryOperation = string.Empty;
                     switch (op.OperationType)
                     {
-                        case "EntoryOperation":
-                        case "入庫"://後方互換用
-                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
+                        case InventoryOperationType.EntryOperation:
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntryOperation", "mainform", LanguageFile);
                             break;
-                        case "ExitOperation":
-                        case "出庫"://後方互換用
+                        case InventoryOperationType.ExitOperation:
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
                             break;
-                        case "Stocktaking":
-                        case "棚卸"://後方互換用
+                        case InventoryOperationType.Stocktaking:
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                             break;
                     }
@@ -3217,13 +3214,15 @@ namespace CREC
                 return;
             }
 
-            string inventoryOperationType = string.Empty;
+            // 在庫操作の種類を記録する。デフォルト値はStocktaking
+            InventoryOperationType inventoryOperationType = InventoryOperationType.Stocktaking;
+
             switch (OperationOptionComboBox.SelectedIndex)// 入力されたデータの整合性チェック
             {
                 case 0:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) > 0)
                     {
-                        inventoryOperationType = "EntoryOperation";
+                        inventoryOperationType = InventoryOperationType.EntryOperation;
                     }
                     else
                     {
@@ -3234,7 +3233,7 @@ namespace CREC
                 case 1:
                     if (Convert.ToInt32(EditQuantityTextBox.Text) < 0)
                     {
-                        inventoryOperationType = "ExitOperation";
+                        inventoryOperationType = InventoryOperationType.ExitOperation;
                     }
                     else
                     {
@@ -3243,7 +3242,7 @@ namespace CREC
                     }
                     break;
                 case 2:
-                    inventoryOperationType = "Stocktaking";
+                    inventoryOperationType = InventoryOperationType.Stocktaking;
                     break;
             }
 
@@ -3256,7 +3255,6 @@ namespace CREC
                 Convert.ToInt32(EditQuantityTextBox.Text),
                 EditInventoryOperationNoteTextBox.Text
             );
-
 
             bool addResult;
             try
@@ -3305,16 +3303,13 @@ namespace CREC
                     string InventoryOperation = string.Empty;
                     switch (op.OperationType)
                     {
-                        case "EntoryOperation":
-                        case "入庫"://後方互換用
-                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile);
+                        case InventoryOperationType.EntryOperation:
+                            InventoryOperation = LanguageSettingClass.GetOtherMessage("EntryOperation", "mainform", LanguageFile);
                             break;
-                        case "ExitOperation":
-                        case "出庫"://後方互換用
+                        case InventoryOperationType.ExitOperation:
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile);
                             break;
-                        case "Stocktaking":
-                        case "棚卸"://後方互換用
+                        case InventoryOperationType.Stocktaking:
                             InventoryOperation = LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile);
                             break;
                     }
@@ -5352,7 +5347,7 @@ namespace CREC
             ProperInventorySettingsComboBox.SelectedIndex = CurrentSelectedProperInventorySettingsComboBox;
             int CurrentSelectedOperationOptionComboBox = (int)OperationOptionComboBox.SelectedIndex;
             OperationOptionComboBox.Items.Clear();
-            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("EntoryOperation", "mainform", LanguageFile));
+            OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("EntryOperation", "mainform", LanguageFile));
             OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("ExitOperation", "mainform", LanguageFile));
             OperationOptionComboBox.Items.Add(LanguageSettingClass.GetOtherMessage("Stocktaking", "mainform", LanguageFile));
             OperationOptionComboBox.SelectedIndex = CurrentSelectedOperationOptionComboBox;
