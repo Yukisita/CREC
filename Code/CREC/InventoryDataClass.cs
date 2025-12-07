@@ -208,10 +208,6 @@ namespace CREC
                 {
                     serializer.WriteObject(stream, data);
                     string json = Encoding.UTF8.GetString(stream.ToArray());
-
-                    // インデント付きで整形
-                    json = FormatJson(json);
-
                     File.WriteAllText(filePath, json, Encoding.UTF8);
                 }
                 return true;
@@ -565,81 +561,6 @@ namespace CREC
             }
 
             return SaveInventoryData(collectionFolderPath, data);
-        }
-
-        /// <summary>
-        /// JSONを簡易的に整形 (読みやすさのため)
-        /// </summary>
-        private static string FormatJson(string json)
-        {
-            // DataContractJsonSerializerは圧縮されたJSONを出力するため、
-            // 読みやすさのために簡単な整形を行う
-            var sb = new StringBuilder();
-            int indentLevel = 0;
-            bool inString = false;
-            bool escapeNext = false;
-
-            foreach (char c in json)
-            {
-                if (escapeNext)
-                {
-                    sb.Append(c);
-                    escapeNext = false;
-                    continue;
-                }
-
-                if (c == '\\')
-                {
-                    sb.Append(c);
-                    escapeNext = true;
-                    continue;
-                }
-
-                if (c == '"')
-                {
-                    inString = !inString;
-                    sb.Append(c);
-                    continue;
-                }
-
-                if (inString)
-                {
-                    sb.Append(c);
-                    continue;
-                }
-
-                switch (c)
-                {
-                    case '{':
-                    case '[':
-                        sb.Append(c);
-                        sb.AppendLine();
-                        indentLevel++;
-                        sb.Append(new string('\t', indentLevel));
-                        break;
-                    case '}':
-                    case ']':
-                        sb.AppendLine();
-                        indentLevel--;
-                        sb.Append(new string('\t', indentLevel));
-                        sb.Append(c);
-                        break;
-                    case ',':
-                        sb.Append(c);
-                        sb.AppendLine();
-                        sb.Append(new string('\t', indentLevel));
-                        break;
-                    case ':':
-                        sb.Append(c);
-                        sb.Append(' ');
-                        break;
-                    default:
-                        sb.Append(c);
-                        break;
-                }
-            }
-
-            return sb.ToString();
         }
     }
 }
