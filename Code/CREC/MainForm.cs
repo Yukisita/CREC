@@ -3185,7 +3185,6 @@ namespace CREC
         }
         private void CloseInventoryManagementModeButton_Click(object sender, EventArgs e)// 在庫管理モード終了
         {
-
             CloseInventoryViewMethod();// 在庫管理モードを閉じるメソッドを呼び出し
             // 必要なものを表示
             if (StandardDisplayModeToolStripMenuItem.Checked)
@@ -3444,16 +3443,19 @@ namespace CREC
             {
                 MessageBox.Show("安全在庫数を下回っています。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "安全在庫数を下回っています。";
+                return;
             }
-            if (currentInventoryData.Setting.SafetyStock <= inventory && inventory <= currentInventoryData.Setting.ReorderPoint)
+            if (inventory <= currentInventoryData.Setting.ReorderPoint)
             {
                 MessageBox.Show("在庫数が発注点以下です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "在庫数が発注点以下です。";
+                return;
             }
             if (currentInventoryData.Setting.MaximumLevel < inventory)
             {
                 MessageBox.Show("過剰在庫状態です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "過剰在庫状態です。";
+                return;
             }
         }
         private void ProperInventorySettingsTextBox_KeyPress(object sender, KeyPressEventArgs e)// 適正在庫入力用TextBoxを数字のみの入力に制限

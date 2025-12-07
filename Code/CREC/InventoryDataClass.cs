@@ -155,12 +155,7 @@ namespace CREC
         {
             int count = CalculateCurrentInventory();
 
-            // 在庫管理の設定値読み込み
-            int? safetyStock = Setting.SafetyStock;
-            int? reorderPoint = Setting.ReorderPoint;
-            int? maximumLevel = Setting.MaximumLevel;
-
-            if (!safetyStock.HasValue && !reorderPoint.HasValue && !maximumLevel.HasValue)
+            if (!Setting.SafetyStock.HasValue && !Setting.ReorderPoint.HasValue && !Setting.MaximumLevel.HasValue)
             {
                 return InventoryStatus.NotSet;
             }
@@ -171,24 +166,12 @@ namespace CREC
                 return InventoryStatus.StockOut;
             }
             // 在庫不足（安全在庫数未満）
-            else if (safetyStock.HasValue && count < safetyStock.Value)
+            else if (Setting.SafetyStock.HasValue && count < Setting.SafetyStock.Value)
             {
                 return InventoryStatus.UnderStocked;
-            }
-            // 在庫不足（安全在庫数以上、発注点以下）
-            else if (safetyStock.HasValue && reorderPoint.HasValue &&
-                     safetyStock.Value <= count && count <= reorderPoint.Value)
-            {
-                return InventoryStatus.UnderStocked;
-            }
-            // 在庫適正（発注点以上、最大在庫数以下）
-            else if (reorderPoint.HasValue && maximumLevel.HasValue &&
-                     reorderPoint.Value <= count && count <= maximumLevel.Value)
-            {
-                return InventoryStatus.Appropriate;
             }
             // 在庫過剰（最大在庫数超過）
-            else if (maximumLevel.HasValue && maximumLevel.Value < count)
+            else if (Setting.MaximumLevel.HasValue && Setting.MaximumLevel.Value < count)
             {
                 return InventoryStatus.OverStocked;
             }
