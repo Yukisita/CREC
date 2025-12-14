@@ -192,6 +192,8 @@ namespace CREC
         /// <summary>
         /// 在庫データをJSONファイルとして保存
         /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="data">在庫データ</param>
         public static bool SaveInventoryData(string collectionFolderPath, InventoryData data)
         {
             if (string.IsNullOrEmpty(collectionFolderPath) || data == null)
@@ -219,7 +221,7 @@ namespace CREC
         }
 
         /// <summary>
-        /// 在庫データを読み込み
+        /// 在庫データを読み込み(移行判定処理あり)
         /// </summary>
         /// <param name="collectionFolderPath">コレクションフォルダパス</param>
         /// <param name="deleteLegacyInventoryFile">レガシー在庫ファイル削除フラグ</param>
@@ -261,8 +263,10 @@ namespace CREC
         }
 
         /// <summary>
-        /// 在庫管理ファイルが存在するかチェック (JSON または レガシーCSV)
+        /// 在庫管理ファイルが存在するかチェック
         /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <returns>存在する場合はtrue</returns>
         public static bool InventoryFileExists(string collectionFolderPath)
         {
             if (string.IsNullOrEmpty(collectionFolderPath))
@@ -271,14 +275,14 @@ namespace CREC
             }
 
             string jsonPath = Path.Combine(collectionFolderPath, "SystemData", JsonFileName);
-            string csvPath = Path.Combine(collectionFolderPath, LegacyCsvFileName);
-
-            return File.Exists(jsonPath) || File.Exists(csvPath);
+            return File.Exists(jsonPath);
         }
 
         /// <summary>
         /// JSONファイルから在庫データを読み込み
         /// </summary>
+        /// <param name="filePath">ファイルパス</param>
+        /// <returns>在庫データ</returns>
         private static InventoryData LoadFromJson(string filePath)
         {
             try
@@ -300,6 +304,8 @@ namespace CREC
         /// <summary>
         /// レガシーCSVファイル(.inv)から在庫データを読み込み
         /// </summary>
+        /// <param name="filePath">ファイルパス</param>
+        /// <returns>在庫データ</returns>
         private static InventoryData LoadFromLegacyCsv(string filePath)
         {
             try
@@ -318,8 +324,7 @@ namespace CREC
 
                 string[] headerCols = lines[0].Split(',');
 
-                // InventoryOperationSetting のインスタンスを作成
-                var setting = new InventoryOperationSetting();
+                var setting = new InventoryOperationSetting();// InventoryOperationSetting のインスタンスを作成
                 if (headerCols.Length >= 2 && !string.IsNullOrEmpty(headerCols[1]))
                 {
                     if (int.TryParse(headerCols[1], out int safetyStock))
@@ -374,6 +379,8 @@ namespace CREC
         /// <summary>
         /// レガシーの日本語操作タイプを英語に正規化、英語での誤字を修正
         /// </summary>
+        /// <param name="operationType">操作タイプ</param>
+        /// <returns>正規化された操作タイプ</returns>
         private static InventoryOperationType NormalizeOperationType(string operationType)
         {
             switch (operationType)
@@ -397,7 +404,8 @@ namespace CREC
         /// レガシーCSVファイルをJSONに移行
         /// </summary>
         /// <param name="collectionFolderPath">コレクションフォルダパス</param>
-        /// <param name="deleteLegacyCsv">レガシーCSVファイルを削除するかどうか</param>
+        /// <param name="deleteLegacyInventoryFile">レガシーCSVファイルを削除するかどうか</param>
+        /// <returns>移行が成功した場合はtrue</returns>
         public static bool MigrateLegacyCsvToJson(string collectionFolderPath, ref bool? deleteLegacyInventoryFile)
         {
             if (string.IsNullOrEmpty(collectionFolderPath))
@@ -420,7 +428,7 @@ namespace CREC
                 return false;
             }
 
-            // deleteLegacyInventoryFile が null の場合は設定値を取得
+            // deleteLegacyInventoryFile が未設定（null）の場合は設定値を取得
             if (deleteLegacyInventoryFile == null)
             {
                 // メッセージボックスを表示して、設定
@@ -494,6 +502,9 @@ namespace CREC
         /// <summary>
         /// 新規在庫管理ファイルを作成
         /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="collectionId">コレクションID</param>
+        /// <returns>新規在庫管理ファイルが作成された場合はtrue</returns>
         public static bool CreateNewInventoryFile(string collectionFolderPath, string collectionId)
         {
             if (string.IsNullOrEmpty(collectionFolderPath) || string.IsNullOrEmpty(collectionId))
@@ -511,6 +522,7 @@ namespace CREC
         /// </summary>
         /// <param name="collectionFolderPath">コレクションフォルダパス</param>
         /// <param name="record">在庫操作レコード</param>
+        /// <returns>在庫操作が追加された場合はtrue</returns>
         public static bool AddInventoryOperation(string collectionFolderPath, InventoryOperationRecord record)
         {
             if (string.IsNullOrEmpty(collectionFolderPath) || record == null)
@@ -539,6 +551,9 @@ namespace CREC
         /// <summary>
         /// 適正在庫設定を更新
         /// </summary>
+        /// <param name="collectionFolderPath">コレクションフォルダパス</param>
+        /// <param name="data">在庫データ</param>
+        /// <returns>適正在庫設定が更新された場合はtrue</returns>
         public static bool UpdateProperInventorySettings(string collectionFolderPath, InventoryData data)
         {
             if (string.IsNullOrEmpty(collectionFolderPath) || data == null)
