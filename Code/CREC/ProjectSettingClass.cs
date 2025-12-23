@@ -1359,6 +1359,13 @@ namespace CREC
                     streamWriter.Close();
                 }
             }
+
+            // プロジェクト設定ファイル保存後は必ずバックアップする
+            if (returnValue)
+            {
+                CollectionDataClass.BackupProjectSettingFile(projectSettingValues);
+            }
+
             return returnValue;
         }
 
