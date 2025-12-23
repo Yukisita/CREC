@@ -1,0 +1,1199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<list>
+	<metadata>
+		<name>English</name>
+		<editor>yukisita</editor>
+	</metadata>
+	<ConfigForm>
+		<Button>
+			<item>
+				<itemname>SaveButton</itemname>
+				<itemtext>Save</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>AllowEditLabel</itemname>
+				<itemtext>Edit contents</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataLabel</itemname>
+				<itemtext>Confidential data</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistLabel</itemname>
+				<itemtext>Show user assist</itemtext>
+			</item>
+			<item>
+				<itemname>AutoLoadProjectLabel</itemname>
+				<itemtext>Auto load project</itemtext>
+			</item>
+			<item>
+				<itemname>AutoSearchLabel</itemname>
+				<itemtext>Auto search</itemtext>
+			</item>
+			<item>
+				<itemname>RecentShownContentsLabel</itemname>
+				<itemtext>Browsing log</itemtext>
+			</item>
+			<item>
+				<itemname>BootUpdateCheckLabel</itemname>
+				<itemtext>Update check</itemtext>
+			</item>
+		</Label>
+		<RadioButton>
+			<item>
+				<itemname>AllowEditRadioButton</itemname>
+				<itemtext>Allow</itemtext>
+			</item>
+			<item>
+				<itemname>DenyEditRadioButton</itemname>
+				<itemtext>Deny</itemtext>
+			</item>
+			<item>
+				<itemname>AllowConfidentialDataRadioButton</itemname>
+				<itemtext>Allow</itemtext>
+			</item>
+			<item>
+				<itemname>DenyConfidentialDataRadioButton</itemname>
+				<itemtext>Deny</itemtext>
+			</item>
+			<item>
+				<itemname>ShowUserAssistRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>HideUserAssistRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>AllowAutoSearchRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DenyAutoSearchRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>SaveRecentShownContentsRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DiscardRecentShownContentsRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+			<item>
+				<itemname>AllowBootUpdateCheckRadioButton</itemname>
+				<itemtext>Enable</itemtext>
+			</item>
+			<item>
+				<itemname>DenyBootUpdateCheckRadioButton</itemname>
+				<itemtext>Disable</itemtext>
+			</item>
+		</RadioButton>
+		<CheckBox>
+			<item>
+				<itemname>OpenLastTimeProjectCheckBox</itemname>
+				<itemtext>Open last time project</itemtext>
+			</item>
+		</CheckBox>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>General Settings</itemtext>
+			</item>
+		</Other>
+	</ConfigForm>
+	<mainform>
+		<Button>
+			<item>
+				<itemname>AddContentsButton</itemname>
+				<itemtext>Add(&amp;A)</itemtext>
+			</item>
+			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>Edit</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestButton</itemname>
+				<itemtext>Under edit</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateButton</itemname>
+				<itemtext>Update(&amp;U)</itemtext>
+			</item>
+			<item>
+				<itemname>EditRequestingButton</itemname>
+				<itemtext>Requesting</itemtext>
+			</item>
+			<item>
+				<itemname>ShowConfidentialDataButton</itemname>
+				<itemtext>Restricted Data</itemtext>
+			</item>
+			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>Hide</itemtext>
+			</item>
+			<item>
+				<itemname>OpenDataLocation</itemname>
+				<itemtext>Open(&amp;O)</itemtext>
+			</item>
+			<item>
+				<itemname>CopyDataLocationPath</itemname>
+				<itemtext>Copy</itemtext>
+			</item>
+			<item>
+				<itemname>ClosePicturesButton</itemname>
+				<itemtext>Close Picture</itemtext>
+			</item>
+			<item>
+				<itemname>AddInventoryOperationButton</itemname>
+				<itemtext>Register</itemtext>
+			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>Thumbnail</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>Save &amp; Exit</itemtext>
+			</item>
+			<item>
+				<itemname>CheckSameMCButton</itemname>
+				<itemtext>Check Overlap</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>Inventory(&amp;I)</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>Close INVT.</itemtext>
+			</item>
+			<item>
+				<itemname>NextPictureButton</itemname>
+				<itemtext>Next</itemtext>
+			</item>
+			<item>
+				<itemname>PreviousPictureButton</itemname>
+				<itemtext>Previous</itemtext>
+			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>Show picture</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>Picture folder</itemtext>
+			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>Set</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>Save</itemtext>
+			</item>
+			<item>
+				<itemname>AllowEditIDButton</itemname>
+				<itemtext>Edit</itemtext>
+			</item>
+			<item>
+				<itemname>ReadOnlyButton</itemname>
+				<itemtext>Read only</itemtext>
+			</item>
+			<item>
+				<itemname>ShowSelectedItemInformationButton</itemname>
+				<itemtext>Show information.</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>InventoryOperationLabel</itemname>
+				<itemtext>Operation</itemtext>
+			</item>
+			<item>
+				<itemname>InputQuantitiyLabel</itemname>
+				<itemtext>Quantitiy</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryOperationNoteLabel</itemname>
+				<itemtext>Comment</itemtext>
+			</item>
+			<item>
+				<itemname>DetailsLabel</itemname>
+				<itemtext>Detail Information</itemtext>
+			</item>
+			<item>
+				<itemname>ConfidentialDataLabel</itemname>
+				<itemtext>Confidential Information</itemtext>
+			</item>
+			<item>
+				<itemname>DataLoadingLabel</itemname>
+				<itemtext>Loading...</itemtext>
+			</item>
+			<item>
+				<itemname>SavingLabel</itemname>
+				<itemtext>Saving...</itemtext>
+			</item>
+		</Label>
+		<ToolStripMenuItem>
+			<item>
+				<itemname>FileMenuStrip</itemname>
+				<itemtext>File(&amp;F)</itemtext>
+			</item>
+			<item>
+				<itemname>NewProjectToolStripMenuItem</itemname>
+				<itemtext>Make New Project(&amp;N)...</itemtext>
+			</item>
+			<item>
+				<itemname>OpenProjectMenuItem</itemname>
+				<itemtext>Open Project(&amp;O)...</itemtext>
+			</item>
+			<item>
+				<itemname>OpenRecentlyOpendProjectToolStripMenuItem</itemname>
+				<itemtext>Recent Project</itemtext>
+			</item>
+			<item>
+				<itemname>BackupToolStripMenuItem</itemname>
+				<itemtext>Backup Project Data</itemtext>
+			</item>
+			<item>
+				<itemname>OpenBackUpFolderToolStripMenuItem</itemname>
+				<itemtext>Open Backup Folder...</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListToolStripMenuItem</itemname>
+				<itemtext>Output Contents List(TSV os CSV)</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListAllContentsToolStripMenuItem</itemname>
+				<itemtext>Output All Data</itemtext>
+			</item>
+			<item>
+				<itemname>OutputListShownContentsToolStripMenuItem</itemname>
+				<itemtext>Output Shown Data</itemtext>
+			</item>
+			<item>
+				<itemname>EditConfigSysToolStripMenuItem</itemname>
+				<itemtext>General Settings...</itemtext>
+			</item>
+			<item>
+				<itemname>CloseToolStripMenuItem</itemname>
+				<itemtext>Close Application(&amp;X)</itemtext>
+			</item>
+			<item>
+				<itemname>RestartToolStripMenuItem</itemname>
+				<itemtext>Restart Application</itemtext>
+			</item>
+			<item>
+				<itemname>EditToolStripMenuItem</itemname>
+				<itemtext>Edit(&amp;E)</itemtext>
+			</item>
+			<item>
+				<itemname>AddContentsToolStripMenuItem</itemname>
+				<itemtext>Create a new entry</itemtext>
+			</item>
+			<item>
+				<itemname>ResetEditingContentsToolStripMenuItem</itemname>
+				<itemtext>Reset Editing Contents</itemtext>
+			</item>
+			<item>
+				<itemname>AddInventoryModeToolStripMenuItem</itemname>
+				<itemtext>Create the Inventory Managiment File</itemtext>
+			</item>
+			<item>
+				<itemname>AdvancedFeaturesToolStripMenuItem</itemname>
+				<itemtext>Advanced Features</itemtext>
+			</item>
+			<item>
+				<itemname>DeleteContentToolStripMenuItem</itemname>
+				<itemtext>Delete Content</itemtext>
+			</item>
+			<item>
+				<itemname>ForceEditRequestToolStripMenuItem</itemname>
+				<itemtext>Get Edit Authority(Force)</itemtext>
+			</item>
+			<item>
+				<itemname>ViewToolStripMenuItem</itemname>
+				<itemtext>View(&amp;V)</itemtext>
+			</item>
+			<item>
+				<itemname>DisplayModeToolStripMenuItem</itemname>
+				<itemtext>Display Mode</itemtext>
+			</item>
+			<item>
+				<itemname>StandardDisplayModeToolStripMenuItem</itemname>
+				<itemtext>Standard Display Mode</itemtext>
+			</item>
+			<item>
+				<itemname>FullDisplayModeToolStripMenuItem</itemname>
+				<itemtext>Full Display Mode</itemtext>
+			</item>
+			<item>
+				<itemname>SelectBackgroundColorToolStripMenuItem</itemname>
+				<itemtext>Select Theme Color</itemtext>
+			</item>
+			<item>
+				<itemname>AliceBlueToolStripMenuItem</itemname>
+				<itemtext>Blue</itemtext>
+			</item>
+			<item>
+				<itemname>HoneydewToolStripMenuItem</itemname>
+				<itemtext>Green</itemtext>
+			</item>
+			<item>
+				<itemname>LavenderBlushToolStripMenuItem</itemname>
+				<itemtext>Sakura</itemtext>
+			</item>
+			<item>
+				<itemname>WhiteSmokeToolStripMenuItem</itemname>
+				<itemtext>White</itemtext>
+			</item>
+			<item>
+				<itemname>DarkToolStripMenuItem</itemname>
+				<itemtext>Dark(not able)</itemtext>
+			</item>
+			<item>
+				<itemname>LanguageSettingToolStripMenuItem</itemname>
+				<itemtext>Language Setting</itemtext>
+			</item>
+			<item>
+				<itemname>FontSizeToolStripMenuItem</itemname>
+				<itemtext>FontSize Setting</itemtext>
+			</item>
+			<item>
+				<itemname>ZoomInFontToolStripMenuItem</itemname>
+				<itemtext>Zoom In</itemtext>
+			</item>
+			<item>
+				<itemname>ZoomOutFontToolStripMenuItem</itemname>
+				<itemtext>Zoom Out</itemtext>
+			</item>
+			<item>
+				<itemname>ResetFontSizeToolStripMenuItem</itemname>
+				<itemtext>Reset</itemtext>
+			</item>
+			<item>
+				<itemname>VisibleListElementsToolStripMenuItem</itemname>
+				<itemtext>Items Displayed in the List</itemtext>
+			</item>
+			<item>
+				<itemname>ColumnWidthAdjustmentToolStripMenuItem</itemname>
+				<itemtext>Adjust Column Width</itemtext>
+			</item>
+			<item>
+				<itemname>RecentShownContentsToolStripMenuItem</itemname>
+				<itemtext>Recent Shown Collection</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectToolStripMenuItem</itemname>
+				<itemtext>Project(&amp;P)</itemtext>
+			</item>
+			<item>
+				<itemname>EditProjectToolStripMenuItem</itemname>
+				<itemtext>Edit ProjectFile...</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectInformationToolStripMenuItem</itemname>
+				<itemtext>Project Information...</itemtext>
+			</item>
+			<item>
+				<itemname>PluginToolStripMenuItem</itemname>
+				<itemtext>Plugin(&amp;L)</itemtext>
+			</item>
+			<item>
+				<itemname>ExecutePluginToolStripMenuItem</itemname>
+				<itemtext>Execute Plugin</itemtext>
+			</item>
+			<item>
+				<itemname>ExecuteEXEPluginToolStripMenuItem</itemname>
+				<itemtext>EXE file...</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyExecutedPluginToolStripMenuItem</itemname>
+				<itemtext>Recently Executed Plugin</itemtext>
+			</item>
+			<item>
+				<itemname>HelpToolStripMenuItem</itemname>
+				<itemtext>Help(&amp;H)</itemtext>
+			</item>
+			<item>
+				<itemname>AboutToolStripMenuItem</itemname>
+				<itemtext>About CREC(&amp;A)...</itemtext>
+			</item>
+			<item>
+				<itemname>readmeToolStripMenuItem</itemname>
+				<itemtext>ReadMe...</itemtext>
+			</item>
+			<item>
+				<itemname>UpdateHistoryToolStripMenuItem</itemname>
+				<itemtext>Update History...</itemtext>
+			</item>
+			<item>
+				<itemname>AccessLatestReleaseToolStripMenuItem</itemname>
+				<itemtext>Latest Release...</itemtext>
+			</item>
+			<item>
+				<itemname>UserManualToolStripMenuItem</itemname>
+				<itemtext>User's Manual...</itemtext>
+			</item>
+			<item>
+				<itemname>AddContentsContextStripMenuItem</itemname>
+				<itemtext>Add...</itemtext>
+			</item>
+			<item>
+				<itemname>CopyAndAddContentsContextToolStripMenuItem</itemname>
+				<itemtext>Copy and add...</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateContextStripMenuItem</itemname>
+				<itemtext>Update</itemtext>
+			</item>
+			<item>
+				<itemname>OpenProjectContextStripMenuItem</itemname>
+				<itemtext>Open Project...</itemtext>
+			</item>
+			<item>
+				<itemname>ShowSelectedItemInformationToolStripMenuItem</itemname>
+				<itemtext>Show information.</itemtext>
+			</item>
+			<item>
+				<itemname>OpenCollectionDataLocationToolStripMenuItem</itemname>
+				<itemtext>Open Collection Data Location.</itemtext>
+			</item>
+		</ToolStripMenuItem>
+		<MessageBox>
+			<item>
+				<itemname>AskMakeInventoryManagementFile</itemname>
+				<itemtext>Do you want to make Inventory Management File?</itemtext>
+			</item>
+			<item>
+				<itemname>WebAccessCheck</itemname>
+				<itemtext>Do you want to allow application to access our website?</itemtext>
+			</item>
+			<item>
+				<itemname>AskSaveUnsavedData</itemname>
+				<itemtext>Save unsaved data?&#xD;&#xA;Unsaved data will be deleted.</itemtext>
+			</item>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>Open a project.</itemtext>
+			</item>
+			<item>
+				<itemname>AskStartEditWithoutCheckOtherEditing</itemname>
+				<itemtext>Can not check other editing.&#xD;&#xA;Start edit without check?</itemtext>
+			</item>
+			<item>
+				<itemname>BackupCompleted</itemname>
+				<itemtext>Backup completed.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupFailed</itemname>
+				<itemtext>BackupFailed.</itemtext>
+			</item>
+			<item>
+				<itemname>UpdateNotification</itemname>
+				<itemtext>A new version CREC is available.&#xD;&#xA;Do you want to get latest version?</itemtext>
+			</item>
+			<item>
+				<itemname>DetailDataLoadError</itemname>
+				<itemtext>Faild to load detail data.</itemtext>
+			</item>
+			<item>
+				<itemname>RestrictedDataLoadError</itemname>
+				<itemtext>Faild to load restricted data.</itemtext>
+			</item>
+			<item>
+				<itemname>SameMCNotFound</itemname>
+				<itemtext>Same management number not found.</itemtext>
+			</item>
+			<item>
+				<itemname>SameMCExist</itemname>
+				<itemtext>This management number is already used.</itemtext>
+			</item>
+			<item>
+				<itemname>NoEditingPermissions</itemname>
+				<itemtext>Editing is prohibited by settings.</itemtext>
+			</item>
+			<item>
+				<itemname>EditWaitingUserExists</itemname>
+				<itemtext>Locked for editing reserving user.</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeError</itemname>
+				<itemtext>Operation canceled because of UUID change error.</itemtext>
+			</item>
+			<item>
+				<itemname>ThumbnailVersionMigrationError</itemname>
+				<itemtext>Thumbnail version migration failed.</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionGetError</itemname>
+				<itemtext>Faild to get recently opened collection.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>CantFindRecentlyOpenedCollection</itemname>
+				<itemtext>Collection does not exits.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>RecentlyOpenedCollectionSetError</itemname>
+				<itemtext>Faild to display recently opend collection.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>SearchedCollectionNofFoundMessage</itemname>
+				<itemtext>The searched collection cannot be found.</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDListHiddenWarning</itemname>
+				<itemtext>Hiding the UUID may cause problems.&#xD;&#xA;Would you like to keep it visible?</itemtext>
+			</item>
+		</MessageBox>
+		<ToolTip>
+			<item>
+				<itemname>SearchFormTextBox</itemname>
+				<itemtext>Search</itemtext>
+			</item>
+			<item>
+				<itemname>SearchOptionComboBox</itemname>
+				<itemtext>Search Target</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodComboBox</itemname>
+				<itemtext>Search Method</itemtext>
+			</item>
+			<item>
+				<itemname>EditIDTextBox</itemname>
+				<itemtext>ID for System</itemtext>
+			</item>
+			<item>
+				<itemname>EditMCTextBox</itemname>
+				<itemtext>ID for User</itemtext>
+			</item>
+			<item>
+				<itemname>SelectThumbnailButton</itemname>
+				<itemtext>Select Thumbnail</itemtext>
+			</item>
+			<item>
+				<itemname>AddContentsButton</itemname>
+				<itemtext>Add new collection to this project.</itemtext>
+			</item>
+			<item>
+				<itemname>ListUpdateButton</itemname>
+				<itemtext>Update collection list.</itemtext>
+			</item>
+			<item>
+				<itemname>SearchButton</itemname>
+				<itemtext>Search collection.</itemtext>
+			</item>
+			<item>
+				<itemname>SearchFormTextBoxClearButton</itemname>
+				<itemtext>Clear search box.</itemtext>
+			</item>
+			<item>
+				<itemname>OpenDataLocation</itemname>
+				<itemtext>Open collection data folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CopyDataLocationPath</itemname>
+				<itemtext>Copy collection data folder path to clipboard.</itemtext>
+			</item>
+			<item>
+				<itemname>ShowPicturesButton</itemname>
+				<itemtext>Show pictures registered in this collection.</itemtext>
+			</item>
+			<item>
+				<itemname>OpenPictureFolderButton</itemname>
+				<itemtext>Open this collection's picture folder.</itemtext>
+			</item>
+			<item>
+				<itemname>EditButton</itemname>
+				<itemtext>Start collection edit mode.</itemtext>
+			</item>
+			<item>
+				<itemname>SaveAndCloseEditButton</itemname>
+				<itemtext>Save and close edit mode.</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryManagementModeButton</itemname>
+				<itemtext>Start inventory management mode.</itemtext>
+			</item>
+			<item>
+				<itemname>CloseInventoryManagementModeButton</itemname>
+				<itemtext>Close inventory management mode.</itemtext>
+			</item>
+			<item>
+				<itemname>ShowConfidentialDataButton</itemname>
+				<itemtext>Show restricted data.</itemtext>
+			</item>
+			<item>
+				<itemname>HideConfidentialDataButton</itemname>
+				<itemtext>Hide restricted data.</itemtext>
+			</item>
+			<item>
+				<itemname>SetProperInventorySettingsButton</itemname>
+				<itemtext>Start proper inventory settings.</itemtext>
+			</item>
+			<item>
+				<itemname>SaveProperInventorySettingsButton</itemname>
+				<itemtext>Save proper inventory setting.</itemtext>
+			</item>
+			<item>
+				<itemname>OperationOptionComboBox</itemname>
+				<itemtext>Select inventory operation.</itemtext>
+			</item>
+			<item>
+				<itemname>EditQuantityTextBox</itemname>
+				<itemtext>Enter inventory operation quantity.</itemtext>
+			</item>
+			<item>
+				<itemname>EditInventoryOperationNoteTextBox</itemname>
+				<itemtext>Enter inventory operation's comment.(Optional)</itemtext>
+			</item>
+			<item>
+				<itemname>AddInventoryOperationButton</itemname>
+				<itemtext>Register entered inventory operation.</itemtext>
+			</item>
+		</ToolTip>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>CREC</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectNameHeader</itemname>
+				<itemtext>ProjectName: </itemtext>
+			</item>
+			<item>
+				<itemname>DeleteHistory</itemname>
+				<itemtext>Delete History</itemtext>
+			</item>
+			<item>
+				<itemname>NoRecentlyOpenedProjectList</itemname>
+				<itemtext>No recently opened project.</itemtext>
+			</item>
+			<item>
+				<itemname>FullSearchComboBoxItem</itemname>
+				<itemtext>Full search</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus</itemname>
+				<itemtext>Inventory</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodForwardMatch</itemname>
+				<itemtext>Forward match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBroadMatch</itemname>
+				<itemtext>Broad match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodBackwardMatch</itemname>
+				<itemtext>Backward match</itemtext>
+			</item>
+			<item>
+				<itemname>SearchMethodExactMatch</itemname>
+				<itemtext>Exact match</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderDate</itemname>
+				<itemtext>Date</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderOperation</itemname>
+				<itemtext>Operation</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderQuantity</itemname>
+				<itemtext>Quantity</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryListColumsHeaderNote</itemname>
+				<itemtext>Note</itemtext>
+			</item>
+			<item>
+				<itemname>SafetyStock</itemname>
+				<itemtext>Safety Stock</itemtext>
+			</item>
+			<item>
+				<itemname>ReorderPoint</itemname>
+				<itemtext>Reorder Point</itemtext>
+			</item>
+			<item>
+				<itemname>MaximumLevel</itemname>
+				<itemtext>Maximum Level</itemtext>
+			</item>
+			<item>
+				<itemname>EntoryOperation</itemname>
+				<itemtext>Entory</itemtext>
+			</item>
+			<item>
+				<itemname>ExitOperation</itemname>
+				<itemtext>Exit</itemtext>
+			</item>
+			<item>
+				<itemname>Stocktaking</itemname>
+				<itemtext>Stocktaking</itemtext>
+			</item>
+			<item>
+				<itemname>Inventory</itemname>
+				<itemtext>Inventory</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDNoChange</itemname>
+				<itemtext>No change</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeOK</itemname>
+				<itemtext>OK</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDChangeNG</itemname>
+				<itemtext>NG</itemtext>
+			</item>
+			<item>
+				<itemname>BackupToolStripMenuItemBackupInProgressMessage</itemname>
+				<itemtext>Backup in progress</itemtext>
+			</item>
+			<item>
+				<itemname>ShowListButton</itemname>
+				<itemtext>← List</itemtext>
+			</item>
+		</Other>
+	</mainform>
+	<MakeNewProject>
+		<Button>
+			<item>
+				<itemname>ProjectLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocationReferenceButton</itemname>
+				<itemtext>Browse</itemtext>
+			</item>
+			<item>
+				<itemname>MakeNewProjectButton</itemname>
+				<itemtext>Save/Make</itemtext>
+			</item>
+		</Button>
+		<Label>
+			<item>
+				<itemname>ProjectName</itemname>
+				<itemtext>Project name</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectLocation</itemname>
+				<itemtext>Project directory path</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectLocationExplanationLabel</itemname>
+				<itemtext>The project data will be created in the selected folder.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocation</itemname>
+				<itemtext>Backup directory path</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLocationLabel</itemname>
+				<itemtext>The backup data will be created in the selected folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CompressTypeLabel</itemname>
+				<itemtext>File compress type</itemtext>
+			</item>
+			<item>
+				<itemname>AutoBackUpSchedule</itemname>
+				<itemtext>Automatic backup scheduling</itemtext>
+			</item>
+			<item>
+				<itemname>MaxDegreeOfBackUpProcessParallelismLabel</itemname>
+				<itemtext>Backup process</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputLocation</itemname>
+				<itemtext>Contents list output location</itemtext>
+			</item>
+			<item>
+				<itemname>ListOutputExplanationLabel</itemname>
+				<itemtext>The data list will be created in the selected folder.</itemtext>
+			</item>
+			<item>
+				<itemname>FileFormatLabel</itemname>
+				<itemtext>File format</itemtext>
+			</item>
+			<item>
+				<itemname>AutoListOutput</itemname>
+				<itemtext>Contents list output settings</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelName</itemname>
+				<itemtext>Edit label name</itemtext>
+			</item>
+			<item>
+				<itemname>EditLabelExplanationLabel</itemname>
+				<itemtext>You can change the name of each label.</itemtext>
+			</item>
+			<item>
+				<itemname>DefaultValueLabel</itemname>
+				<itemtext>Default value</itemtext>
+			</item>
+			<item>
+				<itemname>UserValueLabel</itemname>
+				<itemtext>User value</itemtext>
+			</item>
+			<item>
+				<itemname>VisibleUnvisibleLabel</itemname>
+				<itemtext>Visible</itemtext>
+			</item>
+			<item>
+				<itemname>OtherSettingsLabel</itemname>
+				<itemtext>Other</itemtext>
+			</item>
+			<item>
+				<itemname>ObjectNameLabel</itemname>
+				<itemtext>Name</itemtext>
+			</item>
+			<item>
+				<itemname>UUIDLabel</itemname>
+				<itemtext>UUID</itemtext>
+			</item>
+			<item>
+				<itemname>MCLabel</itemname>
+				<itemtext>Mgmt. code</itemtext>
+			</item>
+			<item>
+				<itemname>AutoMCFillCheckBoxLabel</itemname>
+				<itemtext>Auto fill</itemtext>
+			</item>
+			<item>
+				<itemname>RegistrationDateLabel</itemname>
+				<itemtext>Registration</itemtext>
+			</item>
+			<item>
+				<itemname>CategoryLabel</itemname>
+				<itemtext>Category</itemtext>
+			</item>
+			<item>
+				<itemname>Tag1NameLabel</itemname>
+				<itemtext>Tag 1</itemtext>
+			</item>
+			<item>
+				<itemname>Tag2NameLabel</itemname>
+				<itemtext>Tag 2</itemtext>
+			</item>
+			<item>
+				<itemname>Tag3NameLabel</itemname>
+				<itemtext>Tag 3</itemtext>
+			</item>
+			<item>
+				<itemname>RealLocationLabel</itemname>
+				<itemtext>Real location</itemtext>
+			</item>
+			<item>
+				<itemname>DataLocationLabel</itemname>
+				<itemtext>Data location</itemtext>
+			</item>
+			<item>
+				<itemname>DataCheckIntervalLabel</itemname>
+				<itemtext>Check interval</itemtext>
+			</item>
+			<item>
+				<itemname>SleepModeLabel</itemname>
+				<itemtext>Sleep Mode</itemtext>
+			</item>
+		</Label>
+		<CheckBox>
+			<item>
+				<itemname>StartUpBackUpCheckBox</itemname>
+				<itemtext>StartUp(All collections)</itemtext>
+			</item>
+			<item>
+				<itemname>CloseBackUpCheckBox</itemname>
+				<itemtext>Close(All collections)</itemtext>
+			</item>
+			<item>
+				<itemname>EditedBackUpCheckBox</itemname>
+				<itemtext>After collection edited</itemtext>
+			</item>
+			<item>
+				<itemname>StartUpListOutputCheckBox</itemname>
+				<itemtext>StartUp</itemtext>
+			</item>
+			<item>
+				<itemname>CloseListOutputCheckBox</itemname>
+				<itemtext>Close</itemtext>
+			</item>
+			<item>
+				<itemname>EditedListOutputCheckBox</itemname>
+				<itemtext>After data added</itemtext>
+			</item>
+			<item>
+				<itemname>OpenListAfterOutputCheckBox</itemname>
+				<itemtext>Open file after output</itemtext>
+			</item>
+		</CheckBox>
+		<MessageBox>
+			<item>
+				<itemname>AskChangeUUIDLabel</itemname>
+				<itemtext>UUID is the value used by the system.&#xD;&#xA;This operation may cause system malfunction.&#xD;&#xA;Do you want to change this?</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectDirectoryAlreadyExist</itemname>
+				<itemtext>Project directory already exist.</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectBackupDirectoryAlreadyExist</itemname>
+				<itemtext>Project backup directory already exist.</itemtext>
+			</item>
+			<item>
+				<itemname>EnterProjectNameError</itemname>
+				<itemtext>Enter project name.</itemtext>
+			</item>
+			<item>
+				<itemname>EnterProjectFolderPathError</itemname>
+				<itemtext>Enter project folder path.</itemtext>
+			</item>
+		</MessageBox>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Make/Edit project</itemtext>
+			</item>
+			<item>
+				<itemname>Zip</itemname>
+				<itemtext>Zip file</itemtext>
+			</item>
+			<item>
+				<itemname>NoCompress</itemname>
+				<itemtext>No compress</itemtext>
+			</item>
+			<item>
+				<itemname>LocalDataCheckInterval</itemname>
+				<itemtext>Local</itemtext>
+			</item>
+			<item>
+				<itemname>FastServerDataCheckInterval</itemname>
+				<itemtext>Server(Fast)</itemtext>
+			</item>
+			<item>
+				<itemname>SlowServerDataCheckInterval</itemname>
+				<itemtext>Server(Slow)</itemtext>
+			</item>
+			<item>
+				<itemname>CustomDataCheckInterval</itemname>
+				<itemtext>Custom</itemtext>
+			</item>
+		</Other>
+	</MakeNewProject>
+	<VersionInformation>
+		<Label>
+			<item>
+				<itemname>CopyrightLabel</itemname>
+				<itemtext>© Yukisita 2025</itemtext>
+			</item>
+			<item>
+				<itemname>SystemInformationsLabel</itemname>
+				<itemtext>System Information</itemtext>
+			</item>
+			<item>
+				<itemname>ShowSystemInformationsLabel</itemname>
+				<itemtext>Getting System Informations...</itemtext>
+			</item>
+			<item>
+				<itemname>MascotNameLabel</itemname>
+				<itemtext>Setsuna YUKISITA</itemtext>
+			</item>
+			<item>
+				<itemname>MascotCommentLabel</itemname>
+				<itemtext> </itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Version Informations</itemtext>
+			</item>
+			<item>
+				<itemname>OSEdition</itemname>
+				<itemtext>OS Edition: </itemtext>
+			</item>
+			<item>
+				<itemname>OSVersion</itemname>
+				<itemtext>OS Version: </itemtext>
+			</item>
+			<item>
+				<itemname>OSBuildNumber</itemname>
+				<itemtext>OS Build Number: </itemtext>
+			</item>
+			<item>
+				<itemname>TotalVisibleMemorySize</itemname>
+				<itemtext>Memory Size (MB): </itemtext>
+			</item>
+			<item>
+				<itemname>CPUName</itemname>
+				<itemtext>CPU Name: </itemtext>
+			</item>
+			<item>
+				<itemname>WindowScale</itemname>
+				<itemtext>Window Scale: </itemtext>
+			</item>
+		</Other>
+	</VersionInformation>
+	<ProjectInfoForm>
+		<Label>
+			<item>
+				<itemname>ProjcetNameLabel</itemname>
+				<itemtext>Name : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetCreatedDateLabel</itemname>
+				<itemtext>Created : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetModifiedDateLabel</itemname>
+				<itemtext>Modified : </itemtext>
+			</item>
+			<item>
+				<itemname>ProjcetAccessedDateLabel</itemname>
+				<itemtext>Accessed : </itemtext>
+			</item>
+		</Label>
+		<Other>
+			<item>
+				<itemname>FormName</itemname>
+				<itemtext>Project Information</itemtext>
+			</item>
+		</Other>
+	</ProjectInfoForm>
+	<CloseBackupForm>
+		<Label>
+			<item>
+				<itemname>autoCloseLabel</itemname>
+				<itemtext>Close the application automatically after backup.</itemtext>
+			</item>
+		</Label>
+	</CloseBackupForm>
+	<CollectionDataClass>
+		<MessageBox>
+			<item>
+				<itemname>CollectionNotAssigned</itemname>
+				<itemtext>No collection assigned.</itemtext>
+			</item>
+			<item>
+				<itemname>CollectionNotExist</itemname>
+				<itemtext>Collection does not exist.&#xD;&#xA;Please try again.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileReadFailed</itemname>
+				<itemtext>Failed to load file.&#xD;&#xA;Start the restore process.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupData</itemname>
+				<itemtext>The index file not found.&#xD;&#xA;Start restoring from backup data.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataSuccessed</itemname>
+				<itemtext>The index file was successfully restored from backup data.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataFailed</itemname>
+				<itemtext>The index file restoration failed.&#xD;&#xA;Regenerate the index file.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoredFromBackupDataBackupDataNotFound</itemname>
+				<itemtext>Backup data not found.&#xD;&#xA;Regenerate the index file.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileRestoreFailed</itemname>
+				<itemtext>The index file restoration failed.&#xD;&#xA;We recommend restarting the application.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileSaveFailed</itemname>
+				<itemtext>The index file save failed.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileBackupFailed</itemname>
+				<itemtext>The index file backup failed.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>ThumbnailSetFaild</itemname>
+				<itemtext>Failed to set thumbnail.&#xD;&#xA;Please choose another image.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>FailedToRetrieveCollectionFolder</itemname>
+				<itemtext>Failed to retrieve collection folder.</itemtext>
+			</item>
+			<item>
+				<itemname>BackupLogOutputFailed</itemname>
+				<itemtext>Failed to output backup log.</itemtext>
+			</item>
+		</MessageBox>
+		<Other>
+			<item>
+				<itemname>SelectThumbnail</itemname>
+				<itemtext>Sselect a thumbnail.</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_StockOut</itemname>
+				<itemtext>StockOut</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_UnderStocked</itemname>
+				<itemtext>UnderStocked</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_Appropriate</itemname>
+				<itemtext>Appropriate</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_OverStocked</itemname>
+				<itemtext>OverStocked</itemtext>
+			</item>
+			<item>
+				<itemname>InventoryStatus_NotSet</itemname>
+				<itemtext>NotSet</itemtext>
+			</item>
+		</Other>
+	</CollectionDataClass>
+	<CollectionListClass>
+		<MessageBox>
+			<item>
+				<itemname>NoProjectOpendError</itemname>
+				<itemtext>Open a project to output list.</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputFinish</itemname>
+				<itemtext>Contents list(csv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>CSVOutputError</itemname>
+				<itemtext>Can not output contents list(csv).</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputFinish</itemname>
+				<itemtext>Contents list(tsv) is outputted in this folder.</itemtext>
+			</item>
+			<item>
+				<itemname>TSVOutputError</itemname>
+				<itemtext>Can not output contents list(tsv).</itemtext>
+			</item>
+		</MessageBox>
+	</CollectionListClass>
+	<ProjectSettingClass>
+		<MessageBox>
+			<item>
+				<itemname>ProjectNameMatchError</itemname>
+				<itemtext>The project file name does not match the project name. &#xD;&#xA;Do you want to save it?</itemtext>
+			</item>
+			<item>
+				<itemname>ProjectSettingFileSaveError</itemname>
+				<itemtext>Failed to save project settings. Please try again.</itemtext>
+			</item>
+		</MessageBox>
+	</ProjectSettingClass>
+</list>
