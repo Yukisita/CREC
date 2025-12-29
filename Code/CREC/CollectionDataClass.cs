@@ -417,22 +417,14 @@ namespace CREC
                 return false;
             }
 
-            if (inventoryData != null)
+            try
             {
-                try
-                {
-                    // 在庫数と在庫状況を計算
-                    int count = inventoryData.CalculateCurrentInventory();
-                    loadingCollectionDataValues.CollectionCurrentInventory = count;
-                    loadingCollectionDataValues.CollectionInventoryStatus = inventoryData.GetInventoryStatus();
-                }
-                catch
-                {
-                    loadingCollectionDataValues.CollectionCurrentInventory = null;
-                    loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet;
-                }
+                // 在庫数と在庫状況を計算
+                int count = inventoryData.CalculateCurrentInventory();
+                loadingCollectionDataValues.CollectionCurrentInventory = count;
+                loadingCollectionDataValues.CollectionInventoryStatus = inventoryData.GetInventoryStatus();
             }
-            else
+            catch
             {
                 loadingCollectionDataValues.CollectionCurrentInventory = null;
                 loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet;
