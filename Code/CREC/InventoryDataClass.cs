@@ -325,26 +325,23 @@ namespace CREC
                 string[] headerCols = lines[0].Split(',');
 
                 var setting = new InventoryOperationSetting();// InventoryOperationSetting のインスタンスを作成
-                if (headerCols.Length >= 2 && !string.IsNullOrEmpty(headerCols[1]))
+                if (headerCols.Length >= 2 &&
+                    !string.IsNullOrEmpty(headerCols[1]) &&
+                    int.TryParse(headerCols[1], out int safetyStock))
                 {
-                    if (int.TryParse(headerCols[1], out int safetyStock))
-                    {
-                        setting.SafetyStock = safetyStock;
-                    }
+                    setting.SafetyStock = safetyStock;
                 }
-                if (headerCols.Length >= 3 && !string.IsNullOrEmpty(headerCols[2]))
+                if (headerCols.Length >= 3 &&
+                    !string.IsNullOrEmpty(headerCols[2]) &&
+                    int.TryParse(headerCols[2], out int reorderPoint))
                 {
-                    if (int.TryParse(headerCols[2], out int reorderPoint))
-                    {
-                        setting.ReorderPoint = reorderPoint;
-                    }
+                    setting.ReorderPoint = reorderPoint;
                 }
-                if (headerCols.Length >= 4 && !string.IsNullOrEmpty(headerCols[3]))
+                if (headerCols.Length >= 4 &&
+                    !string.IsNullOrEmpty(headerCols[3]) &&
+                    int.TryParse(headerCols[3], out int maxLevel))
                 {
-                    if (int.TryParse(headerCols[3], out int maxLevel))
-                    {
-                        setting.MaximumLevel = maxLevel;
-                    }
+                    setting.MaximumLevel = maxLevel;
                 }
                 // 設定を InventoryData の Setting リストに追加
                 data.Setting = setting;
