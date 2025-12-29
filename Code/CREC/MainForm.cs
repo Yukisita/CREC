@@ -3439,19 +3439,19 @@ namespace CREC
         private void ProperInventoryNotification()// 適正在庫設定と比較して通知を表示
         {
             ProperInventorySettingsNotificationLabel.Text = string.Empty;
-            if (inventory < currentInventoryData.Setting.SafetyStock)
+            if (currentInventoryData.Setting.SafetyStock != null && inventory < currentInventoryData.Setting.SafetyStock)
             {
                 MessageBox.Show("安全在庫数を下回っています。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "安全在庫数を下回っています。";
                 return;
             }
-            if (inventory <= currentInventoryData.Setting.ReorderPoint)
+            if (currentInventoryData.Setting.ReorderPoint != null && inventory <= currentInventoryData.Setting.ReorderPoint)
             {
                 MessageBox.Show("在庫数が発注点以下です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "在庫数が発注点以下です。";
                 return;
             }
-            if (currentInventoryData.Setting.MaximumLevel < inventory)
+            if (currentInventoryData.Setting.MaximumLevel != null && currentInventoryData.Setting.MaximumLevel < inventory)
             {
                 MessageBox.Show("過剰在庫状態です。", "CREC");
                 ProperInventorySettingsNotificationLabel.Text = "過剰在庫状態です。";
