@@ -765,7 +765,7 @@
 				<itemtext>最大在庫数</itemtext>
 			</item>
 			<item>
-				<itemname>EntoryOperation</itemname>
+				<itemname>EntryOperation</itemname>
 				<itemtext>入庫</itemtext>
 			</item>
 			<item>

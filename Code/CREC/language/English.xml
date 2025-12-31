@@ -765,8 +765,8 @@
 				<itemtext>Maximum Level</itemtext>
 			</item>
 			<item>
-				<itemname>EntoryOperation</itemname>
-				<itemtext>Entory</itemtext>
+				<itemname>EntryOperation</itemname>
+				<itemtext>Entry</itemtext>
 			</item>
 			<item>
 				<itemname>ExitOperation</itemname>

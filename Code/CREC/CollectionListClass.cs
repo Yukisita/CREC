@@ -30,6 +30,8 @@ namespace CREC
         {
             // 読み込んだコレクションリストを格納するリスト
             var loadingCollectionList = new List<CollectionDataValuesClass>();
+            // レガシー在庫管理ファイルの移行処理で削除するかどうかのフラグ
+            bool? deleteLegacyInventoryFile = null;
             // 指定されたフォルダ内を探索
             DirectoryInfo di = new DirectoryInfo(CurrentProjectSettingValues.ProjectDataFolderPath);
             IEnumerable<DirectoryInfo> subFolders = di.EnumerateDirectories("*");
@@ -48,7 +50,7 @@ namespace CREC
                     // Index読み込み
                     CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, LanguageData);
                     // 在庫状況読み込み
-                    CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, LanguageData);
+                    CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, ref deleteLegacyInventoryFile, LanguageData);
                 }
                 else
                 {
