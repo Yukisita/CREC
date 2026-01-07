@@ -574,9 +574,7 @@ namespace CREC
                 // JSON形式のファイルが存在しない場合、index.txtを確認
                 if (System.IO.File.Exists(txtFilePath))
                 {
-                    // index.txtが存在する場合は、JSON形式への移行を確認
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationToJson", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    
+                    // index.txtが存在する場合は、JSON形式へ自動移行
                     DialogResult deleteOldFile = MessageBox.Show(
                         LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationDeleteOldFile", "CollectionDataClass", languageData),
                         "CREC",

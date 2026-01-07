@@ -1169,10 +1169,6 @@
 				<itemtext>The index file backup failed.&#xD;&#xA;</itemtext>
 			</item>
 			<item>
-				<itemname>IndexFileMigrationToJson</itemname>
-				<itemtext>Found index.txt file.&#xD;&#xA;Converting to JSON format (index.json).</itemtext>
-			</item>
-			<item>
 				<itemname>IndexFileMigrationDeleteOldFile</itemname>
 				<itemtext>Do you want to delete the original index.txt file after conversion?&#xD;&#xA;(Select "No" to keep index.txt)</itemtext>
 			</item>
