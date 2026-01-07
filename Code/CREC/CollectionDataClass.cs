@@ -584,8 +584,15 @@ namespace CREC
                     if (MigrateIndexTxtToJson(CollectionFolderPath, deleteOldFile == DialogResult.Yes, languageData))
                     {
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationSuccess", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        
-                        // 移行後、JSON形式のファイルを読み込む
+                    }
+                    else
+                    {
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    
+                    // 移行後、JSON形式のファイルから読み込む
+                    if (System.IO.File.Exists(jsonFilePath))
+                    {
                         IndexJsonFormat jsonData = LoadIndexJsonFile(jsonFilePath);
                         if (jsonData != null && jsonData.SystemData != null && jsonData.Values != null)
                         {
@@ -602,62 +609,10 @@ namespace CREC
                             return true;
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        // 移行に失敗した場合は、index.txtを読み込む（後方互換性）
-                        string[] CollectionDataLines = System.IO.File.ReadAllLines(txtFilePath, Encoding.GetEncoding("UTF-8"));
-                        foreach (string line in CollectionDataLines)
-                        {
-                            string[] CollectionDataLineSplit = line.Split(',');
-                            if (CollectionDataLineSplit.Length < 2)
-                            {
-                                continue;
-                            }
-
-                            switch (CollectionDataLineSplit[0])
-                            {
-                                case "名称":
-                                    if (line.Length > 3)
-                                        loadingCollectionDataValues.CollectionName = line.Substring(3);
-                                    break;
-                                case "ID":
-                                    if (line.Length > 3)
-                                        loadingCollectionDataValues.CollectionID = line.Substring(3);
-                                    break;
-                                case "MC":
-                                    if (line.Length > 3)
-                                        loadingCollectionDataValues.CollectionMC = line.Substring(3);
-                                    break;
-                                case "登録日":
-                                    if (line.Length > 4)
-                                        loadingCollectionDataValues.CollectionRegistrationDate = line.Substring(4);
-                                    break;
-                                case "カテゴリ":
-                                    if (line.Length > 5)
-                                        loadingCollectionDataValues.CollectionCategory = line.Substring(5);
-                                    break;
-                                case "タグ1":
-                                    if (line.Length > 4)
-                                        loadingCollectionDataValues.CollectionTag1 = line.Substring(4);
-                                    break;
-                                case "タグ2":
-                                    if (line.Length > 4)
-                                        loadingCollectionDataValues.CollectionTag2 = line.Substring(4);
-                                    break;
-                                case "タグ3":
-                                    if (line.Length > 4)
-                                        loadingCollectionDataValues.CollectionTag3 = line.Substring(4);
-                                    break;
-                                case "場所1(Real)":
-                                    if (CollectionDataLineSplit.Length > 1)
-                                        loadingCollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
-                                    break;
-                            }
-                        }
-                        CollectionDataValues = loadingCollectionDataValues;
-                        return true;
-                    }
+                    
+                    // JSONファイルの読み込みに失敗した場合はエラー
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileReadFailed", "CollectionDataClass", languageData), "CREC");
+                    return false;
                 }
 
                 // どちらのファイルも存在しない場合
