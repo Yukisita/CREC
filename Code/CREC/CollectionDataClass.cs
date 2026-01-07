@@ -460,31 +460,40 @@ namespace CREC
                     switch (parts[0])
                     {
                         case "名称":
-                            loadingData.CollectionName = line.Substring(3);
+                            if (line.Length > 3)
+                                loadingData.CollectionName = line.Substring(3);
                             break;
                         case "ID":
-                            loadingData.CollectionID = line.Substring(3);
+                            if (line.Length > 3)
+                                loadingData.CollectionID = line.Substring(3);
                             break;
                         case "MC":
-                            loadingData.CollectionMC = line.Substring(3);
+                            if (line.Length > 3)
+                                loadingData.CollectionMC = line.Substring(3);
                             break;
                         case "登録日":
-                            loadingData.CollectionRegistrationDate = line.Substring(4);
+                            if (line.Length > 4)
+                                loadingData.CollectionRegistrationDate = line.Substring(4);
                             break;
                         case "カテゴリ":
-                            loadingData.CollectionCategory = line.Substring(5);
+                            if (line.Length > 5)
+                                loadingData.CollectionCategory = line.Substring(5);
                             break;
                         case "タグ1":
-                            loadingData.CollectionTag1 = line.Substring(4);
+                            if (line.Length > 4)
+                                loadingData.CollectionTag1 = line.Substring(4);
                             break;
                         case "タグ2":
-                            loadingData.CollectionTag2 = line.Substring(4);
+                            if (line.Length > 4)
+                                loadingData.CollectionTag2 = line.Substring(4);
                             break;
                         case "タグ3":
-                            loadingData.CollectionTag3 = line.Substring(4);
+                            if (line.Length > 4)
+                                loadingData.CollectionTag3 = line.Substring(4);
                             break;
                         case "場所1(Real)":
-                            loadingData.CollectionRealLocation = parts[1];
+                            if (parts.Length > 1)
+                                loadingData.CollectionRealLocation = parts[1];
                             break;
                     }
                 }
@@ -632,31 +641,40 @@ namespace CREC
                             switch (CollectionDataLineSplit[0])
                             {
                                 case "名称":
-                                    loadingCollectionDataValues.CollectionName = line.Substring(3);
+                                    if (line.Length > 3)
+                                        loadingCollectionDataValues.CollectionName = line.Substring(3);
                                     break;
                                 case "ID":
-                                    loadingCollectionDataValues.CollectionID = line.Substring(3);
+                                    if (line.Length > 3)
+                                        loadingCollectionDataValues.CollectionID = line.Substring(3);
                                     break;
                                 case "MC":
-                                    loadingCollectionDataValues.CollectionMC = line.Substring(3);
+                                    if (line.Length > 3)
+                                        loadingCollectionDataValues.CollectionMC = line.Substring(3);
                                     break;
                                 case "登録日":
-                                    loadingCollectionDataValues.CollectionRegistrationDate = line.Substring(4);
+                                    if (line.Length > 4)
+                                        loadingCollectionDataValues.CollectionRegistrationDate = line.Substring(4);
                                     break;
                                 case "カテゴリ":
-                                    loadingCollectionDataValues.CollectionCategory = line.Substring(5);
+                                    if (line.Length > 5)
+                                        loadingCollectionDataValues.CollectionCategory = line.Substring(5);
                                     break;
                                 case "タグ1":
-                                    loadingCollectionDataValues.CollectionTag1 = line.Substring(4);
+                                    if (line.Length > 4)
+                                        loadingCollectionDataValues.CollectionTag1 = line.Substring(4);
                                     break;
                                 case "タグ2":
-                                    loadingCollectionDataValues.CollectionTag2 = line.Substring(4);
+                                    if (line.Length > 4)
+                                        loadingCollectionDataValues.CollectionTag2 = line.Substring(4);
                                     break;
                                 case "タグ3":
-                                    loadingCollectionDataValues.CollectionTag3 = line.Substring(4);
+                                    if (line.Length > 4)
+                                        loadingCollectionDataValues.CollectionTag3 = line.Substring(4);
                                     break;
                                 case "場所1(Real)":
-                                    loadingCollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
+                                    if (CollectionDataLineSplit.Length > 1)
+                                        loadingCollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
                                     break;
                             }
                         }
