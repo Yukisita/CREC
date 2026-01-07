@@ -348,14 +348,16 @@ namespace CREC
         /// </summary>
         /// <param name="jsonFilePath">JSONファイルのパス</param>
         /// <returns>読み込んだIndexデータ</returns>
-        private static IndexJsonFormat LoadIndexJsonFile(string jsonFilePath)
+        private static IndexJsonFormat LoadIndexJsonFile(string filePath)
         {
             try
             {
-                using (FileStream fs = new FileStream(jsonFilePath, FileMode.Open, FileAccess.Read))
+                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
+
+                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
-                    return (IndexJsonFormat)serializer.ReadObject(fs);
+                    return (IndexJsonFormat)serializer.ReadObject(stream);
                 }
             }
             catch
