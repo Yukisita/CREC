@@ -1169,6 +1169,22 @@
 				<itemtext>Indexファイルのバックアップに失敗しました。&#xD;&#xA;</itemtext>
 			</item>
 			<item>
+				<itemname>IndexFileMigrationToJson</itemname>
+				<itemtext>index.txtファイルが見つかりました。&#xD;&#xA;JSON形式（index.json）に変換します。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationDeleteOldFile</itemname>
+				<itemtext>変換後、元のindex.txtファイルを削除しますか？&#xD;&#xA;（「いいえ」を選択すると、index.txtは保持されます）</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationSuccess</itemname>
+				<itemtext>index.jsonへの変換に成功しました。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationFailed</itemname>
+				<itemtext>index.jsonへの変換に失敗しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>サムネイルの設定に失敗しました。&#xD;&#xA;別の画像を選択してください。&#xD;&#xA;</itemtext>
 			</item>

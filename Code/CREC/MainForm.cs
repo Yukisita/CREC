@@ -2872,10 +2872,10 @@ namespace CREC
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
             Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\data");
             Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\pictures");
-            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\index.txt");
-            StreamWriter streamWriter = new StreamWriter(NewCollectionData.CollectionFolderPath + "\\index.txt");
-            streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
-            streamWriter.Close();
+            
+            // JSON形式でindex.jsonを作成
+            CollectionDataClass.SaveCollectionIndexData(NewCollectionData.CollectionFolderPath, NewCollectionData, LanguageFile);
+            
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\details.txt");
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
             // 在庫管理を行うか確認

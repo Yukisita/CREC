@@ -1169,6 +1169,22 @@
 				<itemtext>The index file backup failed.&#xD;&#xA;</itemtext>
 			</item>
 			<item>
+				<itemname>IndexFileMigrationToJson</itemname>
+				<itemtext>Found index.txt file.&#xD;&#xA;Converting to JSON format (index.json).</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationDeleteOldFile</itemname>
+				<itemtext>Do you want to delete the original index.txt file after conversion?&#xD;&#xA;(Select "No" to keep index.txt)</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationSuccess</itemname>
+				<itemtext>Successfully converted to index.json.</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationFailed</itemname>
+				<itemtext>Failed to convert to index.json.&#xD;&#xA;</itemtext>
+			</item>
+			<item>
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>Failed to set thumbnail.&#xD;&#xA;Please choose another image.&#xD;&#xA;</itemtext>
 			</item>
