@@ -52,10 +52,11 @@ namespace CREC
     [DataContract]
     public class IndexJsonSystemData
     {
-        [DataMember]
-        public string id { get; set; }
-        [DataMember]
-        public string systemCreateDate { get; set; }
+        [DataMember(Name = "id")]
+        public string Id { get; set; }
+        
+        [DataMember(Name = "systemCreateDate")]
+        public string SystemCreateDate { get; set; }
     }
 
     /// <summary>
@@ -64,22 +65,29 @@ namespace CREC
     [DataContract]
     public class IndexJsonValues
     {
-        [DataMember]
-        public string name { get; set; }
-        [DataMember]
-        public string managementCode { get; set; }
-        [DataMember]
-        public string registrationDate { get; set; }
-        [DataMember]
-        public string category { get; set; }
-        [DataMember]
-        public string firstTag { get; set; }
-        [DataMember]
-        public string secondTag { get; set; }
-        [DataMember]
-        public string thirdTag { get; set; }
-        [DataMember]
-        public string location { get; set; }
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+        
+        [DataMember(Name = "managementCode")]
+        public string ManagementCode { get; set; }
+        
+        [DataMember(Name = "registrationDate")]
+        public string RegistrationDate { get; set; }
+        
+        [DataMember(Name = "category")]
+        public string Category { get; set; }
+        
+        [DataMember(Name = "firstTag")]
+        public string FirstTag { get; set; }
+        
+        [DataMember(Name = "secondTag")]
+        public string SecondTag { get; set; }
+        
+        [DataMember(Name = "thirdTag")]
+        public string ThirdTag { get; set; }
+        
+        [DataMember(Name = "location")]
+        public string Location { get; set; }
     }
 
     /// <summary>
@@ -88,10 +96,11 @@ namespace CREC
     [DataContract]
     public class IndexJsonFormat
     {
-        [DataMember]
-        public IndexJsonSystemData systemData { get; set; }
-        [DataMember]
-        public IndexJsonValues values { get; set; }
+        [DataMember(Name = "systemData")]
+        public IndexJsonSystemData SystemData { get; set; }
+        
+        [DataMember(Name = "values")]
+        public IndexJsonValues Values { get; set; }
     }
 
     /// <summary>
@@ -372,26 +381,14 @@ namespace CREC
                     Directory.CreateDirectory(systemDataFolder);
                 }
 
-                using (FileStream fs = new FileStream(jsonFilePath, FileMode.Create, FileAccess.Write))
-                using (StreamWriter sw = new StreamWriter(fs, new UTF8Encoding(false)))
+                // 在庫管理ファイルと同じ方式でJSON保存
+                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
+
+                using (var stream = new MemoryStream())
                 {
-                    // 手動でJSONを生成（DataContractJsonSerializerは日付フォーマットが要件に合わない可能性があるため）
-                    sw.WriteLine("{");
-                    sw.WriteLine("\t\"systemData\": {");
-                    sw.WriteLine($"\t\t\"id\": \"{EscapeJsonString(data.systemData.id)}\",");
-                    sw.WriteLine($"\t\t\"systemCreateDate\": \"{EscapeJsonString(data.systemData.systemCreateDate)}\"");
-                    sw.WriteLine("\t},");
-                    sw.WriteLine("\t\"values\": {");
-                    sw.WriteLine($"\t\t\"name\": \"{EscapeJsonString(data.values.name)}\",");
-                    sw.WriteLine($"\t\t\"managementCode\": \"{EscapeJsonString(data.values.managementCode)}\",");
-                    sw.WriteLine($"\t\t\"registrationDate\": \"{EscapeJsonString(data.values.registrationDate)}\",");
-                    sw.WriteLine($"\t\t\"category\": \"{EscapeJsonString(data.values.category)}\",");
-                    sw.WriteLine($"\t\t\"firstTag\": \"{EscapeJsonString(data.values.firstTag)}\",");
-                    sw.WriteLine($"\t\t\"secondTag\": \"{EscapeJsonString(data.values.secondTag)}\",");
-                    sw.WriteLine($"\t\t\"thirdTag\": \"{EscapeJsonString(data.values.thirdTag)}\",");
-                    sw.WriteLine($"\t\t\"location\": \"{EscapeJsonString(data.values.location)}\"");
-                    sw.WriteLine("\t}");
-                    sw.WriteLine("}");
+                    serializer.WriteObject(stream, data);
+                    string json = Encoding.UTF8.GetString(stream.ToArray());
+                    File.WriteAllText(jsonFilePath, json, Encoding.UTF8);
                 }
                 return true;
             }
@@ -399,24 +396,6 @@ namespace CREC
             {
                 return false;
             }
-        }
-
-        /// <summary>
-        /// JSON文字列のエスケープ処理
-        /// </summary>
-        /// <param name="str">エスケープする文字列</param>
-        /// <returns>エスケープされた文字列</returns>
-        private static string EscapeJsonString(string str)
-        {
-            if (string.IsNullOrEmpty(str))
-                return "";
-            
-            return str
-                .Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r")
-                .Replace("\t", "\\t");
         }
 
         /// <summary>
@@ -501,21 +480,21 @@ namespace CREC
                 // JSON形式で保存
                 IndexJsonFormat jsonData = new IndexJsonFormat
                 {
-                    systemData = new IndexJsonSystemData
+                    SystemData = new IndexJsonSystemData
                     {
-                        id = loadingData.CollectionID,
-                        systemCreateDate = DateTimeOffset.Now.ToString("o") // ISO8601形式
+                        Id = loadingData.CollectionID,
+                        SystemCreateDate = DateTimeOffset.Now.ToString("o") // ISO8601形式
                     },
-                    values = new IndexJsonValues
+                    Values = new IndexJsonValues
                     {
-                        name = loadingData.CollectionName,
-                        managementCode = loadingData.CollectionMC,
-                        registrationDate = loadingData.CollectionRegistrationDate,
-                        category = loadingData.CollectionCategory,
-                        firstTag = loadingData.CollectionTag1,
-                        secondTag = loadingData.CollectionTag2,
-                        thirdTag = loadingData.CollectionTag3,
-                        location = loadingData.CollectionRealLocation
+                        Name = loadingData.CollectionName,
+                        ManagementCode = loadingData.CollectionMC,
+                        RegistrationDate = loadingData.CollectionRegistrationDate,
+                        Category = loadingData.CollectionCategory,
+                        FirstTag = loadingData.CollectionTag1,
+                        SecondTag = loadingData.CollectionTag2,
+                        ThirdTag = loadingData.CollectionTag3,
+                        Location = loadingData.CollectionRealLocation
                     }
                 };
 
@@ -576,17 +555,17 @@ namespace CREC
                 {
                     // JSON形式のファイルが存在する場合は読み込む
                     IndexJsonFormat jsonData = LoadIndexJsonFile(jsonFilePath);
-                    if (jsonData != null && jsonData.systemData != null && jsonData.values != null)
+                    if (jsonData != null && jsonData.SystemData != null && jsonData.Values != null)
                     {
-                        loadingCollectionDataValues.CollectionID = jsonData.systemData.id ?? " - ";
-                        loadingCollectionDataValues.CollectionName = jsonData.values.name ?? " - ";
-                        loadingCollectionDataValues.CollectionMC = jsonData.values.managementCode ?? " - ";
-                        loadingCollectionDataValues.CollectionRegistrationDate = jsonData.values.registrationDate ?? " - ";
-                        loadingCollectionDataValues.CollectionCategory = jsonData.values.category ?? " - ";
-                        loadingCollectionDataValues.CollectionTag1 = jsonData.values.firstTag ?? " - ";
-                        loadingCollectionDataValues.CollectionTag2 = jsonData.values.secondTag ?? " - ";
-                        loadingCollectionDataValues.CollectionTag3 = jsonData.values.thirdTag ?? " - ";
-                        loadingCollectionDataValues.CollectionRealLocation = jsonData.values.location ?? " - ";
+                        loadingCollectionDataValues.CollectionID = jsonData.SystemData.Id ?? " - ";
+                        loadingCollectionDataValues.CollectionName = jsonData.Values.Name ?? " - ";
+                        loadingCollectionDataValues.CollectionMC = jsonData.Values.ManagementCode ?? " - ";
+                        loadingCollectionDataValues.CollectionRegistrationDate = jsonData.Values.RegistrationDate ?? " - ";
+                        loadingCollectionDataValues.CollectionCategory = jsonData.Values.Category ?? " - ";
+                        loadingCollectionDataValues.CollectionTag1 = jsonData.Values.FirstTag ?? " - ";
+                        loadingCollectionDataValues.CollectionTag2 = jsonData.Values.SecondTag ?? " - ";
+                        loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
+                        loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
                         CollectionDataValues = loadingCollectionDataValues;
                         return true;
                     }
@@ -610,17 +589,17 @@ namespace CREC
                         
                         // 移行後、JSON形式のファイルを読み込む
                         IndexJsonFormat jsonData = LoadIndexJsonFile(jsonFilePath);
-                        if (jsonData != null && jsonData.systemData != null && jsonData.values != null)
+                        if (jsonData != null && jsonData.SystemData != null && jsonData.Values != null)
                         {
-                            loadingCollectionDataValues.CollectionID = jsonData.systemData.id ?? " - ";
-                            loadingCollectionDataValues.CollectionName = jsonData.values.name ?? " - ";
-                            loadingCollectionDataValues.CollectionMC = jsonData.values.managementCode ?? " - ";
-                            loadingCollectionDataValues.CollectionRegistrationDate = jsonData.values.registrationDate ?? " - ";
-                            loadingCollectionDataValues.CollectionCategory = jsonData.values.category ?? " - ";
-                            loadingCollectionDataValues.CollectionTag1 = jsonData.values.firstTag ?? " - ";
-                            loadingCollectionDataValues.CollectionTag2 = jsonData.values.secondTag ?? " - ";
-                            loadingCollectionDataValues.CollectionTag3 = jsonData.values.thirdTag ?? " - ";
-                            loadingCollectionDataValues.CollectionRealLocation = jsonData.values.location ?? " - ";
+                            loadingCollectionDataValues.CollectionID = jsonData.SystemData.Id ?? " - ";
+                            loadingCollectionDataValues.CollectionName = jsonData.Values.Name ?? " - ";
+                            loadingCollectionDataValues.CollectionMC = jsonData.Values.ManagementCode ?? " - ";
+                            loadingCollectionDataValues.CollectionRegistrationDate = jsonData.Values.RegistrationDate ?? " - ";
+                            loadingCollectionDataValues.CollectionCategory = jsonData.Values.Category ?? " - ";
+                            loadingCollectionDataValues.CollectionTag1 = jsonData.Values.FirstTag ?? " - ";
+                            loadingCollectionDataValues.CollectionTag2 = jsonData.Values.SecondTag ?? " - ";
+                            loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
+                            loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
                             CollectionDataValues = loadingCollectionDataValues;
                             return true;
                         }
@@ -848,31 +827,31 @@ namespace CREC
                 if (File.Exists(jsonFilePath))
                 {
                     IndexJsonFormat existingData = LoadIndexJsonFile(jsonFilePath);
-                    if (existingData != null && existingData.systemData != null)
+                    if (existingData != null && existingData.SystemData != null)
                     {
-                        existingId = existingData.systemData.id ?? CollectionDataValues.CollectionID;
-                        existingSystemCreateDate = existingData.systemData.systemCreateDate ?? DateTimeOffset.Now.ToString("o");
+                        existingId = existingData.SystemData.Id ?? CollectionDataValues.CollectionID;
+                        existingSystemCreateDate = existingData.SystemData.SystemCreateDate ?? DateTimeOffset.Now.ToString("o");
                     }
                 }
 
                 // JSON形式で保存
                 IndexJsonFormat jsonData = new IndexJsonFormat
                 {
-                    systemData = new IndexJsonSystemData
+                    SystemData = new IndexJsonSystemData
                     {
-                        id = existingId,
-                        systemCreateDate = existingSystemCreateDate
+                        Id = existingId,
+                        SystemCreateDate = existingSystemCreateDate
                     },
-                    values = new IndexJsonValues
+                    Values = new IndexJsonValues
                     {
-                        name = CollectionDataValues.CollectionName,
-                        managementCode = CollectionDataValues.CollectionMC,
-                        registrationDate = CollectionDataValues.CollectionRegistrationDate,
-                        category = CollectionDataValues.CollectionCategory,
-                        firstTag = CollectionDataValues.CollectionTag1,
-                        secondTag = CollectionDataValues.CollectionTag2,
-                        thirdTag = CollectionDataValues.CollectionTag3,
-                        location = CollectionDataValues.CollectionRealLocation
+                        Name = CollectionDataValues.CollectionName,
+                        ManagementCode = CollectionDataValues.CollectionMC,
+                        RegistrationDate = CollectionDataValues.CollectionRegistrationDate,
+                        Category = CollectionDataValues.CollectionCategory,
+                        FirstTag = CollectionDataValues.CollectionTag1,
+                        SecondTag = CollectionDataValues.CollectionTag2,
+                        ThirdTag = CollectionDataValues.CollectionTag3,
+                        Location = CollectionDataValues.CollectionRealLocation
                     }
                 };
 
