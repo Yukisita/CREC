@@ -13,6 +13,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,33 +49,48 @@ namespace CREC
     /// <summary>
     /// JSON形式のIndexファイルのsystemDataセクション
     /// </summary>
+    [DataContract]
     public class IndexJsonSystemData
     {
+        [DataMember]
         public string id { get; set; }
+        [DataMember]
         public string systemCreateDate { get; set; }
     }
 
     /// <summary>
     /// JSON形式のIndexファイルのvaluesセクション
     /// </summary>
+    [DataContract]
     public class IndexJsonValues
     {
+        [DataMember]
         public string name { get; set; }
+        [DataMember]
         public string managementCode { get; set; }
+        [DataMember]
         public string registrationDate { get; set; }
+        [DataMember]
         public string category { get; set; }
+        [DataMember]
         public string firstTag { get; set; }
+        [DataMember]
         public string secondTag { get; set; }
+        [DataMember]
         public string thirdTag { get; set; }
+        [DataMember]
         public string location { get; set; }
     }
 
     /// <summary>
     /// JSON形式のIndexファイル
     /// </summary>
+    [DataContract]
     public class IndexJsonFormat
     {
+        [DataMember]
         public IndexJsonSystemData systemData { get; set; }
+        [DataMember]
         public IndexJsonValues values { get; set; }
     }
 
