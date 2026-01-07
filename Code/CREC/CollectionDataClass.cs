@@ -401,6 +401,46 @@ namespace CREC
         }
 
         /// <summary>
+        /// 登録日をISO8601形式に変換する
+        /// </summary>
+        /// <param name="registrationDate">元の登録日文字列</param>
+        /// <returns>ISO8601形式の日時文字列</returns>
+        private static string ConvertRegistrationDateToIso8601(string registrationDate)
+        {
+            // 空または既定値の場合はそのまま返す
+            if (string.IsNullOrEmpty(registrationDate) || registrationDate == " - ")
+            {
+                return registrationDate;
+            }
+
+            // 複数の日時フォーマットを試行
+            string[] formats = {
+                "yyyy/MM/dd_HH:mm:ss.f",  // コレクション登録日の形式
+                "yyyy/MM/dd_HH:mm:ss",
+                "yyyy/MM/dd HH:mm:ss.f",
+                "yyyy/MM/dd HH:mm:ss"
+            };
+
+            foreach (string format in formats)
+            {
+                if (DateTime.TryParseExact(
+                    registrationDate,
+                    format,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.AssumeLocal,
+                    out DateTime parsedDateTime))
+                {
+                    // UTCに変換してISO8601形式で返す
+                    DateTimeOffset dto = new DateTimeOffset(parsedDateTime.ToUniversalTime());
+                    return dto.ToString("o");
+                }
+            }
+
+            // 解析に失敗した場合は元の文字列をそのまま返す
+            return registrationDate;
+        }
+
+        /// <summary>
         /// index.txtからindex.jsonへ変換する
         /// </summary>
         /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
@@ -485,13 +525,13 @@ namespace CREC
                     SystemData = new IndexJsonSystemData
                     {
                         Id = loadingData.CollectionID,
-                        SystemCreateDate = DateTimeOffset.Now.ToString("o") // ISO8601形式
+                        SystemCreateDate = new DateTimeOffset(DateTime.UtcNow).ToString("o") // ISO8601形式（UTC）
                     },
                     Values = new IndexJsonValues
                     {
                         Name = loadingData.CollectionName,
                         ManagementCode = loadingData.CollectionMC,
-                        RegistrationDate = loadingData.CollectionRegistrationDate,
+                        RegistrationDate = ConvertRegistrationDateToIso8601(loadingData.CollectionRegistrationDate),
                         Category = loadingData.CollectionCategory,
                         FirstTag = loadingData.CollectionTag1,
                         SecondTag = loadingData.CollectionTag2,
@@ -777,7 +817,7 @@ namespace CREC
 
                 // 既存のJSONファイルがあれば、systemDataを保持する
                 string existingId = CollectionDataValues.CollectionID;
-                string existingSystemCreateDate = DateTimeOffset.Now.ToString("o");
+                string existingSystemCreateDate = new DateTimeOffset(DateTime.UtcNow).ToString("o");
 
                 if (File.Exists(jsonFilePath))
                 {
@@ -785,7 +825,7 @@ namespace CREC
                     if (existingData != null && existingData.SystemData != null)
                     {
                         existingId = existingData.SystemData.Id ?? CollectionDataValues.CollectionID;
-                        existingSystemCreateDate = existingData.SystemData.SystemCreateDate ?? DateTimeOffset.Now.ToString("o");
+                        existingSystemCreateDate = existingData.SystemData.SystemCreateDate ?? new DateTimeOffset(DateTime.UtcNow).ToString("o");
                     }
                 }
 
