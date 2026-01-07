@@ -109,21 +109,20 @@ When the application detects an `index.txt` file without a corresponding `index.
 ## Implementation Notes
 
 ### Classes Added
-- `IndexJsonSystemData`: Contains system metadata (id, systemCreateDate)
-- `IndexJsonValues`: Contains user-editable values
+- `IndexJsonSystemData`: Contains system metadata (Id, SystemCreateDate) with DataMember attributes
+- `IndexJsonValues`: Contains user-editable values with DataMember attributes
 - `IndexJsonFormat`: Root JSON structure
 
 ### Methods Modified
 - `LoadCollectionIndexData`: Now supports both JSON and TXT formats with auto-migration
-- `SaveCollectionIndexData`: Saves in JSON format to SystemData folder
+- `SaveCollectionIndexData`: Saves in JSON format to SystemData folder using DataContractJsonSerializer
 - `BackupCollectionIndexData`: Handles both JSON and TXT backups
 - `CollectionIndexRecovery_IndexFileNotFound`: Supports recovery from both formats
 
 ### Methods Added
-- `LoadIndexJsonFile`: Reads JSON using DataContractJsonSerializer
-- `SaveIndexJsonFile`: Writes JSON with manual formatting for precise control
+- `LoadIndexJsonFile`: Reads JSON using DataContractJsonSerializer (same as inventory file)
+- `SaveIndexJsonFile`: Writes JSON using DataContractJsonSerializer with MemoryStream (same as inventory file)
 - `MigrateIndexTxtToJson`: Converts old format to new with user confirmation
-- `EscapeJsonString`: Properly escapes special characters in JSON strings
 
 ## Language Support
 New message keys added to both Japanese.xml and English.xml:

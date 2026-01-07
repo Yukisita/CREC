@@ -68,11 +68,18 @@ All fields correctly mapped as specified:
 
 All classes have `[DataContract]` and `[DataMember]` attributes for proper serialization.
 
+### New Classes
+1. **IndexJsonSystemData**: System metadata with DataMember(Name) attributes
+   - Properties: Id, SystemCreateDate (PascalCase with camelCase JSON names)
+2. **IndexJsonValues**: Collection data with DataMember(Name) attributes
+   - Properties: Name, ManagementCode, RegistrationDate, Category, FirstTag, SecondTag, ThirdTag, Location
+3. **IndexJsonFormat**: Root structure
+   - Properties: SystemData, Values
+
 ### New Methods
-1. **LoadIndexJsonFile**: Deserializes JSON using DataContractJsonSerializer
-2. **SaveIndexJsonFile**: Serializes to JSON with manual formatting for precise control
+1. **LoadIndexJsonFile**: Deserializes JSON using DataContractJsonSerializer (matches inventory file)
+2. **SaveIndexJsonFile**: Serializes JSON using DataContractJsonSerializer with MemoryStream (matches inventory file)
 3. **MigrateIndexTxtToJson**: Converts old format to new with user confirmation
-4. **EscapeJsonString**: Escapes special characters in JSON strings
 
 ### Modified Methods
 1. **LoadCollectionIndexData**: 
@@ -82,9 +89,9 @@ All classes have `[DataContract]` and `[DataMember]` attributes for proper seria
    - Added safety checks for string parsing
 
 2. **SaveCollectionIndexData**: 
-   - Saves in JSON format to SystemData folder
-   - Preserves systemCreateDate for existing collections
-   - Creates new systemCreateDate for new collections
+   - Saves in JSON format to SystemData folder using DataContractJsonSerializer
+   - Preserves SystemCreateDate for existing collections
+   - Creates new SystemCreateDate for new collections
 
 3. **BackupCollectionIndexData**: 
    - Handles both index.json and index.txt backups
@@ -127,13 +134,11 @@ See `JSON_FORMAT_EXAMPLE.md` for detailed test procedures:
 ## Known Limitations
 1. **Cannot build on Linux/macOS**: This is a Windows Forms application
 2. **Manual testing required**: No automated tests for UI-based migration dialogs
-3. **Manual JSON generation**: Using string concatenation for precise formatting control
 
 ## Future Improvements (Optional)
-1. Consider using Newtonsoft.Json for more robust JSON handling
-2. Add automated tests for migration logic (requires mocking MessageBox)
-3. Extract hard-coded " - " default value as a constant
-4. Consider batch migration tool for multiple collections
+1. Add automated tests for migration logic (requires mocking MessageBox)
+2. Extract hard-coded " - " default value as a constant
+3. Consider batch migration tool for multiple collections
 
 ## Verification Checklist
 - [x] JSON format matches specification exactly
@@ -144,9 +149,10 @@ See `JSON_FORMAT_EXAMPLE.md` for detailed test procedures:
 - [x] Backward compatibility maintained
 - [x] Safety checks for string parsing
 - [x] Language support (Japanese and English)
+- [x] Uses same serialization approach as inventory file
 - [x] Documentation created
 - [x] Code review completed and issues addressed
 - [ ] Manual testing on Windows (requires Windows environment)
 
 ## Conclusion
-The implementation is complete and ready for testing on a Windows environment. All requirements have been met with additional safety features and comprehensive documentation. The code is production-ready pending manual verification on Windows.
+The implementation is complete and ready for testing on a Windows environment. All requirements have been met with additional safety features and comprehensive documentation. The JSON serialization now matches the inventory management file specification using DataContractJsonSerializer. The code is production-ready pending manual verification on Windows.
