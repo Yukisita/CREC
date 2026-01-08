@@ -705,23 +705,6 @@ namespace CREC
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                     }
                 }
-                // 次にTXT形式のバックアップを確認（後方互換性）
-                else if (System.IO.File.Exists(CollectionFolderPath + @"\index_old.txt"))
-                {
-                    try
-                    {
-                        // index_old.txtからJSON形式に変換して復元
-                        File.Copy(CollectionFolderPath + "\\index_old.txt", CollectionFolderPath + "\\index.txt", true);
-                        // 一時的にindex.txtを作成し、JSON形式に変換
-                        MigrateIndexTxtToJson(CollectionFolderPath, true, languageData);
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataSuccessed", "CollectionDataClass", languageData), "CREC");
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
-                    }
-                }
                 else
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataBackupDataNotFound", "CollectionDataClass", languageData), "CREC");
