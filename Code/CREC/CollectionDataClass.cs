@@ -891,28 +891,14 @@ namespace CREC
             CollectionDataValuesClass CollectionDataValues,
             XElement languageData)
         {
-            string jsonFilePath = CollectionFolderPath + @"\SystemData\index.json";
-            string txtFilePath = CollectionFolderPath + @"\index.txt";
+            string indexFilePath = CollectionFolderPath + @"\SystemData\index.json";
             
             // JSON形式のファイルが存在する場合はバックアップを作成
-            if (System.IO.File.Exists(jsonFilePath))
+            if (System.IO.File.Exists(indexFilePath))
             {
                 try
                 {
-                    File.Copy(jsonFilePath, CollectionFolderPath + "\\SystemData\\index_old.json", true);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileBackupFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
-                    return false;
-                }
-            }
-            // 後方互換性のため、index.txtも存在する場合はバックアップ
-            else if (System.IO.File.Exists(txtFilePath))
-            {
-                try
-                {
-                    File.Copy(txtFilePath, CollectionFolderPath + "\\index_old.txt", true);
+                    File.Copy(indexFilePath, CollectionFolderPath + "\\SystemData\\index_old.json", true);
                 }
                 catch (Exception ex)
                 {
