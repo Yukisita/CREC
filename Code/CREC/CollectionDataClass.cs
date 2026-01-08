@@ -495,7 +495,10 @@ namespace CREC
                 {
                     File.Delete(txtPath);
                 }
-
+                else
+                {
+                    File.Move(txtPath, CollectionFolderPath + @"\index_prevFormat.txt");// バックアップとしてリネーム
+                }
                 return true;
             }
             catch
