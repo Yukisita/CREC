@@ -827,9 +827,7 @@ namespace CREC
             XElement languageData)
         {
             string indexFilePath = CollectionFolderPath + @"\SystemData\index.json";
-            
-            // JSON形式のファイルが存在する場合はバックアップを作成
-            if (System.IO.File.Exists(indexFilePath))
+            if (System.IO.File.Exists(indexFilePath))// JSON形式のファイルが存在する場合はバックアップを作成
             {
                 try
                 {
