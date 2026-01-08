@@ -367,40 +367,6 @@ namespace CREC
         }
 
         /// <summary>
-        /// JSON形式でIndexファイルを保存する
-        /// </summary>
-        /// <param name="jsonFilePath">JSONファイルのパス</param>
-        /// <param name="data">保存するIndexデータ</param>
-        /// <returns>保存に成功した場合はtrue</returns>
-        private static bool SaveIndexJsonFile(string jsonFilePath, IndexJsonFormat data)
-        {
-            try
-            {
-                // SystemDataフォルダが存在しない場合は作成
-                string systemDataFolder = System.IO.Path.GetDirectoryName(jsonFilePath);
-                if (!Directory.Exists(systemDataFolder))
-                {
-                    Directory.CreateDirectory(systemDataFolder);
-                }
-
-                // 在庫管理ファイルと同じ方式でJSON保存
-                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
-
-                using (var stream = new MemoryStream())
-                {
-                    serializer.WriteObject(stream, data);
-                    string json = Encoding.UTF8.GetString(stream.ToArray());
-                    File.WriteAllText(jsonFilePath, json, Encoding.UTF8);
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// 登録日をISO8601形式に変換する
         /// </summary>
         /// <param name="registrationDate">元の登録日文字列</param>
@@ -494,7 +460,7 @@ namespace CREC
                             break;
                         case "登録日":
                             if (line.Length > 4)
-                                loadingData.CollectionRegistrationDate = line.Substring(4);
+                                loadingData.CollectionRegistrationDate = ConvertRegistrationDateToIso8601(line.Substring(4));
                             break;
                         case "カテゴリ":
                             if (line.Length > 5)
@@ -519,28 +485,7 @@ namespace CREC
                     }
                 }
 
-                // JSON形式で保存
-                IndexJsonFormat jsonData = new IndexJsonFormat
-                {
-                    SystemData = new IndexJsonSystemData
-                    {
-                        Id = loadingData.CollectionID,
-                        SystemCreateDate = new DateTimeOffset(DateTime.UtcNow).ToString("o") // ISO8601形式（UTC）
-                    },
-                    Values = new IndexJsonValues
-                    {
-                        Name = loadingData.CollectionName,
-                        ManagementCode = loadingData.CollectionMC,
-                        RegistrationDate = ConvertRegistrationDateToIso8601(loadingData.CollectionRegistrationDate),
-                        Category = loadingData.CollectionCategory,
-                        FirstTag = loadingData.CollectionTag1,
-                        SecondTag = loadingData.CollectionTag2,
-                        ThirdTag = loadingData.CollectionTag3,
-                        Location = loadingData.CollectionRealLocation
-                    }
-                };
-
-                if (!SaveIndexJsonFile(jsonPath, jsonData))
+                if(!SaveCollectionIndexData(CollectionFolderPath, loadingData, languageData))
                 {
                     return false;
                 }
@@ -806,7 +751,7 @@ namespace CREC
         {
             try
             {
-                string jsonFilePath = CollectionFolderPath + @"\SystemData\index.json";
+                string indexFilePath = CollectionFolderPath + @"\SystemData\index.json";
                 string systemDataFolder = CollectionFolderPath + @"\SystemData";
 
                 // SystemDataフォルダが存在しない場合は作成
@@ -818,10 +763,9 @@ namespace CREC
                 // 既存のJSONファイルがあれば、systemDataを保持する
                 string existingId = CollectionDataValues.CollectionID;
                 string existingSystemCreateDate = new DateTimeOffset(DateTime.UtcNow).ToString("o");
-
-                if (File.Exists(jsonFilePath))
+                if (File.Exists(indexFilePath))
                 {
-                    IndexJsonFormat existingData = LoadIndexJsonFile(jsonFilePath);
+                    IndexJsonFormat existingData = LoadIndexJsonFile(indexFilePath);
                     if (existingData != null && existingData.SystemData != null)
                     {
                         existingId = existingData.SystemData.Id ?? CollectionDataValues.CollectionID;
@@ -829,7 +773,7 @@ namespace CREC
                     }
                 }
 
-                // JSON形式で保存
+                // JSON形式に変換
                 IndexJsonFormat jsonData = new IndexJsonFormat
                 {
                     SystemData = new IndexJsonSystemData
@@ -850,7 +794,15 @@ namespace CREC
                     }
                 };
 
-                return SaveIndexJsonFile(jsonFilePath, jsonData);
+                // JSON形式で保存
+                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
+                using (var stream = new MemoryStream())
+                {
+                    serializer.WriteObject(stream, jsonData);
+                    string json = Encoding.UTF8.GetString(stream.ToArray());
+                    File.WriteAllText(indexFilePath, json, Encoding.UTF8);
+                }
+                return true;
             }
             catch (Exception ex)
             {
