@@ -563,12 +563,11 @@ namespace CREC
                         loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
                         loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
                         CollectionDataValues = loadingCollectionDataValues;
-                        return true;
                     }
+                    return true;
                 }
-
-                // JSON形式のファイルが存在しない場合、index.txtを確認
-                if (System.IO.File.Exists(txtFilePath))
+                // JSON形式のファイルが存在しない場合、index.txtを確認（後方互換用）
+                else if (System.IO.File.Exists(txtFilePath))
                 {
                     // index.txtが存在する場合は、JSON形式へ自動移行
                     DialogResult deleteOldFile = MessageBox.Show(
@@ -577,44 +576,17 @@ namespace CREC
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question);
 
-                    if (MigrateIndexTxtToJson(CollectionFolderPath, deleteOldFile == DialogResult.Yes, languageData))
-                    {
-                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationSuccess", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
+                    if (!MigrateIndexTxtToJson(CollectionFolderPath, deleteOldFile == DialogResult.Yes, languageData))
                     {
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    
-                    // 移行後、JSON形式のファイルから読み込む
-                    if (System.IO.File.Exists(jsonFilePath))
-                    {
-                        IndexJsonFormat jsonData = LoadIndexJsonFile(jsonFilePath);
-                        if (jsonData != null && jsonData.SystemData != null && jsonData.Values != null)
-                        {
-                            loadingCollectionDataValues.CollectionID = jsonData.SystemData.Id ?? " - ";
-                            loadingCollectionDataValues.CollectionName = jsonData.Values.Name ?? " - ";
-                            loadingCollectionDataValues.CollectionMC = jsonData.Values.ManagementCode ?? " - ";
-                            loadingCollectionDataValues.CollectionRegistrationDate = jsonData.Values.RegistrationDate ?? " - ";
-                            loadingCollectionDataValues.CollectionCategory = jsonData.Values.Category ?? " - ";
-                            loadingCollectionDataValues.CollectionTag1 = jsonData.Values.FirstTag ?? " - ";
-                            loadingCollectionDataValues.CollectionTag2 = jsonData.Values.SecondTag ?? " - ";
-                            loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
-                            loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
-                            CollectionDataValues = loadingCollectionDataValues;
-                            return true;
-                        }
-                    }
-                    
-                    // JSONファイルの読み込みに失敗した場合はエラー
-                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileReadFailed", "CollectionDataClass", languageData), "CREC");
-                    return false;
+                    // 移行後、再度読み込みを試みる
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, languageData);
                 }
-
-                // どちらのファイルも存在しない場合
-                if (restoreIndexFileIfNotExist)
+                // Indexファイルが存在せず、復元処理有効な場合
+                else if (restoreIndexFileIfNotExist)
                 {
-                    // Indexファイルが存在しない場合は、バックアップから復元する
+                    // バックアップから復元または再生成する
                     if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
                     {
                         return false;
@@ -700,7 +672,7 @@ namespace CREC
                 // バックアップデータを探索
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupData", "CollectionDataClass", languageData), "CREC");
                 
-                // まずJSON形式のバックアップを確認
+                // バックアップを確認
                 if (System.IO.File.Exists(CollectionFolderPath + @"\SystemData\index_old.json"))
                 {
                     try
@@ -722,8 +694,7 @@ namespace CREC
                 // Indexを再生成する
                 CollectionDataValuesClass RecoveryCollectionDataValues = new CollectionDataValuesClass();
                 RecoveryCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
-                SaveCollectionIndexData(CollectionFolderPath, RecoveryCollectionDataValues, languageData);
-                return true;
+                return SaveCollectionIndexData(CollectionFolderPath, RecoveryCollectionDataValues, languageData);
             }
             catch (Exception ex)
             {
