@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Yukisita Mfg.")]
 [assembly: AssemblyProduct("CREC")]
-[assembly: AssemblyCopyright("S.Yukishita Copyright ©  2022-2025")]
+[assembly: AssemblyCopyright("S.Yukishita Copyright ©  2022-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
