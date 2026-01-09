@@ -545,7 +545,7 @@ namespace CREC
                 string txtFilePath = CollectionFolderPath + @"\index.txt";
                 CollectionDataValues.CollectionFolderPath = CollectionFolderPath;
 
-                // まずJSON形式のファイルを確認
+                // JSON形式のファイルを確認
                 if (System.IO.File.Exists(jsonFilePath))
                 {
                     // JSON形式のファイルが存在する場合は読み込む
