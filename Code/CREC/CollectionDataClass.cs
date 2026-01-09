@@ -497,7 +497,12 @@ namespace CREC
                 }
                 else
                 {
-                    File.Move(txtPath, CollectionFolderPath + @"\index_prevFormat.txt");// バックアップとしてリネーム
+                    string backupPath = CollectionFolderPath + @"\index_prevFormat.txt";
+                    if (File.Exists(backupPath))
+                    {
+                        File.Delete(backupPath); // 既存ファイルを削除
+                    }
+                    File.Move(txtPath, backupPath); // リネーム実行
                 }
                 return true;
             }
