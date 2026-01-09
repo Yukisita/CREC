@@ -384,7 +384,8 @@ namespace CREC
                 "yyyy/MM/dd_HH:mm:ss.f",  // コレクション登録日の形式
                 "yyyy/MM/dd_HH:mm:ss",
                 "yyyy/MM/dd HH:mm:ss.f",
-                "yyyy/MM/dd HH:mm:ss"
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy/MM/dd",// 日付のみ
             };
 
             foreach (string format in formats)
