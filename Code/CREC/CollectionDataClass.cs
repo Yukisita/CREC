@@ -459,7 +459,6 @@ namespace CREC
             try
             {
                 string txtPath = CollectionFolderPath + @"\index.txt";
-                string jsonPath = CollectionFolderPath + @"\SystemData\index.json";
 
                 if (!File.Exists(txtPath))
                 {
