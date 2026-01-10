@@ -2863,7 +2863,7 @@ namespace CREC
             {
                 NewCollectionData.CollectionMC = DT.ToString("yyMMddHHmmssf");
             }
-            NewCollectionData.CollectionRegistrationDate = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
+            NewCollectionData.CollectionRegistrationDate = DT.ToLocalTime().ToString("o");// ローカルタイムゾーンのISO8601形式に変換
             NewCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + NewCollectionData.CollectionID;
 
             // フォルダ及びファイルを作成
