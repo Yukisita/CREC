@@ -1,6 +1,6 @@
 ﻿/*
 Program
-Copyright (c) [2022-2025] [S.Yukisita]
+Copyright (c) [2022-2026] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
@@ -30,6 +30,8 @@ namespace CREC
         {
             // 読み込んだコレクションリストを格納するリスト
             var loadingCollectionList = new List<CollectionDataValuesClass>();
+            // レガシーIndexファイルの移行処理で削除するかどうかのフラグ
+            bool? deleteLegacyIndexFile = null;
             // レガシー在庫管理ファイルの移行処理で削除するかどうかのフラグ
             bool? deleteLegacyInventoryFile = null;
             // 指定されたフォルダ内を探索
@@ -48,7 +50,7 @@ namespace CREC
                 if (!File.Exists(subFolder.FullName + "\\SystemData\\ADD"))
                 {
                     // Index読み込み
-                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, LanguageData);
+                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, ref deleteLegacyIndexFile, LanguageData);
                     // 在庫状況読み込み
                     CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, ref deleteLegacyInventoryFile, LanguageData);
                 }

@@ -1,6 +1,6 @@
 ﻿/*
 MainForm
-Copyright (c) [2022-2025] [S.Yukisita]
+Copyright (c) [2022-2026] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
@@ -32,7 +32,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v11.0.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v12.0.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
         public const string ProjectSystemDataFolderName = "$SystemData";// コレクションデータのシステムフォルダ名
@@ -2863,7 +2863,7 @@ namespace CREC
             {
                 NewCollectionData.CollectionMC = DT.ToString("yyMMddHHmmssf");
             }
-            NewCollectionData.CollectionRegistrationDate = DT.ToString("yyyy/MM/dd_HH:mm:ss.f");// 日時を自動入力
+            NewCollectionData.CollectionRegistrationDate = DT.ToLocalTime().ToString("o");// ローカルタイムゾーンのISO8601形式に変換
             NewCollectionData.CollectionFolderPath = CurrentProjectSettingValues.ProjectDataFolderPath + "\\" + NewCollectionData.CollectionID;
 
             // フォルダ及びファイルを作成
@@ -2872,10 +2872,10 @@ namespace CREC
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\SystemData\\ADD");// 新規作成タグを作成
             Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\data");
             Directory.CreateDirectory(NewCollectionData.CollectionFolderPath + "\\pictures");
-            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\index.txt");
-            StreamWriter streamWriter = new StreamWriter(NewCollectionData.CollectionFolderPath + "\\index.txt");
-            streamWriter.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7},\n{8}", "名称," + EditNameTextBox.Text, "ID," + EditIDTextBox.Text, "MC," + EditMCTextBox.Text, "登録日," + EditRegistrationDateTextBox.Text, "カテゴリ," + EditCategoryTextBox.Text, "タグ1," + EditTag1TextBox.Text, "タグ2," + EditTag2TextBox.Text, "タグ3," + EditTag3TextBox.Text, "場所1(Real)," + EditRealLocationTextBox.Text));
-            streamWriter.Close();
+            
+            // JSON形式でindex.jsonを作成
+            CollectionDataClass.SaveCollectionIndexData(NewCollectionData.CollectionFolderPath, NewCollectionData, LanguageFile);
+            
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\details.txt");
             FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
             // 在庫管理を行うか確認

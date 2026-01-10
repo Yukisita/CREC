@@ -1042,7 +1042,7 @@
 		<Label>
 			<item>
 				<itemname>CopyrightLabel</itemname>
-				<itemtext>©　雪下 2025</itemtext>
+				<itemtext>©　雪下 2026</itemtext>
 			</item>
 			<item>
 				<itemname>SystemInformationsLabel</itemname>
@@ -1167,6 +1167,18 @@
 			<item>
 				<itemname>IndexFileBackupFailed</itemname>
 				<itemtext>Indexファイルのバックアップに失敗しました。&#xD;&#xA;</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationDeleteOldFile</itemname>
+				<itemtext>変換後、元のindex.txtファイルを削除しますか？&#xD;&#xA;（「いいえ」を選択すると、index.txtは保持されます）</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationSuccess</itemname>
+				<itemtext>index.jsonへの変換に成功しました。</itemtext>
+			</item>
+			<item>
+				<itemname>IndexFileMigrationFailed</itemname>
+				<itemtext>index.jsonへの変換に失敗しました。&#xD;&#xA;</itemtext>
 			</item>
 			<item>
 				<itemname>ThumbnailSetFaild</itemname>
