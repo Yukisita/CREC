@@ -34,7 +34,6 @@ namespace CREC
             return string.Empty;
         }
 
-
         /// <summary>
         /// 最近実行したプラグインリストに追加する
         /// </summary>
