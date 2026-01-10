@@ -1,6 +1,6 @@
 ﻿/*
 Program
-Copyright (c) [2022-2025] [S.Yukisita]
+Copyright (c) [2022-2026] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
@@ -13,6 +13,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -42,6 +44,63 @@ namespace CREC
         Watching,// 閲覧中
         Editing,// 編集中
         EditRequesting,// 編集リクエスト中
+    }
+
+    /// <summary>
+    /// JSON形式のIndexファイルのsystemDataセクション
+    /// </summary>
+    [DataContract]
+    public class IndexJsonSystemData
+    {
+        [DataMember(Name = "id")]
+        public string Id { get; set; }
+        
+        [DataMember(Name = "systemCreateDate")]
+        public string SystemCreateDate { get; set; }
+    }
+
+    /// <summary>
+    /// JSON形式のIndexファイルのvaluesセクション
+    /// </summary>
+    [DataContract]
+    public class IndexJsonValues
+    {
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+        
+        [DataMember(Name = "managementCode")]
+        public string ManagementCode { get; set; }
+        
+        [DataMember(Name = "registrationDate")]
+        public string RegistrationDate { get; set; }
+        
+        [DataMember(Name = "category")]
+        public string Category { get; set; }
+        
+        [DataMember(Name = "firstTag")]
+        public string FirstTag { get; set; }
+        
+        [DataMember(Name = "secondTag")]
+        public string SecondTag { get; set; }
+        
+        [DataMember(Name = "thirdTag")]
+        public string ThirdTag { get; set; }
+        
+        [DataMember(Name = "location")]
+        public string Location { get; set; }
+    }
+
+    /// <summary>
+    /// JSON形式のIndexファイル
+    /// </summary>
+    [DataContract]
+    public class IndexJsonFormat
+    {
+        [DataMember(Name = "systemData")]
+        public IndexJsonSystemData SystemData { get; set; }
+        
+        [DataMember(Name = "values")]
+        public IndexJsonValues Values { get; set; }
     }
 
     /// <summary>
@@ -285,17 +344,226 @@ namespace CREC
         const string BackupLogFolderName = "!BackupLog";// バックアップログのフォルダ名を定義
 
         /// <summary>
+        /// JSON形式でIndexファイルを読み込む
+        /// </summary>
+        /// <param name="jsonFilePath">JSONファイルのパス</param>
+        /// <returns>読み込んだIndexデータ</returns>
+        private static IndexJsonFormat LoadIndexJsonFile(string filePath)
+        {
+            try
+            {
+                string json = File.ReadAllText(filePath, Encoding.UTF8);
+                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
+
+                using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
+                {
+                    // JSONデータをデシリアライズ
+                    IndexJsonFormat indexData = (IndexJsonFormat)serializer.ReadObject(stream);
+                    // indexData.values.RegistrationDateをローカルタイムゾーンのISO8601形式に変換
+                    if (indexData != null && indexData.Values != null)
+                    {
+                        // RegistrationDateがnullまたは空文字列の場合はそのまま返す
+                        if (string.IsNullOrEmpty(indexData.Values.RegistrationDate))
+                        {
+                            indexData.Values.RegistrationDate = " - ";
+                        }
+                        else
+                        {
+                            // RegistrationDateをローカル時刻に変換
+                            DateTimeOffset dto;
+                            if (DateTimeOffset.TryParse(indexData.Values.RegistrationDate, out dto))
+                            {
+                                // ローカルタイムゾーンのISO8601形式に変換
+                                indexData.Values.RegistrationDate = dto.ToLocalTime().ToString("o");
+                            }
+                        }
+                    }
+                    return indexData;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 登録日をISO8601形式に変換する
+        /// </summary>
+        /// <param name="registrationDate">元の登録日文字列</param>
+        /// <returns>ISO8601形式の日時文字列</returns>
+        private static string ConvertRegistrationDateToIso8601(string registrationDate)
+        {
+            // 空または既定値の場合はそのまま返す
+            if (string.IsNullOrEmpty(registrationDate) || registrationDate == " - ")
+            {
+                return registrationDate;
+            }
+
+            // 複数の日時フォーマットを試行
+            string[] formats = {
+                "yyyy/MM/dd_HH:mm:ss.f",  // コレクション登録日の形式
+                "yyyy/MM/dd_HH:mm:ss",
+                "yyyy/MM/dd HH:mm:ss.f",
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy/MM/dd",// 日付のみ
+            };
+
+            foreach (string format in formats)
+            {
+                if (DateTime.TryParseExact(
+                    registrationDate,
+                    format,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.AssumeLocal,
+                    out DateTime parsedDateTime))
+                {
+                    // UTCに変換してISO8601形式で返す
+                    DateTimeOffset dto = new DateTimeOffset(parsedDateTime.ToUniversalTime());
+                    return dto.ToString("o");
+                }
+            }
+
+            // 解析に失敗した場合は元の文字列をそのまま返す
+            return registrationDate;
+        }
+
+        /// <summary>
+        /// index.txtからindex.jsonへ変換する
+        /// </summary>
+        /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
+        /// <param name="deleteOldFile">変換後に古いファイルを削除するか</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>変換に成功した場合はtrue</returns>
+        private static bool MigrateIndexTxtToJson(string CollectionFolderPath, ref bool? deleteLegacyIndexFile, XElement languageData)
+        {
+            // 削除フラグが未設定の場合、ユーザーに確認
+            if (deleteLegacyIndexFile == null)
+            {
+                DialogResult deleteOldFile = MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationDeleteOldFile", "CollectionDataClass", languageData),
+                    "CREC",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+                switch (deleteOldFile)
+                {
+                    case DialogResult.Yes:
+                        deleteLegacyIndexFile = true;
+                        break;
+                    case DialogResult.No:
+                        deleteLegacyIndexFile = false;
+                        break;
+                }
+            }
+
+            try
+            {
+                string txtPath = CollectionFolderPath + @"\index.txt";
+
+                if (!File.Exists(txtPath))
+                {
+                    return false;
+                }
+
+                // index.txtを読み込む
+                var loadingData = new CollectionDataValuesClass();
+                loadingData.CollectionID = new DirectoryInfo(CollectionFolderPath).Name;
+                loadingData.CollectionName = " - ";
+                loadingData.CollectionMC = " - ";
+                loadingData.CollectionRegistrationDate = " - ";
+                loadingData.CollectionCategory = " - ";
+                loadingData.CollectionTag1 = " - ";
+                loadingData.CollectionTag2 = " - ";
+                loadingData.CollectionTag3 = " - ";
+                loadingData.CollectionRealLocation = " - ";
+
+                string[] lines = File.ReadAllLines(txtPath, Encoding.GetEncoding("UTF-8"));
+                foreach (string line in lines)
+                {
+                    string[] parts = line.Split(',');
+                    if (parts.Length < 2)
+                        continue;
+
+                    switch (parts[0])
+                    {
+                        case "名称":
+                            if (line.Length > 3)
+                                loadingData.CollectionName = line.Substring(3);
+                            break;
+                        case "ID":
+                            if (line.Length > 3)
+                                loadingData.CollectionID = line.Substring(3);
+                            break;
+                        case "MC":
+                            if (line.Length > 3)
+                                loadingData.CollectionMC = line.Substring(3);
+                            break;
+                        case "登録日":
+                            if (line.Length > 4)
+                                loadingData.CollectionRegistrationDate = ConvertRegistrationDateToIso8601(line.Substring(4));
+                            break;
+                        case "カテゴリ":
+                            if (line.Length > 5)
+                                loadingData.CollectionCategory = line.Substring(5);
+                            break;
+                        case "タグ1":
+                            if (line.Length > 4)
+                                loadingData.CollectionTag1 = line.Substring(4);
+                            break;
+                        case "タグ2":
+                            if (line.Length > 4)
+                                loadingData.CollectionTag2 = line.Substring(4);
+                            break;
+                        case "タグ3":
+                            if (line.Length > 4)
+                                loadingData.CollectionTag3 = line.Substring(4);
+                            break;
+                        case "場所1(Real)":
+                            if (parts.Length > 1)
+                                loadingData.CollectionRealLocation = parts[1];
+                            break;
+                    }
+                }
+
+                if(!SaveCollectionIndexData(CollectionFolderPath, loadingData, languageData))
+                {
+                    return false;
+                }
+
+                // 古いファイルを削除するか確認
+                if (deleteLegacyIndexFile == true)
+                {
+                    File.Delete(txtPath);
+                }
+                else
+                {
+                    string backupPath = CollectionFolderPath + @"\index_prevFormat.txt";
+                    // 既存バックアップファイルがあっても上書きでコピーし、その後元ファイルを削除する
+                    File.Copy(txtPath, backupPath, true);
+                    File.Delete(txtPath);
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// コレクションのデータ読み込み
         /// </summary>
         /// <param name="CollectionFolderPath">読み込み対象のコレクションのフォルダ</param>
         /// <param name="CollectionDataValues">読み込み対象のコレクションのデータ（参照渡し）</param>
         /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合にバックアップから復元するかどうか</param>
+        /// <param name="deleteLegacyIndexFile">古いIndexファイルを削除するかどうか</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(
             string CollectionFolderPath,
             ref CollectionDataValuesClass CollectionDataValues,
             bool restoreIndexFileIfNotExist,
+            ref bool? deleteLegacyIndexFile,
             XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
@@ -313,85 +581,92 @@ namespace CREC
             loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
             try
             {
-                string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
+                string jsonFilePath = CollectionFolderPath + @"\SystemData\index.json";
+                string txtFilePath = CollectionFolderPath + @"\index.txt";
                 CollectionDataValues.CollectionFolderPath = CollectionFolderPath;
-                if (!System.IO.File.Exists(CollectionDataFilePath))
-                {
-                    // Indexファイルが存在しない場合の処理
-                    if (restoreIndexFileIfNotExist)
-                    {
-                        // Indexファイルが存在しない場合は、バックアップから復元する
-                        if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
-                        {
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
-                        loadingCollectionDataValues.CollectionName = " - "; // 名称は空欄
-                        loadingCollectionDataValues.CollectionMC = " - "; // MCは空欄
-                        loadingCollectionDataValues.CollectionRegistrationDate = " - "; // 登録日は空欄
-                        loadingCollectionDataValues.CollectionCategory = " - "; // カテゴリは空欄
-                        loadingCollectionDataValues.CollectionTag1 = " - "; // タグ1は空欄
-                        loadingCollectionDataValues.CollectionTag2 = " - "; // タグ2は空欄
-                        loadingCollectionDataValues.CollectionTag3 = " - "; // タグ3は空欄
-                        loadingCollectionDataValues.CollectionRealLocation = " - "; // 場所1(Real)は空欄
-                        loadingCollectionDataValues.CollectionCurrentInventory = null; // 在庫数は未設定
-                        loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet; // 在庫状況は未設定
-                        CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
-                    }
-                }
 
-                string[] CollectionDataLines = System.IO.File.ReadAllLines(CollectionDataFilePath, Encoding.GetEncoding("UTF-8"));
-                foreach (string line in CollectionDataLines)
+                // JSON形式のファイルを確認
+                if (System.IO.File.Exists(jsonFilePath))
                 {
-                    string[] CollectionDataLineSplit = line.Split(',');
-                    if (CollectionDataLineSplit.Length < 2)
+                    // JSON形式のファイルが存在する場合は読み込む
+                    IndexJsonFormat jsonData = LoadIndexJsonFile(jsonFilePath);
+                    if (jsonData != null && jsonData.SystemData != null && jsonData.Values != null)
+                    {
+                        loadingCollectionDataValues.CollectionID = jsonData.SystemData.Id ?? " - ";
+                        loadingCollectionDataValues.CollectionName = jsonData.Values.Name ?? " - ";
+                        loadingCollectionDataValues.CollectionMC = jsonData.Values.ManagementCode ?? " - ";
+                        loadingCollectionDataValues.CollectionRegistrationDate = jsonData.Values.RegistrationDate ?? " - ";
+                        loadingCollectionDataValues.CollectionCategory = jsonData.Values.Category ?? " - ";
+                        loadingCollectionDataValues.CollectionTag1 = jsonData.Values.FirstTag ?? " - ";
+                        loadingCollectionDataValues.CollectionTag2 = jsonData.Values.SecondTag ?? " - ";
+                        loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
+                        loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
+                        CollectionDataValues = loadingCollectionDataValues;
+                    }
+                    return true;
+                }
+                // JSON形式のファイルが存在しない場合、index.txtを確認（後方互換用）
+                else if (System.IO.File.Exists(txtFilePath))
+                {
+                    if (!MigrateIndexTxtToJson(CollectionFolderPath, ref deleteLegacyIndexFile, languageData))
+                    {
+                        MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    // 移行後、再度読み込みを試みる
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
+                }
+                // Indexファイルが存在せず、復元処理有効な場合
+                else if (restoreIndexFileIfNotExist)
+                {
+                    // バックアップから復元または再生成する
+                    if (!CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData))
                     {
                         return false;
                     }
-
-                    switch (CollectionDataLineSplit[0])
-                    {
-                        // 後方互換用になる予定
-                        case "名称":
-                            loadingCollectionDataValues.CollectionName = line.Substring(3);
-                            break;
-                        case "ID":
-                            loadingCollectionDataValues.CollectionID = line.Substring(3);
-                            break;
-                        case "MC":
-                            loadingCollectionDataValues.CollectionMC = line.Substring(3);
-                            break;
-                        case "登録日":
-                            loadingCollectionDataValues.CollectionRegistrationDate = line.Substring(4);
-                            break;
-                        case "カテゴリ":
-                            loadingCollectionDataValues.CollectionCategory = line.Substring(5);
-                            break;
-                        case "タグ1":
-                            loadingCollectionDataValues.CollectionTag1 = line.Substring(4);
-                            break;
-                        case "タグ2":
-                            loadingCollectionDataValues.CollectionTag2 = line.Substring(4);
-                            break;
-                        case "タグ3":
-                            loadingCollectionDataValues.CollectionTag3 = line.Substring(4);
-                            break;
-                        case "場所1(Real)":
-                            loadingCollectionDataValues.CollectionRealLocation = CollectionDataLineSplit[1];
-                            break;
-                    }
+                    // 復元後、再度読み込みを試みる
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
                 }
-                CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
-                return true;
+                // 防御的処理：Indexファイルが存在しない場合
+                else
+                {
+                    loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
+                    loadingCollectionDataValues.CollectionName = " - "; // 名称は空欄
+                    loadingCollectionDataValues.CollectionMC = " - "; // MCは空欄
+                    loadingCollectionDataValues.CollectionRegistrationDate = " - "; // 登録日は空欄
+                    loadingCollectionDataValues.CollectionCategory = " - "; // カテゴリは空欄
+                    loadingCollectionDataValues.CollectionTag1 = " - "; // タグ1は空欄
+                    loadingCollectionDataValues.CollectionTag2 = " - "; // タグ2は空欄
+                    loadingCollectionDataValues.CollectionTag3 = " - "; // タグ3は空欄
+                    loadingCollectionDataValues.CollectionRealLocation = " - "; // 場所1(Real)は空欄
+                    loadingCollectionDataValues.CollectionCurrentInventory = null; // 在庫数は未設定
+                    loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet; // 在庫状況は未設定
+                    CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileReadFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                 return CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData);
             }
+        }
+
+        /// <summary>
+        /// コレクションのIndexファイル読み込み
+        /// </summary>
+        /// <param name="CollectionFolderPath">対象のコレクションフォルダパス</param>
+        /// <param name="CollectionDataValues">対象のコレクションデータ</param>
+        /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合に復元するかどうか</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>読み込んだコレクションのデータ</returns>
+        public static bool LoadCollectionIndexData(
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
+            bool restoreIndexFileIfNotExist,
+            XElement languageData)
+        {
+            bool? deleteLegacyIndexFile = null;
+            return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, restoreIndexFileIfNotExist, ref deleteLegacyIndexFile, languageData);
         }
 
         /// <summary>
@@ -447,12 +722,13 @@ namespace CREC
             {
                 // バックアップデータを探索
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupData", "CollectionDataClass", languageData), "CREC");
-                if (System.IO.File.Exists(CollectionFolderPath + @"\index_old.txt"))
+                
+                // バックアップを確認
+                if (System.IO.File.Exists(CollectionFolderPath + @"\SystemData\index_old.json"))
                 {
-                    // バックアップデータから復元
                     try
                     {
-                        File.Copy(CollectionFolderPath + "\\index_old.txt", CollectionFolderPath + "\\index.txt", true);
+                        File.Copy(CollectionFolderPath + "\\SystemData\\index_old.json", CollectionFolderPath + "\\SystemData\\index.json", true);
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataSuccessed", "CollectionDataClass", languageData), "CREC");
                         return true;
                     }
@@ -465,11 +741,11 @@ namespace CREC
                 {
                     MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileRestoredFromBackupDataBackupDataNotFound", "CollectionDataClass", languageData), "CREC");
                 }
+                
                 // Indexを再生成する
                 CollectionDataValuesClass RecoveryCollectionDataValues = new CollectionDataValuesClass();
                 RecoveryCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
-                SaveCollectionIndexData(CollectionFolderPath, RecoveryCollectionDataValues, languageData);
-                return true;
+                return SaveCollectionIndexData(CollectionFolderPath, RecoveryCollectionDataValues, languageData);
             }
             catch (Exception ex)
             {
@@ -489,19 +765,70 @@ namespace CREC
         {
             try
             {
-                // 現在の値をIndexデータに保存
-                StreamWriter Indexfile = new StreamWriter(CollectionFolderPath + "\\index.txt", false, Encoding.GetEncoding("UTF-8"));
-                Indexfile.WriteLine(string.Format("{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n{7}\n{8}",
-                    "名称," + CollectionDataValues.CollectionName,
-                    "ID," + CollectionDataValues.CollectionID,
-                    "MC," + CollectionDataValues.CollectionMC,
-                    "登録日," + CollectionDataValues.CollectionRegistrationDate,
-                    "カテゴリ," + CollectionDataValues.CollectionCategory,
-                    "タグ1," + CollectionDataValues.CollectionTag1,
-                    "タグ2," + CollectionDataValues.CollectionTag2,
-                    "タグ3," + CollectionDataValues.CollectionTag3,
-                    "場所1(Real)," + CollectionDataValues.CollectionRealLocation));
-                Indexfile.Close();
+                string indexFilePath = CollectionFolderPath + @"\SystemData\index.json";
+                string systemDataFolder = CollectionFolderPath + @"\SystemData";
+
+                // SystemDataフォルダが存在しない場合は作成
+                if (!Directory.Exists(systemDataFolder))
+                {
+                    Directory.CreateDirectory(systemDataFolder);
+                }
+
+                // 既存のJSONファイルがあれば、systemDataを保持する
+                string existingId = CollectionDataValues.CollectionID;
+                string existingSystemCreateDate = new DateTimeOffset(DateTime.UtcNow).ToString("o");
+                if (File.Exists(indexFilePath))
+                {
+                    IndexJsonFormat existingData = LoadIndexJsonFile(indexFilePath);
+                    if (existingData != null && existingData.SystemData != null)
+                    {
+                        existingId = existingData.SystemData.Id ?? CollectionDataValues.CollectionID;
+                        existingSystemCreateDate = existingData.SystemData.SystemCreateDate ?? new DateTimeOffset(DateTime.UtcNow).ToString("o");
+                    }
+                }
+
+                // ローカル時刻を含むCollectionDataValues.CollectionRegistrationDateをUTCに変換
+                string utcRegistrationDate = CollectionDataValues.CollectionRegistrationDate;
+                if (!string.IsNullOrEmpty(CollectionDataValues.CollectionRegistrationDate) 
+                    && CollectionDataValues.CollectionRegistrationDate != " - ")
+                {
+                    DateTimeOffset dto;
+                    if (DateTimeOffset.TryParse(CollectionDataValues.CollectionRegistrationDate, out dto))
+                    {
+                        // UTC時刻のISO8601形式に変換
+                        utcRegistrationDate = dto.ToUniversalTime().ToString("o");
+                    }
+                }
+
+                // JSON形式に変換
+                IndexJsonFormat jsonData = new IndexJsonFormat
+                {
+                    SystemData = new IndexJsonSystemData
+                    {
+                        Id = existingId,
+                        SystemCreateDate = existingSystemCreateDate
+                    },
+                    Values = new IndexJsonValues
+                    {
+                        Name = CollectionDataValues.CollectionName,
+                        ManagementCode = CollectionDataValues.CollectionMC,
+                        RegistrationDate = utcRegistrationDate,
+                        Category = CollectionDataValues.CollectionCategory,
+                        FirstTag = CollectionDataValues.CollectionTag1,
+                        SecondTag = CollectionDataValues.CollectionTag2,
+                        ThirdTag = CollectionDataValues.CollectionTag3,
+                        Location = CollectionDataValues.CollectionRealLocation
+                    }
+                };
+
+                // JSON形式で保存
+                var serializer = new DataContractJsonSerializer(typeof(IndexJsonFormat));
+                using (var stream = new MemoryStream())
+                {
+                    serializer.WriteObject(stream, jsonData);
+                    string json = Encoding.UTF8.GetString(stream.ToArray());
+                    File.WriteAllText(indexFilePath, json, Encoding.UTF8);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -543,12 +870,12 @@ namespace CREC
             CollectionDataValuesClass CollectionDataValues,
             XElement languageData)
         {
-            string CollectionDataFilePath = CollectionFolderPath + @"\index.txt";
-            if (System.IO.File.Exists(CollectionDataFilePath))// Indexが存在する場合はバックアップを作成
+            string indexFilePath = CollectionFolderPath + @"\SystemData\index.json";
+            if (System.IO.File.Exists(indexFilePath))// JSON形式のファイルが存在する場合はバックアップを作成
             {
                 try
                 {
-                    File.Copy(CollectionFolderPath + "\\index.txt", CollectionFolderPath + "\\index_old.txt", true);
+                    File.Copy(indexFilePath, CollectionFolderPath + "\\SystemData\\index_old.json", true);
                 }
                 catch (Exception ex)
                 {
