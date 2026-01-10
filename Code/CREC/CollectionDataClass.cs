@@ -357,7 +357,28 @@ namespace CREC
 
                 using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(json)))
                 {
-                    return (IndexJsonFormat)serializer.ReadObject(stream);
+                    // JSONデータをデシリアライズ
+                    IndexJsonFormat indexData = (IndexJsonFormat)serializer.ReadObject(stream);
+                    // indexData.values.RegistrationDateをローカルタイムゾーンのISO8601形式に変換
+                    if (indexData != null && indexData.Values != null)
+                    {
+                        // RegistrationDateがnullまたは空文字列の場合はそのまま返す
+                        if (string.IsNullOrEmpty(indexData.Values.RegistrationDate))
+                        {
+                            indexData.Values.RegistrationDate = " - ";
+                        }
+                        else
+                        {
+                            // RegistrationDateをローカル時刻に変換
+                            DateTimeOffset dto;
+                            if (DateTimeOffset.TryParse(indexData.Values.RegistrationDate, out dto))
+                            {
+                                // ローカルタイムゾーンのISO8601形式に変換
+                                indexData.Values.RegistrationDate = dto.ToLocalTime().ToString("o");
+                            }
+                        }
+                    }
+                    return indexData;
                 }
             }
             catch
@@ -769,6 +790,19 @@ namespace CREC
                     }
                 }
 
+                // ローカル時刻を含むCollectionDataValues.CollectionRegistrationDateをUTCに変換
+                string utcRegistrationDate = CollectionDataValues.CollectionRegistrationDate;
+                if (!string.IsNullOrEmpty(CollectionDataValues.CollectionRegistrationDate) 
+                    && CollectionDataValues.CollectionRegistrationDate != " - ")
+                {
+                    DateTimeOffset dto;
+                    if (DateTimeOffset.TryParse(CollectionDataValues.CollectionRegistrationDate, out dto))
+                    {
+                        // UTC時刻のISO8601形式に変換
+                        utcRegistrationDate = dto.ToUniversalTime().ToString("o");
+                    }
+                }
+
                 // JSON形式に変換
                 IndexJsonFormat jsonData = new IndexJsonFormat
                 {
@@ -781,7 +815,7 @@ namespace CREC
                     {
                         Name = CollectionDataValues.CollectionName,
                         ManagementCode = CollectionDataValues.CollectionMC,
-                        RegistrationDate = CollectionDataValues.CollectionRegistrationDate,
+                        RegistrationDate = utcRegistrationDate,
                         Category = CollectionDataValues.CollectionCategory,
                         FirstTag = CollectionDataValues.CollectionTag1,
                         SecondTag = CollectionDataValues.CollectionTag2,
