@@ -90,7 +90,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(116, 25);
             this.label2.TabIndex = 5;
-            this.label2.Text = "2025/12/29";
+            this.label2.Text = "2026/01/10";
             // 
             // BootingForm
             // 

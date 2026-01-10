@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2025/12/29";
+            this.ReleaseDate.Text = "Release: 2026/01/10";
             // 
             // VersionName
             // 
@@ -86,7 +86,7 @@
             this.CopyrightLabel.Name = "CopyrightLabel";
             this.CopyrightLabel.Size = new System.Drawing.Size(130, 25);
             this.CopyrightLabel.TabIndex = 4;
-            this.CopyrightLabel.Text = "©　雪下 2025";
+            this.CopyrightLabel.Text = "©　雪下 2026";
             // 
             // ShowSystemInformationsLabel
             // 
