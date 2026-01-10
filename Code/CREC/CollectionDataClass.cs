@@ -414,8 +414,27 @@ namespace CREC
         /// <param name="deleteOldFile">変換後に古いファイルを削除するか</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>変換に成功した場合はtrue</returns>
-        private static bool MigrateIndexTxtToJson(string CollectionFolderPath, bool deleteOldFile, XElement languageData)
+        private static bool MigrateIndexTxtToJson(string CollectionFolderPath, ref bool? deleteLegacyIndexFile, XElement languageData)
         {
+            // 削除フラグが未設定の場合、ユーザーに確認
+            if (deleteLegacyIndexFile == null)
+            {
+                DialogResult deleteOldFile = MessageBox.Show(
+                    LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationDeleteOldFile", "CollectionDataClass", languageData),
+                    "CREC",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+                switch (deleteOldFile)
+                {
+                    case DialogResult.Yes:
+                        deleteLegacyIndexFile = true;
+                        break;
+                    case DialogResult.No:
+                        deleteLegacyIndexFile = false;
+                        break;
+                }
+            }
+
             try
             {
                 string txtPath = CollectionFolderPath + @"\index.txt";
@@ -492,7 +511,7 @@ namespace CREC
                 }
 
                 // 古いファイルを削除するか確認
-                if (deleteOldFile)
+                if (deleteLegacyIndexFile == true)
                 {
                     File.Delete(txtPath);
                 }
@@ -519,12 +538,14 @@ namespace CREC
         /// <param name="CollectionFolderPath">読み込み対象のコレクションのフォルダ</param>
         /// <param name="CollectionDataValues">読み込み対象のコレクションのデータ（参照渡し）</param>
         /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合にバックアップから復元するかどうか</param>
+        /// <param name="deleteLegacyIndexFile">古いIndexファイルを削除するかどうか</param>
         /// <param name="languageData">言語データ</param>
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(
             string CollectionFolderPath,
             ref CollectionDataValuesClass CollectionDataValues,
             bool restoreIndexFileIfNotExist,
+            ref bool? deleteLegacyIndexFile,
             XElement languageData)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
@@ -569,19 +590,12 @@ namespace CREC
                 // JSON形式のファイルが存在しない場合、index.txtを確認（後方互換用）
                 else if (System.IO.File.Exists(txtFilePath))
                 {
-                    // index.txtが存在する場合は、JSON形式へ自動移行
-                    DialogResult deleteOldFile = MessageBox.Show(
-                        LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationDeleteOldFile", "CollectionDataClass", languageData),
-                        "CREC",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question);
-
-                    if (!MigrateIndexTxtToJson(CollectionFolderPath, deleteOldFile == DialogResult.Yes, languageData))
+                    if (!MigrateIndexTxtToJson(CollectionFolderPath, ref deleteLegacyIndexFile, languageData))
                     {
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     // 移行後、再度読み込みを試みる
-                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, languageData);
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
                 }
                 // Indexファイルが存在せず、復元処理有効な場合
                 else if (restoreIndexFileIfNotExist)
@@ -592,8 +606,9 @@ namespace CREC
                         return false;
                     }
                     // 復元後、再度読み込みを試みる
-                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, languageData);
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
                 }
+                // 防御的処理：Indexファイルが存在しない場合
                 else
                 {
                     loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
@@ -616,6 +631,24 @@ namespace CREC
                 MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileReadFailed", "CollectionDataClass", languageData) + ex.Message, "CREC");
                 return CollectionIndexRecovery_IndexFileNotFound(CollectionFolderPath, languageData);
             }
+        }
+
+        /// <summary>
+        /// コレクションのIndexファイル読み込み
+        /// </summary>
+        /// <param name="CollectionFolderPath">対象のコレクションフォルダパス</param>
+        /// <param name="CollectionDataValues">対象のコレクションデータ</param>
+        /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合に復元するかどうか</param>
+        /// <param name="languageData">言語データ</param>
+        /// <returns>読み込んだコレクションのデータ</returns>
+        public static bool LoadCollectionIndexData(
+            string CollectionFolderPath,
+            ref CollectionDataValuesClass CollectionDataValues,
+            bool restoreIndexFileIfNotExist,
+            XElement languageData)
+        {
+            bool? deleteLegacyIndexFile = null;
+            return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, restoreIndexFileIfNotExist, ref deleteLegacyIndexFile, languageData);
         }
 
         /// <summary>
