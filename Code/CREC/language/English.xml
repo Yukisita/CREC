@@ -1170,11 +1170,7 @@
 			</item>
 			<item>
 				<itemname>IndexFileMigrationDeleteOldFile</itemname>
-				<itemtext>Do you want to delete the original index.txt file after conversion?&#xD;&#xA;(Select "No" to keep index.txt)</itemtext>
-			</item>
-			<item>
-				<itemname>IndexFileMigrationSuccess</itemname>
-				<itemtext>Successfully converted to index.json.</itemtext>
+				<itemtext>Convert index file to new format. &#xD;&#xA;Do you want to delete the original index.txt file after conversion?&#xD;&#xA;(Select "No" to keep index.txt)</itemtext>
 			</item>
 			<item>
 				<itemname>IndexFileMigrationFailed</itemname>
