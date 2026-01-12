@@ -409,6 +409,7 @@ namespace CREC
                 "yyyy/MM/dd",// 日付のみ
             };
 
+            // フォーマットを先頭から順番に解析を試行し、最初に成功したものを使用
             foreach (string format in formats)
             {
                 if (DateTime.TryParseExact(
