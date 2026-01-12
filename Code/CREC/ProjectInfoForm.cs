@@ -1,6 +1,6 @@
 ﻿/*
 MakeNewProjectForm
-Copyright (c) [2022-2025] [S.Yukisita]
+Copyright (c) [2022-2026] [S.Yukisita]
 This software is released under the MIT License.
 https://github.com/Yukisita/CREC/blob/main/LICENSE
 */
