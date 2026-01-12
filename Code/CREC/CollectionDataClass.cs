@@ -602,8 +602,8 @@ namespace CREC
                         loadingCollectionDataValues.CollectionTag3 = jsonData.Values.ThirdTag ?? " - ";
                         loadingCollectionDataValues.CollectionRealLocation = jsonData.Values.Location ?? " - ";
                         CollectionDataValues = loadingCollectionDataValues;
+                        return true;
                     }
-                    return true;
                 }
                 // JSON形式のファイルが存在しない場合、index.txtを確認（後方互換用）
                 else if (System.IO.File.Exists(txtFilePath))
@@ -626,23 +626,20 @@ namespace CREC
                     // 復元後、再度読み込みを試みる
                     return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
                 }
-                // 防御的処理：Indexファイルが存在しない場合
-                else
-                {
-                    loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
-                    loadingCollectionDataValues.CollectionName = " - "; // 名称は空欄
-                    loadingCollectionDataValues.CollectionMC = " - "; // MCは空欄
-                    loadingCollectionDataValues.CollectionRegistrationDate = " - "; // 登録日は空欄
-                    loadingCollectionDataValues.CollectionCategory = " - "; // カテゴリは空欄
-                    loadingCollectionDataValues.CollectionTag1 = " - "; // タグ1は空欄
-                    loadingCollectionDataValues.CollectionTag2 = " - "; // タグ2は空欄
-                    loadingCollectionDataValues.CollectionTag3 = " - "; // タグ3は空欄
-                    loadingCollectionDataValues.CollectionRealLocation = " - "; // 場所1(Real)は空欄
-                    loadingCollectionDataValues.CollectionCurrentInventory = null; // 在庫数は未設定
-                    loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet; // 在庫状況は未設定
-                    CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
-                    return true;
-                }
+                // 防御的処理：Indexファイルが存在しない、またはJSONの読み込みに失敗した場合
+                loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
+                loadingCollectionDataValues.CollectionName = " - "; // 名称は空欄
+                loadingCollectionDataValues.CollectionMC = " - "; // MCは空欄
+                loadingCollectionDataValues.CollectionRegistrationDate = " - "; // 登録日は空欄
+                loadingCollectionDataValues.CollectionCategory = " - "; // カテゴリは空欄
+                loadingCollectionDataValues.CollectionTag1 = " - "; // タグ1は空欄
+                loadingCollectionDataValues.CollectionTag2 = " - "; // タグ2は空欄
+                loadingCollectionDataValues.CollectionTag3 = " - "; // タグ3は空欄
+                loadingCollectionDataValues.CollectionRealLocation = " - "; // 場所1(Real)は空欄
+                loadingCollectionDataValues.CollectionCurrentInventory = null; // 在庫数は未設定
+                loadingCollectionDataValues.CollectionInventoryStatus = InventoryStatus.NotSet; // 在庫状況は未設定
+                CollectionDataValues = loadingCollectionDataValues;// 読み込んだデータを返す
+                return true;
             }
             catch (Exception ex)
             {
