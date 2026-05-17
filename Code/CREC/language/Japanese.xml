@@ -1177,6 +1177,10 @@
 				<itemtext>index.jsonへの変換に失敗しました。&#xD;&#xA;</itemtext>
 			</item>
 			<item>
+				<itemname>DetailsFileMigrationFailed</itemname>
+				<itemtext>ファイルの移行に失敗しました。&#xD;&#xA;移動元: </itemtext>
+			</item>
+			<item>
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>サムネイルの設定に失敗しました。&#xD;&#xA;別の画像を選択してください。&#xD;&#xA;</itemtext>
 			</item>
