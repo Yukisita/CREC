@@ -432,7 +432,8 @@ namespace CREC
         /// <summary>
         /// details.txt および confidentialdata.txt をコレクションフォルダのルートから SystemData サブフォルダへ移動する（後方互換用）。
         /// SystemData 内にすでに対象ファイルが存在する場合は移動しない。
-        /// 移動元にも移動先にも対象ファイルが存在しない場合は SystemData 内に新規作成する。
+        /// 移動元にも移動先にも対象ファイルが存在しない場合は、バックアップファイル（*_old.txt）があれば復元し、
+        /// バックアップも存在しない場合は SystemData 内に新規作成する。
         /// </summary>
         /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
         private static void MigrateDetailsFilesToSystemData(string CollectionFolderPath)
@@ -456,8 +457,19 @@ namespace CREC
                     }
                     else if (!File.Exists(srcPath) && !File.Exists(dstPath))
                     {
-                        // 移動元にも移動先にも存在しない場合は SystemData 内に新規作成する
-                        FileOperationClass.AddBlankFile(dstPath);
+                        // 移動元にも移動先にも存在しない場合
+                        // バックアップファイル（*_old.txt）が SystemData 内にあれば復元する
+                        string backupName = System.IO.Path.GetFileNameWithoutExtension(fileName) + "_old.txt";
+                        string backupPath = systemDataFolder + @"\" + backupName;
+                        if (File.Exists(backupPath))
+                        {
+                            File.Copy(backupPath, dstPath, false);
+                        }
+                        else
+                        {
+                            // バックアップも存在しない場合は新規作成する
+                            FileOperationClass.AddBlankFile(dstPath);
+                        }
                     }
                 }
                 catch
