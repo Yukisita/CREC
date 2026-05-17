@@ -1177,6 +1177,10 @@
 				<itemtext>Failed to convert to index.json.&#xD;&#xA;</itemtext>
 			</item>
 			<item>
+				<itemname>DetailsFileMigrationFailed</itemname>
+				<itemtext>File migration failed.&#xD;&#xA;Source: </itemtext>
+			</item>
+			<item>
 				<itemname>ThumbnailSetFaild</itemname>
 				<itemtext>Failed to set thumbnail.&#xD;&#xA;Please choose another image.&#xD;&#xA;</itemtext>
 			</item>

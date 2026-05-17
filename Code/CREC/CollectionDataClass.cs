@@ -430,6 +430,62 @@ namespace CREC
         }
 
         /// <summary>
+        /// details.txt および confidentialdata.txt をコレクションフォルダのルートから SystemData サブフォルダへ移動する（後方互換用）。
+        /// SystemData 内にすでに対象ファイルが存在する場合は移動しない。
+        /// 移動元にも移動先にも対象ファイルが存在しない場合は、バックアップファイル（*_old.txt）があれば復元し、
+        /// バックアップも存在しない場合は SystemData 内に新規作成する。
+        /// </summary>
+        /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
+        /// <param name="languageData">言語データ</param>
+        private static void MigrateDetailsFilesToSystemData(string CollectionFolderPath, XElement languageData)
+        {
+            string systemDataFolder = CollectionFolderPath + @"\SystemData";
+            string[] fileNames = { "details.txt", "confidentialdata.txt" };
+            foreach (string fileName in fileNames)
+            {
+                string srcPath = CollectionFolderPath + @"\" + fileName;
+                string dstPath = systemDataFolder + @"\" + fileName;
+                try
+                {
+                    if (!Directory.Exists(systemDataFolder))
+                    {
+                        Directory.CreateDirectory(systemDataFolder);
+                    }
+                    if (File.Exists(srcPath) && !File.Exists(dstPath))
+                    {
+                        // 移動元が存在し、かつ移動先がまだ存在しない場合は移動する
+                        File.Move(srcPath, dstPath);
+                    }
+                    else if (!File.Exists(srcPath) && !File.Exists(dstPath))
+                    {
+                        // 移動元にも移動先にも存在しない場合
+                        // バックアップファイル（*_old.txt）が SystemData 内にあれば復元する
+                        string backupName = System.IO.Path.GetFileNameWithoutExtension(fileName) + "_old.txt";
+                        string backupPath = systemDataFolder + @"\" + backupName;
+                        if (File.Exists(backupPath))
+                        {
+                            File.Copy(backupPath, dstPath, false);
+                        }
+                        else
+                        {
+                            // バックアップも存在しない場合は新規作成する
+                            FileOperationClass.AddBlankFile(dstPath);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // 移行に失敗した場合はエラー内容と移動元のパスを表示して続行する
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("DetailsFileMigrationFailed", "CollectionDataClass", languageData) + srcPath + "\r\n" + ex.Message,
+                        "CREC",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+        }
+
+        /// <summary>
         /// index.txtからindex.jsonへ変換する
         /// </summary>
         /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
@@ -580,6 +636,10 @@ namespace CREC
                 return false;
             }
             loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
+
+            // details.txt / confidentialdata.txt をSystemDataへ移行（後方互換用）
+            MigrateDetailsFilesToSystemData(CollectionFolderPath, languageData);
+
             try
             {
                 string jsonFilePath = CollectionFolderPath + @"\SystemData\index.json";
