@@ -436,7 +436,8 @@ namespace CREC
         /// バックアップも存在しない場合は SystemData 内に新規作成する。
         /// </summary>
         /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
-        private static void MigrateDetailsFilesToSystemData(string CollectionFolderPath)
+        /// <param name="languageData">言語データ</param>
+        private static void MigrateDetailsFilesToSystemData(string CollectionFolderPath, XElement languageData)
         {
             string systemDataFolder = CollectionFolderPath + @"\SystemData";
             string[] fileNames = { "details.txt", "confidentialdata.txt" };
@@ -472,9 +473,14 @@ namespace CREC
                         }
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // 移行に失敗した場合は無視して続行する
+                    // 移行に失敗した場合はエラー内容と移動元のパスを表示して続行する
+                    MessageBox.Show(
+                        LanguageSettingClass.GetMessageBoxMessage("DetailsFileMigrationFailed", "CollectionDataClass", languageData) + srcPath + "\r\n" + ex.Message,
+                        "CREC",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
                 }
             }
         }
@@ -632,7 +638,7 @@ namespace CREC
             loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
 
             // details.txt / confidentialdata.txt をSystemDataへ移行（後方互換用）
-            MigrateDetailsFilesToSystemData(CollectionFolderPath);
+            MigrateDetailsFilesToSystemData(CollectionFolderPath, languageData);
 
             try
             {
