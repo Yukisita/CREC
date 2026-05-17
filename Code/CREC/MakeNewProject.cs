@@ -60,7 +60,7 @@ namespace CREC
                 CurrentProjectSettingValues.DataLocationLabel = DataLocationLabel.Text;
                 // 現在時刻を取得 
                 DateTime dateTime = DateTime.Now;
-                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy-MM-ddTHH:mm:ss");
             }
             // 現在の内容を表示
             EditProjectNameTextBox.Text = CurrentProjectSettingValues.Name;
