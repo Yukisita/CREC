@@ -430,6 +430,38 @@ namespace CREC
         }
 
         /// <summary>
+        /// details.txt および confidentialdata.txt をコレクションフォルダのルートから SystemData サブフォルダへ移動する（後方互換用）。
+        /// SystemData 内にすでに対象ファイルが存在する場合は移動しない。
+        /// </summary>
+        /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
+        private static void MigrateDetailsFilesToSystemData(string CollectionFolderPath)
+        {
+            string systemDataFolder = CollectionFolderPath + @"\SystemData";
+            string[] fileNames = { "details.txt", "confidentialdata.txt" };
+            foreach (string fileName in fileNames)
+            {
+                string srcPath = CollectionFolderPath + @"\" + fileName;
+                string dstPath = systemDataFolder + @"\" + fileName;
+                // 移動元が存在し、かつ移動先がまだ存在しない場合のみ移動する
+                if (File.Exists(srcPath) && !File.Exists(dstPath))
+                {
+                    try
+                    {
+                        if (!Directory.Exists(systemDataFolder))
+                        {
+                            Directory.CreateDirectory(systemDataFolder);
+                        }
+                        File.Move(srcPath, dstPath);
+                    }
+                    catch
+                    {
+                        // 移行に失敗した場合は無視して続行する
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// index.txtからindex.jsonへ変換する
         /// </summary>
         /// <param name="CollectionFolderPath">コレクションフォルダのパス</param>
@@ -580,6 +612,10 @@ namespace CREC
                 return false;
             }
             loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
+
+            // details.txt / confidentialdata.txt をSystemDataへ移行（後方互換用）
+            MigrateDetailsFilesToSystemData(CollectionFolderPath);
+
             try
             {
                 string jsonFilePath = CollectionFolderPath + @"\SystemData\index.json";

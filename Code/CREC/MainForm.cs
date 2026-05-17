@@ -822,7 +822,7 @@ namespace CREC
                 StreamReader streamReaderDetailData = null;
                 try
                 {
-                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
+                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt");
                     DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -838,7 +838,7 @@ namespace CREC
                 StreamReader streamReaderConfidentialData = null;
                 try
                 {
-                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt");
                     ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -2134,7 +2134,7 @@ namespace CREC
             StreamReader streamReaderDetailData = null;
             try
             {
-                streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
+                streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt");
                 DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
             }
             catch (Exception ex)
@@ -2150,7 +2150,7 @@ namespace CREC
             StreamReader streamReaderConfidentialData = null;
             try
             {
-                streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+                streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt");
                 ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
             }
             catch (Exception ex)
@@ -2437,7 +2437,7 @@ namespace CREC
                 StreamReader streamReaderDetailData = null;
                 try
                 {
-                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
+                    streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt");
                     DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -2453,7 +2453,7 @@ namespace CREC
                 StreamReader streamReaderConfidentialData = null;
                 try
                 {
-                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+                    streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt");
                     ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                 }
                 catch (Exception ex)
@@ -2876,8 +2876,8 @@ namespace CREC
             // JSON形式でindex.jsonを作成
             CollectionDataClass.SaveCollectionIndexData(NewCollectionData.CollectionFolderPath, NewCollectionData, LanguageFile);
             
-            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\details.txt");
-            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\SystemData\\details.txt");
+            FileOperationClass.AddBlankFile(NewCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt");
             // 在庫管理を行うか確認
             DialogResult result = MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("AskMakeInventoryManagementFile", "mainform", LanguageFile), "CREC", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
@@ -2949,7 +2949,7 @@ namespace CREC
             // 変更前のデータをバックアップ
             try
             {
-                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt", CurrentShownCollectionData.CollectionFolderPath + "\\details_old.txt", true);
+                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt", CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details_old.txt", true);
             }
             catch (Exception ex)
             {
@@ -2957,7 +2957,7 @@ namespace CREC
             }
             try
             {
-                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt", CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata_old.txt", true);
+                File.Copy(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt", CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata_old.txt", true);
             }
             catch (Exception ex)
             {
@@ -2982,11 +2982,11 @@ namespace CREC
             }
 
             // 詳細データの保存
-            StreamWriter Detailsfile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter Detailsfile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt", false, Encoding.GetEncoding("UTF-8"));
             Detailsfile.Write(string.Format("{0}", DetailsTextBox.Text));
             Detailsfile.Close();
             // 機密データの保存
-            StreamWriter ConfidentialDataFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt", false, Encoding.GetEncoding("UTF-8"));
+            StreamWriter ConfidentialDataFile = new StreamWriter(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt", false, Encoding.GetEncoding("UTF-8"));
             ConfidentialDataFile.Write(string.Format("{0}", ConfidentialDataTextBox.Text));
             ConfidentialDataFile.Close();
             // サムネ画像が更新されていた場合は上書きしキャッシュを削除
@@ -4475,7 +4475,7 @@ namespace CREC
                         StreamReader streamReaderDetailData = null;
                         try
                         {
-                            streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\details.txt");
+                            streamReaderDetailData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\details.txt");
                             DetailsTextBox.Text = streamReaderDetailData.ReadToEnd();
                         }
                         catch (Exception ex)
@@ -4491,7 +4491,7 @@ namespace CREC
                         StreamReader streamReaderConfidentialData = null;
                         try
                         {
-                            streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\confidentialdata.txt");
+                            streamReaderConfidentialData = new StreamReader(CurrentShownCollectionData.CollectionFolderPath + "\\SystemData\\confidentialdata.txt");
                             ConfidentialDataTextBox.Text = streamReaderConfidentialData.ReadToEnd();
                         }
                         catch (Exception ex)
