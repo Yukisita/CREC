@@ -1015,6 +1015,18 @@ namespace CREC
             }
             CheckListVisibleColumnExist(ref loadingProjectSettingValues);
             projectSettingValues = loadingProjectSettingValues;// 読み込んだ設定値を渡す
+            // CSV形式を読み込んだ場合は直ちにJSON形式へ変換して上書き保存する
+            try
+            {
+                using (var writer = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8")))
+                {
+                    writer.Write(BuildProjectSettingJson(projectSettingValues));
+                }
+            }
+            catch
+            {
+                // 変換保存に失敗しても読み込み自体は成功とする
+            }
             return true;
         }
 
