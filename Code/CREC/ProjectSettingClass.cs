@@ -1257,20 +1257,11 @@ namespace CREC
                 if (bs != null)
                 {
                     XElement autoBackup = bs.Element("autoBackup");
-                    if (autoBackup != null && autoBackup.Attribute("type")?.Value != "null")
+                    if (autoBackup != null)
                     {
-                        // 新フォーマット: オブジェクト形式
                         result.StartUpBackUp = GetJsonElementBool(autoBackup, "startUp", false);
                         result.CloseBackUp   = GetJsonElementBool(autoBackup, "close",   false);
                         result.EditBackUp    = GetJsonElementBool(autoBackup, "edit",    false);
-                    }
-                    else
-                    {
-                        // 旧フォーマット: 文字列フラグ形式（後方互換性）
-                        string autoBackupStr = GetJsonElementValue(bs, "autoBackup");
-                        result.StartUpBackUp = autoBackupStr?.Contains("S") ?? false;
-                        result.CloseBackUp   = autoBackupStr?.Contains("C") ?? false;
-                        result.EditBackUp    = autoBackupStr?.Contains("E") ?? false;
                     }
 
                     result.BackupCompressionType = (BackupCompressionType)GetJsonElementInt(bs, "backupCompressionType", 1);
@@ -1289,20 +1280,11 @@ namespace CREC
                 if (os != null)
                 {
                     XElement autoListOutput = os.Element("autoListOutput");
-                    if (autoListOutput != null && autoListOutput.Attribute("type")?.Value != "null")
+                    if (autoListOutput != null)
                     {
-                        // 新フォーマット: オブジェクト形式
                         result.StartUpListOutput = GetJsonElementBool(autoListOutput, "startUp", false);
                         result.CloseListOutput   = GetJsonElementBool(autoListOutput, "close",   false);
                         result.EditListOutput    = GetJsonElementBool(autoListOutput, "edit",    false);
-                    }
-                    else
-                    {
-                        // 旧フォーマット: 文字列フラグ形式（後方互換性）
-                        string autoList = GetJsonElementValue(os, "autoListOutput");
-                        result.StartUpListOutput = autoList?.Contains("S") ?? false;
-                        result.CloseListOutput   = autoList?.Contains("C") ?? false;
-                        result.EditListOutput    = autoList?.Contains("E") ?? false;
                     }
 
                     result.OpenListAfterOutput = GetJsonElementBool(os, "openListAfterOutput", false);
