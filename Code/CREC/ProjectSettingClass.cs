@@ -1016,11 +1016,43 @@ namespace CREC
             CheckListVisibleColumnExist(ref loadingProjectSettingValues);
             projectSettingValues = loadingProjectSettingValues;// 読み込んだ設定値を渡す
             // CSV形式を読み込んだ場合は直ちにJSON形式へ変換して上書き保存する
+            // 上書き前に元のCSV内容を保持しておく（ユーザが旧ファイルを残す場合に使用）
+            string originalCsvContent = null;
+            try
+            {
+                originalCsvContent = File.ReadAllText(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
+            }
+            catch
+            {
+                // 元ファイル読み取り失敗はスキップ
+            }
             try
             {
                 using (var writer = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8")))
                 {
                     writer.Write(BuildProjectSettingJson(projectSettingValues));
+                }
+                // 変換成功後、旧フォーマット（CSV）を削除するかユーザに確認する
+                if (originalCsvContent != null)
+                {
+                    MessageBoxResult keepResult = MessageBox.Show(
+                        "CSVからJSONへの変換が完了しました。\n旧フォーマット（CSV）を削除しますか？\n\n「はい」で削除\n「いいえ」でファイル名に\"prevformat_\"を付けて保存",
+                        "CREC",
+                        MessageBoxButton.YesNo);
+                    if (keepResult == MessageBoxResult.No)
+                    {
+                        try
+                        {
+                            string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
+                            string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
+                            string prevPath = Path.Combine(dir, "prevformat_" + filename);
+                            File.WriteAllText(prevPath, originalCsvContent, Encoding.GetEncoding("UTF-8"));
+                        }
+                        catch
+                        {
+                            // 旧ファイルの保存失敗は無視する
+                        }
+                    }
                 }
             }
             catch
