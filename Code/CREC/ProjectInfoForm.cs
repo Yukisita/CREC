@@ -47,10 +47,33 @@ namespace CREC
             if (CurrentProjectSettingValues.Name.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
                 ProjcetNameLabel.Text = ProjcetNameLabel.Text + CurrentProjectSettingValues.Name;
-                ProjcetCreatedDateLabel.Text = ProjcetCreatedDateLabel.Text + CurrentProjectSettingValues.CreatedDate;
-                ProjcetModifiedDateLabel.Text = ProjcetModifiedDateLabel.Text + CurrentProjectSettingValues.ModifiedDate;
-                ProjcetAccessedDateLabel.Text = ProjcetAccessedDateLabel.Text + CurrentProjectSettingValues.AccessedDate;
+                ProjcetCreatedDateLabel.Text = ProjcetCreatedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.CreatedDate);
+                ProjcetModifiedDateLabel.Text = ProjcetModifiedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.ModifiedDate);
+                ProjcetAccessedDateLabel.Text = ProjcetAccessedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.AccessedDate);
             }
+        }
+
+        /// <summary>
+        /// UTC ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ssZ") の日時文字列を
+        /// 端末のローカルタイムゾーンに合わせた表示文字列に変換する。
+        /// Z サフィックスがない場合（旧形式）はそのまま表示する。
+        /// </summary>
+        private static string UtcIso8601ToLocalDisplay(string utcDate)
+        {
+            if (string.IsNullOrEmpty(utcDate)) return utcDate ?? string.Empty;
+            if (utcDate.EndsWith("Z"))
+            {
+                string bare = utcDate.Substring(0, utcDate.Length - 1);
+                if (DateTime.TryParseExact(bare, "yyyy-MM-ddTHH:mm:ss",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                    out DateTime dtUtc))
+                {
+                    return dtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+                }
+            }
+            // Z なし（旧形式）はローカル時刻として表示
+            return utcDate;
         }
 
         private void SetColorMethod()// 色設定のメソッド

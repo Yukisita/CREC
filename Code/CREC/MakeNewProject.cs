@@ -58,9 +58,9 @@ namespace CREC
                 CurrentProjectSettingValues.ThirdTagLabel = Tag3NameLabel.Text;
                 CurrentProjectSettingValues.RealLocationLabel = RealLocationLabel.Text;
                 CurrentProjectSettingValues.DataLocationLabel = DataLocationLabel.Text;
-                // 現在時刻を取得 
-                DateTime dateTime = DateTime.Now;
-                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy-MM-ddTHH:mm:ss");
+                // 現在UTC時刻を取得 
+                DateTime dateTime = DateTime.UtcNow;
+                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
             // 現在の内容を表示
             EditProjectNameTextBox.Text = CurrentProjectSettingValues.Name;
@@ -153,9 +153,9 @@ namespace CREC
 
             if (error == 0)// 記入内容に問題がなかった場合は.crecファイルを作成
             {
-                // 現在時刻を取得 
-                DateTime dateTime = DateTime.Now;
-                CurrentProjectSettingValues.ModifiedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                // 現在UTC時刻を取得 
+                DateTime dateTime = DateTime.UtcNow;
+                CurrentProjectSettingValues.ModifiedDate = dateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
                 // 編集内容をプロジェクト設定値に反映
                 CurrentProjectSettingValues.Name = EditProjectNameTextBox.Text;
                 CurrentProjectSettingValues.ProjectDataFolderPath = EditProjectLocationTextBox.Text;

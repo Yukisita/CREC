@@ -494,15 +494,14 @@ namespace CREC
                         }
                         break;
                     case "created":
-                        loadingProjectSettingValues.CreatedDate = cols[1];
+                        loadingProjectSettingValues.CreatedDate = LocalCsvDateToUtcIso8601(cols[1]);
                         break;
                     case "modified":
-                        loadingProjectSettingValues.ModifiedDate = cols[1];
+                        loadingProjectSettingValues.ModifiedDate = LocalCsvDateToUtcIso8601(cols[1]);
                         break;
                     case "accessed":
-                        // 現在時刻を取得 
-                        DateTime dateTime = DateTime.Now;
-                        loadingProjectSettingValues.AccessedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                        // アクセス日時は常に現在のUTC時刻を使用する
+                        loadingProjectSettingValues.AccessedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
                         break;
                     case "Color":
                         try
@@ -1098,7 +1097,7 @@ namespace CREC
             // 最終更新日を更新する場合は現在時刻を設定
             if (updateModifiedDate == true)
             {
-                projectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");// 現在時刻を取得して最終更新日として設定
+                projectSettingValues.ModifiedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");// 現在UTC時刻を取得して最終更新日として設定
             }
             try
             {
@@ -1209,19 +1208,53 @@ namespace CREC
         }
 
         /// <summary>
-        /// 旧フォーマット ("yyyy/MM/dd hh:mm:ss" 等) の日時文字列を ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ss") に変換する。
+        /// 旧CSV形式のローカル日時文字列をUTC ISO 8601形式 ("yyyy-MM-ddTHH:mm:ssZ") に変換する。
+        /// CSV記録はシステムのローカルタイムゾーンに基づく時刻と仮定して変換する。
         /// 変換できない場合は元の文字列をそのまま返す。
         /// </summary>
-        private static string NormalizeDateToIso8601(string date)
+        private static string LocalCsvDateToUtcIso8601(string date)
         {
             if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
             string[] formats = { "yyyy/MM/dd hh:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddThh:mm:ss" };
             if (DateTime.TryParseExact(date, formats,
                 System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.None,
+                System.Globalization.DateTimeStyles.AssumeLocal,
                 out DateTime dt))
             {
-                return dt.ToString("yyyy-MM-ddTHH:mm:ss");
+                return dt.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ");
+            }
+            return date;
+        }
+
+        /// <summary>
+        /// 日時文字列を UTC ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ssZ") に正規化する。
+        /// 既に Z サフィックス付き UTC 形式の場合はフォーマットのみ正規化する。
+        /// Z サフィックスのない既存形式は UTC として扱い Z を付加する。
+        /// 変換できない場合は元の文字列をそのまま返す。
+        /// </summary>
+        private static string NormalizeDateToIso8601(string date)
+        {
+            if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
+            // "Z" サフィックス付き UTC 形式を処理
+            if (date.EndsWith("Z"))
+            {
+                if (DateTime.TryParseExact(date.Substring(0, date.Length - 1), "yyyy-MM-ddTHH:mm:ss",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                    out DateTime dtZ))
+                {
+                    return dtZ.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                }
+                return date;
+            }
+            // Z なし形式（新規 UTC 文字列または旧フォーマット）を UTC として正規化
+            string[] formats = { "yyyy/MM/dd hh:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddThh:mm:ss" };
+            if (DateTime.TryParseExact(date, formats,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                out DateTime dt))
+            {
+                return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
             return date;
         }
@@ -1293,8 +1326,8 @@ namespace CREC
                     result.ListOutputPath            = GetJsonElementValue(ps, "listOutputLocation") ?? string.Empty;
                     result.CreatedDate               = GetJsonElementValue(ps, "created")          ?? string.Empty;
                     result.ModifiedDate              = GetJsonElementValue(ps, "modified")         ?? string.Empty;
-                    // アクセス日時はロード時に現在時刻で更新する
-                    result.AccessedDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+                    // アクセス日時はロード時に現在のUTC時刻で更新する
+                    result.AccessedDate = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ");
                 }
 
                 // backupSettings
