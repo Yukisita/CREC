@@ -54,13 +54,22 @@ namespace CREC
         }
 
         /// <summary>
-        /// UTC ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ssZ") の日時文字列を
+        /// UTC ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ss+00:00" または "yyyy-MM-ddTHH:mm:ssZ") の日時文字列を
         /// 端末のローカルタイムゾーンに合わせた表示文字列に変換する。
-        /// Z サフィックスがない場合（旧形式）はそのまま表示する。
+        /// いずれの形式にも該当しない場合（旧形式）はそのまま表示する。
         /// </summary>
         private static string UtcIso8601ToLocalDisplay(string utcDate)
         {
             if (string.IsNullOrEmpty(utcDate)) return utcDate ?? string.Empty;
+            // "+HH:mm" オフセット付き形式（例: "2025-10-04T00:02:03+00:00"）を処理
+            if (DateTimeOffset.TryParseExact(utcDate, "yyyy-MM-ddTHH:mm:sszzz",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None,
+                out DateTimeOffset dto))
+            {
+                return dto.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            // "Z" サフィックス付き形式（既存ファイル互換）を処理
             if (utcDate.EndsWith("Z"))
             {
                 string bare = utcDate.Substring(0, utcDate.Length - 1);
@@ -72,7 +81,7 @@ namespace CREC
                     return dtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
                 }
             }
-            // Z なし（旧形式）はローカル時刻として表示
+            // それ以外（旧形式）はローカル時刻として表示
             return utcDate;
         }
 
