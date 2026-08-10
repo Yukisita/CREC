@@ -47,10 +47,32 @@ namespace CREC
             if (CurrentProjectSettingValues.Name.Length > 0)// 編集の場合は既存の.crecを読み込み
             {
                 ProjcetNameLabel.Text = ProjcetNameLabel.Text + CurrentProjectSettingValues.Name;
-                ProjcetCreatedDateLabel.Text = ProjcetCreatedDateLabel.Text + CurrentProjectSettingValues.CreatedDate;
-                ProjcetModifiedDateLabel.Text = ProjcetModifiedDateLabel.Text + CurrentProjectSettingValues.ModifiedDate;
-                ProjcetAccessedDateLabel.Text = ProjcetAccessedDateLabel.Text + CurrentProjectSettingValues.AccessedDate;
+                ProjcetCreatedDateLabel.Text = ProjcetCreatedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.CreatedDate);
+                ProjcetModifiedDateLabel.Text = ProjcetModifiedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.ModifiedDate);
+                ProjcetAccessedDateLabel.Text = ProjcetAccessedDateLabel.Text + UtcIso8601ToLocalDisplay(CurrentProjectSettingValues.AccessedDate);
             }
+        }
+
+        /// <summary>
+        /// UTC ISO 8601 形式 ("yyyy-MM-ddTHH:mm:ss+00:00" または "yyyy-MM-ddTHH:mm:ssZ") の日時文字列を
+        /// 端末のローカルタイムゾーンに合わせた表示文字列に変換する。
+        /// いずれの形式にも該当しない場合（旧形式）はそのまま表示する。
+        /// </summary>
+        /// <param name="utcDate">表示用に変換するUTCのISO 8601日時文字列。</param>
+        /// <returns>端末のローカル日時として整形した文字列。変換できない場合は入力値。</returns>
+        private static string UtcIso8601ToLocalDisplay(string utcDate)
+        {
+            if (string.IsNullOrEmpty(utcDate)) return utcDate ?? string.Empty;
+            string[] formats = { "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ss'Z'" };
+            if (DateTimeOffset.TryParseExact(utcDate, formats,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                out DateTimeOffset dto))
+            {
+                return dto.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            // それ以外（旧形式）はローカル時刻として表示
+            return utcDate;
         }
 
         private void SetColorMethod()// 色設定のメソッド
