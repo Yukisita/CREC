@@ -1007,29 +1007,35 @@ namespace CREC
             try
             {
                 WriteProjectSettingJson(projectSettingValues);
-                // 変換成功後、旧フォーマット（CSV）を削除するかユーザに確認する
-                MessageBoxResult keepResult = MessageBox.Show(
-                    "CSVからJSONへの変換が完了しました。\n旧フォーマット（CSV）を削除しますか？\n\n「はい」で削除\n「いいえ」でファイル名に\"prevformat_\"を付けて保存",
-                    "CREC",
-                    MessageBoxButton.YesNo);
-                if (keepResult == MessageBoxResult.No)
-                {
-                    try
-                    {
-                        string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
-                        string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
-                        string prevPath = Path.Combine(dir, "prevformat_" + filename);
-                        File.WriteAllText(prevPath, fileContent, Encoding.GetEncoding("UTF-8"));
-                    }
-                    catch
-                    {
-                        // 旧ファイルの保存失敗は無視する
-                    }
-                }
             }
             catch
             {
-                // 変換保存に失敗しても読み込み自体は成功とする
+                MessageBox.Show(
+                    "旧フォーマットのプロジェクトファイルは読み込めましたが、新フォーマットへの変換保存に失敗しました。\nプロジェクトファイルの状態を確認してください。",
+                    "CREC",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                return true;
+            }
+
+            // 変換成功後、旧フォーマット（CSV）を削除するかユーザに確認する
+            MessageBoxResult keepResult = MessageBox.Show(
+                "プロジェクトファイルの新フォーマットへの変換が完了しました。\n旧フォーマット（CSV形式）を削除しますか？\n\n「はい」で削除\n「いいえ」でファイル名に\"prevformat_\"を付けて保存",
+                "CREC",
+                MessageBoxButton.YesNo);
+            if (keepResult == MessageBoxResult.No)
+            {
+                try
+                {
+                    string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
+                    string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
+                    string prevPath = Path.Combine(dir, "prevformat_" + filename);
+                    File.WriteAllText(prevPath, fileContent, Encoding.GetEncoding("UTF-8"));
+                }
+                catch
+                {
+                    // 旧ファイルの保存失敗は無視する
+                }
             }
             return true;
         }
