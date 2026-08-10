@@ -1133,11 +1133,11 @@ namespace CREC
             {
                 switch (c)
                 {
-                    case '"':  sb.Append("\\\""); break;
+                    case '"': sb.Append("\\\""); break;
                     case '\\': sb.Append("\\\\"); break;
-                    case '\n': sb.Append("\\n");  break;
-                    case '\r': sb.Append("\\r");  break;
-                    case '\t': sb.Append("\\t");  break;
+                    case '\n': sb.Append("\\n"); break;
+                    case '\r': sb.Append("\\r"); break;
+                    case '\t': sb.Append("\\t"); break;
                     default:
                         if (c < 0x20)
                             sb.AppendFormat("\\u{0:x4}", (int)c);
@@ -1300,15 +1300,15 @@ namespace CREC
                 }
 
                 XElement root = doc.Root;
-                XElement ps   = root?.Element("projectSettings");
-                XElement bs   = root?.Element("backupSettings");
-                XElement os   = root?.Element("outputSettings");
-                XElement ds   = root?.Element("displaySettings");
-                XElement ls   = root?.Element("labelSettings");
-                XElement ss   = root?.Element("searchSettings");
-                XElement lvs  = root?.Element("listVisibilitySettings");
+                XElement ps = root?.Element("projectSettings");
+                XElement bs = root?.Element("backupSettings");
+                XElement os = root?.Element("outputSettings");
+                XElement ds = root?.Element("displaySettings");
+                XElement ls = root?.Element("labelSettings");
+                XElement ss = root?.Element("searchSettings");
+                XElement lvs = root?.Element("listVisibilitySettings");
                 XElement laws = root?.Element("listAutoWidthSettings");
-                XElement bhs  = root?.Element("behaviorSettings");
+                XElement bhs = root?.Element("behaviorSettings");
 
                 var result = new ProjectSettingValuesClass();
                 result.ProjectSettingFilePath = projectSettingValues.ProjectSettingFilePath;
@@ -1316,12 +1316,12 @@ namespace CREC
                 // projectSettings
                 if (ps != null)
                 {
-                    result.Name                      = GetJsonElementValue(ps, "projectName")      ?? string.Empty;
-                    result.ProjectDataFolderPath     = GetJsonElementValue(ps, "projectLocation")  ?? string.Empty;
-                    result.ProjectBackupFolderPath   = GetJsonElementValue(ps, "backupLocation")   ?? string.Empty;
-                    result.ListOutputPath            = GetJsonElementValue(ps, "listOutputLocation") ?? string.Empty;
-                    result.CreatedDate               = GetJsonElementValue(ps, "created")          ?? string.Empty;
-                    result.ModifiedDate              = GetJsonElementValue(ps, "modified")         ?? string.Empty;
+                    result.Name = GetJsonElementValue(ps, "projectName") ?? string.Empty;
+                    result.ProjectDataFolderPath = GetJsonElementValue(ps, "projectLocation") ?? string.Empty;
+                    result.ProjectBackupFolderPath = GetJsonElementValue(ps, "backupLocation") ?? string.Empty;
+                    result.ListOutputPath = GetJsonElementValue(ps, "listOutputLocation") ?? string.Empty;
+                    result.CreatedDate = GetJsonElementValue(ps, "created") ?? string.Empty;
+                    result.ModifiedDate = GetJsonElementValue(ps, "modified") ?? string.Empty;
                     // アクセス日時はロード時に現在のUTC時刻で更新する
                     result.AccessedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz");
                 }
@@ -1333,8 +1333,8 @@ namespace CREC
                     if (autoBackup != null)
                     {
                         result.StartUpBackUp = GetJsonElementBool(autoBackup, "startUp", false);
-                        result.CloseBackUp   = GetJsonElementBool(autoBackup, "close",   false);
-                        result.EditBackUp    = GetJsonElementBool(autoBackup, "edit",    false);
+                        result.CloseBackUp = GetJsonElementBool(autoBackup, "close", false);
+                        result.EditBackUp = GetJsonElementBool(autoBackup, "edit", false);
                     }
 
                     result.BackupCompressionType = (BackupCompressionType)GetJsonElementInt(bs, "backupCompressionType", 1);
@@ -1356,8 +1356,8 @@ namespace CREC
                     if (autoListOutput != null)
                     {
                         result.StartUpListOutput = GetJsonElementBool(autoListOutput, "startUp", false);
-                        result.CloseListOutput   = GetJsonElementBool(autoListOutput, "close",   false);
-                        result.EditListOutput    = GetJsonElementBool(autoListOutput, "edit",    false);
+                        result.CloseListOutput = GetJsonElementBool(autoListOutput, "close", false);
+                        result.EditListOutput = GetJsonElementBool(autoListOutput, "edit", false);
                     }
 
                     result.OpenListAfterOutput = GetJsonElementBool(os, "openListAfterOutput", false);
@@ -1369,7 +1369,7 @@ namespace CREC
                 // displaySettings
                 if (ds != null)
                 {
-                    result.ColorSetting          = (ColorValue)GetJsonElementInt(ds, "color", 0);
+                    result.ColorSetting = (ColorValue)GetJsonElementInt(ds, "color", 0);
                     result.ManagementCodeAutoFill = GetJsonElementBool(ds, "autoMCFill", true);
                 }
 
@@ -1408,37 +1408,37 @@ namespace CREC
                 // listVisibilitySettings
                 if (lvs != null)
                 {
-                    result.CollectionListUUIDVisible                 = GetJsonElementBool(lvs, "id",                  true);
-                    result.CollectionListManagementCodeVisible       = GetJsonElementBool(lvs, "mc",                  true);
-                    result.CollectionListNameVisible                 = GetJsonElementBool(lvs, "objectName",          true);
-                    result.CollectionListRegistrationDateVisible     = GetJsonElementBool(lvs, "registrationDate",    true);
-                    result.CollectionListCategoryVisible             = GetJsonElementBool(lvs, "category",            true);
-                    result.CollectionListFirstTagVisible             = GetJsonElementBool(lvs, "tag1",                true);
-                    result.CollectionListSecondTagVisible            = GetJsonElementBool(lvs, "tag2",                true);
-                    result.CollectionListThirdTagVisible             = GetJsonElementBool(lvs, "tag3",                true);
+                    result.CollectionListUUIDVisible = GetJsonElementBool(lvs, "id", true);
+                    result.CollectionListManagementCodeVisible = GetJsonElementBool(lvs, "mc", true);
+                    result.CollectionListNameVisible = GetJsonElementBool(lvs, "objectName", true);
+                    result.CollectionListRegistrationDateVisible = GetJsonElementBool(lvs, "registrationDate", true);
+                    result.CollectionListCategoryVisible = GetJsonElementBool(lvs, "category", true);
+                    result.CollectionListFirstTagVisible = GetJsonElementBool(lvs, "tag1", true);
+                    result.CollectionListSecondTagVisible = GetJsonElementBool(lvs, "tag2", true);
+                    result.CollectionListThirdTagVisible = GetJsonElementBool(lvs, "tag3", true);
                     result.CollectionListInventoryInformationVisible = GetJsonElementBool(lvs, "inventoryInformation", true);
                 }
 
                 // listAutoWidthSettings
                 if (laws != null)
                 {
-                    result.CollectionListUUIDAutoWidth                 = GetJsonElementBool(laws, "id",                  true);
-                    result.CollectionListManagementCodeAutoWidth       = GetJsonElementBool(laws, "mc",                  true);
-                    result.CollectionListNameAutoWidth                 = GetJsonElementBool(laws, "name",                 true);
-                    result.CollectionListRegistrationDateAutoWidth     = GetJsonElementBool(laws, "registrationDate",    true);
-                    result.CollectionListCategoryAutoWidth             = GetJsonElementBool(laws, "category",             true);
-                    result.CollectionListFirstTagAutoWidth             = GetJsonElementBool(laws, "tag1",                 true);
-                    result.CollectionListSecondTagAutoWidth            = GetJsonElementBool(laws, "tag2",                 true);
-                    result.CollectionListThirdTagAutoWidth             = GetJsonElementBool(laws, "tag3",                 true);
+                    result.CollectionListUUIDAutoWidth = GetJsonElementBool(laws, "id", true);
+                    result.CollectionListManagementCodeAutoWidth = GetJsonElementBool(laws, "mc", true);
+                    result.CollectionListNameAutoWidth = GetJsonElementBool(laws, "name", true);
+                    result.CollectionListRegistrationDateAutoWidth = GetJsonElementBool(laws, "registrationDate", true);
+                    result.CollectionListCategoryAutoWidth = GetJsonElementBool(laws, "category", true);
+                    result.CollectionListFirstTagAutoWidth = GetJsonElementBool(laws, "tag1", true);
+                    result.CollectionListSecondTagAutoWidth = GetJsonElementBool(laws, "tag2", true);
+                    result.CollectionListThirdTagAutoWidth = GetJsonElementBool(laws, "tag3", true);
                     result.CollectionListInventoryInformationAutoWidth = GetJsonElementBool(laws, "inventoryInformation", true);
                 }
 
                 // behaviorSettings
                 if (bhs != null)
                 {
-                    result.SleepMode               = (SleepMode)GetJsonElementInt(bhs, "sleepMode",              0);
-                    result.DataCheckInterval        = GetJsonElementInt(bhs, "dataCheckInterval",                10);
-                    result.CollectionListAutoUpdate = GetJsonElementBool(bhs, "collectionListAutoUpdate",         false);
+                    result.SleepMode = (SleepMode)GetJsonElementInt(bhs, "sleepMode", 0);
+                    result.DataCheckInterval = GetJsonElementInt(bhs, "dataCheckInterval", 10);
+                    result.CollectionListAutoUpdate = GetJsonElementBool(bhs, "collectionListAutoUpdate", false);
                 }
 
                 CheckListVisibleColumnExist(ref result);
