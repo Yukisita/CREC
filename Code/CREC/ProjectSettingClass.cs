@@ -329,43 +329,31 @@ namespace CREC
         public static bool LoadProjectSetting(ref ProjectSettingValuesClass projectSettingValues)
         {
             var loadingProjectSettingValues = new ProjectSettingValuesClass();// 読み込んだ設定値を一時保存する変数
-            // 初期化
-            IEnumerable<string> lines;
-            if (File.Exists(projectSettingValues.ProjectSettingFilePath))
-            {
-                try
-                {
-                    lines = File.ReadLines(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
-                }
-                catch
-                {
-                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
-                    return false;
-                }
-            }
-            else
+            if (!File.Exists(projectSettingValues.ProjectSettingFilePath))
             {
                 MessageBox.Show("プロジェクトファイルが見つかりませんでした。", "CREC");
                 return false;
             }
-            // フォーマット検出: JSONファイルは '{' で始まる
-            string firstNonEmptyLine = lines.FirstOrDefault(l => l.TrimStart().Length > 0) ?? string.Empty;
-            if (firstNonEmptyLine.TrimStart().StartsWith("{"))
+
+            string fileContent;
+            try
             {
-                // JSONフォーマット
-                string jsonContent;
-                try
-                {
-                    jsonContent = File.ReadAllText(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
-                }
-                catch
-                {
-                    MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
-                    return false;
-                }
-                return LoadProjectSettingFromJson(jsonContent, ref projectSettingValues);
+                fileContent = File.ReadAllText(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
             }
+            catch
+            {
+                MessageBox.Show("プロジェクトファイルの読み込みに失敗しました。", "CREC");
+                return false;
+            }
+
+            // フォーマット検出: JSONファイルは '{' で始まる
+            if (fileContent.TrimStart().StartsWith("{"))
+            {
+                return LoadProjectSettingFromJson(fileContent, ref projectSettingValues);
+            }
+
             loadingProjectSettingValues.ProjectSettingFilePath = projectSettingValues.ProjectSettingFilePath;
+            string[] lines = fileContent.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
             foreach (string line in lines)
             {
                 string[] cols = line.Split(',');
@@ -1016,41 +1004,26 @@ namespace CREC
             projectSettingValues = loadingProjectSettingValues;// 読み込んだ設定値を渡す
             // CSV形式を読み込んだ場合は直ちにJSON形式へ変換して上書き保存する
             // 上書き前に元のCSV内容を保持しておく（ユーザが旧ファイルを残す場合に使用）
-            string originalCsvContent = null;
             try
             {
-                originalCsvContent = File.ReadAllText(projectSettingValues.ProjectSettingFilePath, Encoding.GetEncoding("UTF-8"));
-            }
-            catch
-            {
-                // 元ファイル読み取り失敗はスキップ
-            }
-            try
-            {
-                using (var writer = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8")))
-                {
-                    writer.Write(BuildProjectSettingJson(projectSettingValues));
-                }
+                WriteProjectSettingJson(projectSettingValues);
                 // 変換成功後、旧フォーマット（CSV）を削除するかユーザに確認する
-                if (originalCsvContent != null)
+                MessageBoxResult keepResult = MessageBox.Show(
+                    "CSVからJSONへの変換が完了しました。\n旧フォーマット（CSV）を削除しますか？\n\n「はい」で削除\n「いいえ」でファイル名に\"prevformat_\"を付けて保存",
+                    "CREC",
+                    MessageBoxButton.YesNo);
+                if (keepResult == MessageBoxResult.No)
                 {
-                    MessageBoxResult keepResult = MessageBox.Show(
-                        "CSVからJSONへの変換が完了しました。\n旧フォーマット（CSV）を削除しますか？\n\n「はい」で削除\n「いいえ」でファイル名に\"prevformat_\"を付けて保存",
-                        "CREC",
-                        MessageBoxButton.YesNo);
-                    if (keepResult == MessageBoxResult.No)
+                    try
                     {
-                        try
-                        {
-                            string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
-                            string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
-                            string prevPath = Path.Combine(dir, "prevformat_" + filename);
-                            File.WriteAllText(prevPath, originalCsvContent, Encoding.GetEncoding("UTF-8"));
-                        }
-                        catch
-                        {
-                            // 旧ファイルの保存失敗は無視する
-                        }
+                        string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
+                        string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
+                        string prevPath = Path.Combine(dir, "prevformat_" + filename);
+                        File.WriteAllText(prevPath, fileContent, Encoding.GetEncoding("UTF-8"));
+                    }
+                    catch
+                    {
+                        // 旧ファイルの保存失敗は無視する
                     }
                 }
             }
@@ -1073,7 +1046,6 @@ namespace CREC
             bool updateModifiedDate,
             XElement languageData)
         {
-            bool returnValue = false;
             if (projectSettingValues.ProjectSettingFilePath.Length == 0)// pathが指定されているか確認
             {
                 MessageBox.Show("保存先が指定されていません。", "CREC");
@@ -1093,7 +1065,6 @@ namespace CREC
                     return false;
                 }
             }
-            StreamWriter streamWriter = null; // 修正: 変数を初期化
             // 最終更新日を更新する場合は現在時刻を設定
             if (updateModifiedDate == true)
             {
@@ -1101,9 +1072,8 @@ namespace CREC
             }
             try
             {
-                streamWriter = new StreamWriter(projectSettingValues.ProjectSettingFilePath, false, Encoding.GetEncoding("UTF-8"));
-                streamWriter.Write(BuildProjectSettingJson(projectSettingValues));
-                returnValue = true;
+                WriteProjectSettingJson(projectSettingValues);
+                return true;
             }
             catch (Exception ex)
             {
@@ -1114,25 +1084,10 @@ namespace CREC
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Error) == MessageBoxResult.Yes)
                 {
-                    if (streamWriter != null)
-                    {
-                        streamWriter.Close();
-                    }
                     return SaveProjectSetting(ref projectSettingValues, updateModifiedDate, languageData); // 再試行
                 }
-                else
-                {
-                    returnValue = false;
-                }
+                return false;
             }
-            finally
-            {
-                if (streamWriter != null)
-                {
-                    streamWriter.Close();
-                }
-            }
-            return returnValue;
         }
 
         /// <summary>
@@ -1196,18 +1151,6 @@ namespace CREC
         private static string JsonIntOrNull(int? value) => value.HasValue ? value.Value.ToString() : "null";
 
         /// <summary>
-        /// 起動時 (S) / 終了時 (C) / 編集時 (E) の自動実行フラグを JSON 文字列または "null" に変換する。
-        /// </summary>
-        private static string JsonAutoFlags(bool startup, bool close, bool edit)
-        {
-            string flags = string.Empty;
-            if (startup) flags += "S";
-            if (close)   flags += "C";
-            if (edit)    flags += "E";
-            return flags.Length > 0 ? JsonStr(flags) : "null";
-        }
-
-        /// <summary>
         /// 旧CSV形式のローカル日時文字列をUTC ISO 8601形式 ("yyyy-MM-ddTHH:mm:ss+00:00") に変換する。
         /// CSV記録はシステムのローカルタイムゾーンに基づく時刻と仮定して変換する。
         /// 変換できない場合は元の文字列をそのまま返す。
@@ -1234,34 +1177,20 @@ namespace CREC
         private static string NormalizeDateToIso8601(string date)
         {
             if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
-            // "+HH:mm" オフセット付き形式（例: "2025-10-04T00:02:03+00:00"）を処理
-            if (DateTimeOffset.TryParseExact(date, "yyyy-MM-ddTHH:mm:sszzz",
-                System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.None,
-                out DateTimeOffset dtoOffset))
-            {
-                return dtoOffset.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:sszzz");
-            }
-            // "Z" サフィックス付き UTC 形式（既存ファイル互換）を処理
-            if (date.EndsWith("Z"))
-            {
-                if (DateTime.TryParseExact(date.Substring(0, date.Length - 1), "yyyy-MM-ddTHH:mm:ss",
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
-                    out DateTime dtZ))
-                {
-                    return new DateTimeOffset(dtZ, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:sszzz");
-                }
-                return date;
-            }
-            // オフセットなし形式（旧フォーマット）を UTC として正規化
-            string[] formats = { "yyyy/MM/dd hh:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddThh:mm:ss" };
-            if (DateTime.TryParseExact(date, formats,
+            string[] formats = {
+                "yyyy-MM-ddTHH:mm:sszzz",
+                "yyyy-MM-ddTHH:mm:ss'Z'",
+                "yyyy/MM/dd hh:mm:ss",
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy-MM-ddTHH:mm:ss",
+                "yyyy-MM-ddThh:mm:ss"
+            };
+            if (DateTimeOffset.TryParseExact(date, formats,
                 System.Globalization.CultureInfo.InvariantCulture,
                 System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
-                out DateTime dt))
+                out DateTimeOffset dateTime))
             {
-                return new DateTimeOffset(dt, TimeSpan.Zero).ToString("yyyy-MM-ddTHH:mm:sszzz");
+                return dateTime.ToString("yyyy-MM-ddTHH:mm:sszzz");
             }
             return date;
         }
@@ -1293,6 +1222,20 @@ namespace CREC
             if (val == null) return defaultValue;
             if (int.TryParse(val, out int result)) return result;
             return defaultValue;
+        }
+
+        /// <summary>ラベル設定の表示名と有効状態を読み込む。</summary>
+        private static void LoadJsonLabelSetting(
+            XElement parent,
+            string elementName,
+            string defaultDisplayName,
+            Action<string> setDisplayName,
+            Action<bool> setEnabled)
+        {
+            XElement element = parent.Element(elementName);
+            if (element == null) return;
+            setDisplayName(GetJsonElementValue(element, "displayName") ?? defaultDisplayName);
+            setEnabled(GetJsonElementBool(element, "enabled", true));
         }
 
         /// <summary>
@@ -1387,66 +1330,26 @@ namespace CREC
                 // labelSettings
                 if (ls != null)
                 {
-                    XElement objectName = ls.Element("objectName");
-                    if (objectName != null)
-                    {
-                        result.CollectionNameLabel   = GetJsonElementValue(objectName, "displayName") ?? "Name";
-                        result.CollectionNameVisible = GetJsonElementBool(objectName, "enabled", true);
-                    }
-                    XElement id = ls.Element("id");
-                    if (id != null)
-                    {
-                        result.UUIDLabel   = GetJsonElementValue(id, "displayName") ?? "UUID";
-                        result.UUIDVisible = GetJsonElementBool(id, "enabled", true);
-                    }
-                    XElement mc = ls.Element("mc");
-                    if (mc != null)
-                    {
-                        result.ManagementCodeLabel   = GetJsonElementValue(mc, "displayName") ?? "Mgmt. code";
-                        result.ManagementCodeVisible = GetJsonElementBool(mc, "enabled", true);
-                    }
-                    XElement registrationDate = ls.Element("registrationDate");
-                    if (registrationDate != null)
-                    {
-                        result.RegistrationDateLabel   = GetJsonElementValue(registrationDate, "displayName") ?? "Registration Date";
-                        result.RegistrationDateVisible = GetJsonElementBool(registrationDate, "enabled", true);
-                    }
-                    XElement category = ls.Element("category");
-                    if (category != null)
-                    {
-                        result.CategoryLabel   = GetJsonElementValue(category, "displayName") ?? "Category";
-                        result.CategoryVisible = GetJsonElementBool(category, "enabled", true);
-                    }
-                    XElement tag1 = ls.Element("tag1");
-                    if (tag1 != null)
-                    {
-                        result.FirstTagLabel   = GetJsonElementValue(tag1, "displayName") ?? "Tag1";
-                        result.FirstTagVisible = GetJsonElementBool(tag1, "enabled", true);
-                    }
-                    XElement tag2 = ls.Element("tag2");
-                    if (tag2 != null)
-                    {
-                        result.SecondTagLabel   = GetJsonElementValue(tag2, "displayName") ?? "Tag2";
-                        result.SecondTagVisible = GetJsonElementBool(tag2, "enabled", true);
-                    }
-                    XElement tag3 = ls.Element("tag3");
-                    if (tag3 != null)
-                    {
-                        result.ThirdTagLabel   = GetJsonElementValue(tag3, "displayName") ?? "Tag3";
-                        result.ThirdTagVisible = GetJsonElementBool(tag3, "enabled", true);
-                    }
-                    XElement realLocation = ls.Element("realLocation");
-                    if (realLocation != null)
-                    {
-                        result.RealLocationLabel   = GetJsonElementValue(realLocation, "displayName") ?? "Real location";
-                        result.RealLocationVisible = GetJsonElementBool(realLocation, "enabled", true);
-                    }
-                    XElement dataLocation = ls.Element("dataLocation");
-                    if (dataLocation != null)
-                    {
-                        result.DataLocationLabel   = GetJsonElementValue(dataLocation, "displayName") ?? "Data location";
-                        result.DataLocationVisible = GetJsonElementBool(dataLocation, "enabled", true);
-                    }
+                    LoadJsonLabelSetting(ls, "objectName", "Name", value => result.CollectionNameLabel = value,
+                        value => result.CollectionNameVisible = value);
+                    LoadJsonLabelSetting(ls, "id", "UUID", value => result.UUIDLabel = value,
+                        value => result.UUIDVisible = value);
+                    LoadJsonLabelSetting(ls, "mc", "Mgmt. code", value => result.ManagementCodeLabel = value,
+                        value => result.ManagementCodeVisible = value);
+                    LoadJsonLabelSetting(ls, "registrationDate", "Registration Date", value => result.RegistrationDateLabel = value,
+                        value => result.RegistrationDateVisible = value);
+                    LoadJsonLabelSetting(ls, "category", "Category", value => result.CategoryLabel = value,
+                        value => result.CategoryVisible = value);
+                    LoadJsonLabelSetting(ls, "tag1", "Tag1", value => result.FirstTagLabel = value,
+                        value => result.FirstTagVisible = value);
+                    LoadJsonLabelSetting(ls, "tag2", "Tag2", value => result.SecondTagLabel = value,
+                        value => result.SecondTagVisible = value);
+                    LoadJsonLabelSetting(ls, "tag3", "Tag3", value => result.ThirdTagLabel = value,
+                        value => result.ThirdTagVisible = value);
+                    LoadJsonLabelSetting(ls, "realLocation", "Real location", value => result.RealLocationLabel = value,
+                        value => result.RealLocationVisible = value);
+                    LoadJsonLabelSetting(ls, "dataLocation", "Data location", value => result.DataLocationLabel = value,
+                        value => result.DataLocationVisible = value);
                 }
 
                 // searchSettings
@@ -1503,9 +1406,33 @@ namespace CREC
             }
         }
 
-        /// <summary>
-        /// プロジェクト設定を JSON 文字列に変換する。
-        /// </summary>
+        /// <summary>プロジェクト設定をJSON形式でファイルに書き込む。</summary>
+        private static void WriteProjectSettingJson(ProjectSettingValuesClass projectSettingValues)
+        {
+            using (var writer = new StreamWriter(
+                projectSettingValues.ProjectSettingFilePath,
+                false,
+                Encoding.GetEncoding("UTF-8")))
+            {
+                writer.Write(BuildProjectSettingJson(projectSettingValues));
+            }
+        }
+
+        /// <summary>ラベル設定をJSON文字列へ追加する。</summary>
+        private static void AppendJsonLabelSetting(
+            StringBuilder stringBuilder,
+            string elementName,
+            string displayName,
+            bool enabled,
+            bool appendComma)
+        {
+            stringBuilder.AppendLine($"    \"{elementName}\": {{");
+            stringBuilder.AppendLine($"      \"displayName\": {JsonStr(displayName)},");
+            stringBuilder.AppendLine($"      \"enabled\": {JsonBool(enabled)}");
+            stringBuilder.AppendLine(appendComma ? "    }," : "    }");
+        }
+
+        /// <summary>プロジェクト設定をJSON文字列に変換する。</summary>
         private static string BuildProjectSettingJson(ProjectSettingValuesClass p)
         {
             var sb = new StringBuilder();
@@ -1543,46 +1470,16 @@ namespace CREC
             sb.AppendLine($"    \"autoMCFill\": {JsonBool(p.ManagementCodeAutoFill)}");
             sb.AppendLine("  },");
             sb.AppendLine("  \"labelSettings\": {");
-            sb.AppendLine("    \"objectName\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.CollectionNameLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.CollectionNameVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"id\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.UUIDLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.UUIDVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"mc\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.ManagementCodeLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.ManagementCodeVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"registrationDate\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.RegistrationDateLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.RegistrationDateVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"category\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.CategoryLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.CategoryVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"tag1\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.FirstTagLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.FirstTagVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"tag2\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.SecondTagLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.SecondTagVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"tag3\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.ThirdTagLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.ThirdTagVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"realLocation\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.RealLocationLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.RealLocationVisible)}");
-            sb.AppendLine("    },");
-            sb.AppendLine("    \"dataLocation\": {");
-            sb.AppendLine($"      \"displayName\": {JsonStr(p.DataLocationLabel)},");
-            sb.AppendLine($"      \"enabled\": {JsonBool(p.DataLocationVisible)}");
-            sb.AppendLine("    }");
+            AppendJsonLabelSetting(sb, "objectName", p.CollectionNameLabel, p.CollectionNameVisible, true);
+            AppendJsonLabelSetting(sb, "id", p.UUIDLabel, p.UUIDVisible, true);
+            AppendJsonLabelSetting(sb, "mc", p.ManagementCodeLabel, p.ManagementCodeVisible, true);
+            AppendJsonLabelSetting(sb, "registrationDate", p.RegistrationDateLabel, p.RegistrationDateVisible, true);
+            AppendJsonLabelSetting(sb, "category", p.CategoryLabel, p.CategoryVisible, true);
+            AppendJsonLabelSetting(sb, "tag1", p.FirstTagLabel, p.FirstTagVisible, true);
+            AppendJsonLabelSetting(sb, "tag2", p.SecondTagLabel, p.SecondTagVisible, true);
+            AppendJsonLabelSetting(sb, "tag3", p.ThirdTagLabel, p.ThirdTagVisible, true);
+            AppendJsonLabelSetting(sb, "realLocation", p.RealLocationLabel, p.RealLocationVisible, true);
+            AppendJsonLabelSetting(sb, "dataLocation", p.DataLocationLabel, p.DataLocationVisible, false);
             sb.AppendLine("  },");
             sb.AppendLine("  \"searchSettings\": {");
             sb.AppendLine($"    \"searchOptionNumber\": {JsonInt(p.SearchOptionNumber)},");

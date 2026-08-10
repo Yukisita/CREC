@@ -61,25 +61,13 @@ namespace CREC
         private static string UtcIso8601ToLocalDisplay(string utcDate)
         {
             if (string.IsNullOrEmpty(utcDate)) return utcDate ?? string.Empty;
-            // "+HH:mm" オフセット付き形式（例: "2025-10-04T00:02:03+00:00"）を処理
-            if (DateTimeOffset.TryParseExact(utcDate, "yyyy-MM-ddTHH:mm:sszzz",
+            string[] formats = { "yyyy-MM-ddTHH:mm:sszzz", "yyyy-MM-ddTHH:mm:ss'Z'" };
+            if (DateTimeOffset.TryParseExact(utcDate, formats,
                 System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.None,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
                 out DateTimeOffset dto))
             {
                 return dto.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
-            }
-            // "Z" サフィックス付き形式（既存ファイル互換）を処理
-            if (utcDate.EndsWith("Z"))
-            {
-                string bare = utcDate.Substring(0, utcDate.Length - 1);
-                if (DateTime.TryParseExact(bare, "yyyy-MM-ddTHH:mm:ss",
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
-                    out DateTime dtUtc))
-                {
-                    return dtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
-                }
             }
             // それ以外（旧形式）はローカル時刻として表示
             return utcDate;
