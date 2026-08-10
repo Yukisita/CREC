@@ -58,6 +58,8 @@ namespace CREC
         /// 端末のローカルタイムゾーンに合わせた表示文字列に変換する。
         /// いずれの形式にも該当しない場合（旧形式）はそのまま表示する。
         /// </summary>
+        /// <param name="utcDate">表示用に変換するUTCのISO 8601日時文字列。</param>
+        /// <returns>端末のローカル日時として整形した文字列。変換できない場合は入力値。</returns>
         private static string UtcIso8601ToLocalDisplay(string utcDate)
         {
             if (string.IsNullOrEmpty(utcDate)) return utcDate ?? string.Empty;

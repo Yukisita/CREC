@@ -323,8 +323,7 @@ namespace CREC
         /// <summary>
         /// プロジェクトファイル読み込み処理
         /// </summary>
-        /// <param name="projectSettingValues">読み込むプロジェクトの設定値、参照渡し</param>
-        /// <param name="path">読み込むプロジェクトファイルのパス</param>
+        /// <param name="projectSettingValues">読み込み元ファイルのパスを保持し、読み込み結果を受け取るプロジェクト設定値。</param>
         /// <returns>読み込み成功：true、読み込み失敗：false</returns>
         public static bool LoadProjectSetting(ref ProjectSettingValuesClass projectSettingValues)
         {
@@ -1093,6 +1092,7 @@ namespace CREC
         /// <summary>
         /// １列以上はコレクション一覧で表示されるようにする
         /// </summary>
+        /// <param name="projectSettingValues">コレクション一覧の表示設定を確認・補正するプロジェクト設定値。</param>
         public static void CheckListVisibleColumnExist(ref ProjectSettingValuesClass projectSettingValues)
         {
             if (projectSettingValues.CollectionListUUIDVisible == false
@@ -1115,6 +1115,8 @@ namespace CREC
         // ────────────────────────────────────────────────────────────────────────────
 
         /// <summary>JSON 用に文字列をエスケープして二重引用符で囲んで返す。null の場合は "null" を返す。</summary>
+        /// <param name="value">JSON文字列へ変換する値。</param>
+        /// <returns>エスケープ済みのJSON文字列リテラル、またはJSONのnullリテラル。</returns>
         private static string JsonStr(string value)
         {
             if (value == null) return "null";
@@ -1142,12 +1144,18 @@ namespace CREC
         }
 
         /// <summary>bool 値を JSON リテラル ("true" / "false") に変換する。</summary>
+        /// <param name="value">JSONリテラルへ変換する真偽値。</param>
+        /// <returns>JSONのtrueまたはfalseリテラル。</returns>
         private static string JsonBool(bool value) => value ? "true" : "false";
 
         /// <summary>int 値を JSON 数値文字列に変換する。</summary>
+        /// <param name="value">JSON数値へ変換する整数値。</param>
+        /// <returns>JSON数値として使用する文字列。</returns>
         private static string JsonInt(int value) => value.ToString();
 
         /// <summary>null 許容 int 値を JSON 数値または "null" に変換する。</summary>
+        /// <param name="value">JSON数値へ変換するnull許容整数値。</param>
+        /// <returns>JSON数値として使用する文字列、またはJSONのnullリテラル。</returns>
         private static string JsonIntOrNull(int? value) => value.HasValue ? value.Value.ToString() : "null";
 
         /// <summary>
@@ -1155,6 +1163,8 @@ namespace CREC
         /// CSV記録はシステムのローカルタイムゾーンに基づく時刻と仮定して変換する。
         /// 変換できない場合は元の文字列をそのまま返す。
         /// </summary>
+        /// <param name="date">旧CSV形式で記録されたローカル日時文字列。</param>
+        /// <returns>UTCのISO 8601形式へ変換した日時文字列。変換できない場合は入力値。</returns>
         private static string LocalCsvDateToUtcIso8601(string date)
         {
             if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
@@ -1174,6 +1184,8 @@ namespace CREC
         /// "+HH:mm" オフセット付き形式・"Z" サフィックス付き形式・オフセットなし形式のいずれも受け付ける。
         /// 変換できない場合は元の文字列をそのまま返す。
         /// </summary>
+        /// <param name="date">正規化する日時文字列。</param>
+        /// <returns>UTCのISO 8601形式へ正規化した日時文字列。変換できない場合は入力値。</returns>
         private static string NormalizeDateToIso8601(string date)
         {
             if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
@@ -1199,6 +1211,9 @@ namespace CREC
         /// 親要素から指定名の子要素の値を取得する。
         /// 要素が存在しないか JSON null の場合は null を返す。
         /// </summary>
+        /// <param name="parent">検索対象となる親要素。</param>
+        /// <param name="name">取得する子要素の名前。</param>
+        /// <returns>子要素の値。要素が存在しないかJSON nullの場合はnull。</returns>
         private static string GetJsonElementValue(XElement parent, string name)
         {
             XElement el = parent?.Element(name);
@@ -1208,6 +1223,10 @@ namespace CREC
         }
 
         /// <summary>親要素から指定名の子要素を bool として取得する。</summary>
+        /// <param name="parent">検索対象となる親要素。</param>
+        /// <param name="name">取得する子要素の名前。</param>
+        /// <param name="defaultValue">子要素が存在しないかJSON nullの場合に返す既定値。</param>
+        /// <returns>子要素から取得した真偽値、または既定値。</returns>
         private static bool GetJsonElementBool(XElement parent, string name, bool defaultValue = false)
         {
             string val = GetJsonElementValue(parent, name);
@@ -1216,6 +1235,10 @@ namespace CREC
         }
 
         /// <summary>親要素から指定名の子要素を int として取得する。</summary>
+        /// <param name="parent">検索対象となる親要素。</param>
+        /// <param name="name">取得する子要素の名前。</param>
+        /// <param name="defaultValue">子要素が存在しないか整数へ変換できない場合に返す既定値。</param>
+        /// <returns>子要素から取得した整数値、または既定値。</returns>
         private static int GetJsonElementInt(XElement parent, string name, int defaultValue = 0)
         {
             string val = GetJsonElementValue(parent, name);
@@ -1225,6 +1248,11 @@ namespace CREC
         }
 
         /// <summary>ラベル設定の表示名と有効状態を読み込む。</summary>
+        /// <param name="parent">ラベル設定を保持する親要素。</param>
+        /// <param name="elementName">読み込むラベル設定要素の名前。</param>
+        /// <param name="defaultDisplayName">表示名が未設定の場合に使用する既定値。</param>
+        /// <param name="setDisplayName">読み込んだ表示名を設定する処理。</param>
+        /// <param name="setEnabled">読み込んだ有効状態を設定する処理。</param>
         private static void LoadJsonLabelSetting(
             XElement parent,
             string elementName,
@@ -1241,6 +1269,9 @@ namespace CREC
         /// <summary>
         /// JSON フォーマットのプロジェクトファイルを読み込む。
         /// </summary>
+        /// <param name="jsonContent">読み込むプロジェクト設定のJSON文字列。</param>
+        /// <param name="projectSettingValues">読み込み元ファイルのパスを保持し、読み込み結果を受け取るプロジェクト設定値。</param>
+        /// <returns>読み込みに成功した場合はtrue、それ以外はfalse。</returns>
         private static bool LoadProjectSettingFromJson(string jsonContent, ref ProjectSettingValuesClass projectSettingValues)
         {
             try
@@ -1407,6 +1438,7 @@ namespace CREC
         }
 
         /// <summary>プロジェクト設定をJSON形式でファイルに書き込む。</summary>
+        /// <param name="projectSettingValues">書き込み先ファイルのパスと保存内容を保持するプロジェクト設定値。</param>
         private static void WriteProjectSettingJson(ProjectSettingValuesClass projectSettingValues)
         {
             using (var writer = new StreamWriter(
@@ -1419,6 +1451,11 @@ namespace CREC
         }
 
         /// <summary>ラベル設定をJSON文字列へ追加する。</summary>
+        /// <param name="stringBuilder">JSON文字列を構築している文字列ビルダー。</param>
+        /// <param name="elementName">追加するラベル設定要素の名前。</param>
+        /// <param name="displayName">ラベルの表示名。</param>
+        /// <param name="enabled">ラベルを有効にするかどうか。</param>
+        /// <param name="appendComma">要素末尾にカンマを追加する場合はtrue。</param>
         private static void AppendJsonLabelSetting(
             StringBuilder stringBuilder,
             string elementName,
@@ -1433,6 +1470,8 @@ namespace CREC
         }
 
         /// <summary>プロジェクト設定をJSON文字列に変換する。</summary>
+        /// <param name="p">JSON文字列へ変換するプロジェクト設定値。</param>
+        /// <returns>プロジェクト設定を表すJSON文字列。</returns>
         private static string BuildProjectSettingJson(ProjectSettingValuesClass p)
         {
             var sb = new StringBuilder();
