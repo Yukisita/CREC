@@ -351,6 +351,7 @@ namespace CREC
                 return LoadProjectSettingFromJson(fileContent, ref projectSettingValues);
             }
 
+            // JSON形式でなければ、旧CSV形式として読み込む
             loadingProjectSettingValues.ProjectSettingFilePath = projectSettingValues.ProjectSettingFilePath;
             string[] lines = fileContent.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
             foreach (string line in lines)
