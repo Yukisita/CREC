@@ -1168,6 +1168,7 @@ namespace CREC
         /// <summary>
         /// 旧CSV形式のローカル日時文字列をUTC ISO 8601形式 ("yyyy-MM-ddTHH:mm:ss+00:00") に変換する。
         /// CSV記録はシステムのローカルタイムゾーンに基づく時刻と仮定して変換する。
+        /// 時間部分がない場合は、ローカル時刻の00:00:00として変換する。
         /// 変換できない場合は元の文字列をそのまま返す。
         /// </summary>
         /// <param name="date">旧CSV形式で記録されたローカル日時文字列。</param>
@@ -1175,7 +1176,14 @@ namespace CREC
         private static string LocalCsvDateToUtcIso8601(string date)
         {
             if (string.IsNullOrEmpty(date)) return date ?? string.Empty;
-            string[] formats = { "yyyy/MM/dd hh:mm:ss", "yyyy/MM/dd HH:mm:ss", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddThh:mm:ss" };
+            string[] formats = {
+                "yyyy/MM/dd hh:mm:ss",
+                "yyyy/MM/dd HH:mm:ss",
+                "yyyy/MM/dd",
+                "yyyy-MM-ddTHH:mm:ss",
+                "yyyy-MM-ddThh:mm:ss",
+                "yyyy-MM-dd"
+            };
             if (DateTime.TryParseExact(date, formats,
                 System.Globalization.CultureInfo.InvariantCulture,
                 System.Globalization.DateTimeStyles.AssumeLocal,
