@@ -1158,12 +1158,12 @@ namespace CREC
         /// <summary>int 値を JSON 数値文字列に変換する。</summary>
         /// <param name="value">JSON数値へ変換する整数値。</param>
         /// <returns>JSON数値として使用する文字列。</returns>
-        private static string JsonInt(int value) => value.ToString();
+private static string JsonInt(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-        /// <summary>null 許容 int 値を JSON 数値または "null" に変換する。</summary>
-        /// <param name="value">JSON数値へ変換するnull許容整数値。</param>
-        /// <returns>JSON数値として使用する文字列、またはJSONのnullリテラル。</returns>
-        private static string JsonIntOrNull(int? value) => value.HasValue ? value.Value.ToString() : "null";
+/// <summary>null 許容 int 値を JSON 数値または "null" に変換する。</summary>
+/// <param name="value">JSON数値へ変換するnull許容整数値。</param>
+/// <returns>JSON数値として使用する文字列、またはJSONのnullリテラル。</returns>
+private static string JsonIntOrNull(int? value) => value.HasValue ? value.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null";
 
         /// <summary>
         /// 旧CSV形式のローカル日時文字列をUTC ISO 8601形式 ("yyyy-MM-ddTHH:mm:ss+00:00") に変換する。
