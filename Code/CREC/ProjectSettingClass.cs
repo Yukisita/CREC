@@ -1028,11 +1028,15 @@ namespace CREC
             {
                 try
                 {
-                    string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
-                    string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
-                    string prevPath = Path.Combine(dir, "prevformat_" + filename);
-                    File.WriteAllText(prevPath, fileContent, Encoding.GetEncoding("UTF-8"));
-                }
+string dir = Path.GetDirectoryName(projectSettingValues.ProjectSettingFilePath) ?? string.Empty;
+string filename = Path.GetFileName(projectSettingValues.ProjectSettingFilePath);
+string prevPath = Path.Combine(dir, "prevformat_" + filename);
+if (File.Exists(prevPath))
+{
+    string ts = DateTimeOffset.UtcNow.ToString("yyyyMMddHHmmss");
+    prevPath = Path.Combine(dir, $"prevformat_{ts}_{filename}");
+}
+File.WriteAllText(prevPath, fileContent, Encoding.GetEncoding("UTF-8"));
                 catch
                 {
                     // 旧ファイルの保存失敗は無視する
