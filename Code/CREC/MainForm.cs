@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -32,7 +33,7 @@ namespace CREC
     {
         // アップデート確認用URLの更新、Release前に変更忘れずに
         #region 定数の宣言
-        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v12.0.0.0.zip";// アップデート確認用URL
+        readonly string LatestVersionDownloadLink = "https://github.com/Yukisita/CREC/releases/download/Latest_Release/CREC_v14.0.0.0.zip";// アップデート確認用URL
         readonly string GitHubLatestReleaseURL = "https://github.com/Yukisita/CREC/releases/tag/Latest_Release";// 最新安定版の公開場所URL
         private const int WM_MOUSEHWHEEL = 0x020E;// Windows メッセージ定数（水平スクロール対応用）
         public const string ProjectSystemDataFolderName = "$SystemData";// コレクションデータのシステムフォルダ名
@@ -1904,7 +1905,7 @@ namespace CREC
                 DataLoadingStatus = "false";
             }
             // アクセス日時を更新
-            CurrentProjectSettingValues.AccessedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.AccessedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
             // プロジェクト設定ファイルを保存, アクセス日の更新のみなので更新日はそのままとする
             ProjectSettingClass.SaveProjectSetting(ref CurrentProjectSettingValues, false, LanguageFile);
             // 一応読み込み終了を宣言
@@ -2746,7 +2747,7 @@ namespace CREC
             SearchFormTextBox.Text = string.Empty;
             SearchOptionComboBox.SelectedIndex = 0;
             MessageBox.Show("削除成功", "CREC");
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
             LoadGrid();
             ShowDetails();
         }
@@ -3323,7 +3324,7 @@ namespace CREC
             {
                 MessageBox.Show("在庫数がマイナスです。\n現在個数を確認してください", "CREC");
             }
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
             ProperInventoryNotification();// 適正在庫設定と比較
         }
         private void ProperInventorySettingsComboBox_SelectedIndexChanged(object sender, EventArgs e)// 適正在庫の表示項目を選択および表示
@@ -3384,7 +3385,7 @@ namespace CREC
                     break;
             }
             ProperInventorySettingsTextBox.TextChanged += ProperInventorySettingsTextBox_TextChanged;// 適正在庫管理の入力イベントを再開
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
         }
         private void SaveProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定保存
         {
@@ -3399,7 +3400,7 @@ namespace CREC
                 return;
             }
             ProperInventoryNotification();
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
         }
         private void SetProperInventorySettingsButton_Click(object sender, EventArgs e)// 適正在庫の設定変更モード開始
         {
@@ -3410,7 +3411,7 @@ namespace CREC
             {
                 ProperInventorySettingsTextBox.Text = string.Empty;
             }
-            CurrentProjectSettingValues.ModifiedDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+            CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
         }
         private void ProperInventorySettingsTextBox_TextChanged(object sender, EventArgs e)// 入力された内容をリアルタイムで反映
         {

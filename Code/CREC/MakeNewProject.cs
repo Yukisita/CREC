@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,9 +59,7 @@ namespace CREC
                 CurrentProjectSettingValues.ThirdTagLabel = Tag3NameLabel.Text;
                 CurrentProjectSettingValues.RealLocationLabel = RealLocationLabel.Text;
                 CurrentProjectSettingValues.DataLocationLabel = DataLocationLabel.Text;
-                // 現在時刻を取得 
-                DateTime dateTime = DateTime.Now;
-                CurrentProjectSettingValues.CreatedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                CurrentProjectSettingValues.CreatedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
             }
             // 現在の内容を表示
             EditProjectNameTextBox.Text = CurrentProjectSettingValues.Name;
@@ -153,9 +152,7 @@ namespace CREC
 
             if (error == 0)// 記入内容に問題がなかった場合は.crecファイルを作成
             {
-                // 現在時刻を取得 
-                DateTime dateTime = DateTime.Now;
-                CurrentProjectSettingValues.ModifiedDate = dateTime.ToString("yyyy/MM/dd hh:mm:ss");
+                CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
                 // 編集内容をプロジェクト設定値に反映
                 CurrentProjectSettingValues.Name = EditProjectNameTextBox.Text;
                 CurrentProjectSettingValues.ProjectDataFolderPath = EditProjectLocationTextBox.Text;
