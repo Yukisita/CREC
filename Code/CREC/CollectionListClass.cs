@@ -50,7 +50,12 @@ namespace CREC
                 if (!File.Exists(subFolder.FullName + "\\SystemData\\ADD"))
                 {
                     // Index読み込み
-                    CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, ref deleteLegacyIndexFile, LanguageData);
+                    // 一覧走査中に他端末などから削除されたフォルダは、エラー表示せず読み飛ばす
+                    bool indexLoaded = CollectionDataClass.LoadCollectionIndexData(subFolder.FullName, ref item, false, ref deleteLegacyIndexFile, LanguageData, false);
+                    if (!indexLoaded && !Directory.Exists(subFolder.FullName))
+                    {
+                        continue;
+                    }
                     // 在庫状況読み込み
                     CollectionDataClass.LoadCollectionInventoryData(subFolder.FullName, ref item, ref deleteLegacyInventoryFile, LanguageData);
                 }

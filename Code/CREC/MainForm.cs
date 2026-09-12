@@ -1763,6 +1763,7 @@ namespace CREC
         private async void LoadGrid()// データを読み込んでリストに表示
         {
             // 表示内容整合性確認処理を停止
+            checkContentsListGeneration++;
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             // コレクションリスト自動更新処理を一時停止
@@ -2705,18 +2706,29 @@ namespace CREC
                 return;
             }
 
+            isDeletingCollection = true;
             CollectionEditStatusWatcherStop();// 既存の監視を停止
+            checkContentsListGeneration++;
+            CheckContentsListCancellationTokenSource.Cancel();// 表示内容整合性確認処理を停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
 
             // データ削除メソッドを呼び出し
             if (!CollectionDataClass.DeleteCollectionData(CurrentShownCollectionData, LanguageFile))
             {
+                // 削除に失敗した場合は停止した監視処理を再開
+                CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+                CheckContentsList(CheckContentsListCancellationTokenSource.Token);
+                CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);
+                CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);
+                isDeletingCollection = false;
                 return;
             }
 
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
+            // 削除済みのパスや選択行を、非同期の監視処理から参照されないよう先に破棄
+            dataGridView1.ClearSelection();
+            dataGridView1.CurrentCell = null;
+            ClearDetailsWindowMethod();
 
             if (DataLoadingStatus == "true")
             {
@@ -2727,8 +2739,6 @@ namespace CREC
                 isEditingCollection = false;
                 SwitchVisibleControlAccordingtoEditingStatus();
 
-                // 入力フォームをリセット
-                ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
                 ShowPicturesButton.Visible = true;
                 // 詳細データおよび機密データを編集不可能に変更
@@ -2749,7 +2759,7 @@ namespace CREC
             MessageBox.Show("削除成功", "CREC");
             CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
             LoadGrid();
-            ShowDetails();
+            isDeletingCollection = false;
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
@@ -4043,6 +4053,8 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
+        int checkContentsListGeneration = 0;// CheckContentsListの多重起動を防ぐための世代番号
+        bool isDeletingCollection = false;// コレクション削除中フラグ
         bool isEditingCollection = false;// コレクション編集中フラグ
 
         /// <summary>
@@ -4385,15 +4397,30 @@ namespace CREC
         /// <param name="cancellationToken"></param>
         private async void CheckContentsList(CancellationToken cancellationToken)
         {
+            int generation = ++checkContentsListGeneration;
             int roopCount = 0; // ループカウント
             while (true)
             {
-                await Task.Delay(100);
-                roopCount++;
-                // キャンセルトークンが要求された場合はループを抜ける
-                if (cancellationToken.IsCancellationRequested)
+                try
+                {
+                    await Task.Delay(100, cancellationToken);
+                }
+                catch (OperationCanceledException)
                 {
                     break;
+                }
+                roopCount++;
+                // キャンセルトークンが要求された場合はループを抜ける
+                if (cancellationToken.IsCancellationRequested || generation != checkContentsListGeneration)
+                {
+                    break;
+                }
+
+                // アプリケーション自身による削除中は、フォルダ消失をUUID変更として扱わない
+                if (isDeletingCollection)
+                {
+                    roopCount = 0;
+                    continue;
                 }
 
                 // セル未選択時は何もしない
@@ -4408,9 +4435,13 @@ namespace CREC
                 {
                     if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                     {
+                        roopCount = 0;
+                        // 古い選択行と削除済みパスを破棄してから一覧を更新する
+                        dataGridView1.ClearSelection();
+                        dataGridView1.CurrentCell = null;
+                        ClearDetailsWindowMethod();
                         MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadGrid();// リストを更新
-                        ShowDetails();
                         continue;
                     }
                     roopCount = 0; // ループカウントをリセット
