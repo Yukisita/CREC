@@ -1763,7 +1763,7 @@ namespace CREC
         private async void LoadGrid()// データを読み込んでリストに表示
         {
             // 表示内容整合性確認処理を停止
-            checkContentsListGeneration++;
+            checkContentsListVersion = new object();
             CheckContentsListCancellationTokenSource.Cancel();
             CheckContentsListCancellationTokenSource = new CancellationTokenSource();
             // コレクションリスト自動更新処理を一時停止
@@ -2708,7 +2708,7 @@ namespace CREC
 
             isDeletingCollection = true;
             CollectionEditStatusWatcherStop();// 既存の監視を停止
-            checkContentsListGeneration++;
+            checkContentsListVersion = new object();
             CheckContentsListCancellationTokenSource.Cancel();// 表示内容整合性確認処理を停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
 
@@ -4053,7 +4053,7 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
-        int checkContentsListGeneration = 0;// CheckContentsListの多重起動を防ぐための世代番号
+        object checkContentsListVersion = new object();// CheckContentsListの多重起動を防ぐための識別子
         bool isDeletingCollection = false;// コレクション削除中フラグ
         bool isEditingCollection = false;// コレクション編集中フラグ
 
@@ -4397,7 +4397,7 @@ namespace CREC
         /// <param name="cancellationToken"></param>
         private async void CheckContentsList(CancellationToken cancellationToken)
         {
-            int generation = ++checkContentsListGeneration;
+            object version = checkContentsListVersion = new object();
             int roopCount = 0; // ループカウント
             while (true)
             {
@@ -4411,7 +4411,7 @@ namespace CREC
                 }
                 roopCount++;
                 // キャンセルトークンが要求された場合はループを抜ける
-                if (cancellationToken.IsCancellationRequested || generation != checkContentsListGeneration)
+                if (cancellationToken.IsCancellationRequested || !object.ReferenceEquals(version, checkContentsListVersion))
                 {
                     break;
                 }
