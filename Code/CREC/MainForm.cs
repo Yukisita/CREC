@@ -4411,6 +4411,7 @@ namespace CREC
             int roopCount = 0; // ループカウント
             while (true)
             {
+                // 削除や一覧更新によるキャンセル要求を待機中でも受け取り、監視を即時終了する
                 try
                 {
                     await Task.Delay(100, cancellationToken);
