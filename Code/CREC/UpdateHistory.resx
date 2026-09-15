@@ -569,7 +569,10 @@ ver13.0.0.0（2026/05/17）
 詳細情報・機密情報ファイルの保存先を変更
 
 ver14.0.0.0（2026/08/14）
-プロジェクトファイルのフォーマットを変更</value>
+プロジェクトファイルのフォーマットを変更
+
+ver14.0.1.0（2026/09/14）
+コレクション削除時の不具合修正</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

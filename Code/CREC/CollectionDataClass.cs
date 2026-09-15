@@ -615,13 +615,15 @@ namespace CREC
         /// <param name="restoreIndexFileIfNotExist">Indexファイルが存在しない場合にバックアップから復元するかどうか</param>
         /// <param name="deleteLegacyIndexFile">古いIndexファイルを削除するかどうか</param>
         /// <param name="languageData">言語データ</param>
+        /// <param name="showCollectionNotExistMessage">コレクションフォルダが存在しない場合にメッセージを表示するかどうか</param>
         /// <returns>読み込んだコレクションのデータ</returns>
         public static bool LoadCollectionIndexData(
             string CollectionFolderPath,
             ref CollectionDataValuesClass CollectionDataValues,
             bool restoreIndexFileIfNotExist,
             ref bool? deleteLegacyIndexFile,
-            XElement languageData)
+            XElement languageData,
+            bool showCollectionNotExistMessage = true)
         {
             var loadingCollectionDataValues = new CollectionDataValuesClass();// 読み込んだデータを一時的に保存する変数
             if (CollectionFolderPath.Length == 0)// コレクションのパスが指定されていない場合
@@ -632,7 +634,10 @@ namespace CREC
 
             if (!System.IO.Directory.Exists(CollectionFolderPath))// コレクションのフォルダが存在しない場合
             {
-                MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotExist", "CollectionDataClass", languageData), "CREC");
+                if (showCollectionNotExistMessage)
+                {
+                    MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("CollectionNotExist", "CollectionDataClass", languageData), "CREC");
+                }
                 return false;
             }
             loadingCollectionDataValues.CollectionFolderPath = CollectionFolderPath;
@@ -674,7 +679,7 @@ namespace CREC
                         MessageBox.Show(LanguageSettingClass.GetMessageBoxMessage("IndexFileMigrationFailed", "CollectionDataClass", languageData), "CREC", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     // 移行後、再度読み込みを試みる
-                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData, showCollectionNotExistMessage);
                 }
                 // Indexファイルが存在せず、復元処理有効な場合
                 else if (restoreIndexFileIfNotExist)
@@ -685,7 +690,7 @@ namespace CREC
                         return false;
                     }
                     // 復元後、再度読み込みを試みる
-                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData);
+                    return LoadCollectionIndexData(CollectionFolderPath, ref CollectionDataValues, false, ref deleteLegacyIndexFile, languageData, showCollectionNotExistMessage);
                 }
                 // 防御的処理：Indexファイルが存在しない、またはJSONの読み込みに失敗した場合
                 loadingCollectionDataValues.CollectionID = new DirectoryInfo(CollectionFolderPath).Name; // IDはフォルダ名
@@ -971,7 +976,9 @@ namespace CREC
                 }
                 tryCount++;
             }
-            return true;
+            // 削除できなかった場合は削除タグを戻し、呼び出し元へ失敗を通知
+            FileOperationClass.DeleteFile(CollectionDataValues.CollectionFolderPath + "\\SystemData\\DEL");
+            return false;
         }
 
         /// <summary>
