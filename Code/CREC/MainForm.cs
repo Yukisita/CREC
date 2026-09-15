@@ -1762,7 +1762,7 @@ namespace CREC
         }
         private async void LoadGrid()// データを読み込んでリストに表示
         {
-            // 削除完了後に明示的に呼び出されるLoadGridで監視を再開する
+            // 削除中に新しい監視処理が開始されないよう、LoadGridを実行しない
             if (isDeletingCollection)
             {
                 return;
