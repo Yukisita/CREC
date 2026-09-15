@@ -1762,12 +1762,20 @@ namespace CREC
         }
         private async void LoadGrid()// データを読み込んでリストに表示
         {
+            // 削除完了後に明示的に呼び出されるLoadGridで監視を再開する
+            if (isDeletingCollection)
+            {
+                return;
+            }
+
             // 表示内容整合性確認処理を停止
-            checkContentsListVersion = new object();
             CheckContentsListCancellationTokenSource.Cancel();
-            CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            CancellationTokenSource checkContentsListCancellationTokenSource = new CancellationTokenSource();
+            CheckContentsListCancellationTokenSource = checkContentsListCancellationTokenSource;
             // コレクションリスト自動更新処理を一時停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CancellationTokenSource collectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdateCancellationTokenSource = collectionListAutoUpdateCancellationTokenSource;
 
             while (DataLoadingStatus != "false")
             {
@@ -1913,10 +1921,15 @@ namespace CREC
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
-            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
-            // コレクションリスト自動更新処理を再開
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            // このLoadGridより後に開始された更新処理がある場合は、監視を再開しない
+            if (!checkContentsListCancellationTokenSource.IsCancellationRequested)
+            {
+                CheckContentsList(checkContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            }
+            if (!collectionListAutoUpdateCancellationTokenSource.IsCancellationRequested)
+            {
+                CollectionListAutoUpdate(collectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            }
             // listの列幅調整
             ControlCollectionListColumnAutoWidth();
         }
@@ -2708,7 +2721,6 @@ namespace CREC
 
             isDeletingCollection = true;
             CollectionEditStatusWatcherStop();// 既存の監視を停止
-            checkContentsListVersion = new object();
             CheckContentsListCancellationTokenSource.Cancel();// 表示内容整合性確認処理を停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
 
@@ -2716,12 +2728,12 @@ namespace CREC
             if (!CollectionDataClass.DeleteCollectionData(CurrentShownCollectionData, LanguageFile))
             {
                 // 削除に失敗した場合は停止した監視処理を再開
+                isDeletingCollection = false;
                 CheckContentsListCancellationTokenSource = new CancellationTokenSource();
                 CheckContentsList(CheckContentsListCancellationTokenSource.Token);
                 CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
                 CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);
                 CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);
-                isDeletingCollection = false;
                 return;
             }
 
@@ -2758,8 +2770,8 @@ namespace CREC
             SearchOptionComboBox.SelectedIndex = 0;
             MessageBox.Show("削除成功", "CREC");
             CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
-            LoadGrid();
             isDeletingCollection = false;
+            LoadGrid();// 削除後の一覧を読み込み、完了後に監視を再開
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
@@ -4053,7 +4065,6 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
-        object checkContentsListVersion = new object();// CheckContentsListの多重起動を防ぐための識別子
         bool isDeletingCollection = false;// コレクション削除中フラグ
         bool isEditingCollection = false;// コレクション編集中フラグ
 
@@ -4397,7 +4408,6 @@ namespace CREC
         /// <param name="cancellationToken"></param>
         private async void CheckContentsList(CancellationToken cancellationToken)
         {
-            object version = checkContentsListVersion = new object();
             int roopCount = 0; // ループカウント
             while (true)
             {
@@ -4411,16 +4421,9 @@ namespace CREC
                 }
                 roopCount++;
                 // キャンセルトークンが要求された場合はループを抜ける
-                if (cancellationToken.IsCancellationRequested || !object.ReferenceEquals(version, checkContentsListVersion))
+                if (cancellationToken.IsCancellationRequested)
                 {
                     break;
-                }
-
-                // アプリケーション自身による削除中は、フォルダ消失をUUID変更として扱わない
-                if (isDeletingCollection)
-                {
-                    roopCount = 0;
-                    continue;
                 }
 
                 // セル未選択時は何もしない
