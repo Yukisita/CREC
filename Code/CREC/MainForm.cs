@@ -4437,9 +4437,9 @@ namespace CREC
                 if (roopCount * 0.1 > CurrentProjectSettingValues.DataCheckInterval
                     && !string.IsNullOrWhiteSpace(CurrentShownCollectionData.CollectionFolderPath))
                 {
+                    roopCount = 0; // 監査を実行したためループカウントをリセット
                     if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                     {
-                        roopCount = 0;
                         // 古い選択行と削除済みパスを破棄してから一覧を更新する
                         dataGridView1.ClearSelection();
                         dataGridView1.CurrentCell = null;
@@ -4448,7 +4448,6 @@ namespace CREC
                         LoadGrid();// リストを更新
                         continue;
                     }
-                    roopCount = 0; // ループカウントをリセット
                 }
 
                 // 表示中コレクションと選択が一致する場合は続行
