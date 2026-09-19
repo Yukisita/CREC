@@ -1762,11 +1762,20 @@ namespace CREC
         }
         private async void LoadGrid()// データを読み込んでリストに表示
         {
+            // 削除中に新しい監視処理が開始されないよう、LoadGridを実行しない
+            if (isDeletingCollection)
+            {
+                return;
+            }
+
             // 表示内容整合性確認処理を停止
             CheckContentsListCancellationTokenSource.Cancel();
-            CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+            CancellationTokenSource checkContentsListCancellationTokenSource = new CancellationTokenSource();
+            CheckContentsListCancellationTokenSource = checkContentsListCancellationTokenSource;
             // コレクションリスト自動更新処理を一時停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();
+            CancellationTokenSource collectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+            CollectionListAutoUpdateCancellationTokenSource = collectionListAutoUpdateCancellationTokenSource;
 
             while (DataLoadingStatus != "false")
             {
@@ -1912,10 +1921,15 @@ namespace CREC
             DataLoadingLabel.Visible = false;
             this.Cursor = Cursors.Default;
             DataLoadingStatus = "false";
-            CheckContentsList(CheckContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
-            // コレクションリスト自動更新処理を再開
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            // このLoadGridより後に開始された更新処理がある場合は、監視を再開しない
+            if (!checkContentsListCancellationTokenSource.IsCancellationRequested)
+            {
+                CheckContentsList(checkContentsListCancellationTokenSource.Token);// 表示内容整合性確認処理を再開
+            }
+            if (!collectionListAutoUpdateCancellationTokenSource.IsCancellationRequested)
+            {
+                CollectionListAutoUpdate(collectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
+            }
             // listの列幅調整
             ControlCollectionListColumnAutoWidth();
         }
@@ -2705,18 +2719,28 @@ namespace CREC
                 return;
             }
 
+            isDeletingCollection = true;
             CollectionEditStatusWatcherStop();// 既存の監視を停止
+            CheckContentsListCancellationTokenSource.Cancel();// 表示内容整合性確認処理を停止
             CollectionListAutoUpdateCancellationTokenSource.Cancel();// List自動更新処理を停止
 
             // データ削除メソッドを呼び出し
             if (!CollectionDataClass.DeleteCollectionData(CurrentShownCollectionData, LanguageFile))
             {
+                // 削除に失敗した場合は停止した監視処理を再開
+                isDeletingCollection = false;
+                CheckContentsListCancellationTokenSource = new CancellationTokenSource();
+                CheckContentsList(CheckContentsListCancellationTokenSource.Token);
+                CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
+                CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);
+                CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);
                 return;
             }
 
-            CollectionListAutoUpdate(CollectionListAutoUpdateCancellationTokenSource.Token);// コレクションリスト自動更新処理を開始
-            CollectionListAutoUpdateCancellationTokenSource = new CancellationTokenSource();
-            CollectionEditStatusWatcherStart(ref CurrentShownCollectionData);// 編集監視スレッドの開始
+            // 削除済みのパスや選択行を、非同期の監視処理から参照されないよう先に破棄
+            dataGridView1.ClearSelection();
+            dataGridView1.CurrentCell = null;
+            ClearDetailsWindowMethod();
 
             if (DataLoadingStatus == "true")
             {
@@ -2727,8 +2751,6 @@ namespace CREC
                 isEditingCollection = false;
                 SwitchVisibleControlAccordingtoEditingStatus();
 
-                // 入力フォームをリセット
-                ClearDetailsWindowMethod();
                 // 通常画面で必要なものを表示
                 ShowPicturesButton.Visible = true;
                 // 詳細データおよび機密データを編集不可能に変更
@@ -2748,8 +2770,8 @@ namespace CREC
             SearchOptionComboBox.SelectedIndex = 0;
             MessageBox.Show("削除成功", "CREC");
             CurrentProjectSettingValues.ModifiedDate = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:sszzz", CultureInfo.InvariantCulture);
-            LoadGrid();
-            ShowDetails();
+            isDeletingCollection = false;
+            LoadGrid();// 削除後の一覧を読み込み、完了後に監視を再開
         }
         private bool CheckContent()// 入力内容の整合性を確認
         {
@@ -4043,6 +4065,7 @@ namespace CREC
         static FileSystemWatcher collectionEditStatusWatcher = new FileSystemWatcher();
         delegate void DelegateProcess();//delegateを宣言
         CancellationTokenSource CheckContentsListCancellationTokenSource = new CancellationTokenSource();// CheckContentsListのキャンセルトークン
+        bool isDeletingCollection = false;// コレクション削除中フラグ
         bool isEditingCollection = false;// コレクション編集中フラグ
 
         /// <summary>
@@ -4388,7 +4411,15 @@ namespace CREC
             int roopCount = 0; // ループカウント
             while (true)
             {
-                await Task.Delay(100);
+                // 削除や一覧更新によるキャンセル要求を待機中でも受け取り、監視を即時終了する
+                try
+                {
+                    await Task.Delay(100, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
                 roopCount++;
                 // キャンセルトークンが要求された場合はループを抜ける
                 if (cancellationToken.IsCancellationRequested)
@@ -4406,14 +4437,17 @@ namespace CREC
                 if (roopCount * 0.1 > CurrentProjectSettingValues.DataCheckInterval
                     && !string.IsNullOrWhiteSpace(CurrentShownCollectionData.CollectionFolderPath))
                 {
+                    roopCount = 0; // 監査を実行したためループカウントをリセット
                     if (Directory.Exists(CurrentShownCollectionData.CollectionFolderPath) == false)
                     {
+                        // 古い選択行と削除済みパスを破棄してから一覧を更新する
+                        dataGridView1.ClearSelection();
+                        dataGridView1.CurrentCell = null;
+                        ClearDetailsWindowMethod();
                         MessageBox.Show("コレクションのUUIDが変更されました。\nリストを更新します。", "CREC", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         LoadGrid();// リストを更新
-                        ShowDetails();
                         continue;
                     }
-                    roopCount = 0; // ループカウントをリセット
                 }
 
                 // 表示中コレクションと選択が一致する場合は続行
