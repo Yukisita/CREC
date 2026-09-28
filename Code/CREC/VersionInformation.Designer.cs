@@ -75,7 +75,7 @@
             this.VersionName.Name = "VersionName";
             this.VersionName.Size = new System.Drawing.Size(152, 25);
             this.VersionName.TabIndex = 3;
-            this.VersionName.Text = "Version 14.0.1.0";
+            this.VersionName.Text = "Version 14.0.2.0";
             // 
             // CopyrightLabel
             // 

@@ -56,7 +56,7 @@
             this.CRECVersionLabel.Name = "CRECVersionLabel";
             this.CRECVersionLabel.Size = new System.Drawing.Size(232, 36);
             this.CRECVersionLabel.TabIndex = 2;
-            this.CRECVersionLabel.Text = "CREC Ver 14.0.1.0";
+            this.CRECVersionLabel.Text = "CREC Ver 14.0.2.0";
             // 
             // BootingProgressLabel
             // 
