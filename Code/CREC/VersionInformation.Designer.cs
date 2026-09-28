@@ -64,7 +64,7 @@
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.Size = new System.Drawing.Size(193, 25);
             this.ReleaseDate.TabIndex = 2;
-            this.ReleaseDate.Text = "Release: 2026/09/14";
+            this.ReleaseDate.Text = "Release: 2026/09/29";
             // 
             // VersionName
             // 
