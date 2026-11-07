@@ -80,6 +80,7 @@ namespace CREC
         /// <param name="searchOption">検索オプション</param>
         /// <param name="searchMethod">検索方法</param>
         /// <param name="LanguageData">言語情報</param>
+        /// <param name="caseSensitive">大文字・小文字を区別する場合はtrue</param>
         /// <returns></returns>
         public static void SearchCollectionFromList(
             ref List<CollectionDataValuesClass> SearchedCollectionList,
@@ -87,7 +88,8 @@ namespace CREC
             string searchKeyWords,
             int searchOption,
             int searchMethod,
-            XElement LanguageData)
+            XElement LanguageData,
+            bool caseSensitive = false)
         {
             // 検索欄が空かつ在庫検索以外の場合はそのままとする
             if (searchKeyWords.Length == 0 && searchOption != 8)
@@ -103,7 +105,8 @@ namespace CREC
                     currentProjectSettingValues,
                     searchKeyWords,
                     searchOption,
-                    searchMethod))
+                    searchMethod,
+                    caseSensitive))
                 {
                     loadingCollectionList.Add(item);
                 }
@@ -120,13 +123,15 @@ namespace CREC
         /// <param name="searchKeyWords">検索ワード</param>
         /// <param name="SearchOption">検索オプション</param>
         /// <param name="SearchMethod">検索方法</param>
+        /// <param name="caseSensitive">大文字・小文字を区別する場合はtrue</param>
         /// <returns>検索Hit：true、それ以外：false</returns>
         private static bool SearchMethod(
             CollectionDataValuesClass item,
             ProjectSettingValuesClass currentProjectSettingValues,
             string searchKeyWords,
             int SearchOption,
-            int SearchMethod)
+            int SearchMethod,
+            bool caseSensitive)
         {
             // 検索対象の文字列を取得（List配列とする）
             List<string> TargetWords = new List<string>();
@@ -201,7 +206,9 @@ namespace CREC
                     else
                     {
                         // 前方一致検索
-                        returnValue = TargetWords.Any(word => word.StartsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.StartsWith(searchKeyWords)
+                            : word.StartsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 case 1:
@@ -213,7 +220,9 @@ namespace CREC
                     else
                     {
                         // 部分一致検索
-                        returnValue = TargetWords.Any(word => word.Contains(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.Contains(searchKeyWords)
+                            : word.IndexOf(searchKeyWords, StringComparison.OrdinalIgnoreCase) >= 0);
                     }
                     break;
                 case 2:
@@ -225,7 +234,9 @@ namespace CREC
                     else
                     {
                         // 後方一致検索
-                        returnValue = TargetWords.Any(word => word.EndsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.EndsWith(searchKeyWords)
+                            : word.EndsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 case 3:
@@ -237,7 +248,9 @@ namespace CREC
                     else
                     {
                         // 完全一致検索
-                        returnValue = TargetWords.Any(word => word == searchKeyWords);
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word == searchKeyWords
+                            : string.Equals(word, searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 default:

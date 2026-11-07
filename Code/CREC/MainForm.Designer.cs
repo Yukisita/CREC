@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileMenuStrip = new System.Windows.Forms.ToolStripMenuItem();
@@ -115,8 +115,10 @@
             this.ExecutePluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExecuteEXEPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RecentlyExecutedPluginToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
             this.AddToFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.RemoveFavoritePluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.readmeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -226,6 +228,7 @@
             this.PictureBox1ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenPicturewithAppToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SearchButton = new System.Windows.Forms.Button();
+            this.SearchCaseSensitiveButton = new System.Windows.Forms.CheckBox();
             this.ShowPictureFileNameLabel = new System.Windows.Forms.Label();
             this.ConfidentialDataLabel = new System.Windows.Forms.Label();
             this.HideConfidentialDataButton = new System.Windows.Forms.Button();
@@ -239,8 +242,6 @@
             this.AddQuantityButton = new System.Windows.Forms.Button();
             this.SubtractQuantityButton = new System.Windows.Forms.Button();
             this.SearchFormTextBox = new System.Windows.Forms.RichTextBox();
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dataGridViewContextMenuStrip.SuspendLayout();
@@ -268,7 +269,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(0);
-            this.menuStrip1.Size = new System.Drawing.Size(2280, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(1264, 32);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -292,60 +293,60 @@
             this.FileMenuStrip.Name = "FileMenuStrip";
             this.FileMenuStrip.ShortcutKeyDisplayString = "";
             this.FileMenuStrip.ShowShortcutKeys = false;
-            this.FileMenuStrip.Size = new System.Drawing.Size(130, 37);
+            this.FileMenuStrip.Size = new System.Drawing.Size(103, 32);
             this.FileMenuStrip.Text = "ファイル(&F)";
             // 
             // NewProjectToolStripMenuItem
             // 
             this.NewProjectToolStripMenuItem.Name = "NewProjectToolStripMenuItem";
-            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.NewProjectToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.NewProjectToolStripMenuItem.Text = "新規プロジェクト作成(&N)...";
             this.NewProjectToolStripMenuItem.Click += new System.EventHandler(this.NewProjectToolStripMenuItem_Click);
             // 
             // OpenProjectMenuItem
             // 
             this.OpenProjectMenuItem.Name = "OpenProjectMenuItem";
-            this.OpenProjectMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.OpenProjectMenuItem.Size = new System.Drawing.Size(288, 28);
             this.OpenProjectMenuItem.Text = "プロジェクトを開く(&O)...";
             this.OpenProjectMenuItem.Click += new System.EventHandler(this.OpenMenu_Click);
             // 
             // OpenRecentlyOpendProjectToolStripMenuItem
             // 
             this.OpenRecentlyOpendProjectToolStripMenuItem.Name = "OpenRecentlyOpendProjectToolStripMenuItem";
-            this.OpenRecentlyOpendProjectToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.OpenRecentlyOpendProjectToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.OpenRecentlyOpendProjectToolStripMenuItem.Text = "最近使用したプロジェクト";
             this.OpenRecentlyOpendProjectToolStripMenuItem.MouseEnter += new System.EventHandler(this.OpenRecentlyOpendProjectToolStripMenuItem_MouseEnter);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(360, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(285, 6);
             // 
             // BackupToolStripMenuItem
             // 
             this.BackupToolStripMenuItem.Name = "BackupToolStripMenuItem";
-            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.BackupToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.BackupToolStripMenuItem.Text = "バックアップ作成";
             this.BackupToolStripMenuItem.Click += new System.EventHandler(this.BackupToolStripMenuItem_Click);
             // 
             // OpenBackUpFolderToolStripMenuItem
             // 
             this.OpenBackUpFolderToolStripMenuItem.Name = "OpenBackUpFolderToolStripMenuItem";
-            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.OpenBackUpFolderToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.OpenBackUpFolderToolStripMenuItem.Text = "バックアップ場所を開く...";
             this.OpenBackUpFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenBackUpFolderToolStripMenuItem_Click);
             // 
             // CleanupBackupDataToolStripMenuItem
             // 
             this.CleanupBackupDataToolStripMenuItem.Name = "CleanupBackupDataToolStripMenuItem";
-            this.CleanupBackupDataToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.CleanupBackupDataToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.CleanupBackupDataToolStripMenuItem.Text = "バックアップデータ整理";
             this.CleanupBackupDataToolStripMenuItem.Click += new System.EventHandler(this.CleanupBackupDataToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(360, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(285, 6);
             // 
             // OutputListToolStripMenuItem
             // 
@@ -353,51 +354,51 @@
             this.OutputListAllContentsToolStripMenuItem,
             this.OutputListShownContentsToolStripMenuItem});
             this.OutputListToolStripMenuItem.Name = "OutputListToolStripMenuItem";
-            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.OutputListToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.OutputListToolStripMenuItem.Text = "一覧をCSV/TSV出力";
             // 
             // OutputListAllContentsToolStripMenuItem
             // 
             this.OutputListAllContentsToolStripMenuItem.Name = "OutputListAllContentsToolStripMenuItem";
-            this.OutputListAllContentsToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.OutputListAllContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
             this.OutputListAllContentsToolStripMenuItem.Text = "全データ出力";
             this.OutputListAllContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListAllContentsToolStripMenuItem_Click);
             // 
             // OutputListShownContentsToolStripMenuItem
             // 
             this.OutputListShownContentsToolStripMenuItem.Name = "OutputListShownContentsToolStripMenuItem";
-            this.OutputListShownContentsToolStripMenuItem.Size = new System.Drawing.Size(309, 34);
+            this.OutputListShownContentsToolStripMenuItem.Size = new System.Drawing.Size(246, 28);
             this.OutputListShownContentsToolStripMenuItem.Text = "一覧表示中のみ出力";
             this.OutputListShownContentsToolStripMenuItem.Click += new System.EventHandler(this.OutputListShownContentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(360, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(285, 6);
             // 
             // EditConfigSysToolStripMenuItem
             // 
             this.EditConfigSysToolStripMenuItem.Name = "EditConfigSysToolStripMenuItem";
-            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.EditConfigSysToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.EditConfigSysToolStripMenuItem.Text = "環境設定...";
             this.EditConfigSysToolStripMenuItem.Click += new System.EventHandler(this.EditConfigSysToolStripMenuItem_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(360, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(285, 6);
             // 
             // CloseToolStripMenuItem
             // 
             this.CloseToolStripMenuItem.Name = "CloseToolStripMenuItem";
-            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.CloseToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.CloseToolStripMenuItem.Text = "終了(&X)";
             this.CloseToolStripMenuItem.Click += new System.EventHandler(this.CloseToolStripMenuItem_Click);
             // 
             // RestartToolStripMenuItem
             // 
             this.RestartToolStripMenuItem.Name = "RestartToolStripMenuItem";
-            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(363, 34);
+            this.RestartToolStripMenuItem.Size = new System.Drawing.Size(288, 28);
             this.RestartToolStripMenuItem.Text = "再起動";
             this.RestartToolStripMenuItem.Click += new System.EventHandler(this.RestartToolStripMenuItem_Click);
             // 
@@ -411,32 +412,32 @@
             this.AdvancedFeaturesToolStripMenuItem});
             this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
             this.EditToolStripMenuItem.ShowShortcutKeys = false;
-            this.EditToolStripMenuItem.Size = new System.Drawing.Size(112, 37);
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(88, 32);
             this.EditToolStripMenuItem.Text = "編集(&E)";
             // 
             // AddContentsToolStripMenuItem
             // 
             this.AddContentsToolStripMenuItem.Name = "AddContentsToolStripMenuItem";
-            this.AddContentsToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
+            this.AddContentsToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
             this.AddContentsToolStripMenuItem.Text = "新規追加";
             this.AddContentsToolStripMenuItem.Click += new System.EventHandler(this.AddContentsToolStripMenuItem_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(332, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(264, 6);
             // 
             // ResetEditingContentsToolStripMenuItem
             // 
             this.ResetEditingContentsToolStripMenuItem.Name = "ResetEditingContentsToolStripMenuItem";
-            this.ResetEditingContentsToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
+            this.ResetEditingContentsToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
             this.ResetEditingContentsToolStripMenuItem.Text = "編集内容をリセット";
             this.ResetEditingContentsToolStripMenuItem.Click += new System.EventHandler(this.ResetEditingContentsToolStripMenuItem_Click);
             // 
             // AddInventoryModeToolStripMenuItem
             // 
             this.AddInventoryModeToolStripMenuItem.Name = "AddInventoryModeToolStripMenuItem";
-            this.AddInventoryModeToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
+            this.AddInventoryModeToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
             this.AddInventoryModeToolStripMenuItem.Text = "在庫数管理ファイル作成";
             this.AddInventoryModeToolStripMenuItem.Click += new System.EventHandler(this.AddInventoryModeToolStripMenuItem_Click);
             // 
@@ -447,27 +448,27 @@
             this.ForceEditRequestToolStripMenuItem,
             this.データ非表示仮削除ToolStripMenuItem});
             this.AdvancedFeaturesToolStripMenuItem.Name = "AdvancedFeaturesToolStripMenuItem";
-            this.AdvancedFeaturesToolStripMenuItem.Size = new System.Drawing.Size(335, 34);
+            this.AdvancedFeaturesToolStripMenuItem.Size = new System.Drawing.Size(267, 28);
             this.AdvancedFeaturesToolStripMenuItem.Text = "高度な機能";
             // 
             // DeleteContentToolStripMenuItem
             // 
             this.DeleteContentToolStripMenuItem.Name = "DeleteContentToolStripMenuItem";
-            this.DeleteContentToolStripMenuItem.Size = new System.Drawing.Size(349, 34);
+            this.DeleteContentToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.DeleteContentToolStripMenuItem.Text = "データ削除";
             this.DeleteContentToolStripMenuItem.Click += new System.EventHandler(this.DeleteContentToolStripMenuItem_Click);
             // 
             // ForceEditRequestToolStripMenuItem
             // 
             this.ForceEditRequestToolStripMenuItem.Name = "ForceEditRequestToolStripMenuItem";
-            this.ForceEditRequestToolStripMenuItem.Size = new System.Drawing.Size(349, 34);
+            this.ForceEditRequestToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.ForceEditRequestToolStripMenuItem.Text = "編集権限強制取得";
             this.ForceEditRequestToolStripMenuItem.Click += new System.EventHandler(this.ForceEditRequestToolStripMenuItem_Click);
             // 
             // データ非表示仮削除ToolStripMenuItem
             // 
             this.データ非表示仮削除ToolStripMenuItem.Name = "データ非表示仮削除ToolStripMenuItem";
-            this.データ非表示仮削除ToolStripMenuItem.Size = new System.Drawing.Size(349, 34);
+            this.データ非表示仮削除ToolStripMenuItem.Size = new System.Drawing.Size(277, 28);
             this.データ非表示仮削除ToolStripMenuItem.Text = "データ非表示（未実装）";
             // 
             // ViewToolStripMenuItem
@@ -483,7 +484,7 @@
             this.toolStripSeparator8,
             this.RecentShownContentsToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
-            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(113, 37);
+            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(89, 32);
             this.ViewToolStripMenuItem.Text = "表示(&V)";
             // 
             // DisplayModeToolStripMenuItem
@@ -492,7 +493,7 @@
             this.StandardDisplayModeToolStripMenuItem,
             this.FullDisplayModeToolStripMenuItem});
             this.DisplayModeToolStripMenuItem.Name = "DisplayModeToolStripMenuItem";
-            this.DisplayModeToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.DisplayModeToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.DisplayModeToolStripMenuItem.Text = "表示モード";
             // 
             // StandardDisplayModeToolStripMenuItem
@@ -501,7 +502,7 @@
             this.StandardDisplayModeToolStripMenuItem.CheckOnClick = true;
             this.StandardDisplayModeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.StandardDisplayModeToolStripMenuItem.Name = "StandardDisplayModeToolStripMenuItem";
-            this.StandardDisplayModeToolStripMenuItem.Size = new System.Drawing.Size(251, 34);
+            this.StandardDisplayModeToolStripMenuItem.Size = new System.Drawing.Size(199, 28);
             this.StandardDisplayModeToolStripMenuItem.Text = "標準表示モード";
             this.StandardDisplayModeToolStripMenuItem.Click += new System.EventHandler(this.StandardDisplayModeToolStripMenuItem_Click);
             // 
@@ -509,7 +510,7 @@
             // 
             this.FullDisplayModeToolStripMenuItem.CheckOnClick = true;
             this.FullDisplayModeToolStripMenuItem.Name = "FullDisplayModeToolStripMenuItem";
-            this.FullDisplayModeToolStripMenuItem.Size = new System.Drawing.Size(251, 34);
+            this.FullDisplayModeToolStripMenuItem.Size = new System.Drawing.Size(199, 28);
             this.FullDisplayModeToolStripMenuItem.Text = "全体表示モード";
             this.FullDisplayModeToolStripMenuItem.Click += new System.EventHandler(this.FullDisplayModeToolStripMenuItem_Click);
             // 
@@ -522,7 +523,7 @@
             this.WhiteSmokeToolStripMenuItem,
             this.DarkToolStripMenuItem});
             this.SelectBackgroundColorToolStripMenuItem.Name = "SelectBackgroundColorToolStripMenuItem";
-            this.SelectBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.SelectBackgroundColorToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.SelectBackgroundColorToolStripMenuItem.Text = "テーマ色";
             // 
             // AliceBlueToolStripMenuItem
@@ -533,7 +534,7 @@
             this.AliceBlueToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.AliceBlueToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.AliceBlueToolStripMenuItem.Name = "AliceBlueToolStripMenuItem";
-            this.AliceBlueToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.AliceBlueToolStripMenuItem.Size = new System.Drawing.Size(207, 28);
             this.AliceBlueToolStripMenuItem.Text = "Blue";
             this.AliceBlueToolStripMenuItem.Click += new System.EventHandler(this.AliceBlueToolStripMenuItem_Click);
             // 
@@ -542,7 +543,7 @@
             this.HoneydewToolStripMenuItem.BackColor = System.Drawing.Color.Honeydew;
             this.HoneydewToolStripMenuItem.CheckOnClick = true;
             this.HoneydewToolStripMenuItem.Name = "HoneydewToolStripMenuItem";
-            this.HoneydewToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.HoneydewToolStripMenuItem.Size = new System.Drawing.Size(207, 28);
             this.HoneydewToolStripMenuItem.Text = "Green";
             this.HoneydewToolStripMenuItem.Click += new System.EventHandler(this.HoneydewToolStripMenuItem_Click);
             // 
@@ -551,7 +552,7 @@
             this.LavenderBlushToolStripMenuItem.BackColor = System.Drawing.Color.LavenderBlush;
             this.LavenderBlushToolStripMenuItem.CheckOnClick = true;
             this.LavenderBlushToolStripMenuItem.Name = "LavenderBlushToolStripMenuItem";
-            this.LavenderBlushToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.LavenderBlushToolStripMenuItem.Size = new System.Drawing.Size(207, 28);
             this.LavenderBlushToolStripMenuItem.Text = "Sakura";
             this.LavenderBlushToolStripMenuItem.Click += new System.EventHandler(this.LavenderBlushToolStripMenuItem_Click);
             // 
@@ -560,21 +561,21 @@
             this.WhiteSmokeToolStripMenuItem.BackColor = System.Drawing.Color.WhiteSmoke;
             this.WhiteSmokeToolStripMenuItem.CheckOnClick = true;
             this.WhiteSmokeToolStripMenuItem.Name = "WhiteSmokeToolStripMenuItem";
-            this.WhiteSmokeToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.WhiteSmokeToolStripMenuItem.Size = new System.Drawing.Size(207, 28);
             this.WhiteSmokeToolStripMenuItem.Text = "White";
             this.WhiteSmokeToolStripMenuItem.Click += new System.EventHandler(this.WhiteSmokeToolStripMenuItem_Click);
             // 
             // DarkToolStripMenuItem
             // 
             this.DarkToolStripMenuItem.Name = "DarkToolStripMenuItem";
-            this.DarkToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.DarkToolStripMenuItem.Size = new System.Drawing.Size(207, 28);
             this.DarkToolStripMenuItem.Text = "Dark(実装中）";
             this.DarkToolStripMenuItem.Click += new System.EventHandler(this.DarkToolStripMenuItem_Click);
             // 
             // LanguageSettingToolStripMenuItem
             // 
             this.LanguageSettingToolStripMenuItem.Name = "LanguageSettingToolStripMenuItem";
-            this.LanguageSettingToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.LanguageSettingToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.LanguageSettingToolStripMenuItem.Text = "表示言語";
             this.LanguageSettingToolStripMenuItem.MouseEnter += new System.EventHandler(this.LanguageSettingToolStripMenuItem_MouseEnter);
             // 
@@ -586,39 +587,39 @@
             this.toolStripSeparator9,
             this.ResetFontSizeToolStripMenuItem});
             this.FontSizeToolStripMenuItem.Name = "FontSizeToolStripMenuItem";
-            this.FontSizeToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.FontSizeToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.FontSizeToolStripMenuItem.Text = "文字サイズ";
             // 
             // ZoomInFontToolStripMenuItem
             // 
             this.ZoomInFontToolStripMenuItem.Name = "ZoomInFontToolStripMenuItem";
-            this.ZoomInFontToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
+            this.ZoomInFontToolStripMenuItem.Size = new System.Drawing.Size(131, 28);
             this.ZoomInFontToolStripMenuItem.Text = "拡大";
             this.ZoomInFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomInFontToolStripMenuItem_Click);
             // 
             // ZoomOutFontToolStripMenuItem
             // 
             this.ZoomOutFontToolStripMenuItem.Name = "ZoomOutFontToolStripMenuItem";
-            this.ZoomOutFontToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
+            this.ZoomOutFontToolStripMenuItem.Size = new System.Drawing.Size(131, 28);
             this.ZoomOutFontToolStripMenuItem.Text = "縮小";
             this.ZoomOutFontToolStripMenuItem.Click += new System.EventHandler(this.ZoomOutFontToolStripMenuItem_Click);
             // 
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(162, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(128, 6);
             // 
             // ResetFontSizeToolStripMenuItem
             // 
             this.ResetFontSizeToolStripMenuItem.Name = "ResetFontSizeToolStripMenuItem";
-            this.ResetFontSizeToolStripMenuItem.Size = new System.Drawing.Size(165, 34);
+            this.ResetFontSizeToolStripMenuItem.Size = new System.Drawing.Size(131, 28);
             this.ResetFontSizeToolStripMenuItem.Text = "リセット";
             this.ResetFontSizeToolStripMenuItem.Click += new System.EventHandler(this.ResetFontSizeToolStripMenuItem_Click);
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(397, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(315, 6);
             // 
             // VisibleListElementsToolStripMenuItem
             // 
@@ -633,7 +634,7 @@
             this.Tag3ListVisibleToolStripMenuItem,
             this.InventoryInformationListToolStripMenuItem});
             this.VisibleListElementsToolStripMenuItem.Name = "VisibleListElementsToolStripMenuItem";
-            this.VisibleListElementsToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.VisibleListElementsToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.VisibleListElementsToolStripMenuItem.Text = "データ一覧の表示項目";
             // 
             // IDListVisibleToolStripMenuItem
@@ -642,7 +643,7 @@
             this.IDListVisibleToolStripMenuItem.CheckOnClick = true;
             this.IDListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.IDListVisibleToolStripMenuItem.Name = "IDListVisibleToolStripMenuItem";
-            this.IDListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.IDListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.IDListVisibleToolStripMenuItem.Text = "ID";
             this.IDListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.IDVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -652,7 +653,7 @@
             this.MCListVisibleToolStripMenuItem.CheckOnClick = true;
             this.MCListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.MCListVisibleToolStripMenuItem.Name = "MCListVisibleToolStripMenuItem";
-            this.MCListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.MCListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.MCListVisibleToolStripMenuItem.Text = "管理コード";
             this.MCListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.MCVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -662,7 +663,7 @@
             this.NameListVisibleToolStripMenuItem.CheckOnClick = true;
             this.NameListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.NameListVisibleToolStripMenuItem.Name = "NameListVisibleToolStripMenuItem";
-            this.NameListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.NameListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.NameListVisibleToolStripMenuItem.Text = "名称";
             this.NameListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.NameVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -670,7 +671,7 @@
             // 
             this.RegistrationDateListVisibleToolStripMenuItem.CheckOnClick = true;
             this.RegistrationDateListVisibleToolStripMenuItem.Name = "RegistrationDateListVisibleToolStripMenuItem";
-            this.RegistrationDateListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.RegistrationDateListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.RegistrationDateListVisibleToolStripMenuItem.Text = "登録日";
             this.RegistrationDateListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.RegistrationDateVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -680,7 +681,7 @@
             this.CategoryListVisibleToolStripMenuItem.CheckOnClick = true;
             this.CategoryListVisibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CategoryListVisibleToolStripMenuItem.Name = "CategoryListVisibleToolStripMenuItem";
-            this.CategoryListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.CategoryListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.CategoryListVisibleToolStripMenuItem.Text = "カテゴリ";
             this.CategoryListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.CategoryVisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -688,7 +689,7 @@
             // 
             this.Tag1ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag1ListVisibleToolStripMenuItem.Name = "Tag1ListVisibleToolStripMenuItem";
-            this.Tag1ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag1ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag1ListVisibleToolStripMenuItem.Text = "タグ１";
             this.Tag1ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag1VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -696,7 +697,7 @@
             // 
             this.Tag2ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag2ListVisibleToolStripMenuItem.Name = "Tag2ListVisibleToolStripMenuItem";
-            this.Tag2ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag2ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag2ListVisibleToolStripMenuItem.Text = "タグ２";
             this.Tag2ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag2VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -704,7 +705,7 @@
             // 
             this.Tag3ListVisibleToolStripMenuItem.CheckOnClick = true;
             this.Tag3ListVisibleToolStripMenuItem.Name = "Tag3ListVisibleToolStripMenuItem";
-            this.Tag3ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag3ListVisibleToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag3ListVisibleToolStripMenuItem.Text = "タグ３";
             this.Tag3ListVisibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag3VisibleToolStripMenuItem_CheckedChanged);
             // 
@@ -712,7 +713,7 @@
             // 
             this.InventoryInformationListToolStripMenuItem.CheckOnClick = true;
             this.InventoryInformationListToolStripMenuItem.Name = "InventoryInformationListToolStripMenuItem";
-            this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.InventoryInformationListToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.InventoryInformationListToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationToolStripMenuItem_CheckedChanged);
             // 
@@ -729,14 +730,14 @@
             this.Tag3ListAutoWidthToolStripMenuItem,
             this.InventoryInformationListAutoWidthToolStripMenuItem});
             this.ColumnWidthAdjustmentToolStripMenuItem.Name = "ColumnWidthAdjustmentToolStripMenuItem";
-            this.ColumnWidthAdjustmentToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.ColumnWidthAdjustmentToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.ColumnWidthAdjustmentToolStripMenuItem.Text = "列幅自動調整";
             // 
             // IDListAutoWidthToolStripMenuItem
             // 
             this.IDListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.IDListAutoWidthToolStripMenuItem.Name = "IDListAutoWidthToolStripMenuItem";
-            this.IDListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.IDListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.IDListAutoWidthToolStripMenuItem.Text = "ID";
             this.IDListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.IDListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -744,7 +745,7 @@
             // 
             this.MCListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.MCListAutoWidthToolStripMenuItem.Name = "MCListAutoWidthToolStripMenuItem";
-            this.MCListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.MCListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.MCListAutoWidthToolStripMenuItem.Text = "管理コード";
             this.MCListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.MCListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -752,7 +753,7 @@
             // 
             this.NameListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.NameListAutoWidthToolStripMenuItem.Name = "NameListAutoWidthToolStripMenuItem";
-            this.NameListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.NameListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.NameListAutoWidthToolStripMenuItem.Text = "名前";
             this.NameListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.NameListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -760,7 +761,7 @@
             // 
             this.RegistrationDateListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.RegistrationDateListAutoWidthToolStripMenuItem.Name = "RegistrationDateListAutoWidthToolStripMenuItem";
-            this.RegistrationDateListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.RegistrationDateListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.RegistrationDateListAutoWidthToolStripMenuItem.Text = "登録日";
             this.RegistrationDateListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.RegistrationDateListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -768,7 +769,7 @@
             // 
             this.CategoryListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.CategoryListAutoWidthToolStripMenuItem.Name = "CategoryListAutoWidthToolStripMenuItem";
-            this.CategoryListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.CategoryListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.CategoryListAutoWidthToolStripMenuItem.Text = "カテゴリ";
             this.CategoryListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.CategoryListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -776,7 +777,7 @@
             // 
             this.Tag1ListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.Tag1ListAutoWidthToolStripMenuItem.Name = "Tag1ListAutoWidthToolStripMenuItem";
-            this.Tag1ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag1ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag1ListAutoWidthToolStripMenuItem.Text = "タグ1";
             this.Tag1ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag1ListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -784,7 +785,7 @@
             // 
             this.Tag2ListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.Tag2ListAutoWidthToolStripMenuItem.Name = "Tag2ListAutoWidthToolStripMenuItem";
-            this.Tag2ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag2ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag2ListAutoWidthToolStripMenuItem.Text = "タグ2";
             this.Tag2ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag2ListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -792,7 +793,7 @@
             // 
             this.Tag3ListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.Tag3ListAutoWidthToolStripMenuItem.Name = "Tag3ListAutoWidthToolStripMenuItem";
-            this.Tag3ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.Tag3ListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.Tag3ListAutoWidthToolStripMenuItem.Text = "タグ3";
             this.Tag3ListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.Tag3ListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
@@ -800,19 +801,19 @@
             // 
             this.InventoryInformationListAutoWidthToolStripMenuItem.CheckOnClick = true;
             this.InventoryInformationListAutoWidthToolStripMenuItem.Name = "InventoryInformationListAutoWidthToolStripMenuItem";
-            this.InventoryInformationListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(202, 34);
+            this.InventoryInformationListAutoWidthToolStripMenuItem.Size = new System.Drawing.Size(160, 28);
             this.InventoryInformationListAutoWidthToolStripMenuItem.Text = "在庫情報";
             this.InventoryInformationListAutoWidthToolStripMenuItem.CheckedChanged += new System.EventHandler(this.InventoryInformationListAutoWidthToolStripMenuItem_CheckedChanged);
             // 
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(397, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(315, 6);
             // 
             // RecentShownContentsToolStripMenuItem
             // 
             this.RecentShownContentsToolStripMenuItem.Name = "RecentShownContentsToolStripMenuItem";
-            this.RecentShownContentsToolStripMenuItem.Size = new System.Drawing.Size(400, 34);
+            this.RecentShownContentsToolStripMenuItem.Size = new System.Drawing.Size(318, 28);
             this.RecentShownContentsToolStripMenuItem.Text = "最近表示した項目（未実装）";
             // 
             // ProjectToolStripMenuItem
@@ -822,25 +823,25 @@
             this.toolStripSeparator2,
             this.ProjectInformationToolStripMenuItem});
             this.ProjectToolStripMenuItem.Name = "ProjectToolStripMenuItem";
-            this.ProjectToolStripMenuItem.Size = new System.Drawing.Size(166, 37);
+            this.ProjectToolStripMenuItem.Size = new System.Drawing.Size(130, 32);
             this.ProjectToolStripMenuItem.Text = "プロジェクト(&P)";
             // 
             // EditProjectToolStripMenuItem
             // 
             this.EditProjectToolStripMenuItem.Name = "EditProjectToolStripMenuItem";
-            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(342, 34);
+            this.EditProjectToolStripMenuItem.Size = new System.Drawing.Size(274, 28);
             this.EditProjectToolStripMenuItem.Text = "プロジェクトファイル編集...";
             this.EditProjectToolStripMenuItem.Click += new System.EventHandler(this.EditProjectToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(339, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(271, 6);
             // 
             // ProjectInformationToolStripMenuItem
             // 
             this.ProjectInformationToolStripMenuItem.Name = "ProjectInformationToolStripMenuItem";
-            this.ProjectInformationToolStripMenuItem.Size = new System.Drawing.Size(342, 34);
+            this.ProjectInformationToolStripMenuItem.Size = new System.Drawing.Size(274, 28);
             this.ProjectInformationToolStripMenuItem.Text = "プロジェクトの情報...";
             this.ProjectInformationToolStripMenuItem.Click += new System.EventHandler(this.ProjectInformationToolStripMenuItem_Click);
             // 
@@ -854,7 +855,7 @@
             this.RemoveFavoritePluginsToolStripMenuItem,
             this.toolStripSeparator12});
             this.PluginToolStripMenuItem.Name = "PluginToolStripMenuItem";
-            this.PluginToolStripMenuItem.Size = new System.Drawing.Size(150, 37);
+            this.PluginToolStripMenuItem.Size = new System.Drawing.Size(119, 32);
             this.PluginToolStripMenuItem.Text = "プラグイン(&L)";
             this.PluginToolStripMenuItem.DropDownOpening += new System.EventHandler(this.PluginToolStripMenuItem_DropDownOpening);
             // 
@@ -863,36 +864,46 @@
             this.ExecutePluginToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ExecuteEXEPluginToolStripMenuItem});
             this.ExecutePluginToolStripMenuItem.Name = "ExecutePluginToolStripMenuItem";
-            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.ExecutePluginToolStripMenuItem.Size = new System.Drawing.Size(290, 28);
             this.ExecutePluginToolStripMenuItem.Text = "プラグイン実行";
             // 
             // ExecuteEXEPluginToolStripMenuItem
             // 
             this.ExecuteEXEPluginToolStripMenuItem.Name = "ExecuteEXEPluginToolStripMenuItem";
-            this.ExecuteEXEPluginToolStripMenuItem.Size = new System.Drawing.Size(237, 34);
+            this.ExecuteEXEPluginToolStripMenuItem.Size = new System.Drawing.Size(192, 28);
             this.ExecuteEXEPluginToolStripMenuItem.Text = "EXEファイル...";
             this.ExecuteEXEPluginToolStripMenuItem.Click += new System.EventHandler(this.ExecuteEXEPluginToolStripMenuItem_Click);
             // 
             // RecentlyExecutedPluginToolStripMenuItem
             // 
             this.RecentlyExecutedPluginToolStripMenuItem.Name = "RecentlyExecutedPluginToolStripMenuItem";
-            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.RecentlyExecutedPluginToolStripMenuItem.Size = new System.Drawing.Size(290, 28);
             this.RecentlyExecutedPluginToolStripMenuItem.Text = "最近実行したプラグイン";
             this.RecentlyExecutedPluginToolStripMenuItem.MouseEnter += new System.EventHandler(this.RecentlyExecutedPluginToolStripMenuItem_MouseEnter);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(287, 6);
             // 
             // AddToFavoritePluginsToolStripMenuItem
             // 
             this.AddToFavoritePluginsToolStripMenuItem.Name = "AddToFavoritePluginsToolStripMenuItem";
-            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.AddToFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(290, 28);
             this.AddToFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン追加...";
             this.AddToFavoritePluginsToolStripMenuItem.Click += new System.EventHandler(this.AddToFavoritePluginsToolStripMenuItem_Click);
             // 
             // RemoveFavoritePluginsToolStripMenuItem
             // 
             this.RemoveFavoritePluginsToolStripMenuItem.Name = "RemoveFavoritePluginsToolStripMenuItem";
-            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(326, 34);
+            this.RemoveFavoritePluginsToolStripMenuItem.Size = new System.Drawing.Size(290, 28);
             this.RemoveFavoritePluginsToolStripMenuItem.Text = "お気に入りプラグイン削除";
             this.RemoveFavoritePluginsToolStripMenuItem.MouseEnter += new System.EventHandler(this.RemoveFavoritePluginsToolStripMenuItem_MouseEnter);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(287, 6);
             // 
             // HelpToolStripMenuItem
             // 
@@ -903,41 +914,41 @@
             this.AccessLatestReleaseToolStripMenuItem,
             this.UserManualToolStripMenuItem});
             this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
-            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(125, 37);
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(98, 32);
             this.HelpToolStripMenuItem.Text = "ヘルプ(&H)";
             // 
             // AboutToolStripMenuItem
             // 
             this.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
-            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.AboutToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
             this.AboutToolStripMenuItem.Text = "CRECのバージョン情報(&A)...";
             this.AboutToolStripMenuItem.Click += new System.EventHandler(this.AboutToolStripMenuItem_Click);
             // 
             // readmeToolStripMenuItem
             // 
             this.readmeToolStripMenuItem.Name = "readmeToolStripMenuItem";
-            this.readmeToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.readmeToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
             this.readmeToolStripMenuItem.Text = "ReadMe...";
             this.readmeToolStripMenuItem.Click += new System.EventHandler(this.ReadmeToolStripMenuItem_Click);
             // 
             // UpdateHistoryToolStripMenuItem
             // 
             this.UpdateHistoryToolStripMenuItem.Name = "UpdateHistoryToolStripMenuItem";
-            this.UpdateHistoryToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.UpdateHistoryToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
             this.UpdateHistoryToolStripMenuItem.Text = "更新履歴...";
             this.UpdateHistoryToolStripMenuItem.Click += new System.EventHandler(this.UpdateHistoryToolStripMenuItem_Click);
             // 
             // AccessLatestReleaseToolStripMenuItem
             // 
             this.AccessLatestReleaseToolStripMenuItem.Name = "AccessLatestReleaseToolStripMenuItem";
-            this.AccessLatestReleaseToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.AccessLatestReleaseToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
             this.AccessLatestReleaseToolStripMenuItem.Text = "最新バージョンの入手...";
             this.AccessLatestReleaseToolStripMenuItem.Click += new System.EventHandler(this.AccessLatestReleaseToolStripMenuItem_Click);
             // 
             // UserManualToolStripMenuItem
             // 
             this.UserManualToolStripMenuItem.Name = "UserManualToolStripMenuItem";
-            this.UserManualToolStripMenuItem.Size = new System.Drawing.Size(383, 34);
+            this.UserManualToolStripMenuItem.Size = new System.Drawing.Size(307, 28);
             this.UserManualToolStripMenuItem.Text = "使用ガイド...";
             this.UserManualToolStripMenuItem.Click += new System.EventHandler(this.UserManualToolStripMenuItem_Click);
             // 
@@ -946,13 +957,13 @@
             this.ShowListButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.ShowListButton.AutoSize = false;
             this.ShowListButton.BackColor = System.Drawing.Color.AliceBlue;
-            this.ShowListButton.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowListButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.ShowListButton.ForeColor = System.Drawing.Color.Black;
             this.ShowListButton.Margin = new System.Windows.Forms.Padding(0, 0, 20, 0);
             this.ShowListButton.Name = "ShowListButton";
             this.ShowListButton.Padding = new System.Windows.Forms.Padding(1);
             this.ShowListButton.ReadOnly = true;
-            this.ShowListButton.Size = new System.Drawing.Size(125, 37);
+            this.ShowListButton.Size = new System.Drawing.Size(126, 32);
             this.ShowListButton.Text = "← List";
             this.ShowListButton.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ShowListButton.Visible = false;
@@ -967,7 +978,7 @@
             this.ShowProjcetNameTextBox.Margin = new System.Windows.Forms.Padding(1, 0, 20, 0);
             this.ShowProjcetNameTextBox.Name = "ShowProjcetNameTextBox";
             this.ShowProjcetNameTextBox.ReadOnly = true;
-            this.ShowProjcetNameTextBox.Size = new System.Drawing.Size(624, 37);
+            this.ShowProjcetNameTextBox.Size = new System.Drawing.Size(500, 32);
             this.ShowProjcetNameTextBox.TextBoxTextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // dataGridView1
@@ -978,14 +989,14 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.dataGridView1.BackgroundColor = System.Drawing.SystemColors.InactiveCaption;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("メイリオ", 16F);
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle12;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.TargetPath,
@@ -1000,23 +1011,22 @@
             this.InventoryList,
             this.InventoryStatusList});
             this.dataGridView1.ContextMenuStrip = this.dataGridViewContextMenuStrip;
-            this.dataGridView1.Font = new System.Drawing.Font("メイリオ", 16F);
-            this.dataGridView1.Location = new System.Drawing.Point(15, 175);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridView1.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.dataGridView1.Location = new System.Drawing.Point(10, 140);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 28;
-            this.dataGridView1.Size = new System.Drawing.Size(1124, 925);
+            this.dataGridView1.Size = new System.Drawing.Size(620, 440);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             // 
             // TargetPath
             // 
             this.TargetPath.DataPropertyName = "TargetPath";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.TargetPath.DefaultCellStyle = dataGridViewCellStyle13;
             this.TargetPath.HeaderText = "TargetPath";
             this.TargetPath.MinimumWidth = 100;
             this.TargetPath.Name = "TargetPath";
@@ -1028,8 +1038,8 @@
             // 
             this.IDList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.IDList.DataPropertyName = "IDList";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.IDList.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.IDList.DefaultCellStyle = dataGridViewCellStyle14;
             this.IDList.HeaderText = "ID";
             this.IDList.MinimumWidth = 100;
             this.IDList.Name = "IDList";
@@ -1040,8 +1050,8 @@
             // 
             this.MCList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.MCList.DataPropertyName = "MCList";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.MCList.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.MCList.DefaultCellStyle = dataGridViewCellStyle15;
             this.MCList.HeaderText = "管理コード";
             this.MCList.MinimumWidth = 200;
             this.MCList.Name = "MCList";
@@ -1052,14 +1062,13 @@
             // 
             this.ObjectNameList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.ObjectNameList.DataPropertyName = "ObjectNameList";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.ObjectNameList.DefaultCellStyle = dataGridViewCellStyle16;
             this.ObjectNameList.HeaderText = "名称";
             this.ObjectNameList.MinimumWidth = 100;
             this.ObjectNameList.Name = "ObjectNameList";
             this.ObjectNameList.ReadOnly = true;
             this.ObjectNameList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.ObjectNameList.Width = 101;
             // 
             // RegistrationDateList
             // 
@@ -1070,85 +1079,79 @@
             this.RegistrationDateList.Name = "RegistrationDateList";
             this.RegistrationDateList.ReadOnly = true;
             this.RegistrationDateList.Visible = false;
-            this.RegistrationDateList.Width = 125;
             // 
             // CategoryList
             // 
             this.CategoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.CategoryList.DataPropertyName = "CategoryList";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.CategoryList.DefaultCellStyle = dataGridViewCellStyle17;
             this.CategoryList.HeaderText = "カテゴリ";
             this.CategoryList.MinimumWidth = 100;
             this.CategoryList.Name = "CategoryList";
             this.CategoryList.ReadOnly = true;
             this.CategoryList.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.CategoryList.Width = 155;
+            this.CategoryList.Width = 105;
             // 
             // Tag1List
             // 
             this.Tag1List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag1List.DataPropertyName = "Tag1List";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
-            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopCenter;
+            this.Tag1List.DefaultCellStyle = dataGridViewCellStyle18;
             this.Tag1List.HeaderText = "Tag1";
             this.Tag1List.MinimumWidth = 6;
             this.Tag1List.Name = "Tag1List";
             this.Tag1List.ReadOnly = true;
             this.Tag1List.Visible = false;
-            this.Tag1List.Width = 125;
             // 
             // Tag2List
             // 
             this.Tag2List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag2List.DataPropertyName = "Tag2List";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle19.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag2List.DefaultCellStyle = dataGridViewCellStyle19;
             this.Tag2List.HeaderText = "Tag2";
             this.Tag2List.MinimumWidth = 6;
             this.Tag2List.Name = "Tag2List";
             this.Tag2List.ReadOnly = true;
             this.Tag2List.Visible = false;
-            this.Tag2List.Width = 125;
             // 
             // Tag3List
             // 
             this.Tag3List.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.Tag3List.DataPropertyName = "Tag3List";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Tag3List.DefaultCellStyle = dataGridViewCellStyle20;
             this.Tag3List.HeaderText = "Tag3";
             this.Tag3List.MinimumWidth = 6;
             this.Tag3List.Name = "Tag3List";
             this.Tag3List.ReadOnly = true;
             this.Tag3List.Visible = false;
-            this.Tag3List.Width = 125;
             // 
             // InventoryList
             // 
             this.InventoryList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.InventoryList.DataPropertyName = "InventoryList";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryList.DefaultCellStyle = dataGridViewCellStyle21;
             this.InventoryList.HeaderText = "在庫数";
             this.InventoryList.MinimumWidth = 6;
             this.InventoryList.Name = "InventoryList";
             this.InventoryList.ReadOnly = true;
             this.InventoryList.Visible = false;
-            this.InventoryList.Width = 125;
             // 
             // InventoryStatusList
             // 
             this.InventoryStatusList.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.InventoryStatusList.DataPropertyName = "InventoryStatusList";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.InventoryStatusList.DefaultCellStyle = dataGridViewCellStyle22;
             this.InventoryStatusList.HeaderText = "在庫状況";
             this.InventoryStatusList.MinimumWidth = 6;
             this.InventoryStatusList.Name = "InventoryStatusList";
             this.InventoryStatusList.ReadOnly = true;
             this.InventoryStatusList.Visible = false;
-            this.InventoryStatusList.Width = 125;
             // 
             // dataGridViewContextMenuStrip
             // 
@@ -1164,58 +1167,64 @@
             this.toolStripSeparator10,
             this.OpenProjectContextStripMenuItem});
             this.dataGridViewContextMenuStrip.Name = "dataGridViewContextMenuStrip";
-            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(403, 256);
+            this.dataGridViewContextMenuStrip.Size = new System.Drawing.Size(315, 184);
             // 
             // ShowSelectedItemInformationToolStripMenuItem
             // 
+            this.ShowSelectedItemInformationToolStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.ShowSelectedItemInformationToolStripMenuItem.Name = "ShowSelectedItemInformationToolStripMenuItem";
-            this.ShowSelectedItemInformationToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.ShowSelectedItemInformationToolStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.ShowSelectedItemInformationToolStripMenuItem.Text = "詳細表示";
             this.ShowSelectedItemInformationToolStripMenuItem.Visible = false;
             this.ShowSelectedItemInformationToolStripMenuItem.Click += new System.EventHandler(this.ShowSelectedItemInformationToolStripMenuItem_Click);
             // 
             // OpenCollectionDataLocationToolStripMenuItem
             // 
+            this.OpenCollectionDataLocationToolStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.OpenCollectionDataLocationToolStripMenuItem.Name = "OpenCollectionDataLocationToolStripMenuItem";
-            this.OpenCollectionDataLocationToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.OpenCollectionDataLocationToolStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.OpenCollectionDataLocationToolStripMenuItem.Text = "コレクションデータを開く";
             this.OpenCollectionDataLocationToolStripMenuItem.Click += new System.EventHandler(this.OpenCollectionDataLocationToolStripMenuItem_Click);
             // 
             // ShowSelectedItemInformationToolStripMenuItemSeparator
             // 
             this.ShowSelectedItemInformationToolStripMenuItemSeparator.Name = "ShowSelectedItemInformationToolStripMenuItemSeparator";
-            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Size = new System.Drawing.Size(399, 6);
+            this.ShowSelectedItemInformationToolStripMenuItemSeparator.Size = new System.Drawing.Size(311, 6);
             // 
             // AddContentsContextStripMenuItem
             // 
+            this.AddContentsContextStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.AddContentsContextStripMenuItem.Name = "AddContentsContextStripMenuItem";
-            this.AddContentsContextStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.AddContentsContextStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.AddContentsContextStripMenuItem.Text = "新規追加...";
             this.AddContentsContextStripMenuItem.Click += new System.EventHandler(this.AddContentsContextStripMenuItem_Click);
             // 
             // CopyAndAddContentsContextToolStripMenuItem
             // 
+            this.CopyAndAddContentsContextToolStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.CopyAndAddContentsContextToolStripMenuItem.Name = "CopyAndAddContentsContextToolStripMenuItem";
-            this.CopyAndAddContentsContextToolStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.CopyAndAddContentsContextToolStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.CopyAndAddContentsContextToolStripMenuItem.Text = "新規追加（データを複製）...";
             this.CopyAndAddContentsContextToolStripMenuItem.Click += new System.EventHandler(this.CopyAndAddContentsToolStripMenuItem_Click);
             // 
             // ListUpdateContextStripMenuItem
             // 
+            this.ListUpdateContextStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.ListUpdateContextStripMenuItem.Name = "ListUpdateContextStripMenuItem";
-            this.ListUpdateContextStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.ListUpdateContextStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.ListUpdateContextStripMenuItem.Text = "一覧更新";
             this.ListUpdateContextStripMenuItem.Click += new System.EventHandler(this.ListUpdateContextStripMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(399, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(311, 6);
             // 
             // OpenProjectContextStripMenuItem
             // 
+            this.OpenProjectContextStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.OpenProjectContextStripMenuItem.Name = "OpenProjectContextStripMenuItem";
-            this.OpenProjectContextStripMenuItem.Size = new System.Drawing.Size(402, 40);
+            this.OpenProjectContextStripMenuItem.Size = new System.Drawing.Size(314, 28);
             this.OpenProjectContextStripMenuItem.Text = "別のプロジェクトを開く...";
             this.OpenProjectContextStripMenuItem.Click += new System.EventHandler(this.OpenProjectContextStripMenuItem_Click);
             // 
@@ -1223,22 +1232,20 @@
             // 
             this.ShowObjectName.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowObjectName.AutoSize = true;
-            this.ShowObjectName.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowObjectName.Location = new System.Drawing.Point(1315, 56);
-            this.ShowObjectName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowObjectName.Font = new System.Drawing.Font("Meiryo UI", 20.25F);
+            this.ShowObjectName.Location = new System.Drawing.Point(746, 45);
             this.ShowObjectName.Name = "ShowObjectName";
-            this.ShowObjectName.Size = new System.Drawing.Size(0, 43);
+            this.ShowObjectName.Size = new System.Drawing.Size(0, 35);
             this.ShowObjectName.TabIndex = 3;
             // 
             // ShowID
             // 
             this.ShowID.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowID.AutoSize = true;
-            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowID.Location = new System.Drawing.Point(1339, 111);
-            this.ShowID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowID.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.ShowID.Location = new System.Drawing.Point(701, 89);
             this.ShowID.Name = "ShowID";
-            this.ShowID.Size = new System.Drawing.Size(0, 25);
+            this.ShowID.Size = new System.Drawing.Size(0, 24);
             this.ShowID.TabIndex = 4;
             // 
             // CenterLine
@@ -1246,34 +1253,32 @@
             this.CenterLine.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CenterLine.BackColor = System.Drawing.Color.Black;
             this.CenterLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CenterLine.Location = new System.Drawing.Point(1150, 66);
+            this.CenterLine.Location = new System.Drawing.Point(640, 54);
             this.CenterLine.Margin = new System.Windows.Forms.Padding(0);
             this.CenterLine.Name = "CenterLine";
-            this.CenterLine.Size = new System.Drawing.Size(2, 1226);
+            this.CenterLine.Size = new System.Drawing.Size(2, 540);
             this.CenterLine.TabIndex = 8;
             // 
             // ShowRealLocation
             // 
             this.ShowRealLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowRealLocation.AutoSize = true;
-            this.ShowRealLocation.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRealLocation.Location = new System.Drawing.Point(1414, 484);
-            this.ShowRealLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowRealLocation.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowRealLocation.Location = new System.Drawing.Point(821, 387);
             this.ShowRealLocation.Name = "ShowRealLocation";
-            this.ShowRealLocation.Size = new System.Drawing.Size(0, 38);
+            this.ShowRealLocation.Size = new System.Drawing.Size(0, 30);
             this.ShowRealLocation.TabIndex = 9;
             // 
             // ShowDataLocation
             // 
             this.ShowDataLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowDataLocation.AutoSize = true;
-            this.ShowDataLocation.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ShowDataLocation.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.ShowDataLocation.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.ShowDataLocation.Location = new System.Drawing.Point(1156, 534);
-            this.ShowDataLocation.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowDataLocation.Location = new System.Drawing.Point(645, 427);
             this.ShowDataLocation.Name = "ShowDataLocation";
             this.ShowDataLocation.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.ShowDataLocation.Size = new System.Drawing.Size(236, 38);
+            this.ShowDataLocation.Size = new System.Drawing.Size(190, 30);
             this.ShowDataLocation.TabIndex = 9;
             this.ShowDataLocation.Text = "データ保管場所：";
             this.ShowDataLocation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1281,11 +1286,10 @@
             // OpenDataLocation
             // 
             this.OpenDataLocation.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.OpenDataLocation.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenDataLocation.Location = new System.Drawing.Point(1386, 530);
-            this.OpenDataLocation.Margin = new System.Windows.Forms.Padding(4);
+            this.OpenDataLocation.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.OpenDataLocation.Location = new System.Drawing.Point(830, 427);
             this.OpenDataLocation.Name = "OpenDataLocation";
-            this.OpenDataLocation.Size = new System.Drawing.Size(136, 45);
+            this.OpenDataLocation.Size = new System.Drawing.Size(109, 36);
             this.OpenDataLocation.TabIndex = 19;
             this.OpenDataLocation.Text = "開く";
             this.OpenDataLocation.UseVisualStyleBackColor = true;
@@ -1295,33 +1299,30 @@
             // 
             this.ShowRegistrationDate.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowRegistrationDate.AutoSize = true;
-            this.ShowRegistrationDate.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowRegistrationDate.Location = new System.Drawing.Point(1339, 214);
-            this.ShowRegistrationDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowRegistrationDate.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowRegistrationDate.Location = new System.Drawing.Point(759, 171);
             this.ShowRegistrationDate.Name = "ShowRegistrationDate";
-            this.ShowRegistrationDate.Size = new System.Drawing.Size(0, 38);
+            this.ShowRegistrationDate.Size = new System.Drawing.Size(0, 30);
             this.ShowRegistrationDate.TabIndex = 13;
             // 
             // ShowCategory
             // 
             this.ShowCategory.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowCategory.AutoSize = true;
-            this.ShowCategory.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowCategory.Location = new System.Drawing.Point(1339, 269);
-            this.ShowCategory.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowCategory.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowCategory.Location = new System.Drawing.Point(754, 215);
             this.ShowCategory.Name = "ShowCategory";
-            this.ShowCategory.Size = new System.Drawing.Size(0, 38);
+            this.ShowCategory.Size = new System.Drawing.Size(0, 30);
             this.ShowCategory.TabIndex = 14;
             // 
             // ShowTag1
             // 
             this.ShowTag1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowTag1.AutoSize = true;
-            this.ShowTag1.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowTag1.Location = new System.Drawing.Point(1350, 325);
-            this.ShowTag1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag1.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowTag1.Location = new System.Drawing.Point(756, 260);
             this.ShowTag1.Name = "ShowTag1";
-            this.ShowTag1.Size = new System.Drawing.Size(0, 38);
+            this.ShowTag1.Size = new System.Drawing.Size(0, 30);
             this.ShowTag1.TabIndex = 15;
             this.ShowTag1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -1329,11 +1330,10 @@
             // 
             this.ShowTag2.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowTag2.AutoSize = true;
-            this.ShowTag2.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowTag2.Location = new System.Drawing.Point(1350, 375);
-            this.ShowTag2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag2.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowTag2.Location = new System.Drawing.Point(756, 300);
             this.ShowTag2.Name = "ShowTag2";
-            this.ShowTag2.Size = new System.Drawing.Size(0, 38);
+            this.ShowTag2.Size = new System.Drawing.Size(0, 30);
             this.ShowTag2.TabIndex = 16;
             this.ShowTag2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -1341,11 +1341,10 @@
             // 
             this.ShowTag3.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowTag3.AutoSize = true;
-            this.ShowTag3.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowTag3.Location = new System.Drawing.Point(1350, 425);
-            this.ShowTag3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowTag3.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowTag3.Location = new System.Drawing.Point(756, 340);
             this.ShowTag3.Name = "ShowTag3";
-            this.ShowTag3.Size = new System.Drawing.Size(0, 38);
+            this.ShowTag3.Size = new System.Drawing.Size(0, 30);
             this.ShowTag3.TabIndex = 17;
             this.ShowTag3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -1353,24 +1352,22 @@
             // 
             this.DetailsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.DetailsTextBox.BackColor = System.Drawing.Color.White;
-            this.DetailsTextBox.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DetailsTextBox.Location = new System.Drawing.Point(1156, 625);
-            this.DetailsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.DetailsTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.DetailsTextBox.Location = new System.Drawing.Point(655, 500);
             this.DetailsTextBox.Multiline = true;
             this.DetailsTextBox.Name = "DetailsTextBox";
             this.DetailsTextBox.ReadOnly = true;
             this.DetailsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.DetailsTextBox.Size = new System.Drawing.Size(1090, 599);
+            this.DetailsTextBox.Size = new System.Drawing.Size(590, 40);
             this.DetailsTextBox.TabIndex = 20;
             // 
             // EditButton
             // 
             this.EditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditButton.Location = new System.Drawing.Point(1534, 1236);
-            this.EditButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditButton.Location = new System.Drawing.Point(665, 550);
             this.EditButton.Name = "EditButton";
-            this.EditButton.Size = new System.Drawing.Size(186, 50);
+            this.EditButton.Size = new System.Drawing.Size(149, 40);
             this.EditButton.TabIndex = 19;
             this.EditButton.Text = "編　集";
             this.EditButton.UseVisualStyleBackColor = true;
@@ -1379,11 +1376,10 @@
             // ShowPicturesButton
             // 
             this.ShowPicturesButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.ShowPicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowPicturesButton.Location = new System.Drawing.Point(1930, 494);
-            this.ShowPicturesButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowPicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowPicturesButton.Location = new System.Drawing.Point(1063, 395);
             this.ShowPicturesButton.Name = "ShowPicturesButton";
-            this.ShowPicturesButton.Size = new System.Drawing.Size(226, 50);
+            this.ShowPicturesButton.Size = new System.Drawing.Size(181, 40);
             this.ShowPicturesButton.TabIndex = 22;
             this.ShowPicturesButton.Text = "画像を表示";
             this.ShowPicturesButton.UseVisualStyleBackColor = true;
@@ -1392,11 +1388,10 @@
             // ClosePicturesButton
             // 
             this.ClosePicturesButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ClosePicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ClosePicturesButton.Location = new System.Drawing.Point(964, 1200);
-            this.ClosePicturesButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ClosePicturesButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ClosePicturesButton.Location = new System.Drawing.Point(450, 520);
             this.ClosePicturesButton.Name = "ClosePicturesButton";
-            this.ClosePicturesButton.Size = new System.Drawing.Size(225, 50);
+            this.ClosePicturesButton.Size = new System.Drawing.Size(180, 40);
             this.ClosePicturesButton.TabIndex = 23;
             this.ClosePicturesButton.Text = "画像を閉じる";
             this.ClosePicturesButton.UseVisualStyleBackColor = true;
@@ -1406,11 +1401,10 @@
             // NextPictureButton
             // 
             this.NextPictureButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.NextPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.NextPictureButton.Location = new System.Drawing.Point(350, 1200);
-            this.NextPictureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.NextPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.NextPictureButton.Location = new System.Drawing.Point(230, 520);
             this.NextPictureButton.Name = "NextPictureButton";
-            this.NextPictureButton.Size = new System.Drawing.Size(225, 50);
+            this.NextPictureButton.Size = new System.Drawing.Size(180, 40);
             this.NextPictureButton.TabIndex = 24;
             this.NextPictureButton.Text = "次の画像";
             this.NextPictureButton.UseVisualStyleBackColor = true;
@@ -1420,11 +1414,10 @@
             // PreviousPictureButton
             // 
             this.PreviousPictureButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.PreviousPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.PreviousPictureButton.Location = new System.Drawing.Point(14, 1200);
-            this.PreviousPictureButton.Margin = new System.Windows.Forms.Padding(4);
+            this.PreviousPictureButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.PreviousPictureButton.Location = new System.Drawing.Point(10, 520);
             this.PreviousPictureButton.Name = "PreviousPictureButton";
-            this.PreviousPictureButton.Size = new System.Drawing.Size(225, 50);
+            this.PreviousPictureButton.Size = new System.Drawing.Size(180, 40);
             this.PreviousPictureButton.TabIndex = 25;
             this.PreviousPictureButton.Text = "前の画像";
             this.PreviousPictureButton.UseVisualStyleBackColor = true;
@@ -1433,28 +1426,26 @@
             // 
             // SearchOptionComboBox
             // 
-            this.SearchOptionComboBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchOptionComboBox.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.SearchOptionComboBox.FormattingEnabled = true;
             this.SearchOptionComboBox.Items.AddRange(new object[] {
             "ID",
             "管理コード",
             "名称",
             "カテゴリー"});
-            this.SearchOptionComboBox.Location = new System.Drawing.Point(745, 64);
-            this.SearchOptionComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchOptionComboBox.Location = new System.Drawing.Point(275, 51);
             this.SearchOptionComboBox.Name = "SearchOptionComboBox";
-            this.SearchOptionComboBox.Size = new System.Drawing.Size(185, 47);
+            this.SearchOptionComboBox.Size = new System.Drawing.Size(149, 32);
             this.SearchOptionComboBox.TabIndex = 3;
-            this.SearchOptionComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchOptionComboBox_SelectedIndexChanged);
+            this.SearchOptionComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchOptionComboBox_UpdateCaseSensitiveAvailability);
             // 
             // ShowConfidentialDataButton
             // 
             this.ShowConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ShowConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowConfidentialDataButton.Location = new System.Drawing.Point(2014, 1236);
-            this.ShowConfidentialDataButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowConfidentialDataButton.Location = new System.Drawing.Point(1050, 550);
             this.ShowConfidentialDataButton.Name = "ShowConfidentialDataButton";
-            this.ShowConfidentialDataButton.Size = new System.Drawing.Size(236, 50);
+            this.ShowConfidentialDataButton.Size = new System.Drawing.Size(189, 40);
             this.ShowConfidentialDataButton.TabIndex = 21;
             this.ShowConfidentialDataButton.Text = "機密情報表示";
             this.ShowConfidentialDataButton.UseVisualStyleBackColor = true;
@@ -1463,11 +1454,10 @@
             // SaveAndCloseEditButton
             // 
             this.SaveAndCloseEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SaveAndCloseEditButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveAndCloseEditButton.Location = new System.Drawing.Point(1516, 1236);
-            this.SaveAndCloseEditButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SaveAndCloseEditButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SaveAndCloseEditButton.Location = new System.Drawing.Point(660, 550);
             this.SaveAndCloseEditButton.Name = "SaveAndCloseEditButton";
-            this.SaveAndCloseEditButton.Size = new System.Drawing.Size(209, 50);
+            this.SaveAndCloseEditButton.Size = new System.Drawing.Size(167, 40);
             this.SaveAndCloseEditButton.TabIndex = 24;
             this.SaveAndCloseEditButton.Text = "保存して終了";
             this.SaveAndCloseEditButton.UseMnemonic = false;
@@ -1480,25 +1470,23 @@
             this.ConfidentialDataTextBox.AllowDrop = true;
             this.ConfidentialDataTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.ConfidentialDataTextBox.BackColor = System.Drawing.Color.White;
-            this.ConfidentialDataTextBox.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ConfidentialDataTextBox.Location = new System.Drawing.Point(1164, 621);
-            this.ConfidentialDataTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ConfidentialDataTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ConfidentialDataTextBox.Location = new System.Drawing.Point(655, 500);
             this.ConfidentialDataTextBox.Multiline = true;
             this.ConfidentialDataTextBox.Name = "ConfidentialDataTextBox";
             this.ConfidentialDataTextBox.ReadOnly = true;
             this.ConfidentialDataTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.ConfidentialDataTextBox.Size = new System.Drawing.Size(1084, 608);
+            this.ConfidentialDataTextBox.Size = new System.Drawing.Size(590, 40);
             this.ConfidentialDataTextBox.TabIndex = 20;
             this.ConfidentialDataTextBox.Visible = false;
             // 
             // InventoryManagementModeButton
             // 
             this.InventoryManagementModeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.InventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryManagementModeButton.Location = new System.Drawing.Point(1744, 1236);
-            this.InventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.InventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.InventoryManagementModeButton.Location = new System.Drawing.Point(835, 550);
             this.InventoryManagementModeButton.Name = "InventoryManagementModeButton";
-            this.InventoryManagementModeButton.Size = new System.Drawing.Size(250, 50);
+            this.InventoryManagementModeButton.Size = new System.Drawing.Size(200, 40);
             this.InventoryManagementModeButton.TabIndex = 40;
             this.InventoryManagementModeButton.Text = "在庫数管理画面";
             this.InventoryManagementModeButton.UseVisualStyleBackColor = true;
@@ -1518,14 +1506,13 @@
             this.operation,
             this.quantity,
             this.note});
-            this.InventoryModeDataGridView.Font = new System.Drawing.Font("メイリオ", 16F);
-            this.InventoryModeDataGridView.Location = new System.Drawing.Point(14, 175);
-            this.InventoryModeDataGridView.Margin = new System.Windows.Forms.Padding(4);
+            this.InventoryModeDataGridView.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.InventoryModeDataGridView.Location = new System.Drawing.Point(10, 140);
             this.InventoryModeDataGridView.Name = "InventoryModeDataGridView";
             this.InventoryModeDataGridView.RowHeadersVisible = false;
             this.InventoryModeDataGridView.RowHeadersWidth = 48;
             this.InventoryModeDataGridView.RowTemplate.Height = 28;
-            this.InventoryModeDataGridView.Size = new System.Drawing.Size(1125, 925);
+            this.InventoryModeDataGridView.Size = new System.Drawing.Size(620, 300);
             this.InventoryModeDataGridView.TabIndex = 48;
             this.InventoryModeDataGridView.Visible = false;
             // 
@@ -1535,7 +1522,7 @@
             this.date.HeaderText = "日付";
             this.date.MinimumWidth = 6;
             this.date.Name = "date";
-            this.date.Width = 101;
+            this.date.Width = 86;
             // 
             // operation
             // 
@@ -1543,7 +1530,7 @@
             this.operation.HeaderText = "詳細";
             this.operation.MinimumWidth = 6;
             this.operation.Name = "operation";
-            this.operation.Width = 101;
+            this.operation.Width = 86;
             // 
             // quantity
             // 
@@ -1551,7 +1538,7 @@
             this.quantity.HeaderText = "数量";
             this.quantity.MinimumWidth = 6;
             this.quantity.Name = "quantity";
-            this.quantity.Width = 101;
+            this.quantity.Width = 86;
             // 
             // note
             // 
@@ -1559,43 +1546,40 @@
             this.note.HeaderText = "コメント";
             this.note.MinimumWidth = 6;
             this.note.Name = "note";
-            this.note.Width = 155;
+            this.note.Width = 107;
             // 
             // InventoryLabel
             // 
             this.InventoryLabel.AutoSize = true;
             this.InventoryLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryLabel.Location = new System.Drawing.Point(29, 64);
-            this.InventoryLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryLabel.Location = new System.Drawing.Point(23, 51);
             this.InventoryLabel.Name = "InventoryLabel";
-            this.InventoryLabel.Size = new System.Drawing.Size(0, 43);
+            this.InventoryLabel.Size = new System.Drawing.Size(0, 35);
             this.InventoryLabel.TabIndex = 42;
             this.InventoryLabel.Visible = false;
             // 
             // OperationOptionComboBox
             // 
             this.OperationOptionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.OperationOptionComboBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.OperationOptionComboBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.OperationOptionComboBox.FormattingEnabled = true;
             this.OperationOptionComboBox.Items.AddRange(new object[] {
             "入庫",
             "出庫",
             "棚卸"});
-            this.OperationOptionComboBox.Location = new System.Drawing.Point(36, 1150);
-            this.OperationOptionComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.OperationOptionComboBox.Location = new System.Drawing.Point(30, 480);
             this.OperationOptionComboBox.Name = "OperationOptionComboBox";
-            this.OperationOptionComboBox.Size = new System.Drawing.Size(203, 47);
+            this.OperationOptionComboBox.Size = new System.Drawing.Size(163, 38);
             this.OperationOptionComboBox.TabIndex = 41;
             this.OperationOptionComboBox.Visible = false;
             // 
             // AddInventoryOperationButton
             // 
             this.AddInventoryOperationButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.AddInventoryOperationButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddInventoryOperationButton.Location = new System.Drawing.Point(931, 1144);
-            this.AddInventoryOperationButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddInventoryOperationButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.AddInventoryOperationButton.Location = new System.Drawing.Point(465, 475);
             this.AddInventoryOperationButton.Name = "AddInventoryOperationButton";
-            this.AddInventoryOperationButton.Size = new System.Drawing.Size(200, 50);
+            this.AddInventoryOperationButton.Size = new System.Drawing.Size(160, 40);
             this.AddInventoryOperationButton.TabIndex = 44;
             this.AddInventoryOperationButton.Text = "追加";
             this.AddInventoryOperationButton.UseVisualStyleBackColor = true;
@@ -1606,11 +1590,10 @@
             // 
             this.InventoryOperationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InventoryOperationLabel.AutoSize = true;
-            this.InventoryOperationLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryOperationLabel.Location = new System.Drawing.Point(36, 1106);
-            this.InventoryOperationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryOperationLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.InventoryOperationLabel.Location = new System.Drawing.Point(30, 445);
             this.InventoryOperationLabel.Name = "InventoryOperationLabel";
-            this.InventoryOperationLabel.Size = new System.Drawing.Size(137, 38);
+            this.InventoryOperationLabel.Size = new System.Drawing.Size(109, 30);
             this.InventoryOperationLabel.TabIndex = 46;
             this.InventoryOperationLabel.Text = "作業内容";
             this.InventoryOperationLabel.Visible = false;
@@ -1619,11 +1602,10 @@
             // 
             this.InputQuantitiyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InputQuantitiyLabel.AutoSize = true;
-            this.InputQuantitiyLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InputQuantitiyLabel.Location = new System.Drawing.Point(264, 1106);
-            this.InputQuantitiyLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InputQuantitiyLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.InputQuantitiyLabel.Location = new System.Drawing.Point(210, 445);
             this.InputQuantitiyLabel.Name = "InputQuantitiyLabel";
-            this.InputQuantitiyLabel.Size = new System.Drawing.Size(77, 38);
+            this.InputQuantitiyLabel.Size = new System.Drawing.Size(61, 30);
             this.InputQuantitiyLabel.TabIndex = 47;
             this.InputQuantitiyLabel.Text = "数量";
             this.InputQuantitiyLabel.Visible = false;
@@ -1632,11 +1614,10 @@
             // 
             this.InventoryOperationNoteLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.InventoryOperationNoteLabel.AutoSize = true;
-            this.InventoryOperationNoteLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.InventoryOperationNoteLabel.Location = new System.Drawing.Point(36, 1200);
-            this.InventoryOperationNoteLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.InventoryOperationNoteLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.InventoryOperationNoteLabel.Location = new System.Drawing.Point(30, 520);
             this.InventoryOperationNoteLabel.Name = "InventoryOperationNoteLabel";
-            this.InventoryOperationNoteLabel.Size = new System.Drawing.Size(102, 38);
+            this.InventoryOperationNoteLabel.Size = new System.Drawing.Size(82, 30);
             this.InventoryOperationNoteLabel.TabIndex = 48;
             this.InventoryOperationNoteLabel.Text = "コメント";
             this.InventoryOperationNoteLabel.Visible = false;
@@ -1645,11 +1626,10 @@
             // 
             this.Tag2NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Tag2NameLabel.AutoSize = true;
-            this.Tag2NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag2NameLabel.Location = new System.Drawing.Point(1156, 375);
-            this.Tag2NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag2NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.Tag2NameLabel.Location = new System.Drawing.Point(660, 300);
             this.Tag2NameLabel.Name = "Tag2NameLabel";
-            this.Tag2NameLabel.Size = new System.Drawing.Size(121, 38);
+            this.Tag2NameLabel.Size = new System.Drawing.Size(96, 30);
             this.Tag2NameLabel.TabIndex = 51;
             this.Tag2NameLabel.Text = "タグ２：";
             this.Tag2NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1658,11 +1638,10 @@
             // 
             this.Tag3NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Tag3NameLabel.AutoSize = true;
-            this.Tag3NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag3NameLabel.Location = new System.Drawing.Point(1156, 425);
-            this.Tag3NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag3NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.Tag3NameLabel.Location = new System.Drawing.Point(660, 340);
             this.Tag3NameLabel.Name = "Tag3NameLabel";
-            this.Tag3NameLabel.Size = new System.Drawing.Size(121, 38);
+            this.Tag3NameLabel.Size = new System.Drawing.Size(96, 30);
             this.Tag3NameLabel.TabIndex = 52;
             this.Tag3NameLabel.Text = "タグ３：";
             this.Tag3NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -1671,28 +1650,26 @@
             // 
             this.Tag1NameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Tag1NameLabel.AutoSize = true;
-            this.Tag1NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.Tag1NameLabel.Location = new System.Drawing.Point(1156, 325);
-            this.Tag1NameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Tag1NameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.Tag1NameLabel.Location = new System.Drawing.Point(660, 260);
             this.Tag1NameLabel.Name = "Tag1NameLabel";
-            this.Tag1NameLabel.Size = new System.Drawing.Size(121, 38);
+            this.Tag1NameLabel.Size = new System.Drawing.Size(96, 30);
             this.Tag1NameLabel.TabIndex = 50;
             this.Tag1NameLabel.Text = "タグ１：";
             this.Tag1NameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // SearchMethodComboBox
             // 
-            this.SearchMethodComboBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchMethodComboBox.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
             this.SearchMethodComboBox.FormattingEnabled = true;
             this.SearchMethodComboBox.Items.AddRange(new object[] {
             "前方一致",
             "部分一致",
             "後方一致",
             "完全一致"});
-            this.SearchMethodComboBox.Location = new System.Drawing.Point(941, 64);
-            this.SearchMethodComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchMethodComboBox.Location = new System.Drawing.Point(435, 51);
             this.SearchMethodComboBox.Name = "SearchMethodComboBox";
-            this.SearchMethodComboBox.Size = new System.Drawing.Size(230, 47);
+            this.SearchMethodComboBox.Size = new System.Drawing.Size(185, 32);
             this.SearchMethodComboBox.TabIndex = 4;
             this.SearchMethodComboBox.SelectedIndexChanged += new System.EventHandler(this.SearchMethodComboBox_SelectedIndexChanged);
             // 
@@ -1700,12 +1677,11 @@
             // 
             this.EditQuantityTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.EditQuantityTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditQuantityTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.EditQuantityTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.EditQuantityTextBox.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.EditQuantityTextBox.Location = new System.Drawing.Point(264, 1150);
-            this.EditQuantityTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditQuantityTextBox.Location = new System.Drawing.Point(210, 480);
             this.EditQuantityTextBox.Name = "EditQuantityTextBox";
-            this.EditQuantityTextBox.Size = new System.Drawing.Size(197, 43);
+            this.EditQuantityTextBox.Size = new System.Drawing.Size(158, 38);
             this.EditQuantityTextBox.TabIndex = 42;
             this.EditQuantityTextBox.Visible = false;
             this.EditQuantityTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EditQuantityTextBox_KeyPress);
@@ -1714,26 +1690,24 @@
             // 
             this.EditInventoryOperationNoteTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.EditInventoryOperationNoteTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditInventoryOperationNoteTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditInventoryOperationNoteTextBox.Location = new System.Drawing.Point(36, 1236);
-            this.EditInventoryOperationNoteTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditInventoryOperationNoteTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditInventoryOperationNoteTextBox.Location = new System.Drawing.Point(30, 550);
             this.EditInventoryOperationNoteTextBox.Name = "EditInventoryOperationNoteTextBox";
-            this.EditInventoryOperationNoteTextBox.Size = new System.Drawing.Size(1093, 43);
+            this.EditInventoryOperationNoteTextBox.Size = new System.Drawing.Size(600, 38);
             this.EditInventoryOperationNoteTextBox.TabIndex = 43;
             this.EditInventoryOperationNoteTextBox.Visible = false;
             // 
             // ProperInventorySettingsComboBox
             // 
-            this.ProperInventorySettingsComboBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ProperInventorySettingsComboBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.ProperInventorySettingsComboBox.FormattingEnabled = true;
             this.ProperInventorySettingsComboBox.Items.AddRange(new object[] {
             "安全在庫数",
             "発注点",
             "最大在庫数"});
-            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(15, 120);
-            this.ProperInventorySettingsComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ProperInventorySettingsComboBox.Location = new System.Drawing.Point(12, 96);
             this.ProperInventorySettingsComboBox.Name = "ProperInventorySettingsComboBox";
-            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(300, 47);
+            this.ProperInventorySettingsComboBox.Size = new System.Drawing.Size(241, 38);
             this.ProperInventorySettingsComboBox.TabIndex = 45;
             this.ProperInventorySettingsComboBox.Visible = false;
             this.ProperInventorySettingsComboBox.SelectedIndexChanged += new System.EventHandler(this.ProperInventorySettingsComboBox_SelectedIndexChanged);
@@ -1741,13 +1715,12 @@
             // ProperInventorySettingsTextBox
             // 
             this.ProperInventorySettingsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ProperInventorySettingsTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ProperInventorySettingsTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.ProperInventorySettingsTextBox.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(321, 121);
-            this.ProperInventorySettingsTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.ProperInventorySettingsTextBox.Location = new System.Drawing.Point(268, 97);
             this.ProperInventorySettingsTextBox.Name = "ProperInventorySettingsTextBox";
             this.ProperInventorySettingsTextBox.ReadOnly = true;
-            this.ProperInventorySettingsTextBox.Size = new System.Drawing.Size(178, 43);
+            this.ProperInventorySettingsTextBox.Size = new System.Drawing.Size(143, 38);
             this.ProperInventorySettingsTextBox.TabIndex = 46;
             this.ProperInventorySettingsTextBox.Visible = false;
             this.ProperInventorySettingsTextBox.TextChanged += new System.EventHandler(this.ProperInventorySettingsTextBox_TextChanged);
@@ -1755,11 +1728,10 @@
             // 
             // SaveProperInventorySettingsButton
             // 
-            this.SaveProperInventorySettingsButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(461, 121);
-            this.SaveProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SaveProperInventorySettingsButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SaveProperInventorySettingsButton.Location = new System.Drawing.Point(426, 97);
             this.SaveProperInventorySettingsButton.Name = "SaveProperInventorySettingsButton";
-            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(135, 45);
+            this.SaveProperInventorySettingsButton.Size = new System.Drawing.Size(108, 36);
             this.SaveProperInventorySettingsButton.TabIndex = 47;
             this.SaveProperInventorySettingsButton.Text = "保存";
             this.SaveProperInventorySettingsButton.UseVisualStyleBackColor = true;
@@ -1770,21 +1742,19 @@
             // 
             this.ProperInventorySettingsNotificationLabel.AutoSize = true;
             this.ProperInventorySettingsNotificationLabel.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(300, 71);
-            this.ProperInventorySettingsNotificationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ProperInventorySettingsNotificationLabel.Location = new System.Drawing.Point(240, 57);
             this.ProperInventorySettingsNotificationLabel.Name = "ProperInventorySettingsNotificationLabel";
-            this.ProperInventorySettingsNotificationLabel.Size = new System.Drawing.Size(0, 30);
+            this.ProperInventorySettingsNotificationLabel.Size = new System.Drawing.Size(0, 24);
             this.ProperInventorySettingsNotificationLabel.TabIndex = 60;
             this.ProperInventorySettingsNotificationLabel.Visible = false;
             // 
             // SelectThumbnailButton
             // 
             this.SelectThumbnailButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectThumbnailButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SelectThumbnailButton.Location = new System.Drawing.Point(1930, 550);
-            this.SelectThumbnailButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SelectThumbnailButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SelectThumbnailButton.Location = new System.Drawing.Point(1063, 440);
             this.SelectThumbnailButton.Name = "SelectThumbnailButton";
-            this.SelectThumbnailButton.Size = new System.Drawing.Size(226, 50);
+            this.SelectThumbnailButton.Size = new System.Drawing.Size(181, 40);
             this.SelectThumbnailButton.TabIndex = 23;
             this.SelectThumbnailButton.Text = "サムネイル選択";
             this.SelectThumbnailButton.UseVisualStyleBackColor = true;
@@ -1795,11 +1765,10 @@
             // 
             this.EditNameTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditNameTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditNameTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditNameTextBox.Location = new System.Drawing.Point(1321, 56);
-            this.EditNameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditNameTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditNameTextBox.Location = new System.Drawing.Point(746, 45);
             this.EditNameTextBox.Name = "EditNameTextBox";
-            this.EditNameTextBox.Size = new System.Drawing.Size(323, 43);
+            this.EditNameTextBox.Size = new System.Drawing.Size(297, 38);
             this.EditNameTextBox.TabIndex = 10;
             this.EditNameTextBox.Visible = false;
             // 
@@ -1807,12 +1776,11 @@
             // 
             this.EditIDTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditIDTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditIDTextBox.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditIDTextBox.Location = new System.Drawing.Point(1321, 106);
-            this.EditIDTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditIDTextBox.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.EditIDTextBox.Location = new System.Drawing.Point(701, 89);
             this.EditIDTextBox.Name = "EditIDTextBox";
             this.EditIDTextBox.ReadOnly = true;
-            this.EditIDTextBox.Size = new System.Drawing.Size(323, 37);
+            this.EditIDTextBox.Size = new System.Drawing.Size(342, 32);
             this.EditIDTextBox.TabIndex = 80;
             this.EditIDTextBox.Visible = false;
             // 
@@ -1820,11 +1788,10 @@
             // 
             this.EditRegistrationDateTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditRegistrationDateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditRegistrationDateTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRegistrationDateTextBox.Location = new System.Drawing.Point(1321, 210);
-            this.EditRegistrationDateTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRegistrationDateTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditRegistrationDateTextBox.Location = new System.Drawing.Point(759, 171);
             this.EditRegistrationDateTextBox.Name = "EditRegistrationDateTextBox";
-            this.EditRegistrationDateTextBox.Size = new System.Drawing.Size(323, 43);
+            this.EditRegistrationDateTextBox.Size = new System.Drawing.Size(284, 38);
             this.EditRegistrationDateTextBox.TabIndex = 13;
             this.EditRegistrationDateTextBox.Visible = false;
             // 
@@ -1832,11 +1799,10 @@
             // 
             this.EditCategoryTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditCategoryTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditCategoryTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.EditCategoryTextBox.Location = new System.Drawing.Point(1350, 269);
-            this.EditCategoryTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditCategoryTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditCategoryTextBox.Location = new System.Drawing.Point(754, 215);
             this.EditCategoryTextBox.Name = "EditCategoryTextBox";
-            this.EditCategoryTextBox.Size = new System.Drawing.Size(323, 43);
+            this.EditCategoryTextBox.Size = new System.Drawing.Size(289, 38);
             this.EditCategoryTextBox.TabIndex = 14;
             this.EditCategoryTextBox.Visible = false;
             // 
@@ -1844,11 +1810,10 @@
             // 
             this.EditTag1TextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditTag1TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditTag1TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag1TextBox.Location = new System.Drawing.Point(1350, 319);
-            this.EditTag1TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag1TextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditTag1TextBox.Location = new System.Drawing.Point(756, 260);
             this.EditTag1TextBox.Name = "EditTag1TextBox";
-            this.EditTag1TextBox.Size = new System.Drawing.Size(298, 43);
+            this.EditTag1TextBox.Size = new System.Drawing.Size(287, 38);
             this.EditTag1TextBox.TabIndex = 15;
             this.EditTag1TextBox.Visible = false;
             // 
@@ -1856,11 +1821,10 @@
             // 
             this.EditTag2TextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditTag2TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditTag2TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag2TextBox.Location = new System.Drawing.Point(1350, 370);
-            this.EditTag2TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag2TextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditTag2TextBox.Location = new System.Drawing.Point(756, 300);
             this.EditTag2TextBox.Name = "EditTag2TextBox";
-            this.EditTag2TextBox.Size = new System.Drawing.Size(298, 43);
+            this.EditTag2TextBox.Size = new System.Drawing.Size(287, 38);
             this.EditTag2TextBox.TabIndex = 16;
             this.EditTag2TextBox.Visible = false;
             // 
@@ -1868,11 +1832,10 @@
             // 
             this.EditTag3TextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditTag3TextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditTag3TextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditTag3TextBox.Location = new System.Drawing.Point(1350, 421);
-            this.EditTag3TextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditTag3TextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditTag3TextBox.Location = new System.Drawing.Point(756, 340);
             this.EditTag3TextBox.Name = "EditTag3TextBox";
-            this.EditTag3TextBox.Size = new System.Drawing.Size(298, 43);
+            this.EditTag3TextBox.Size = new System.Drawing.Size(287, 38);
             this.EditTag3TextBox.TabIndex = 17;
             this.EditTag3TextBox.Visible = false;
             // 
@@ -1880,11 +1843,10 @@
             // 
             this.EditRealLocationTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditRealLocationTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditRealLocationTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRealLocationTextBox.Location = new System.Drawing.Point(1386, 479);
-            this.EditRealLocationTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRealLocationTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditRealLocationTextBox.Location = new System.Drawing.Point(821, 387);
             this.EditRealLocationTextBox.Name = "EditRealLocationTextBox";
-            this.EditRealLocationTextBox.Size = new System.Drawing.Size(348, 43);
+            this.EditRealLocationTextBox.Size = new System.Drawing.Size(222, 38);
             this.EditRealLocationTextBox.TabIndex = 18;
             this.EditRealLocationTextBox.Visible = false;
             // 
@@ -1893,12 +1855,11 @@
             this.SearchFormTextBoxClearButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.SearchFormTextBoxClearButton.BackColor = System.Drawing.Color.AliceBlue;
             this.SearchFormTextBoxClearButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.SearchFormTextBoxClearButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchFormTextBoxClearButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.SearchFormTextBoxClearButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SearchFormTextBoxClearButton.Location = new System.Drawing.Point(696, 69);
-            this.SearchFormTextBoxClearButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchFormTextBoxClearButton.Location = new System.Drawing.Point(232, 56);
             this.SearchFormTextBoxClearButton.Name = "SearchFormTextBoxClearButton";
-            this.SearchFormTextBoxClearButton.Size = new System.Drawing.Size(36, 36);
+            this.SearchFormTextBoxClearButton.Size = new System.Drawing.Size(29, 29);
             this.SearchFormTextBoxClearButton.TabIndex = 2;
             this.SearchFormTextBoxClearButton.Text = "X";
             this.SearchFormTextBoxClearButton.UseVisualStyleBackColor = false;
@@ -1908,20 +1869,18 @@
             // 
             this.NoImageLabel.AutoSize = true;
             this.NoImageLabel.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.NoImageLabel.Location = new System.Drawing.Point(1980, 225);
-            this.NoImageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NoImageLabel.Location = new System.Drawing.Point(1094, 201);
             this.NoImageLabel.Name = "NoImageLabel";
-            this.NoImageLabel.Size = new System.Drawing.Size(137, 36);
+            this.NoImageLabel.Size = new System.Drawing.Size(109, 28);
             this.NoImageLabel.TabIndex = 72;
             this.NoImageLabel.Text = "NO IMAGE";
             // 
             // AllowEditIDButton
             // 
-            this.AllowEditIDButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AllowEditIDButton.Location = new System.Drawing.Point(1561, 111);
-            this.AllowEditIDButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AllowEditIDButton.Font = new System.Drawing.Font("Meiryo UI", 9F);
+            this.AllowEditIDButton.Location = new System.Drawing.Point(968, 92);
             this.AllowEditIDButton.Name = "AllowEditIDButton";
-            this.AllowEditIDButton.Size = new System.Drawing.Size(81, 31);
+            this.AllowEditIDButton.Size = new System.Drawing.Size(65, 25);
             this.AllowEditIDButton.TabIndex = 73;
             this.AllowEditIDButton.Text = "変　更";
             this.AllowEditIDButton.UseVisualStyleBackColor = true;
@@ -1932,11 +1891,10 @@
             // 
             this.EditMCTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.EditMCTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.EditMCTextBox.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditMCTextBox.Location = new System.Drawing.Point(1321, 159);
-            this.EditMCTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.EditMCTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditMCTextBox.Location = new System.Drawing.Point(789, 129);
             this.EditMCTextBox.Name = "EditMCTextBox";
-            this.EditMCTextBox.Size = new System.Drawing.Size(323, 43);
+            this.EditMCTextBox.Size = new System.Drawing.Size(254, 38);
             this.EditMCTextBox.TabIndex = 11;
             this.EditMCTextBox.Visible = false;
             // 
@@ -1944,11 +1902,10 @@
             // 
             this.ShowMC.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ShowMC.AutoSize = true;
-            this.ShowMC.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowMC.Location = new System.Drawing.Point(1339, 161);
-            this.ShowMC.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowMC.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowMC.Location = new System.Drawing.Point(789, 129);
             this.ShowMC.Name = "ShowMC";
-            this.ShowMC.Size = new System.Drawing.Size(0, 38);
+            this.ShowMC.Size = new System.Drawing.Size(0, 30);
             this.ShowMC.TabIndex = 74;
             // 
             // UserAssistToolTip
@@ -1957,11 +1914,10 @@
             // 
             // CheckSameMCButton
             // 
-            this.CheckSameMCButton.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CheckSameMCButton.Location = new System.Drawing.Point(1508, 166);
-            this.CheckSameMCButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CheckSameMCButton.Font = new System.Drawing.Font("Meiryo UI", 9F);
+            this.CheckSameMCButton.Location = new System.Drawing.Point(932, 135);
             this.CheckSameMCButton.Name = "CheckSameMCButton";
-            this.CheckSameMCButton.Size = new System.Drawing.Size(132, 31);
+            this.CheckSameMCButton.Size = new System.Drawing.Size(106, 25);
             this.CheckSameMCButton.TabIndex = 12;
             this.CheckSameMCButton.Text = "同コード検索";
             this.CheckSameMCButton.UseVisualStyleBackColor = true;
@@ -1972,22 +1928,20 @@
             // 
             this.DetailsLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.DetailsLabel.AutoSize = true;
-            this.DetailsLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DetailsLabel.Location = new System.Drawing.Point(1186, 586);
-            this.DetailsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DetailsLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.DetailsLabel.Location = new System.Drawing.Point(645, 465);
             this.DetailsLabel.Name = "DetailsLabel";
-            this.DetailsLabel.Size = new System.Drawing.Size(137, 38);
+            this.DetailsLabel.Size = new System.Drawing.Size(109, 30);
             this.DetailsLabel.TabIndex = 20;
             this.DetailsLabel.Text = "詳細情報";
             // 
             // EditRequestingButton
             // 
             this.EditRequestingButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditRequestingButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRequestingButton.Location = new System.Drawing.Point(1531, 1236);
-            this.EditRequestingButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRequestingButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditRequestingButton.Location = new System.Drawing.Point(665, 550);
             this.EditRequestingButton.Name = "EditRequestingButton";
-            this.EditRequestingButton.Size = new System.Drawing.Size(186, 50);
+            this.EditRequestingButton.Size = new System.Drawing.Size(149, 40);
             this.EditRequestingButton.TabIndex = 81;
             this.EditRequestingButton.Text = "編集待機中";
             this.EditRequestingButton.UseVisualStyleBackColor = true;
@@ -1995,11 +1949,10 @@
             // 
             // ShowSelectedItemInformationButton
             // 
-            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("メイリオ", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(634, 123);
-            this.ShowSelectedItemInformationButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ShowSelectedItemInformationButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.ShowSelectedItemInformationButton.Location = new System.Drawing.Point(358, 97);
             this.ShowSelectedItemInformationButton.Name = "ShowSelectedItemInformationButton";
-            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(343, 47);
+            this.ShowSelectedItemInformationButton.Size = new System.Drawing.Size(274, 36);
             this.ShowSelectedItemInformationButton.TabIndex = 83;
             this.ShowSelectedItemInformationButton.Text = "選択項目の情報を表示";
             this.ShowSelectedItemInformationButton.UseVisualStyleBackColor = true;
@@ -2008,22 +1961,20 @@
             // NoPicturesLabel
             // 
             this.NoPicturesLabel.AutoSize = true;
-            this.NoPicturesLabel.Font = new System.Drawing.Font("メイリオ", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.NoPicturesLabel.Location = new System.Drawing.Point(361, 576);
-            this.NoPicturesLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.NoPicturesLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.NoPicturesLabel.Location = new System.Drawing.Point(228, 320);
             this.NoPicturesLabel.Name = "NoPicturesLabel";
-            this.NoPicturesLabel.Size = new System.Drawing.Size(229, 60);
+            this.NoPicturesLabel.Size = new System.Drawing.Size(135, 30);
             this.NoPicturesLabel.TabIndex = 84;
             this.NoPicturesLabel.Text = "NO IMAGE";
             this.NoPicturesLabel.Visible = false;
             // 
             // AddContentsButton
             // 
-            this.AddContentsButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddContentsButton.Location = new System.Drawing.Point(15, 121);
-            this.AddContentsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddContentsButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.AddContentsButton.Location = new System.Drawing.Point(12, 97);
             this.AddContentsButton.Name = "AddContentsButton";
-            this.AddContentsButton.Size = new System.Drawing.Size(180, 45);
+            this.AddContentsButton.Size = new System.Drawing.Size(144, 36);
             this.AddContentsButton.TabIndex = 85;
             this.AddContentsButton.Text = "新規追加";
             this.AddContentsButton.UseVisualStyleBackColor = true;
@@ -2031,11 +1982,10 @@
             // 
             // ListUpdateButton
             // 
-            this.ListUpdateButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ListUpdateButton.Location = new System.Drawing.Point(230, 121);
-            this.ListUpdateButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ListUpdateButton.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.ListUpdateButton.Location = new System.Drawing.Point(184, 97);
             this.ListUpdateButton.Name = "ListUpdateButton";
-            this.ListUpdateButton.Size = new System.Drawing.Size(180, 45);
+            this.ListUpdateButton.Size = new System.Drawing.Size(144, 36);
             this.ListUpdateButton.TabIndex = 86;
             this.ListUpdateButton.Text = "一覧更新";
             this.ListUpdateButton.UseVisualStyleBackColor = true;
@@ -2044,11 +1994,10 @@
             // CopyDataLocationPath
             // 
             this.CopyDataLocationPath.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.CopyDataLocationPath.Font = new System.Drawing.Font("Meiryo UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CopyDataLocationPath.Location = new System.Drawing.Point(1536, 530);
-            this.CopyDataLocationPath.Margin = new System.Windows.Forms.Padding(4);
+            this.CopyDataLocationPath.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.CopyDataLocationPath.Location = new System.Drawing.Point(944, 427);
             this.CopyDataLocationPath.Name = "CopyDataLocationPath";
-            this.CopyDataLocationPath.Size = new System.Drawing.Size(136, 45);
+            this.CopyDataLocationPath.Size = new System.Drawing.Size(109, 36);
             this.CopyDataLocationPath.TabIndex = 87;
             this.CopyDataLocationPath.Text = "パスをコピー";
             this.CopyDataLocationPath.UseVisualStyleBackColor = true;
@@ -2058,12 +2007,11 @@
             // 
             this.ObjectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ObjectNameLabel.AutoSize = true;
-            this.ObjectNameLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.ObjectNameLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F);
             this.ObjectNameLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.ObjectNameLabel.Location = new System.Drawing.Point(1150, 56);
-            this.ObjectNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ObjectNameLabel.Location = new System.Drawing.Point(650, 45);
             this.ObjectNameLabel.Name = "ObjectNameLabel";
-            this.ObjectNameLabel.Size = new System.Drawing.Size(121, 43);
+            this.ObjectNameLabel.Size = new System.Drawing.Size(96, 35);
             this.ObjectNameLabel.TabIndex = 88;
             this.ObjectNameLabel.Text = "名称：";
             this.ObjectNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2072,11 +2020,10 @@
             // 
             this.CategoryLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.CategoryLabel.AutoSize = true;
-            this.CategoryLabel.Font = new System.Drawing.Font("Meiryo UI", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CategoryLabel.Location = new System.Drawing.Point(1150, 269);
-            this.CategoryLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.CategoryLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.CategoryLabel.Location = new System.Drawing.Point(650, 215);
             this.CategoryLabel.Name = "CategoryLabel";
-            this.CategoryLabel.Size = new System.Drawing.Size(149, 43);
+            this.CategoryLabel.Size = new System.Drawing.Size(104, 30);
             this.CategoryLabel.TabIndex = 91;
             this.CategoryLabel.Text = "カテゴリ：";
             this.CategoryLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2085,11 +2032,10 @@
             // 
             this.RegistrationDateLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.RegistrationDateLabel.AutoSize = true;
-            this.RegistrationDateLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.RegistrationDateLabel.Location = new System.Drawing.Point(1150, 214);
-            this.RegistrationDateLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.RegistrationDateLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.RegistrationDateLabel.Location = new System.Drawing.Point(650, 171);
             this.RegistrationDateLabel.Name = "RegistrationDateLabel";
-            this.RegistrationDateLabel.Size = new System.Drawing.Size(137, 38);
+            this.RegistrationDateLabel.Size = new System.Drawing.Size(109, 30);
             this.RegistrationDateLabel.TabIndex = 90;
             this.RegistrationDateLabel.Text = "登録日：";
             this.RegistrationDateLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2098,11 +2044,10 @@
             // 
             this.IDLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.IDLabel.AutoSize = true;
-            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.IDLabel.Location = new System.Drawing.Point(1150, 111);
-            this.IDLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.IDLabel.Font = new System.Drawing.Font("Meiryo UI", 14.25F);
+            this.IDLabel.Location = new System.Drawing.Point(650, 89);
             this.IDLabel.Name = "IDLabel";
-            this.IDLabel.Size = new System.Drawing.Size(55, 25);
+            this.IDLabel.Size = new System.Drawing.Size(51, 24);
             this.IDLabel.TabIndex = 89;
             this.IDLabel.Text = "ID：";
             this.IDLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2111,11 +2056,10 @@
             // 
             this.MCLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.MCLabel.AutoSize = true;
-            this.MCLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.MCLabel.Location = new System.Drawing.Point(1150, 161);
-            this.MCLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.MCLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.MCLabel.Location = new System.Drawing.Point(650, 129);
             this.MCLabel.Name = "MCLabel";
-            this.MCLabel.Size = new System.Drawing.Size(173, 38);
+            this.MCLabel.Size = new System.Drawing.Size(139, 30);
             this.MCLabel.TabIndex = 92;
             this.MCLabel.Text = "管理コード：";
             this.MCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2124,12 +2068,11 @@
             // 
             this.RealLocationLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.RealLocationLabel.AutoSize = true;
-            this.RealLocationLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.RealLocationLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.RealLocationLabel.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.RealLocationLabel.Location = new System.Drawing.Point(1156, 484);
-            this.RealLocationLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.RealLocationLabel.Location = new System.Drawing.Point(645, 387);
             this.RealLocationLabel.Name = "RealLocationLabel";
-            this.RealLocationLabel.Size = new System.Drawing.Size(227, 38);
+            this.RealLocationLabel.Size = new System.Drawing.Size(181, 30);
             this.RealLocationLabel.TabIndex = 93;
             this.RealLocationLabel.Text = "現物保管場所：";
             this.RealLocationLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2137,11 +2080,10 @@
             // DataLoadingLabel
             // 
             this.DataLoadingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.DataLoadingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.DataLoadingLabel.Location = new System.Drawing.Point(956, 124);
-            this.DataLoadingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DataLoadingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.DataLoadingLabel.Location = new System.Drawing.Point(485, 99);
             this.DataLoadingLabel.Name = "DataLoadingLabel";
-            this.DataLoadingLabel.Size = new System.Drawing.Size(181, 47);
+            this.DataLoadingLabel.Size = new System.Drawing.Size(145, 38);
             this.DataLoadingLabel.TabIndex = 94;
             this.DataLoadingLabel.Text = "読み込み中";
             this.DataLoadingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2149,10 +2091,9 @@
             // 
             // dataGridView1BackgroundPictureBox
             // 
-            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(1055, 111);
-            this.dataGridView1BackgroundPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridView1BackgroundPictureBox.Location = new System.Drawing.Point(0, 35);
             this.dataGridView1BackgroundPictureBox.Name = "dataGridView1BackgroundPictureBox";
-            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(91, 64);
+            this.dataGridView1BackgroundPictureBox.Size = new System.Drawing.Size(0, 0);
             this.dataGridView1BackgroundPictureBox.TabIndex = 82;
             this.dataGridView1BackgroundPictureBox.TabStop = false;
             // 
@@ -2160,10 +2101,9 @@
             // 
             this.Thumbnail.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.Thumbnail.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.Thumbnail.Location = new System.Drawing.Point(1850, 64);
-            this.Thumbnail.Margin = new System.Windows.Forms.Padding(4);
+            this.Thumbnail.Location = new System.Drawing.Point(1048, 51);
             this.Thumbnail.Name = "Thumbnail";
-            this.Thumbnail.Size = new System.Drawing.Size(410, 410);
+            this.Thumbnail.Size = new System.Drawing.Size(200, 328);
             this.Thumbnail.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.Thumbnail.TabIndex = 12;
             this.Thumbnail.TabStop = false;
@@ -2174,10 +2114,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.PictureBox1.ContextMenuStrip = this.PictureBox1ContextMenuStrip;
-            this.PictureBox1.Location = new System.Drawing.Point(14, 86);
-            this.PictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.PictureBox1.Location = new System.Drawing.Point(10, 70);
             this.PictureBox1.Name = "PictureBox1";
-            this.PictureBox1.Size = new System.Drawing.Size(1044, 1100);
+            this.PictureBox1.Size = new System.Drawing.Size(620, 440);
             this.PictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox1.TabIndex = 21;
             this.PictureBox1.TabStop = false;
@@ -2189,12 +2128,13 @@
             this.PictureBox1ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.OpenPicturewithAppToolStripMenuItem});
             this.PictureBox1ContextMenuStrip.Name = "PictureBox1ContextMenuStrip";
-            this.PictureBox1ContextMenuStrip.Size = new System.Drawing.Size(242, 28);
+            this.PictureBox1ContextMenuStrip.Size = new System.Drawing.Size(342, 38);
             // 
             // OpenPicturewithAppToolStripMenuItem
             // 
+            this.OpenPicturewithAppToolStripMenuItem.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.OpenPicturewithAppToolStripMenuItem.Name = "OpenPicturewithAppToolStripMenuItem";
-            this.OpenPicturewithAppToolStripMenuItem.Size = new System.Drawing.Size(241, 24);
+            this.OpenPicturewithAppToolStripMenuItem.Size = new System.Drawing.Size(341, 34);
             this.OpenPicturewithAppToolStripMenuItem.Text = "画像をアプリケーションで開く";
             this.OpenPicturewithAppToolStripMenuItem.Click += new System.EventHandler(this.OpenPicturewithAppToolStripMenuItem_Click);
             // 
@@ -2203,26 +2143,41 @@
             this.SearchButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.SearchButton.BackColor = System.Drawing.Color.AliceBlue;
             this.SearchButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.SearchButton.Font = new System.Drawing.Font("Meiryo UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
             this.SearchButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.SearchButton.Location = new System.Drawing.Point(651, 70);
-            this.SearchButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SearchButton.Location = new System.Drawing.Point(137, 56);
             this.SearchButton.Name = "SearchButton";
-            this.SearchButton.Size = new System.Drawing.Size(36, 36);
+            this.SearchButton.Size = new System.Drawing.Size(29, 29);
             this.SearchButton.TabIndex = 96;
             this.SearchButton.Text = "🔍";
             this.SearchButton.UseVisualStyleBackColor = false;
             this.SearchButton.Visible = false;
             this.SearchButton.Click += new System.EventHandler(this.SearchButton_Click);
             // 
+            // SearchCaseSensitiveButton
+            // 
+            this.SearchCaseSensitiveButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.SearchCaseSensitiveButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.SearchCaseSensitiveButton.BackColor = System.Drawing.Color.White;
+            this.SearchCaseSensitiveButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.SearchCaseSensitiveButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.SearchCaseSensitiveButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.SearchCaseSensitiveButton.Location = new System.Drawing.Point(177, 56);
+            this.SearchCaseSensitiveButton.Name = "SearchCaseSensitiveButton";
+            this.SearchCaseSensitiveButton.Size = new System.Drawing.Size(44, 29);
+            this.SearchCaseSensitiveButton.TabIndex = 114;
+            this.SearchCaseSensitiveButton.Text = "Aa";
+            this.SearchCaseSensitiveButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.SearchCaseSensitiveButton.UseVisualStyleBackColor = false;
+            this.SearchCaseSensitiveButton.CheckedChanged += new System.EventHandler(this.SearchCaseSensitiveButton_CheckedChanged);
+            // 
             // ShowPictureFileNameLabel
             // 
             this.ShowPictureFileNameLabel.AutoSize = true;
-            this.ShowPictureFileNameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ShowPictureFileNameLabel.Location = new System.Drawing.Point(15, 49);
-            this.ShowPictureFileNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ShowPictureFileNameLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ShowPictureFileNameLabel.Location = new System.Drawing.Point(10, 30);
             this.ShowPictureFileNameLabel.Name = "ShowPictureFileNameLabel";
-            this.ShowPictureFileNameLabel.Size = new System.Drawing.Size(0, 38);
+            this.ShowPictureFileNameLabel.Size = new System.Drawing.Size(0, 30);
             this.ShowPictureFileNameLabel.TabIndex = 97;
             this.ShowPictureFileNameLabel.Visible = false;
             // 
@@ -2230,11 +2185,10 @@
             // 
             this.ConfidentialDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ConfidentialDataLabel.AutoSize = true;
-            this.ConfidentialDataLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ConfidentialDataLabel.Location = new System.Drawing.Point(1213, 586);
-            this.ConfidentialDataLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.ConfidentialDataLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ConfidentialDataLabel.Location = new System.Drawing.Point(645, 465);
             this.ConfidentialDataLabel.Name = "ConfidentialDataLabel";
-            this.ConfidentialDataLabel.Size = new System.Drawing.Size(137, 38);
+            this.ConfidentialDataLabel.Size = new System.Drawing.Size(109, 30);
             this.ConfidentialDataLabel.TabIndex = 98;
             this.ConfidentialDataLabel.Text = "機密情報";
             this.ConfidentialDataLabel.Visible = false;
@@ -2242,11 +2196,10 @@
             // HideConfidentialDataButton
             // 
             this.HideConfidentialDataButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.HideConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.HideConfidentialDataButton.Location = new System.Drawing.Point(2014, 1237);
-            this.HideConfidentialDataButton.Margin = new System.Windows.Forms.Padding(4);
+            this.HideConfidentialDataButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.HideConfidentialDataButton.Location = new System.Drawing.Point(1050, 550);
             this.HideConfidentialDataButton.Name = "HideConfidentialDataButton";
-            this.HideConfidentialDataButton.Size = new System.Drawing.Size(236, 50);
+            this.HideConfidentialDataButton.Size = new System.Drawing.Size(189, 40);
             this.HideConfidentialDataButton.TabIndex = 99;
             this.HideConfidentialDataButton.Text = "機密情報非表示";
             this.HideConfidentialDataButton.UseVisualStyleBackColor = true;
@@ -2256,11 +2209,10 @@
             // SavingLabel
             // 
             this.SavingLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.SavingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SavingLabel.Location = new System.Drawing.Point(1260, 1236);
-            this.SavingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.SavingLabel.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SavingLabel.Location = new System.Drawing.Point(660, 550);
             this.SavingLabel.Name = "SavingLabel";
-            this.SavingLabel.Size = new System.Drawing.Size(206, 50);
+            this.SavingLabel.Size = new System.Drawing.Size(165, 40);
             this.SavingLabel.TabIndex = 100;
             this.SavingLabel.Text = "保存中";
             this.SavingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2269,11 +2221,10 @@
             // CloseInventoryManagementModeButton
             // 
             this.CloseInventoryManagementModeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseInventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.CloseInventoryManagementModeButton.Location = new System.Drawing.Point(1744, 1237);
-            this.CloseInventoryManagementModeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.CloseInventoryManagementModeButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.CloseInventoryManagementModeButton.Location = new System.Drawing.Point(835, 550);
             this.CloseInventoryManagementModeButton.Name = "CloseInventoryManagementModeButton";
-            this.CloseInventoryManagementModeButton.Size = new System.Drawing.Size(250, 50);
+            this.CloseInventoryManagementModeButton.Size = new System.Drawing.Size(200, 40);
             this.CloseInventoryManagementModeButton.TabIndex = 101;
             this.CloseInventoryManagementModeButton.Text = "在庫数管理終了";
             this.CloseInventoryManagementModeButton.UseVisualStyleBackColor = true;
@@ -2283,11 +2234,10 @@
             // OpenPictureFolderButton
             // 
             this.OpenPictureFolderButton.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.OpenPictureFolderButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.OpenPictureFolderButton.Location = new System.Drawing.Point(1930, 494);
-            this.OpenPictureFolderButton.Margin = new System.Windows.Forms.Padding(4);
+            this.OpenPictureFolderButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.OpenPictureFolderButton.Location = new System.Drawing.Point(1063, 395);
             this.OpenPictureFolderButton.Name = "OpenPictureFolderButton";
-            this.OpenPictureFolderButton.Size = new System.Drawing.Size(226, 50);
+            this.OpenPictureFolderButton.Size = new System.Drawing.Size(181, 40);
             this.OpenPictureFolderButton.TabIndex = 102;
             this.OpenPictureFolderButton.Text = "画像保存場所";
             this.OpenPictureFolderButton.UseVisualStyleBackColor = true;
@@ -2296,11 +2246,10 @@
             // 
             // SetProperInventorySettingsButton
             // 
-            this.SetProperInventorySettingsButton.Font = new System.Drawing.Font("メイリオ", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SetProperInventorySettingsButton.Location = new System.Drawing.Point(518, 121);
-            this.SetProperInventorySettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SetProperInventorySettingsButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SetProperInventorySettingsButton.Location = new System.Drawing.Point(426, 97);
             this.SetProperInventorySettingsButton.Name = "SetProperInventorySettingsButton";
-            this.SetProperInventorySettingsButton.Size = new System.Drawing.Size(135, 45);
+            this.SetProperInventorySettingsButton.Size = new System.Drawing.Size(108, 36);
             this.SetProperInventorySettingsButton.TabIndex = 103;
             this.SetProperInventorySettingsButton.Text = "設定";
             this.SetProperInventorySettingsButton.UseVisualStyleBackColor = true;
@@ -2310,11 +2259,10 @@
             // EditRequestButton
             // 
             this.EditRequestButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.EditRequestButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.EditRequestButton.Location = new System.Drawing.Point(1508, 1237);
-            this.EditRequestButton.Margin = new System.Windows.Forms.Padding(4);
+            this.EditRequestButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.EditRequestButton.Location = new System.Drawing.Point(650, 550);
             this.EditRequestButton.Name = "EditRequestButton";
-            this.EditRequestButton.Size = new System.Drawing.Size(218, 50);
+            this.EditRequestButton.Size = new System.Drawing.Size(174, 40);
             this.EditRequestButton.TabIndex = 105;
             this.EditRequestButton.Text = "他端末編集中";
             this.EditRequestButton.UseVisualStyleBackColor = true;
@@ -2323,11 +2271,10 @@
             // ReadOnlyButton
             // 
             this.ReadOnlyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ReadOnlyButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.ReadOnlyButton.Location = new System.Drawing.Point(1531, 1236);
-            this.ReadOnlyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.ReadOnlyButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.ReadOnlyButton.Location = new System.Drawing.Point(665, 550);
             this.ReadOnlyButton.Name = "ReadOnlyButton";
-            this.ReadOnlyButton.Size = new System.Drawing.Size(186, 50);
+            this.ReadOnlyButton.Size = new System.Drawing.Size(149, 40);
             this.ReadOnlyButton.TabIndex = 106;
             this.ReadOnlyButton.Text = "閲覧のみ";
             this.ReadOnlyButton.UseVisualStyleBackColor = true;
@@ -2338,11 +2285,10 @@
             this.UUIDEditStatusLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.UUIDEditStatusLabel.BackColor = System.Drawing.Color.White;
             this.UUIDEditStatusLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.UUIDEditStatusLabel.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.UUIDEditStatusLabel.Location = new System.Drawing.Point(1523, 112);
-            this.UUIDEditStatusLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.UUIDEditStatusLabel.Font = new System.Drawing.Font("Meiryo UI", 9F);
+            this.UUIDEditStatusLabel.Location = new System.Drawing.Point(961, 95);
             this.UUIDEditStatusLabel.Name = "UUIDEditStatusLabel";
-            this.UUIDEditStatusLabel.Size = new System.Drawing.Size(90, 25);
+            this.UUIDEditStatusLabel.Size = new System.Drawing.Size(72, 20);
             this.UUIDEditStatusLabel.TabIndex = 107;
             this.UUIDEditStatusLabel.Text = "読み込み中";
             this.UUIDEditStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -2351,11 +2297,10 @@
             // AddQuantityButton
             // 
             this.AddQuantityButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.AddQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.AddQuantityButton.Location = new System.Drawing.Point(492, 1106);
-            this.AddQuantityButton.Margin = new System.Windows.Forms.Padding(4);
+            this.AddQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.AddQuantityButton.Location = new System.Drawing.Point(380, 445);
             this.AddQuantityButton.Name = "AddQuantityButton";
-            this.AddQuantityButton.Size = new System.Drawing.Size(104, 50);
+            this.AddQuantityButton.Size = new System.Drawing.Size(83, 40);
             this.AddQuantityButton.TabIndex = 108;
             this.AddQuantityButton.Text = "+1";
             this.AddQuantityButton.UseVisualStyleBackColor = true;
@@ -2365,11 +2310,10 @@
             // SubtractQuantityButton
             // 
             this.SubtractQuantityButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.SubtractQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SubtractQuantityButton.Location = new System.Drawing.Point(492, 1178);
-            this.SubtractQuantityButton.Margin = new System.Windows.Forms.Padding(4);
+            this.SubtractQuantityButton.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SubtractQuantityButton.Location = new System.Drawing.Point(380, 490);
             this.SubtractQuantityButton.Name = "SubtractQuantityButton";
-            this.SubtractQuantityButton.Size = new System.Drawing.Size(104, 50);
+            this.SubtractQuantityButton.Size = new System.Drawing.Size(83, 40);
             this.SubtractQuantityButton.TabIndex = 109;
             this.SubtractQuantityButton.Text = "-1";
             this.SubtractQuantityButton.UseVisualStyleBackColor = true;
@@ -2379,32 +2323,24 @@
             // SearchFormTextBox
             // 
             this.SearchFormTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.SearchFormTextBox.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.SearchFormTextBox.Location = new System.Drawing.Point(14, 64);
+            this.SearchFormTextBox.Font = new System.Drawing.Font("Meiryo UI", 18F);
+            this.SearchFormTextBox.Location = new System.Drawing.Point(11, 51);
+            this.SearchFormTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.SearchFormTextBox.Multiline = false;
             this.SearchFormTextBox.Name = "SearchFormTextBox";
             this.SearchFormTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-            this.SearchFormTextBox.Size = new System.Drawing.Size(723, 47);
+            this.SearchFormTextBox.Size = new System.Drawing.Size(255, 38);
             this.SearchFormTextBox.TabIndex = 10;
             this.SearchFormTextBox.Text = "";
             this.SearchFormTextBox.TextChanged += new System.EventHandler(this.SearchFormTextBox_TextChanged);
             // 
-            // toolStripSeparator11
-            // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(323, 6);
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(323, 6);
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.Color.AliceBlue;
-            this.ClientSize = new System.Drawing.Size(2280, 1301);
+            this.ClientSize = new System.Drawing.Size(1264, 601);
+            this.Controls.Add(this.SearchCaseSensitiveButton);
             this.Controls.Add(this.SearchButton);
             this.Controls.Add(this.ShowSelectedItemInformationButton);
             this.Controls.Add(this.SubtractQuantityButton);
@@ -2494,9 +2430,8 @@
             this.Controls.Add(this.EditIDTextBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(4782, 2637);
-            this.MinimumSize = new System.Drawing.Size(1582, 737);
+            this.MaximumSize = new System.Drawing.Size(3829, 2117);
+            this.MinimumSize = new System.Drawing.Size(1280, 640);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CREC";
@@ -2673,6 +2608,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripMenuItem ResetEditingContentsToolStripMenuItem;
         private System.Windows.Forms.Button SearchButton;
+        private System.Windows.Forms.CheckBox SearchCaseSensitiveButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem RecentShownContentsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenRecentlyOpendProjectToolStripMenuItem;
