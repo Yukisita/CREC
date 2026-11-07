@@ -1812,7 +1812,7 @@ namespace CREC
                         SearchOptionComboBox.SelectedIndex,
                         SearchMethodComboBox.SelectedIndex,
                         LanguageFile,
-                        !SearchCaseSensitiveButton.Checked);
+                        SearchCaseSensitiveButton.Checked);
 
                     // ContentsDataTable.Rowsに追加
                     foreach (var thisCollectionDataValues in searchedCollectionList)

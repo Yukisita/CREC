@@ -80,7 +80,7 @@ namespace CREC
         /// <param name="searchOption">検索オプション</param>
         /// <param name="searchMethod">検索方法</param>
         /// <param name="LanguageData">言語情報</param>
-        /// <param name="ignoreCase">大文字・小文字を区別しない場合はtrue</param>
+        /// <param name="caseSensitive">大文字・小文字を区別する場合はtrue</param>
         /// <returns></returns>
         public static void SearchCollectionFromList(
             ref List<CollectionDataValuesClass> SearchedCollectionList,
@@ -89,7 +89,7 @@ namespace CREC
             int searchOption,
             int searchMethod,
             XElement LanguageData,
-            bool ignoreCase = false)
+            bool caseSensitive = false)
         {
             // 検索欄が空かつ在庫検索以外の場合はそのままとする
             if (searchKeyWords.Length == 0 && searchOption != 8)
@@ -106,7 +106,7 @@ namespace CREC
                     searchKeyWords,
                     searchOption,
                     searchMethod,
-                    ignoreCase))
+                    caseSensitive))
                 {
                     loadingCollectionList.Add(item);
                 }
@@ -123,7 +123,7 @@ namespace CREC
         /// <param name="searchKeyWords">検索ワード</param>
         /// <param name="SearchOption">検索オプション</param>
         /// <param name="SearchMethod">検索方法</param>
-        /// <param name="ignoreCase">大文字・小文字を区別しない場合はtrue</param>
+        /// <param name="caseSensitive">大文字・小文字を区別する場合はtrue</param>
         /// <returns>検索Hit：true、それ以外：false</returns>
         private static bool SearchMethod(
             CollectionDataValuesClass item,
@@ -131,7 +131,7 @@ namespace CREC
             string searchKeyWords,
             int SearchOption,
             int SearchMethod,
-            bool ignoreCase)
+            bool caseSensitive)
         {
             // 検索対象の文字列を取得（List配列とする）
             List<string> TargetWords = new List<string>();
@@ -206,9 +206,9 @@ namespace CREC
                     else
                     {
                         // 前方一致検索
-                        returnValue = TargetWords.Any(word => ignoreCase
-                            ? word.StartsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase)
-                            : word.StartsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.StartsWith(searchKeyWords)
+                            : word.StartsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 case 1:
@@ -220,9 +220,9 @@ namespace CREC
                     else
                     {
                         // 部分一致検索
-                        returnValue = TargetWords.Any(word => ignoreCase
-                            ? word.IndexOf(searchKeyWords, StringComparison.OrdinalIgnoreCase) >= 0
-                            : word.Contains(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.Contains(searchKeyWords)
+                            : word.IndexOf(searchKeyWords, StringComparison.OrdinalIgnoreCase) >= 0);
                     }
                     break;
                 case 2:
@@ -234,9 +234,9 @@ namespace CREC
                     else
                     {
                         // 後方一致検索
-                        returnValue = TargetWords.Any(word => ignoreCase
-                            ? word.EndsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase)
-                            : word.EndsWith(searchKeyWords));
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word.EndsWith(searchKeyWords)
+                            : word.EndsWith(searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 case 3:
@@ -248,9 +248,9 @@ namespace CREC
                     else
                     {
                         // 完全一致検索
-                        returnValue = TargetWords.Any(word => ignoreCase
-                            ? string.Equals(word, searchKeyWords, StringComparison.OrdinalIgnoreCase)
-                            : word == searchKeyWords);
+                        returnValue = TargetWords.Any(word => caseSensitive
+                            ? word == searchKeyWords
+                            : string.Equals(word, searchKeyWords, StringComparison.OrdinalIgnoreCase));
                     }
                     break;
                 default:
