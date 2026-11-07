@@ -627,6 +627,14 @@
 				<itemtext>Search collection.</itemtext>
 			</item>
 			<item>
+				<itemname>SearchCaseSensitiveButtonOn</itemname>
+				<itemtext>Match case when searching: ON</itemtext>
+			</item>
+			<item>
+				<itemname>SearchCaseSensitiveButtonOff</itemname>
+				<itemtext>Match case when searching: OFF</itemtext>
+			</item>
+			<item>
 				<itemname>SearchFormTextBoxClearButton</itemname>
 				<itemtext>Clear search box.</itemtext>
 			</item>

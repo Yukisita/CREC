@@ -1741,6 +1741,7 @@ namespace CREC
             ListUpdateButton.Visible = status;
             SearchFormTextBox.Visible = status;
             SearchFormTextBoxClearButton.Visible = status;
+            SearchCaseSensitiveButton.Visible = status;
             SearchMethodComboBox.Visible = status;
             SearchOptionComboBox.Visible = status;
             if (ConfigValues.AutoSearch == false && status == true)
@@ -1810,7 +1811,8 @@ namespace CREC
                         SearchFormTextBox.Text,
                         SearchOptionComboBox.SelectedIndex,
                         SearchMethodComboBox.SelectedIndex,
-                        LanguageFile);
+                        LanguageFile,
+                        !SearchCaseSensitiveButton.Checked);
 
                     // ContentsDataTable.Rowsに追加
                     foreach (var thisCollectionDataValues in searchedCollectionList)
@@ -3654,6 +3656,29 @@ namespace CREC
                 LoadGrid();// 再度読み込み
             }
         }
+        private void SearchCaseSensitiveButton_CheckedChanged(object sender, EventArgs e)
+        {
+            SearchCaseSensitiveButton.BackColor = SearchCaseSensitiveButton.Checked ? Color.AliceBlue : Color.White;
+            SetSearchCaseSensitiveToolTip();
+            if (ConfigValues.AutoSearch && SearchCaseSensitiveButton.Enabled)
+            {
+                SearchButton_Click(sender, e);
+            }
+        }
+        private void SearchOptionComboBox_UpdateCaseSensitiveAvailability(object sender, EventArgs e)
+        {
+            SearchCaseSensitiveButton.Enabled = SearchOptionComboBox.SelectedIndex != 8;
+        }
+        private void SetSearchCaseSensitiveToolTip()
+        {
+            string toolTipText = string.Empty;
+            if (ConfigValues.ShowUserAssistToolTips && LanguageFile != null)
+            {
+                string messageKey = SearchCaseSensitiveButton.Checked ? "SearchCaseSensitiveButtonOn" : "SearchCaseSensitiveButtonOff";
+                toolTipText = LanguageSettingClass.GetToolTipMessage(messageKey, "mainform", LanguageFile);
+            }
+            UserAssistToolTip.SetToolTip(SearchCaseSensitiveButton, toolTipText);
+        }
         private void SearchFormTextBoxClearButton_Click(object sender, EventArgs e)// 検索窓の入力内容をクリア
         {
             SearchFormTextBox.TextChanged -= SearchFormTextBox_TextChanged;
@@ -3855,10 +3880,13 @@ namespace CREC
             SearchMethodComboBox.Location = new Point(Convert.ToInt32(formSize.Width * 0.5 - 205 * dpiScale), SearchOptionComboBox.Location.Y);
             SearchFormTextBox.Font = new Font(fontName, mainfontsize);
             SearchFormTextBox.Width = Convert.ToInt32(formSize.Width * 0.5 - 385 * dpiScale);
-            SearchButton.Font = new Font(fontName, mainfontsize);
-            SearchButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5 - 40 * dpiScale), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
             SearchFormTextBoxClearButton.Font = new Font(fontName, mainfontsize);
             SearchFormTextBoxClearButton.Location = new Point(Convert.ToInt32(SearchFormTextBox.Location.X + SearchFormTextBox.Width - SearchFormTextBoxClearButton.Width - (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5), Convert.ToInt32(SearchFormTextBox.Location.Y + (SearchFormTextBox.Height - SearchFormTextBoxClearButton.Height) * 0.5));
+            SearchCaseSensitiveButton.Font = new Font(fontName, mainfontsize);
+            SearchCaseSensitiveButton.Size = new Size(Convert.ToInt32(44 * dpiScale), SearchFormTextBoxClearButton.Height);
+            SearchCaseSensitiveButton.Location = new Point(SearchFormTextBoxClearButton.Left - SearchCaseSensitiveButton.Width - Convert.ToInt32(11 * dpiScale), SearchFormTextBoxClearButton.Top);
+            SearchButton.Font = new Font(fontName, mainfontsize);
+            SearchButton.Location = new Point(SearchCaseSensitiveButton.Left - SearchButton.Width - Convert.ToInt32(11 * dpiScale), SearchFormTextBoxClearButton.Top);
             DetailsTextBox.Font = new Font(fontName, mainfontsize);
             DetailsTextBox.Width = Convert.ToInt32(formSize.Width * 0.5 - 50 * dpiScale);
             DetailsTextBox.Height = Convert.ToInt32(formSize.Height - 600 * dpiScale);
@@ -5407,6 +5435,7 @@ namespace CREC
                 UserAssistToolTip.SetToolTip(AddContentsButton, LanguageSettingClass.GetToolTipMessage("AddContentsButton", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(ListUpdateButton, LanguageSettingClass.GetToolTipMessage("ListUpdateButton", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(SearchButton, LanguageSettingClass.GetToolTipMessage("SearchButton", "mainform", LanguageFile));
+                SetSearchCaseSensitiveToolTip();
                 UserAssistToolTip.SetToolTip(SearchFormTextBoxClearButton, LanguageSettingClass.GetToolTipMessage("SearchFormTextBoxClearButton", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(OpenDataLocation, LanguageSettingClass.GetToolTipMessage("OpenDataLocation", "mainform", LanguageFile));
                 UserAssistToolTip.SetToolTip(CopyDataLocationPath, LanguageSettingClass.GetToolTipMessage("CopyDataLocationPath", "mainform", LanguageFile));

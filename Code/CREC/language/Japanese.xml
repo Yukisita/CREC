@@ -627,6 +627,14 @@
 				<itemtext>コレクションを検索します。</itemtext>
 			</item>
 			<item>
+				<itemname>SearchCaseSensitiveButtonOn</itemname>
+				<itemtext>大文字・小文字を区別する：ON</itemtext>
+			</item>
+			<item>
+				<itemname>SearchCaseSensitiveButtonOff</itemname>
+				<itemtext>大文字・小文字を区別する：OFF</itemtext>
+			</item>
+			<item>
 				<itemname>SearchFormTextBoxClearButton</itemname>
 				<itemtext>検索ボックスの入力内容を削除します。</itemtext>
 			</item>
