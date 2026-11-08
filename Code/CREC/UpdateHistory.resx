@@ -578,7 +578,8 @@ ver14.0.2.0（2026/09/29）
 新バージョン確認処理を修正
 
 ver14.1.0.0（2026/11/08）
-検索時に大文字小文字を区別する・しないを設定する機能を追加</value>
+検索時に大文字小文字を区別する・しないを設定する機能を追加
+イメージキャラクタを更新</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
