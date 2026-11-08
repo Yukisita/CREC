@@ -25,7 +25,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>14.0.2.0</ApplicationVersion>
+    <ApplicationVersion>14.1.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -124,6 +124,11 @@
     </Compile>
     <Compile Include="ProjectSettingClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UpdateHistory.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -168,14 +173,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <EmbeddedResource Include="UpdateHistory.resx">
       <DependentUpon>UpdateHistory.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -213,15 +213,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\CREC256_icon.png" />
-    <None Include="Resources\2024-2-Spring.png" />
-    <None Include="Resources\2023-autumn.png" />
-    <None Include="Resources\2023-summer.png" />
-    <None Include="Resources\Comic_0011.png" />
-    <None Include="Resources\Comic_001.png" />
     <None Include="Resources\CREC128_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CREC.ico" />
+    <None Include="Resources\2026-11_default_character_image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
