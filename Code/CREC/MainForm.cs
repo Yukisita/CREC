@@ -95,6 +95,7 @@ namespace CREC
             Application.DoEvents();
             // 起動処理開始
             InitializeComponent();
+            dataGridView1.CellFormatting += DataGridView1_CellFormatting;
             // データ一覧のDGVにダブルバッファリングを設定
             Type dgvType = typeof(DataGridView);
             PropertyInfo dgvPropertyInfo = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -1935,6 +1936,25 @@ namespace CREC
             // listの列幅調整
             ControlCollectionListColumnAutoWidth();
         }
+        private void DataGridView1_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.ColumnIndex >= 0
+                && dataGridView1.Columns[e.ColumnIndex].DataPropertyName == nameof(RegistrationDateList)
+                && e.Value is string registrationDate)
+            {
+                e.Value = FormatRegistrationDateForDisplay(registrationDate);
+                e.FormattingApplied = true;
+            }
+        }
+
+        private static string FormatRegistrationDateForDisplay(string registrationDate)
+        {
+            // 読み込み時にローカル時刻に変換済みの登録日を、表示用に整形する。
+            return DateTimeOffset.TryParse(registrationDate, out var localRegistrationDate)
+                ? localRegistrationDate.ToString("yyyy/MM/dd HH:mm:ss")
+                : registrationDate;
+        }
+
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)// 詳細表示
         {
             if (isEditingCollection == true)// 編集中の場合は警告を表示
