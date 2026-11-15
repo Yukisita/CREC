@@ -2151,11 +2151,7 @@ namespace CREC
             MCLabel.Text = CurrentProjectSettingValues.ManagementCodeLabel + "：";
             ShowMC.Text = CurrentShownCollectionData.CollectionMC;
             RegistrationDateLabel.Text = CurrentProjectSettingValues.RegistrationDateLabel + "：";
-            // 読み込み時にローカル時刻に変換済みの登録日を、表示用に整形する。
-            string registrationDate = CurrentShownCollectionData.CollectionRegistrationDate;
-            ShowRegistrationDate.Text = DateTimeOffset.TryParse(registrationDate, out var localRegistrationDate)
-                ? localRegistrationDate.ToString("yyyy/MM/dd HH:mm:ss")
-                : registrationDate;
+            ShowRegistrationDate.Text = FormatRegistrationDateForDisplay(CurrentShownCollectionData.CollectionRegistrationDate);
             CategoryLabel.Text = CurrentProjectSettingValues.CategoryLabel + "：";
             ShowCategory.Text = CurrentShownCollectionData.CollectionCategory;
             Tag1NameLabel.Text = CurrentProjectSettingValues.FirstTagLabel + "：";
